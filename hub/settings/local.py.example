@@ -1,0 +1,34 @@
+"""
+Example settings for local development
+
+Use this file as a base for your local development settings and copy
+it to hub/settings/local.py. It should not be checked into
+your code repository.
+"""
+from .base import *   # pylint: disable=W0614,W0401
+
+ALLOWED_HOSTS = ('*',)
+
+SECRET_KEY = 'w&*kr1(3@b4x0xz+)81!yxh7b)033#-tu##naqq8jvj82^&m*x'
+
+DEBUG = True
+
+ADMINS = (
+    ('You', 'your@email'),
+)
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(VAR_ROOT, 'db.sqlite3'),
+    }
+}
+
+# Enable debug logging
+#LOGGING['loggers']['hub']['level'] = 'DEBUG'
+#LOGGING['loggers']['django']['level'] = 'DEBUG'
+
+# Very custom url and wsgi settings
+#ROOT_URLCONF = 'hub.urls.local'
+#WSGI_APPLICATION = 'hub.wsgi.local.application'
