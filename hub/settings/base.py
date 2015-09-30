@@ -22,6 +22,11 @@ LANGUAGES = (
     ('en', 'English'),
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'aashe.aasheauth.backends.AASHEBackend',
+)
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,6 +34,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'aashe.aasheauth',
 )
 
 MIDDLEWARE_CLASSES = (

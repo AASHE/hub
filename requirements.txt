@@ -1,2 +1,4 @@
 Django==1.8.4
 FeinCMS==1.11.1
+
+https://github.com/AASHE/aashe-auth/archive/master.zip
