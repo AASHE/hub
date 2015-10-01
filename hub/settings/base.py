@@ -15,7 +15,7 @@ SITE_ID = 1
 
 TIME_ZONE = 'UTC'
 USE_TZ = True
-USE_I18N = True
+USE_I18N = False
 USE_L10N = False
 LANGUAGE_CODE = 'en'
 LANGUAGES = (
@@ -35,7 +35,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'mptt',
+    'feincms',
+    'feincms.module.page',
+
     'aashe.aasheauth',
+
+    'hub',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -165,4 +171,4 @@ LOGGING = {
 # Third party app settings
 # ==============================================================================
 
-# FEINCMS_USE_PAGE_ADMIN = False
+FEINCMS_USE_PAGE_ADMIN = False
