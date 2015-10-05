@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'aashe.aasheauth',
 
     'hub',
+    'hub.apps.resources',
 )
 
 MIDDLEWARE_CLASSES = (
