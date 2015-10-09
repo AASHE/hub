@@ -1,6 +1,12 @@
 django==1.8.4
-feincms==1.11.1
 django-model-utils==2.3.1
+django-filter==0.11.0
+django-tables2==1.0.4
+django-flat-theme==1.1.1
 
+mysql-python
 
-https://github.com/AASHE/aashe-auth/archive/master.zip
+# Load manually and install via -e
+#
+# https://github.com/AASHE/aashe-auth/archive/migrations.zip
+# https://github.com/AASHE/issdjango/archive/migrations.zip
