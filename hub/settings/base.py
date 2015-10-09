@@ -28,6 +28,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 INSTALLED_APPS = (
+    'flat',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,14 +37,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'mptt',
-    'feincms',
-    'feincms.module.page',
+    'django_tables2',
 
     'aashe.aasheauth',
+    'issdjango',
 
     'hub',
-    'hub.apps.resources',
+    'hub.apps.content',
+    'hub.apps.metadata',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -172,4 +174,3 @@ LOGGING = {
 # Third party app settings
 # ==============================================================================
 
-FEINCMS_USE_PAGE_ADMIN = False

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block page %}
+<div class="row">
+  <div class="span12">
+    <h2>{{ topic }}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="span3">
+    <form method="GET" action="">
+        {{ object_list.form }}
+        <input type="submit"/>
+        <a href=".">Show all</a>
+    </form>
+  </div>
+  <div class="span9">
+    {% load render_table from django_tables2 %}
+    {% render_table table %}
+  </div>
+</div>
+{% endblock %}

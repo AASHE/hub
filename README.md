@@ -7,3 +7,19 @@
 ```
 
 # The Campus Sustainability Hub
+
+## Installation, Quick'n'dirty
+
+Install the requirements and create a blank database, migrate all the tables:
+
+    $ pip install -e requirements.txt
+    $ mysql -uroot -e'create database hub;'
+    $ manage.py migrate
+
+Load the supplied organizations:
+
+    $ mysql -uroot hub < ~/Desktop/iss10-6-15.sql
+
+Create a superuser to get access to the admin:
+
+    $ manage.py createsuperuser

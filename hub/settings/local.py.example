@@ -20,8 +20,18 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(VAR_ROOT, 'db.sqlite3'),
+        'NAME': 'hub',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+    },
+    'iss': {
+        'NAME': 'iss',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
     }
 }
 

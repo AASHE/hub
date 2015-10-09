@@ -1,0 +1,36 @@
+h1, h2 {
+    margin: 2em 0 0 0;
+    font-family: HelveticaNeue-Light;
+    font-weight: 300;
+    color: gray;
+    border-bottom: 2px solid #ccc;
+}
+
+h2 {
+    margin: 1em 0;
+    border: none;
+}
+
+
+
+table th,
+table td.created {
+    white-space: nowrap;
+}
+
+.box-button {
+    background-color: #5061AA;
+    padding: 1em 2em;
+    line-height: 4em;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    border-radius: 1em;
+    margin: 0 .5em .5em 0;
+    white-space: nowrap;
+}
+
+.box-button:hover {
+    color: white;
+    box-shadow: 0 0 .4em yellow;
+}
