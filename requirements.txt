@@ -6,6 +6,7 @@ django-tables2==1.0.4
 django-flat-theme==1.1.1
 django-s3-folder-storage==0.3
 gunicorn
+ipython
 Pillow
 
 mysql-python
