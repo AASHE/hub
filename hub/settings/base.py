@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django_tables2',
 
     'aashe.aasheauth',
-    # 'issdjango',
+    # 'issdjango',  # we'll put this back shortly
     'iss',
     's3_folder_storage',
 
@@ -117,12 +117,6 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/'
 
-# STATIC_URL = '/static/'
-# MEDIA_URL = '/uploads/'
-
-# STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
-# MEDIA_ROOT = os.path.join(VAR_ROOT, 'uploads')
-
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'static'),
 )
@@ -132,21 +126,29 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-# S3 Media Storage
+USE_S3 = os.environ.get("USE_S3", False)  # if USE_S3 is set use, well, s3
+if USE_S3:
+    # S3 Media Storage
+    DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
+    DEFAULT_S3_PATH = "uploads"
+    STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
+    STATIC_S3_PATH = "static"
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", None)
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", None)
+    AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
 
-DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
-DEFAULT_S3_PATH = "uploads"
-STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
-STATIC_S3_PATH = "static"
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", None)
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", None)
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
+    MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
+    MEDIA_URL = '//s3.amazonaws.com/%s/uploads/' % AWS_STORAGE_BUCKET_NAME
+    STATIC_ROOT = "/%s/" % STATIC_S3_PATH
+    STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
+    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
-MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
-MEDIA_URL = '//s3.amazonaws.com/%s/uploads/' % AWS_STORAGE_BUCKET_NAME
-STATIC_ROOT = "/%s/" % STATIC_S3_PATH
-STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+else:
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/uploads/'
+
+    STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
+    MEDIA_ROOT = os.path.join(VAR_ROOT, 'uploads')
 
 # ==============================================================================
 # Miscellaneous project settings
