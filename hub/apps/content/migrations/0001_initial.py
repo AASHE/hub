@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import migrations, models
+from django.db import models, migrations
 import django.utils.timezone
 import model_utils.fields
 
@@ -9,8 +9,8 @@ import model_utils.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('metadata', '__first__'),
-        ('issdjango', '__first__'),
+        ('metadata', '0001_initial'),
+        ('iss', '__first__'),
     ]
 
     operations = [
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
-                ('content_type', models.CharField(max_length=40, choices=[(b'academic', b'Academic Programs'), (b'casestudy', b'Case Studies'), (b'center', b'Research Centers & Institutes'), (b'presentation', b'Conference Presentations'), (b'publication', b'Publications'), (b'photograph', b'Photographs'), (b'course', b'Course Materials'), (b'tool', b'Tools'), (b'video', b'Videos'), (b'outreach', b'Outreach Materials')])),
+                ('content_type', models.CharField(max_length=40, choices=[(b'academicprogram', b'Academic Program'), (b'casestudy', b'Case Study'), (b'center', b'Research Center & Institute'), (b'presentation', b'Conference Presentation'), (b'publication', b'Publication'), (b'photograph', b'Photograph'), (b'course', b'Course Material'), (b'tool', b'Tool'), (b'video', b'Video'), (b'outreach', b'Outreach Material')])),
                 ('title', models.CharField(max_length=500)),
                 ('description', models.TextField(null=True, blank=True)),
                 ('keywords', models.TextField(null=True, blank=True)),
@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
                 ('num_students', models.PositiveIntegerField(null=True, verbose_name=b'Approximate number of students completing program annually', blank=True)),
                 ('distance', models.CharField(blank=True, max_length=20, null=True, verbose_name=b'Distance Education', choices=[(b'local', b'Local Only'), (b'distance', b'Distance Education'), (b'both', b'Both')])),
                 ('commitment', models.CharField(blank=True, max_length=20, null=True, verbose_name=b'Commitment', choices=[(b'full', b'Full-Time'), (b'part', b'Part-Time'), (b'both', b'Both')])),
-                ('_type', models.ForeignKey(blank=True, to='metadata.ProgramType', null=True)),
+                ('program_type', models.ForeignKey(verbose_name=b'Program Type', blank=True, to='metadata.ProgramType', null=True)),
             ],
             options={
                 'abstract': False,
@@ -109,7 +109,7 @@ class Migration(migrations.Migration):
                 ('release_date', models.DateField(null=True, blank=True)),
                 ('publisher', models.CharField(max_length=200, null=True, blank=True)),
                 ('periodical_name', models.CharField(max_length=200, null=True, blank=True)),
-                ('_type', models.CharField(blank=True, max_length=40, null=True, choices=[(b'book', b'Book'), (b'book chapter', b'Book Chapter'), (b'journal article', b'Journal Article'), (b'news', b'News or Magazine Article'), (b'blog', b'Blog Article'), (b'report', b'Report (Non-Student)'), (b'thesis', b'Student Thesis/Dissertation'), (b'other', b'Other Student Research Paper')])),
+                ('_type', models.CharField(blank=True, max_length=40, null=True, verbose_name=b'Type of Material', choices=[(b'book', b'Book'), (b'book chapter', b'Book Chapter'), (b'journal article', b'Journal Article'), (b'news', b'News or Magazine Article'), (b'blog', b'Blog Article'), (b'report', b'Report (Non-Student)'), (b'thesis', b'Student Thesis/Dissertation'), (b'other', b'Other Student Research Paper')])),
                 ('cover_image', models.ImageField(null=True, upload_to=b'', blank=True)),
                 ('affirmation', models.BooleanField(default=False)),
                 ('institution', models.ForeignKey(blank=True, to='metadata.InstitutionalOffice', null=True)),
@@ -137,22 +137,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='contenttype',
             name='disciplines',
-            field=models.ManyToManyField(to='metadata.AcademicDiscipline', blank=True),
+            field=models.ManyToManyField(to='metadata.AcademicDiscipline', verbose_name=b'Academic Disciplines', blank=True),
         ),
         migrations.AddField(
             model_name='contenttype',
             name='organizations',
-            field=models.ManyToManyField(to='issdjango.Organizations', blank=True),
-        ),
-        migrations.AddField(
-            model_name='contenttype',
-            name='program_type',
-            field=models.ForeignKey(blank=True, to='metadata.ProgramType', null=True),
+            field=models.ManyToManyField(to='iss.Organization', verbose_name=b'Organizations', blank=True),
         ),
         migrations.AddField(
             model_name='contenttype',
             name='topics',
-            field=models.ManyToManyField(to='metadata.SustainabilityTopic', blank=True),
+            field=models.ManyToManyField(to='metadata.SustainabilityTopic', verbose_name=b'Sustainability Topics', blank=True),
         ),
         migrations.AddField(
             model_name='author',
@@ -162,6 +157,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='author',
             name='organization',
-            field=models.ForeignKey(blank=True, to='issdjango.Organizations', null=True),
+            field=models.ForeignKey(blank=True, to='iss.Organization', null=True),
         ),
     ]
