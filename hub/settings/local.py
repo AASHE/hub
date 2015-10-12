@@ -12,7 +12,7 @@ ALLOWED_HOSTS = ('*',)
 
 SECRET_KEY = os.environ.get('SECRET_KEY', None)
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', False)  # Set env var to 1
 
 ADMINS = (
     ('Benjamin Stookey', 'ben@aashe.org'),
@@ -25,6 +25,13 @@ DATABASES = {
     'default': dj_database_url.config(),  # uses DATABASE_URL
     # 'iss': dj_database_url.config(os.environ.get('ISS_DB_URL')),
 }
+
+# aasheauth
+AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
+AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']
+AASHE_DRUPAL_KEY_DOMAIN = os.environ['AASHE_DRUPAL_KEY_DOMAIN']
+AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
+AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
 
 # Enable debug logging
 # LOGGING['loggers']['hub']['level'] = 'DEBUG'
