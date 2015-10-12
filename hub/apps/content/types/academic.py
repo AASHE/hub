@@ -17,7 +17,7 @@ class AcademicProgram(ContentType):
         ('both', 'Both'),
     )
 
-    _type = models.ForeignKey(ProgramType, blank=True, null=True, verbose_name='Program Type')
+    program_type = models.ForeignKey(ProgramType, blank=True, null=True, verbose_name='Program Type')
     outcomes = models.TextField('Learning Outcomes', blank=True, null=True)
     founded = models.PositiveIntegerField(blank=True, null=True)
     completion = models.CharField('Expected completion time', max_length=20, blank=True, null=True)
