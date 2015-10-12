@@ -1,12 +1,14 @@
+dj-database-url
 django==1.8.4
 django-model-utils==2.3.1
 django-filter==0.11.0
 django-tables2==1.0.4
 django-flat-theme==1.1.1
+django-s3-folder-storage==0.3
+gunicorn
 
 mysql-python
 
-# Load manually and install via -e
-#
-# https://github.com/AASHE/aashe-auth/archive/migrations.zip
-# https://github.com/AASHE/issdjango/archive/migrations.zip
+-e git+https://2e5f11c1b9f8882f92f333df3f0516e64e2ac61b:x-oauth-basic@github.com/AASHE/aashe-auth.git#egg=aashe_auth
+-e git+https://2e5f11c1b9f8882f92f333df3f0516e64e2ac61b:x-oauth-basic@github.com/AASHE/issdjango.git#egg=issdjango
+-e git+https://2e5f11c1b9f8882f92f333df3f0516e64e2ac61b:x-oauth-basic@github.com/AASHE/iss.git#egg=iss
