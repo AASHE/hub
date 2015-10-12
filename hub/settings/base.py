@@ -39,7 +39,7 @@ INSTALLED_APPS = (
 
     'django_tables2',
 
-    'aashe.aasheauth',
+    # 'aashe.aasheauth',
     # 'issdjango',
     'iss',
     's3_folder_storage',
