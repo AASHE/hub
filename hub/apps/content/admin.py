@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 
 from .models import Author, Website, Image, File, ContentType
 from . import types
@@ -47,7 +48,8 @@ class AllContentTypesAdmin(admin.ModelAdmin):
 
     def object_link(self, obj):
         return '<a href="{}">{} </a>'.format(
-            getattr(obj, obj.content_type).pk,
+            reverse('admin:content_{}_change'.format(obj.content_type),
+                    args=[getattr(obj, obj.content_type).pk]),
             obj.title,
         )
     object_link.allow_tags = True
