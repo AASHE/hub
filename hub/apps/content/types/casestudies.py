@@ -1,5 +1,4 @@
 from django.db import models
-from model_utils import Choices
 
 from ..models import ContentType
 from ...metadata.models import ProgramType, InstitutionalOffice

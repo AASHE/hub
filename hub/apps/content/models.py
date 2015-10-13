@@ -127,3 +127,5 @@ class Image(TimeStampedModel):
 
 from .types.academic import AcademicProgram
 from .types.publications import Publication
+from .types.casestudies import CaseStudy
+from .types.centers import CenterAndInstitute
