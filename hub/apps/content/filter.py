@@ -3,6 +3,9 @@ import django_tables2 as tables
 
 from .models import ContentType
 
+class SearchResultFilter(filters.FilterSet):
+    pass
+
 class ContentTypesFilter(filters.FilterSet):
     """
     The base filter which works across all content types, using fields which
