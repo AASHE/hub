@@ -1,20 +1,109 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="/static/css/base.css" rel="stylesheet" media="screen">
-  </head>
-  <body>
+{% load static from staticfiles %}
 
-    <div class="container">
-        <h1><a href="{% url "browse-home" %}">AASHE Hub</a></h1>
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+
+
+<head>
+{% block head %}
+    <title>Unify - Responsive Website Template</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="{% block meta_description %}{% endblock %}" name="description"/>
+    <meta content="" name="author"/>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico"/>
+
+    <!-- Web Fonts -->
+    <link rel="shortcut" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600&subset=cyrillic,latin"/>
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/bootstrap/css/bootstrap.min.css" %}"/>
+    <link rel="stylesheet" href="{% static "vendor/theme/css/style.css" %}"/>
+
+    <!-- CSS Header and Footer -->
+    <link rel="stylesheet" href="{% static "vendor/theme/css/headers/header-default.css" %}"/>
+    <link rel="stylesheet" href="{% static "vendor/theme/css/footers/footer-v1.css" %}"/>
+
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/animate.css" %}"/>
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/line-icons/line-icons.css" %}"/>
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/font-awesome/css/font-awesome.css" %}"/>
+
+    <!-- CSS Theme -->
+    <link rel="stylesheet" href="{% static "vendor/theme/css/theme-colors/default.css" %}"/>
+
+    <!-- CSS Customization -->
+    <link rel="stylesheet" href="{% static "css/base.css" %}"/>
+{% endblock %}
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="container header">
+        <div class="topbar">
+            <h1>
+                <a href="{% url "browse-home" %}">
+                    <strong>AASHE</strong> Campus Sustainability Hub
+                </a>
+            </h1>
+            <div class="menu">
+                <a href="#">My Account</a> |
+                <a href="#">Log out</a>
+                <form class="search" method="GET" action="">
+                    <input type="text" name="q" placeholder="Search the Hub"/>
+                    <input type="submit" value="Go"/>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container content">
         {% block page %}{% endblock %}
     </div>
+    <div class="container footer">
+        <p>All Material Copyright © 2005–2015 Association for the Advancement of
+            Sustainability in Higher Education. AASHE reserves the right to control
+            the reproduction and use of all material posted on this website.</p>
 
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="{{ STATIC_URL }}vendor/bootstrap/js/bootstrap.min.js"></script>
-  </body>
+        <p>
+            2401 Walnut Street Suite 102 Philadelphia, PA 19103 - t/f: 888-347-9997<br/>
+            For problems or questions about this site please <a href="http://www.aashe.org/contact">contact the webmaster</a><br/>
+            <a href="http://www.aashe.org/privacy-policy">Privacy Policy</a>
+        </p>
+    </div>
+</div>
+
+{% block javascript %}
+<!-- JS Global Compulsory -->
+<script src="{% static "vendor/theme/plugins/jquery/jquery.min.js" %}"></script>
+<script src="{% static "vendor/theme/plugins/jquery/jquery-migrate.min.js" %}"></script>
+<script src="{% static "vendor/theme/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
+
+<!-- JS Implementing Plugins -->
+<script src="{% static "vendor/theme/plugins/back-to-top.js" %}"></script>
+<script src="{% static "vendor/theme/plugins/smoothScroll.js" %}"></script>
+
+<!-- JS Customization -->
+<script type="text/javascript" src="{% static "vendor/theme/js/custom.js" %}"></script>
+
+<!-- JS Page Level -->
+<script src="{% static "vendor/theme/js/app.js" %}"></script>
+<script>
+jQuery(document).ready(function() {
+    App.init();
+});
+</script>
+
+<!--[if lt IE 9]>
+    <script src="{% static "vendor/theme/plugins/respond.js" %}"></script>
+    <script src="{% static "vendor/theme/plugins/html5shiv.js" %}"></script>
+    <script src="{% static "vendor/theme/plugins/placeholder-IE-fixes.js" %}"></script>
+<![endif]-->
+{% endblock %}
+</body>
 </html>
