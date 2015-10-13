@@ -106,8 +106,9 @@ class Website(TimeStampedModel):
 class File(TimeStampedModel):
     ct = models.ForeignKey(ContentType)
     label = models.CharField(max_length=100, blank=True, null=True)
-    _file = models.FileField(help_text="The following files formats are "
+    item = models.FileField(help_text="The following files formats are "
         "aceptable: PDF, Excel, Word, PPT...", blank=True, null=True)
+    affirmation = models.BooleanField('Affirmation of Ownership', default=False)
 
     class Meta:
         verbose_name = 'Additional File'
