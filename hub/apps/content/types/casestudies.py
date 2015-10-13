@@ -1,7 +1,7 @@
 from django.db import models
 
-from ..models import ContentType
 from ...metadata.models import ProgramType, InstitutionalOffice
+from ..models import ContentType
 from .strings import AFFIRMATION
 
 

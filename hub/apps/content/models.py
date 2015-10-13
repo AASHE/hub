@@ -27,7 +27,7 @@ class ContentType(TimeStampedModel):
         ('presentation', 'Conference Presentation'),
         ('publication', 'Publication'),
         ('photograph', 'Photograph'),
-        ('course', 'Course Material'),
+        ('material', 'Course Material'),
         ('tool', 'Tool'),
         ('video', 'Video'),
         ('outreach', 'Outreach Material'),
@@ -132,3 +132,6 @@ from .types.centers import CenterAndInstitute
 from .types.presentations import Presentation
 from .types.photographs import Photograph
 from .types.courses import Material
+from .types.videos import Video
+from .types.tools import Tool
+from .types.outreach import OutreachMaterial

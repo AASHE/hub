@@ -29,4 +29,4 @@ class Material(ContentType):
 
     @property
     def class_content_type(self):
-        return self.CONTENT_TYPES.course
+        return self.CONTENT_TYPES.material

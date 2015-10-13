@@ -3,14 +3,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 from .models import Author, Website, Image, File, ContentType
-
-from .types.academic import AcademicProgram
-from .types.publications import Publication
-from .types.casestudies import CaseStudy
-from .types.centers import CenterAndInstitute
-from .types.presentations import Presentation
-from .types.photographs import Photograph
-from .types.courses import Material
+from . import types
 
 
 class AuthorInline(admin.TabularInline):
@@ -62,10 +55,13 @@ class AllContentTypesAdmin(admin.ModelAdmin):
 
 admin.site.register(ContentType, AllContentTypesAdmin)
 
-admin.site.register(AcademicProgram, BaseContentTypeAdmin)
-admin.site.register(Publication, BaseContentTypeAdmin)
-admin.site.register(CaseStudy, BaseContentTypeAdmin)
-admin.site.register(CenterAndInstitute, BaseContentTypeAdmin)
-admin.site.register(Presentation, BaseContentTypeAdmin)
-admin.site.register(Photograph, BaseContentTypeAdmin)
-admin.site.register(Material, BaseContentTypeAdmin)
+admin.site.register(types.academic.AcademicProgram, BaseContentTypeAdmin)
+admin.site.register(types.publications.Publication, BaseContentTypeAdmin)
+admin.site.register(types.casestudies.CaseStudy, BaseContentTypeAdmin)
+admin.site.register(types.centers.CenterAndInstitute, BaseContentTypeAdmin)
+admin.site.register(types.presentations.Presentation, BaseContentTypeAdmin)
+admin.site.register(types.photographs.Photograph, BaseContentTypeAdmin)
+admin.site.register(types.courses.Material, BaseContentTypeAdmin)
+admin.site.register(types.tools.Tool, BaseContentTypeAdmin)
+admin.site.register(types.videos.Video, BaseContentTypeAdmin)
+admin.site.register(types.outreach.OutreachMaterial, BaseContentTypeAdmin)
