@@ -33,4 +33,4 @@ class Presentation(ContentType):
 
     @property
     def class_content_type(self):
-        return self.CONTENT_TYPES.publication
+        return self.CONTENT_TYPES.presentation

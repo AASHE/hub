@@ -130,3 +130,5 @@ from .types.publications import Publication
 from .types.casestudies import CaseStudy
 from .types.centers import CenterAndInstitute
 from .types.presentations import Presentation
+from .types.photographs import Photograph
+from .types.courses import Material
