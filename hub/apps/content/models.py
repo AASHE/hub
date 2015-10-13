@@ -109,6 +109,10 @@ class File(TimeStampedModel):
     _file = models.FileField(help_text="The following files formats are "
         "aceptable: PDF, Excel, Word, PPT...", blank=True, null=True)
 
+    class Meta:
+        verbose_name = 'Additional File'
+        verbose_name_plural = 'Additional Files'
+
     def __str__(self):
         return self.label
 
@@ -120,6 +124,10 @@ class Image(TimeStampedModel):
     credit = models.CharField(max_length=500, blank=True, null=True)
     image = models.ImageField(help_text="The following files formats are "
         "acceptable: JPEG, PNG, TIFF...")
+
+    class Meta:
+        verbose_name = 'Additional Image'
+        verbose_name_plural = 'Additional Images'
 
     def __str__(self):
         return self.caption
