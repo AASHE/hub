@@ -1,22 +1,41 @@
-h1, h2 {
-    margin: 2em 0 0 0;
-    font-family: HelveticaNeue-Light;
-    font-weight: 300;
+
+/* --------------------------------------------------------------------
+    Header
+-------------------------------------------------------------------- */
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.topbar h1 {
+    margin: 0;
+    padding: 0;
+    min-height: 120px;
+    background-image: url(../img/logo.png);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    padding: 100px 0 0 170px;
+}
+
+.topbar h1 a:link,
+.topbar h1 a:visited {
     color: gray;
-    border-bottom: 2px solid #ccc;
 }
 
-h2 {
-    margin: 1em 0;
-    border: none;
+.topbar h1 strong {
+    display: none;
+}
+
+.topbar .menu {
+    align-self: flex-end;
 }
 
 
-
-table th,
-table td.created {
-    white-space: nowrap;
-}
+/* --------------------------------------------------------------------
+    Index
+-------------------------------------------------------------------- */
 
 .box-button {
     background-color: #5061AA;
