@@ -1,55 +1,45 @@
-
 /* --------------------------------------------------------------------
     Header
 -------------------------------------------------------------------- */
-
 .topbar {
-    display: flex;
-    justify-content: space-between;
-}
-
+  display: flex;
+  justify-content: space-between; }
 
 .topbar h1 {
-    margin: 0;
-    padding: 0;
-    min-height: 120px;
-    background-image: url(../img/logo.png);
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    padding: 100px 0 0 170px;
-}
+  margin: 0;
+  padding: 0;
+  min-height: 120px;
+  background-image: url(../img/logo.png);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  padding: 100px 0 0 170px; }
 
 .topbar h1 a:link,
 .topbar h1 a:visited {
-    color: gray;
-}
+  color: gray; }
 
 .topbar h1 strong {
-    display: none;
-}
+  display: none; }
 
 .topbar .menu {
-    align-self: flex-end;
-}
-
+  align-self: flex-end; }
 
 /* --------------------------------------------------------------------
     Index
 -------------------------------------------------------------------- */
-
 .box-button {
-    background-color: #5061AA;
-    padding: 1em 2em;
-    line-height: 4em;
-    color: white;
-    font-weight: bold;
-    font-size: 1.2em;
-    border-radius: 1em;
-    margin: 0 .5em .5em 0;
-    white-space: nowrap;
-}
+  background-color: #5061AA;
+  padding: 1em 2em;
+  line-height: 4em;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2em;
+  border-radius: 1em;
+  margin: 0 0.5em 0.5em 0;
+  white-space: nowrap; }
 
 .box-button:hover {
-    color: white;
-    box-shadow: 0 0 .4em yellow;
-}
+  color: white;
+  box-shadow: 0 0 0.4em yellow; }
+
+/*# sourceMappingURL=base.css.map */

@@ -1,0 +1,23 @@
+{
+  "name": "hub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "makecss": "./node_modules/.bin/node-sass hub/static/scss -o hub/static/css --source-map=true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AASHE/hub.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AASHE/hub/issues"
+  },
+  "homepage": "https://github.com/AASHE/hub#readme",
+  "dependencies": {
+    "node-sass": "^3.3.3"
+  }
+}

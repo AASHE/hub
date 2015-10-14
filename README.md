@@ -23,3 +23,20 @@ Load the supplied organizations:
 Create a superuser to get access to the admin:
 
     $ manage.py createsuperuser
+
+
+## Change CSS (Compile SCSS files)
+
+You have to install Node/npm, on a Mac:
+
+    $ brew install node
+
+Install the Javascript dependencies (such as sass):
+
+    $ cd hub/
+    $ npm install
+
+Make changes to the SCSS files in `hub/static/scss` and before commit compile
+them to CSS:
+
+    $ npm run makecss

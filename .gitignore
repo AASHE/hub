@@ -1,1 +1,7 @@
 hub/settings/local.py
+
+# @TODO: Do we want to keep CSS files in the repository or can we compile
+#        them on Heroku too?
+#hub/static/css/*
+
+node_modules
