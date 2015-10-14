@@ -1,11 +1,10 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
-from django_tables2 import SingleTableView
+from django.views.generic import TemplateView, ListView
 
-from ..content.filter import ContentTypesFilter, ContentTypesTable, TopicFilter
 from ..content.models import ContentType
 from ..metadata.models import SustainabilityTopic
+from .filter import ContentTypesFilter, TopicFilter
 
 
 class BaseBrowseView(TemplateView):
@@ -26,9 +25,8 @@ class HomeView(BaseBrowseView):
     template_name = 'home.html'
 
 
-class ByTopicView(SingleTableView):
+class ByTopicView(ListView):
     template_name = 'topic.html'
-    table_class = ContentTypesTable
 
     def get(self, *args, **kwargs):
         self.topic = get_object_or_404(SustainabilityTopic,
@@ -47,9 +45,8 @@ class ByTopicView(SingleTableView):
             queryset=ContentType.objects.filter())
 
 
-class ByContentTypeView(SingleTableView):
+class ByContentTypeView(ListView):
     template_name = 'type.html'
-    table_class = ContentTypesTable
 
     def get(self, *args, **kwargs):
         if not self.kwargs['type'] in dict(ContentType.CONTENT_TYPES):

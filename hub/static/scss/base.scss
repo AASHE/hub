@@ -32,6 +32,19 @@
     align-self: flex-end;
 }
 
+.filter-form {
+    label {
+        display: block;
+    }
+
+    select, input, .select2-container {
+        width: 100%;
+    }
+
+    .helptext {
+        display: none;
+    }
+}
 
 /* --------------------------------------------------------------------
     Index

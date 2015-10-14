@@ -1,7 +1,7 @@
 import django_filters as filters
 import django_tables2 as tables
 
-from .models import ContentType
+from ..content.models import ContentType
 
 class SearchResultFilter(filters.FilterSet):
     pass
@@ -23,7 +23,9 @@ class ContentTypesFilter(filters.FilterSet):
         )
 
 class TopicFilter(filters.FilterSet):
+    content_type = filters.ChoiceFilter()
     created = filters.DateRangeFilter()
+    organizations = filters.Filter()
 
     class Meta:
         model = ContentType
@@ -32,19 +34,3 @@ class TopicFilter(filters.FilterSet):
             'organizations',
             'created',
         )
-
-
-class ContentTypesTable(tables.Table):
-    title = tables.Column('Title')
-    organizations = tables.Column('Organization')
-    content_type = tables.Column('Content Type')
-    created = tables.Column('Date', )
-    topics = tables.Column('Sustainability Topics')
-
-    class Meta:
-        model = ContentType
-        fields = ('title', 'organizations', 'content_type', 'created', 'topics')
-        attrs = {'class': 'table'}
-
-    def render_topics(self, *args, **kwargs):
-        return 'foo'

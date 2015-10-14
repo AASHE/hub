@@ -24,6 +24,15 @@
 .topbar .menu {
   align-self: flex-end; }
 
+.filter-form label {
+  display: block; }
+
+.filter-form select, .filter-form input, .filter-form .select2-container {
+  width: 100%; }
+
+.filter-form .helptext {
+  display: none; }
+
 /* --------------------------------------------------------------------
     Index
 -------------------------------------------------------------------- */

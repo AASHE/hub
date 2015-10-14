@@ -8,15 +8,20 @@
 </div>
 <div class="row">
   <div class="col-md-3">
-    <form method="GET" action="">
+    <form method="GET" action="" class="filter-form">
         {{ object_list.form }}
         <input type="submit"/>
         <a href=".">Show all</a>
     </form>
   </div>
   <div class="col-md-9">
-    {% load render_table from django_tables2 %}
-    {% render_table table %}
+    <ul class="hub-results">
+    {% for obj in object_list %}
+        <li>{{ obj.title }}</li>
+    {% empty %}
+        <em>None found</em>
+    {% endfor %}
+    </ul>
   </div>
 </div>
 {% endblock %}
