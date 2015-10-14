@@ -17,6 +17,7 @@ class MetadataBaseModel(models.Model):
 
 class SustainabilityTopic(MetadataBaseModel):
     color = models.CharField('HEX Color', max_length=7, default='#ff0000')
+    slug = models.SlugField()
 
     class Meta:
         ordering = ('color', 'name',)

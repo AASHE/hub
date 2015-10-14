@@ -2,7 +2,11 @@ from django.contrib import admin
 from . import models
 
 
-admin.site.register(models.SustainabilityTopic)
+class SustainabilityTopicAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+
+admin.site.register(models.SustainabilityTopic, SustainabilityTopicAdmin)
 admin.site.register(models.AcademicDiscipline)
 admin.site.register(models.InstitutionalOffice)
 admin.site.register(models.ProgramType)

@@ -2,12 +2,12 @@
 
 {% block page %}
 <div class="row">
-  <div class="span12">
+  <div class="col-md-12">
 
     <h2>Browse by Topic</h2>
 
     {% for topic in topic_list %}
-        <a href="{% url "browse-topic" topic=topic.pk %}" class="box-button" style="background-color: {{ topic.color }}">{{ topic }}</a>
+        <a href="{% url "browse-topic" topic=topic.slug %}" class="box-button" style="background-color: {{ topic.color }}">{{ topic }}</a>
     {% endfor %}
 
     <h2>Browse by Content Type</h2>

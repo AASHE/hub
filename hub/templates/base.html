@@ -4,11 +4,9 @@
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
-
-
 <head>
 {% block head %}
-    <title>Unify - Responsive Website Template</title>
+    <title>{% block title %}AASHE Campus Sustainability Hub{% endblock %}</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -16,29 +14,25 @@
     <meta content="{% block meta_description %}{% endblock %}" name="description"/>
     <meta content="" name="author"/>
 
-    <!-- Favicon -->
     <link rel="shortcut icon" href="favicon.ico"/>
 
-    <!-- Web Fonts -->
     <link rel="shortcut" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600&subset=cyrillic,latin"/>
 
-    <!-- CSS Global Compulsory -->
+    <!-- CSS Theme -->
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/bootstrap/css/bootstrap.min.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/css/style.css" %}"/>
-
-    <!-- CSS Header and Footer -->
     <link rel="stylesheet" href="{% static "vendor/theme/css/headers/header-default.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/css/footers/footer-v1.css" %}"/>
-
-    <!-- CSS Implementing Plugins -->
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/animate.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/line-icons/line-icons.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/font-awesome/css/font-awesome.css" %}"/>
-
-    <!-- CSS Theme -->
     <link rel="stylesheet" href="{% static "vendor/theme/css/theme-colors/default.css" %}"/>
 
-    <!-- CSS Customization -->
+    <!-- CSS Theme -->
+    <link rel="stylesheet" href="{% static "vendor/select2/select2.css" %}"/>
+    <link rel="stylesheet" href="{% static "vendor/select2/select2-bootstrap.css" %}"/>
+
+    <!-- CSS App Level -->
     <link rel="stylesheet" href="{% static "css/base.css" %}"/>
 {% endblock %}
 </head>
@@ -53,7 +47,7 @@
                 </a>
             </h1>
             <div class="menu">
-                <a href="#">My Account</a> |
+                <a href="http://www.aashe.org/user">My Account</a> |
                 <a href="#">Log out</a>
                 <form class="search" method="GET" action="">
                     <input type="text" name="q" placeholder="Search the Hub"/>
@@ -79,25 +73,20 @@
 </div>
 
 {% block javascript %}
-<!-- JS Global Compulsory -->
+<!-- JS Theme -->
 <script src="{% static "vendor/theme/plugins/jquery/jquery.min.js" %}"></script>
 <script src="{% static "vendor/theme/plugins/jquery/jquery-migrate.min.js" %}"></script>
 <script src="{% static "vendor/theme/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
-
-<!-- JS Implementing Plugins -->
 <script src="{% static "vendor/theme/plugins/back-to-top.js" %}"></script>
 <script src="{% static "vendor/theme/plugins/smoothScroll.js" %}"></script>
-
-<!-- JS Customization -->
-<script type="text/javascript" src="{% static "vendor/theme/js/custom.js" %}"></script>
-
-<!-- JS Page Level -->
+<script src="{% static "vendor/theme/js/custom.js" %}"></script>
 <script src="{% static "vendor/theme/js/app.js" %}"></script>
-<script>
-jQuery(document).ready(function() {
-    App.init();
-});
-</script>
+
+<!-- JS Plugins -->
+<script src="{% static "vendor/select2/select2.min.js" %}"></script>
+
+<!-- JS App Level -->
+<script src="{% static "js/base.js" %}"></script>
 
 <!--[if lt IE 9]>
     <script src="{% static "vendor/theme/plugins/respond.js" %}"></script>
