@@ -23,7 +23,6 @@ class ContentTypesFilter(filters.FilterSet):
         )
 
 class TopicFilter(filters.FilterSet):
-    content_type = filters.ChoiceFilter()
     created = filters.DateRangeFilter()
     organizations = filters.Filter()
 
