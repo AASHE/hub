@@ -1,9 +1,5 @@
 """
-Example settings for local development
-
-Use this file as a base for your local development settings and copy
-it to hub/settings/local.py. It should not be checked into
-your code repository.
+HEROKU specific settings
 """
 from .base import *   # pylint: disable=W0614,W0401
 import os
@@ -26,12 +22,34 @@ DATABASES = {
     # 'iss': dj_database_url.config(os.environ.get('ISS_DB_URL')),
 }
 
+# ==============================================================================
 # aasheauth
+# ==============================================================================
 AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
 AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']
 AASHE_DRUPAL_KEY_DOMAIN = os.environ['AASHE_DRUPAL_KEY_DOMAIN']
 AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
 AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
+
+# ==============================================================================
+# S3 Media Storage
+# ==============================================================================
+INSTALLED_APPS += ('s3_folder_storage',)
+
+DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
+DEFAULT_S3_PATH = "uploads"
+STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
+STATIC_S3_PATH = "static"
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", None)
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", None)
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
+
+MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
+MEDIA_URL = '//s3.amazonaws.com/%s/uploads/' % AWS_STORAGE_BUCKET_NAME
+STATIC_ROOT = "/%s/" % STATIC_S3_PATH
+STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+
 
 # Enable debug logging
 # LOGGING['loggers']['hub']['level'] = 'DEBUG'
