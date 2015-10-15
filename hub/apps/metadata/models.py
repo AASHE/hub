@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+from iss.models import Organization as ISSOrganization
+
 
 @python_2_unicode_compatible
 class MetadataBaseModel(models.Model):
@@ -51,3 +53,9 @@ class Country(MetadataBaseModel):
         ordering = ('name',)
         verbose_name = 'Country'
         verbose_name_plural = 'Countries'
+
+
+
+class Organization(ISSOrganization):
+    class Meta:
+        proxy = True

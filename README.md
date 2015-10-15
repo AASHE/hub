@@ -18,6 +18,7 @@ Install the requirements and create a blank database, migrate all the tables:
 
     $ pip install -e requirements.txt
     $ mysql -uroot -e'create database hub;'
+    $ manage.py migrate auth # Auth first since 'aasheauth' needs it
     $ manage.py migrate
 
 Load the supplied organizations:

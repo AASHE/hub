@@ -3,9 +3,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
 
-from iss.models import Organization
-from ..metadata.models import SustainabilityTopic, AcademicDiscipline
-
 
 @python_2_unicode_compatible
 class ContentType(TimeStampedModel):
@@ -37,9 +34,9 @@ class ContentType(TimeStampedModel):
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
-    organizations = models.ManyToManyField(Organization, blank=True, verbose_name='Organizations')
-    topics = models.ManyToManyField(SustainabilityTopic, blank=True, verbose_name='Sustainability Topics')
-    disciplines = models.ManyToManyField(AcademicDiscipline, blank=True, verbose_name='Academic Disciplines')
+    organizations = models.ManyToManyField('metadata.Organization', blank=True, verbose_name='Organizations')
+    topics = models.ManyToManyField('metadata.SustainabilityTopic', blank=True, verbose_name='Sustainability Topics')
+    disciplines = models.ManyToManyField('metadata.AcademicDiscipline', blank=True, verbose_name='Academic Disciplines')
 
     class Meta:
         verbose_name = 'Genric Content Type'
@@ -85,7 +82,7 @@ class Author(TimeStampedModel):
     is_author = models.BooleanField("I am an author", default=False)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
-    organization = models.ForeignKey(Organization, blank=True, null=True)
+    organization = models.ForeignKey('metadata.Organization', blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
