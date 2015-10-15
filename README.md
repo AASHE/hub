@@ -17,8 +17,18 @@ Copy the sample settings file and adjust the settings according to your needs:
 Install the requirements and create a blank database, migrate all the tables:
 
     $ pip install -e requirements.txt
+
+Switch the branch of aashe-auth to 'migrations' which support Django 1.7+
+native migrations:
+
+    $ cdvirtualenv src/aashe-auth
+    $ git checkout migrations
+
+Proceed with the actual project setup:
+
     $ mysql -uroot -e'create database hub;'
-    $ manage.py migrate auth # Auth first since 'aasheauth' needs it
+    $ cd hub
+    $ manage.py migrate auth
     $ manage.py migrate
 
 Load the supplied organizations:
