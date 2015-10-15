@@ -33,3 +33,4 @@ We're using two buildpacks to ensure that we can run the node.js builds as well 
     from django.contrib.auth.models import User
     u = User.objects.get(email='<your email>')
     u.is_superuser = True
+    u.save()
