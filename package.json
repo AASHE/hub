@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "makecss": "./node_modules/.bin/node-sass hub/static/scss -o hub/static/css --source-map=true",
-    "watchcss": "./node_modules/.bin/node-sass hub/static/scss -o hub/static/css --source-map=true --watch"
+    "watchcss": "./node_modules/.bin/node-sass hub/static/scss -o hub/static/css --source-map=true --watch",
+    "postinstall": "./node_modules/.bin/node-sass hub/static/scss -o hub/static/css"
   },
   "repository": {
     "type": "git",
