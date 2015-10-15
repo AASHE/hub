@@ -55,7 +55,44 @@ class Country(MetadataBaseModel):
         verbose_name_plural = 'Countries'
 
 
+class OrganizationManager(models.Manager):
+    def country_list(self):
+        """
+        Returns a list of of Choices of all countries in the ISS organization
+        database, **where the ISO code is set**. Some records don't have it set.
+        """
+        return (self.exclude(country_iso='')
+                    .order_by('country')
+                    .values_list('country_iso', 'country')
+                    .distinct())
 
+    def in_fte_range(self, min=None, max=None):
+        """
+        Returns all organizations within a given min/max enrollment range.
+        """
+        if min and max:
+            return self.filter(
+                enrollment_fte__gte=min,
+                enrollment_fte__lte=max
+            )
+        elif min:
+            return self.filter(enrollment_fte__gte=min)
+        elif max:
+            return self.filter(enrollment_fte__lte=max)
+
+
+@python_2_unicode_compatible
 class Organization(ISSOrganization):
+    """
+    Proxy model to extend the existing ISS model.
+    """
+    objects = OrganizationManager()
+
     class Meta:
         proxy = True
+
+    def __str__(self):
+        if self.state:
+            return '{}, {}'.format(self.org_name, self.state)
+        else:
+            return self.org_name
