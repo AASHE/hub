@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import migrations, models
+from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
@@ -17,6 +17,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
             ],
             options={
+                'ordering': ('name',),
                 'verbose_name': 'Academic Discipline',
                 'verbose_name_plural': 'Academic Disciplines',
             },
@@ -28,6 +29,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
             ],
             options={
+                'ordering': ('name',),
                 'verbose_name': 'Country',
                 'verbose_name_plural': 'Countries',
             },
@@ -39,6 +41,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
             ],
             options={
+                'ordering': ('name',),
                 'verbose_name': 'Institutional Office',
                 'verbose_name_plural': 'Institutional Offices',
             },
@@ -50,6 +53,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
             ],
             options={
+                'ordering': ('name',),
                 'verbose_name': 'Program Type',
                 'verbose_name_plural': 'Program Types',
             },
@@ -59,8 +63,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100)),
+                ('color', models.CharField(default='#ff0000', max_length=7, verbose_name='HEX Color')),
             ],
             options={
+                'ordering': ('color', 'name'),
                 'verbose_name': 'Sustainability Topic',
                 'verbose_name_plural': 'Sustainability Topics',
             },

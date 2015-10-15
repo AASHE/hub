@@ -3,7 +3,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
 
-from issdjango.models import Organizations
+from iss.models import Organization
 from ..metadata.models import SustainabilityTopic, AcademicDiscipline
 
 
@@ -37,7 +37,7 @@ class ContentType(TimeStampedModel):
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
-    organizations = models.ManyToManyField(Organizations, blank=True, verbose_name='Organizations')
+    organizations = models.ManyToManyField(Organization, blank=True, verbose_name='Organizations')
     topics = models.ManyToManyField(SustainabilityTopic, blank=True, verbose_name='Sustainability Topics')
     disciplines = models.ManyToManyField(AcademicDiscipline, blank=True, verbose_name='Academic Disciplines')
 
@@ -85,7 +85,7 @@ class Author(TimeStampedModel):
     is_author = models.BooleanField("I am an author", default=False)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
-    organization = models.ForeignKey(Organizations, blank=True, null=True)
+    organization = models.ForeignKey(Organization, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
