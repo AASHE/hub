@@ -33,7 +33,7 @@ Proceed with the actual project setup:
 
 Load the supplied organizations:
 
-    $ mysql -uroot hub < ~/Desktop/iss10-6-15.sql
+    $ mysql -uroot hub < iss_organization.sql
 
 Create a superuser to get access to the admin:
 
