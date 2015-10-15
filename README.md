@@ -8,7 +8,11 @@
 
 # The Campus Sustainability Hub
 
-## Installation, Quick'n'dirty
+## Installation, for local development
+
+Copy the sample settings file and adjust the settings according to your needs:
+
+    $ cp hub/settings/local.py.example hub/settings/local.py
 
 Install the requirements and create a blank database, migrate all the tables:
 

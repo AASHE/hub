@@ -193,3 +193,10 @@ LOGGING = {
 # ==============================================================================
 # Third party app settings
 # ==============================================================================
+
+# AASHE Auth
+AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
+AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']
+AASHE_DRUPAL_KEY_DOMAIN = os.environ['AASHE_DRUPAL_KEY_DOMAIN']
+AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
+AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']

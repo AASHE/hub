@@ -11,6 +11,11 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hub.settings.local")
+# Use the local settings file if one is present, otherwise the server.
+try:
+    import hub.settings.local
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hub.settings.local")
+except ImportError:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hub.settings.server")
 
 application = get_wsgi_application()

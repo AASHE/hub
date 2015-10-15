@@ -26,19 +26,15 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost',
     },
-    'iss': {
-        'NAME': 'iss',
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-    }
+    #'iss': {
+    #    'NAME': 'iss',
+    #    'ENGINE': 'django.db.backends.mysql',
+    #    'USER': 'root',
+    #    'PASSWORD': '',
+    #    'HOST': 'localhost',
+    #}
 }
 
 # Enable debug logging
 #LOGGING['loggers']['hub']['level'] = 'DEBUG'
 #LOGGING['loggers']['django']['level'] = 'DEBUG'
-
-# Very custom url and wsgi settings
-#ROOT_URLCONF = 'hub.urls.local'
-#WSGI_APPLICATION = 'hub.wsgi.local.application'
