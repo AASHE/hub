@@ -1,9 +1,9 @@
 jQuery(document).ready(function() {
     App.init();
 
-$('select:not(#id_organizations)').select2({
-    minimumResultsForSearch: 20
-});
+// $('select:not(#id_organizations)').select2({
+//     minimumResultsForSearch: 20
+// });
 
 $("#id_organizations").select2({
   ajax: {

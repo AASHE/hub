@@ -16,7 +16,10 @@
   </div>
   <div class="col-md-9">
     {% for obj in object_list %}
-        <li>{{ obj.title }}</li>
+        <li>
+            <h3>{{ obj.title }}</h3>
+            {% for c in obj.organizations.all %}{{ c.country }} {% endfor %}
+        </li>
     {% empty %}
         <em>None found</em>
     {% endfor %}

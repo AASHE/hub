@@ -18,7 +18,7 @@ class Material(ContentType):
     )
 
     document = models.FileField(help_text="The following files formats are "
-        "acceptable: JPEG, PNG, TIFF...")
+        "acceptable: JPEG, PNG, TIFF...", blank=True, null=True)
     material_type = models.CharField(max_length=50, blank=True, null=True,
         choices=MATERIAL_TYPE_CHOICES)
     course_name = models.CharField(max_length=500, blank=True, null=True)

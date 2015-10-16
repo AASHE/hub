@@ -7,12 +7,12 @@
     <h2>Browse by Topic</h2>
 
     {% for topic in topic_list %}
-        <a href="{% url "browse-topic" topic=topic.slug %}" class="box-button" style="background-color: {{ topic.color }}">{{ topic }}</a>
+        <a href="{% url "browse" topic=topic.slug %}" class="box-button" style="background-color: {{ topic.color }}">{{ topic }}</a>
     {% endfor %}
 
     <h2>Browse by Content Type</h2>
     {% for type, label in content_type_list.items %}
-        <a href="{% url "browse-type" type=type %}" class="box-button" >{{ label }}</a>
+        <a href="{% url "browse" %}?ct={{ type }}" class="box-button" >{{ label }}</a>
     {% endfor %}
 
   </div>

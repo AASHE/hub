@@ -6,8 +6,8 @@ import hub.apps.api.views as api
 
 urlpatterns = [
     url(r'^$', browse.HomeView.as_view(), name='browse-home'),
-    url(r'^by-topic/(?P<topic>[\w\-]+)/$', browse.ByTopicView.as_view(), name='browse-topic'),
-    url(r'^by-type/(?P<type>[\w\-]+)/$', browse.ByContentTypeView.as_view(), name='browse-type'),
+    url(r'^browse/$', browse.BrowseView.as_view(), name='browse'),
+    url(r'^browse/(?P<topic>[\w\-]+)/$', browse.BrowseView.as_view(), name='browse'),
 
     url(r'^api/organizations/$', api.organizations),
 

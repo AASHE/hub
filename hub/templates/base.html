@@ -49,8 +49,8 @@
             <div class="menu">
                 <a href="http://www.aashe.org/user">My Account</a> |
                 <a href="#">Log out</a>
-                <form class="search" method="GET" action="">
-                    <input type="text" name="q" placeholder="Search the Hub"/>
+                <form class="search" method="GET" action="{% url "browse" %}">
+                    <input type="text" name="search" placeholder="Search the Hub"/>
                     <input type="submit" value="Go"/>
                 </form>
             </div>

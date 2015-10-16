@@ -76,6 +76,7 @@ class ContentType(TimeStampedModel):
     def all_topics(self):
         return ', '.join(self.topics.all())
 
+
 @python_2_unicode_compatible
 class Author(TimeStampedModel):
     ct = models.ForeignKey(ContentType)
