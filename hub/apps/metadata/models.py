@@ -8,7 +8,7 @@ from iss.models import Organization as ISSOrganization
 
 @python_2_unicode_compatible
 class MetadataBaseModel(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     class Meta:
         abstract = True
@@ -46,13 +46,6 @@ class ProgramType(MetadataBaseModel):
         ordering = ('name',)
         verbose_name = 'Program Type'
         verbose_name_plural = 'Program Types'
-
-
-class Country(MetadataBaseModel):
-    class Meta:
-        ordering = ('name',)
-        verbose_name = 'Country'
-        verbose_name_plural = 'Countries'
 
 
 class OrganizationManager(models.Manager):

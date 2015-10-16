@@ -7,6 +7,10 @@ class SustainabilityTopicAdmin(admin.ModelAdmin):
 
 
 class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'country')
+    search_fields = ('org_name', 'country', 'state')
+    actions = None
+
     def get_readonly_fields(self, request, obj=None):
         """Treat all fields as read-only"""
         return [i.name for i in obj._meta.fields]
@@ -15,7 +19,7 @@ class OrganizationAdmin(admin.ModelAdmin):
         """Nobody is allowed to add records."""
         return False
 
-    def has_delete_permission(self, request, obj):
+    def has_delete_permission(self, request, obj=None):
         """Nobody is allowed to add records."""
         return False
 
@@ -23,5 +27,4 @@ admin.site.register(models.SustainabilityTopic, SustainabilityTopicAdmin)
 admin.site.register(models.AcademicDiscipline)
 admin.site.register(models.InstitutionalOffice)
 admin.site.register(models.ProgramType)
-admin.site.register(models.Country)
 admin.site.register(models.Organization, OrganizationAdmin)
