@@ -24,6 +24,10 @@
     {% empty %}
         <em>None found</em>
     {% endfor %}
+
+        {% if content_type %}
+            <a href="{% url "add" ct=content_type.slug %}">Add resource</a>
+        {% endif %}
   </div>
 </div>
 {% endblock %}

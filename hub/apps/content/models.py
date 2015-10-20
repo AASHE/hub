@@ -40,8 +40,7 @@ class ContentType(TimeStampedModel):
         """
         # Kinda funky dict-find-by-value
         self.content_type = CONTENT_TYPES.keys()[
-            CONTENT_TYPES.values().index(self.__class__)
-        ]
+            CONTENT_TYPES.values().index(self.__class__)]
         return super(ContentType, self).save(*args, **kwargs)
 
     @property

@@ -2,7 +2,8 @@ from logging import getLogger
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, FormView
+from django import forms
 
 from ..content.models import ContentType, CONTENT_TYPES, CONTENT_TYPE_CHOICES
 from ..metadata.models import SustainabilityTopic
@@ -120,8 +121,25 @@ class BrowseView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         ctx.update({
+            'topic': self.sustainabilty_topic,
             'topic_list': SustainabilityTopic.objects.all(),
+            'content_type': self.content_type_class,
             'content_type_list': dict(CONTENT_TYPE_CHOICES),
             'page_title': self.get_title(),
+
         })
         return ctx
+
+
+class BaseForm(forms.ModelForm):
+    pass
+
+class AddContentTypeView(FormView):
+    template_name = 'browse/add.html'
+
+    def get_form(self, form_class=None):
+        """
+        Returns an instance of the form to be used in this view.
+        """
+        model = CONTENT_TYPES[self.kwargs['ct']]
+        return forms.modelform_factory(model, BaseForm, exclude=['id'])

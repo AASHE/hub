@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^browse/topics/(?P<topic>[\w\-]+)/$', browse.BrowseView.as_view(), name='browse'),
     url(r'^browse/types/(?P<ct>[\w\-]+)/$', browse.BrowseView.as_view(), name='browse'),
 
+    url(r'^add/(?P<ct>[\w\-]+)/$', browse.AddContentTypeView.as_view(), name='add'),
+
     url(r'^api/organizations/$', api.organizations),
 
     url(r'^admin/', include(admin.site.urls)),
