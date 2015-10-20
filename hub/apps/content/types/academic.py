@@ -33,3 +33,7 @@ class AcademicProgram(ContentType):
     def title_label(self):
         return 'Program Name'
 
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import AcademicBrowseFilter
+        return AcademicBrowseFilter

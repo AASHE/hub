@@ -1,10 +1,14 @@
+from logging import getLogger
+
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
 
-from ..content.models import ContentType
+from ..content.models import ContentType, CONTENT_TYPES, CONTENT_TYPE_CHOICES
 from ..metadata.models import SustainabilityTopic
-from .filter import BrowseFilter
+from .filterset import GenericFilterSet
+
+logger = getLogger(__name__)
 
 class HomeView(TemplateView):
     """
@@ -16,7 +20,7 @@ class HomeView(TemplateView):
         ctx = super(HomeView, self).get_context_data(**kwargs)
         ctx.update({
             'topic_list': SustainabilityTopic.objects.all(),
-            'content_type_list': dict(ContentType.CONTENT_TYPES),
+            'content_type_list': dict(CONTENT_TYPE_CHOICES),
         })
         return ctx
 
@@ -32,31 +36,89 @@ class BrowseView(ListView):
           in `browse/topic/<name>.html`.
     """
     template_name = 'browse/browse.html'
+    content_type_class = None
+    sustainabilty_topic = None
+
+    def get(self, *args, **kwargs):
+        """
+        Load some generic objects into the class so we have it globally
+        available.
+        """
+        # Load the specified SustainabilityTopic
+        if self.kwargs.get('topic'):
+            self.sustainabilty_topic = get_object_or_404(
+                SustainabilityTopic, slug=self.kwargs['topic'])
+
+        # Load the specified Content Type object. Make Content Type a nice
+        # little object so it works similar to SustainabilityTopic
+        if self.kwargs.get('ct'):
+            if self.kwargs.get('ct') not in CONTENT_TYPES:
+                raise Http404('This Content type does not exist')
+            self.content_type_class = CONTENT_TYPES[self.kwargs['ct']]
+            self.content_type_class.slug = self.kwargs.get('ct')
+
+        return super(BrowseView, self).get(*args, **kwargs)
 
     def get_template_names(self):
         """
         If a specific 'topic' is set in the url name, we'll render a template
         for this. In all other cases we have a generic browse result template.
         """
-        topic = self.kwargs.get('topic')
-        if topic:
-            return (
-                'browse/topics/{}.html'.format(topic),
+        if self.sustainabilty_topic:
+            template_list = (
+                'browse/topics/{}.html'.format(self.sustainabilty_topic.slug),
                 'browse/topics/generic.html'
             )
-        return ('browse/results.html',)
+        else:
+            template_list = ('browse/results.html',)
+
+        logger.debug('browse template list: {}'.format(template_list))
+        return template_list
+
+    def get_filterset(self):
+        """
+        Builds and returns a filter form object. Content Type classes might
+        have their own, custom FilterSet defined in `model.get_custom_filterset`.
+        """
+        if self.content_type_class and hasattr(
+        self.content_type_class, 'get_custom_filterset'):
+            return self.content_type_class.get_custom_filterset()
+        return GenericFilterSet
+
+    def get_filterset_data(self):
+        """
+        Wether we're in a content type or topic view, we want to have the list
+        of content types already filtered by these.
+        """
+        data = self.request.GET.copy()
+        if self.sustainabilty_topic:
+            data['topics'] = self.sustainabilty_topic.slug
+        if self.content_type_class:
+            data['content_type'] = self.content_type_class.slug
+        logger.debug('filterset data: {}'.format(data))
+        return data
+
+    def get_title(self):
+        """
+        Returns the actual title of the current object, either topic,
+        content type or search.
+        """
+        if self.sustainabilty_topic:
+            return self.sustainabilty_topic.name
+        if self.content_type_class:
+            return self.content_type_class._meta.verbose_name
+        return 'Your Search Results'
 
     def get_queryset(self):
-        return BrowseFilter(
-            self.request.GET,
-            queryset=ContentType.objects.all(),
-            prefix='hf'
-        )
+        return self.get_filterset()(
+            self.get_filterset_data(),
+            queryset=ContentType.objects.all())
 
     def get_context_data(self, **kwargs):
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         ctx.update({
             'topic_list': SustainabilityTopic.objects.all(),
-            'content_type_list': dict(ContentType.CONTENT_TYPES),
+            'content_type_list': dict(CONTENT_TYPE_CHOICES),
+            'page_title': self.get_title(),
         })
         return ctx

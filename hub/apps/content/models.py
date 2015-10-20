@@ -45,6 +45,14 @@ class ContentType(TimeStampedModel):
         return super(ContentType, self).save(*args, **kwargs)
 
     @property
+    def content_type_label(self):
+        """
+        The `verbose_name` of the attached content type subclass of this
+        main content type object.
+        """
+        return CONTENT_TYPE_CHOICES[self.content_type]
+
+    @property
     def title_label(self):
         """
         Content types all share the same `title` field, however it's label might

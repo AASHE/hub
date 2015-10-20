@@ -1,9 +1,21 @@
+from collections import OrderedDict
+
 import django_filters as filters
 from django import forms
-from django.utils.datastructures import SortedDict
 
-from ..content.models import ContentType
-from ..metadata.models import SustainabilityTopic, Organization
+from ..content.models import ContentType, CONTENT_TYPE_CHOICES
+from ..metadata.models import Organization, ProgramType, SustainabilityTopic
+
+
+class ProgramTypeFilter(filters.ChoiceFilter):
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': ProgramType.objects.values_list('pk', 'name'),
+            'label': 'Program Type',
+        })
+        super(ProgramTypeFilter, self).__init__(*args, **kwargs)
 
 
 class SearchFilter(filters.CharFilter):
@@ -37,14 +49,18 @@ class ContentTypesFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': ContentType.CONTENT_TYPES,
+            'choices': CONTENT_TYPE_CHOICES,
             'label': 'Content Type',
         })
         super(ContentTypesFilter, self).__init__(*args, **kwargs)
 
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(content_type__in=value)
 
 class StudentFteFilter(filters.ChoiceFilter):
-    STUDENT_CHOICES_MAP = SortedDict([
+    STUDENT_CHOICES_MAP = OrderedDict([
         # {name: (label, min/max)}
         ('', ('All', (None, None))),
         ('lt_5000', ('<5000', (None, 5000))),
@@ -72,10 +88,11 @@ class CountryFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
-        countries = (Organization.objects.exclude(country='')
-                        .order_by('country')
-                        .values_list('country', 'country')
-                        .distinct())
+        countries = (Organization.objects
+            .exclude(country='')
+            .order_by('country')
+            .values_list('country', 'country')
+            .distinct())
 
         kwargs.update({
             'choices': countries,
@@ -87,28 +104,3 @@ class CountryFilter(filters.ChoiceFilter):
         if not value:
             return qs
         return qs.filter(organizations__country=value)
-
-
-class BrowseFilter(filters.FilterSet):
-    """
-    search keyword x
-    topic (multi) x
-    content type (multi) x
-    organization
-    institution size (student fte)
-    date published
-    country
-    state/region
-    """
-    search = SearchFilter()
-    topics = TopicFilter()
-    content_type = ContentTypesFilter()
-    organizations = filters.MultipleChoiceFilter
-    size = StudentFteFilter()
-    published = filters.DateRangeFilter()
-    country = CountryFilter()
-    state = filters.ChoiceFilter()
-
-    class Meta:
-        model = ContentType
-        fields = []

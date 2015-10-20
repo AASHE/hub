@@ -12,7 +12,7 @@
 
     <h2>Browse by Content Type</h2>
     {% for type, label in content_type_list.items %}
-        <a href="{% url "browse" %}?ct={{ type }}" class="box-button" >{{ label }}</a>
+        <a href="{% url "browse" ct=type %}" class="box-button" >{{ label }}</a>
     {% endfor %}
 
   </div>
