@@ -28,6 +28,6 @@ class Publication(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.publication
+    class Meta:
+        verbose_name = 'Publication'
+        verbose_name_plural = 'Publications'

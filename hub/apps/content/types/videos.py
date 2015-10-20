@@ -11,6 +11,6 @@ class Video(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.video
+    class Meta:
+        verbose_name = 'Video'
+        verbose_name_plural = 'Videos'

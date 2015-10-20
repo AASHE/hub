@@ -12,6 +12,6 @@ class Photograph(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.photograph
+    class Meta:
+        verbose_name = 'Photograph'
+        verbose_name_plural = 'Photographs'

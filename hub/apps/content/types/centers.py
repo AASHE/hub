@@ -10,10 +10,10 @@ class CenterAndInstitute(ContentType):
     founded = models.PositiveIntegerField('Year Founded', blank=True, null=True)
     budget = models.PositiveIntegerField('Total Budget', blank=True, null=True)
 
+    class Meta:
+        verbose_name = 'Research Center & Institute'
+        verbose_name_plural = 'Research Centers & Institutes'
+
     @property
     def title_label(self):
         return 'Center Name'
-
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.center

@@ -27,6 +27,6 @@ class Material(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.material
+    class Meta:
+        verbose_name = 'Course Material'
+        verbose_name_plural = 'Course Materials'

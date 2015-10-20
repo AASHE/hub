@@ -15,6 +15,6 @@ class OutreachMaterial(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.outreach
+    class Meta:
+        verbose_name = 'Outreach Material'
+        verbose_name_plural = 'Outreach Materials'

@@ -25,10 +25,11 @@ class AcademicProgram(ContentType):
     distance = models.CharField('Distance Education', max_length=20, choices=DISTANCE_CHOICES, blank=True, null=True)
     commitment = models.CharField('Commitment', max_length=20, choices=COMMITMENT_CHOICES, blank=True, null=True)
 
+    class Meta:
+        verbose_name = 'Academic Program'
+        verbose_name_plural = 'Academic Programs'
+
     @property
     def title_label(self):
         return 'Program Name'
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.academicprogram

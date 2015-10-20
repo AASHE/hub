@@ -19,6 +19,6 @@ class CaseStudy(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.casestudy
+    class Meta:
+        verbose_name = 'Case Study'
+        verbose_name_plural = 'Case Studies'

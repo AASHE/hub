@@ -27,10 +27,10 @@ class Presentation(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
+    class Meta:
+        verbose_name = 'Conference Presentation'
+        verbose_name_plural = 'Conference Presentations'
+
     @property
     def title_label(self):
         return 'Presentation Title'
-
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.presentation

@@ -12,6 +12,6 @@ class Tool(ContentType):
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
-    @property
-    def class_content_type(self):
-        return self.CONTENT_TYPES.tool
+    class Meta:
+        verbose_name = 'Tool'
+        verbose_name_plural = 'Tools'
