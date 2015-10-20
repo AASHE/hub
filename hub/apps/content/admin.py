@@ -3,8 +3,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
-from .models import Author, Website, Image, File, ContentType
-from . import types
+from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
 
 
 class AuthorInline(admin.TabularInline):
@@ -57,13 +56,5 @@ class AllContentTypesAdmin(admin.ModelAdmin):
 
 admin.site.register(ContentType, AllContentTypesAdmin)
 
-admin.site.register(types.academic.AcademicProgram, BaseContentTypeAdmin)
-admin.site.register(types.publications.Publication, BaseContentTypeAdmin)
-admin.site.register(types.casestudies.CaseStudy, BaseContentTypeAdmin)
-admin.site.register(types.centers.CenterAndInstitute, BaseContentTypeAdmin)
-admin.site.register(types.presentations.Presentation, BaseContentTypeAdmin)
-admin.site.register(types.photographs.Photograph, BaseContentTypeAdmin)
-admin.site.register(types.courses.Material, BaseContentTypeAdmin)
-admin.site.register(types.tools.Tool, BaseContentTypeAdmin)
-admin.site.register(types.videos.Video, BaseContentTypeAdmin)
-admin.site.register(types.outreach.OutreachMaterial, BaseContentTypeAdmin)
+for _, model in CONTENT_TYPES.items():
+    admin.site.register(model, BaseContentTypeAdmin)

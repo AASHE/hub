@@ -17,20 +17,7 @@ class ContentType(TimeStampedModel):
     # List of available content type models. Left side is the lowercase (!)
     # modelname of each subclassed content type which we use to link there
     # within the admin.
-    CONTENT_TYPES = Choices(
-        ('academicprogram', 'Academic Program'),
-        ('casestudy', 'Case Study'),
-        ('center', 'Research Center & Institute'),
-        ('presentation', 'Conference Presentation'),
-        ('publication', 'Publication'),
-        ('photograph', 'Photograph'),
-        ('material', 'Course Material'),
-        ('tool', 'Tool'),
-        ('video', 'Video'),
-        ('outreach', 'Outreach Material'),
-    )
-
-    content_type = models.CharField(max_length=40, choices=CONTENT_TYPES)
+    content_type = models.CharField(max_length=40)
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
@@ -46,7 +33,15 @@ class ContentType(TimeStampedModel):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.content_type = self.class_content_type
+        """
+        Save the key value of the current ContentType Sub class (!) along
+        self.content_type so we know which instance belongs to the actual
+        base ContentType instance.
+        """
+        # Kinda funky dict-find-by-value
+        self.content_type = CONTENT_TYPES.keys()[
+            CONTENT_TYPES.values().index(self.__class__)
+        ]
         return super(ContentType, self).save(*args, **kwargs)
 
     @property
@@ -58,23 +53,14 @@ class ContentType(TimeStampedModel):
         """
         return 'Title'
 
-    @property
-    def class_content_type(self):
+    @classmethod
+    def custom_filterset(self):
         """
-        Each sub class needs to override this method and return the appropriate
-        content type from self.TYPE_CHOICES:
-
-            return self.CONTENT_TYPES.academicprogram
+        Each content type sub class may define a custom filter with their
+        additional fields here. If not set, the views will use the generic
+        FilterSet.
         """
-        raise NotImplementedError('Subclasses need to override and set')
-
-    @property
-    def all_organizations(self):
-        return ', '.join(self.organizations.all())
-
-    @property
-    def all_topics(self):
-        return ', '.join(self.topics.all())
+        return None
 
 
 @python_2_unicode_compatible
@@ -131,14 +117,39 @@ class Image(TimeStampedModel):
     def __str__(self):
         return self.caption
 
-
+#==============================================================================
+# Mapping of all available content types.
+#
+# We also load the content types here into the models namespace, so they are
+# registered in the system, and the migration.
+#==============================================================================
 from .types.academic import AcademicProgram
-from .types.publications import Publication
 from .types.casestudies import CaseStudy
 from .types.centers import CenterAndInstitute
-from .types.presentations import Presentation
-from .types.photographs import Photograph
 from .types.courses import Material
-from .types.videos import Video
-from .types.tools import Tool
 from .types.outreach import OutreachMaterial
+from .types.photographs import Photograph
+from .types.presentations import Presentation
+from .types.publications import Publication
+from .types.tools import Tool
+from .types.videos import Video
+
+CONTENT_TYPES = {
+    'academicprogram': AcademicProgram,
+    'casestudy': CaseStudy,
+    'center': CenterAndInstitute,
+    'material': Material,
+    'outreach': OutreachMaterial,
+    'photograph': Photograph,
+    'presentation': Presentation,
+    'publication': Publication,
+    'tool': Tool,
+    'video': Video,
+}
+
+# Auto-generate a list of Choices for each Content type. It doesn't add too much
+# magic, it just tries to get the Content type Name out of `meta.verbose_name`,
+# otherwise it tries to auto-generate the name.
+CONTENT_TYPE_CHOICES = Choices(
+    *[(j, k._meta.verbose_name) for j, k in CONTENT_TYPES.items()]
+)
