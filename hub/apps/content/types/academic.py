@@ -1,8 +1,8 @@
 from django.db import models
 from model_utils import Choices
 
-from ..models import ContentType
 from ...metadata.models import ProgramType
+from ..models import ContentType
 
 
 class AcademicProgram(ContentType):
@@ -35,5 +35,5 @@ class AcademicProgram(ContentType):
 
     @classmethod
     def get_custom_filterset(cls):
-        from ...browse.filterset import AcademicBrowseFilter
+        from ...browse.filter import AcademicBrowseFilter
         return AcademicBrowseFilter

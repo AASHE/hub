@@ -6,9 +6,11 @@ from django.views.generic import TemplateView, ListView
 
 from ..content.models import ContentType, CONTENT_TYPES, CONTENT_TYPE_CHOICES
 from ..metadata.models import SustainabilityTopic
-from .filterset import GenericFilterSet
+from .filter import GenericFilterSet
+
 
 logger = getLogger(__name__)
+
 
 class HomeView(TemplateView):
     """
@@ -23,6 +25,7 @@ class HomeView(TemplateView):
             'content_type_list': dict(CONTENT_TYPE_CHOICES),
         })
         return ctx
+
 
 class BrowseView(ListView):
     """
