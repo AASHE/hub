@@ -36,8 +36,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'django_tables2',
+    'django_markup',
 
     'aashe.aasheauth',
     # 'issdjango',  # we'll put this back shortly

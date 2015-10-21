@@ -92,7 +92,7 @@ class ContentType(TimeStampedModel):
 
 @python_2_unicode_compatible
 class Author(TimeStampedModel):
-    ct = models.ForeignKey(ContentType)
+    ct = models.ForeignKey(ContentType, related_name="authors")
     is_author = models.BooleanField("I am an author", default=False)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
@@ -105,7 +105,7 @@ class Author(TimeStampedModel):
 
 @python_2_unicode_compatible
 class Website(TimeStampedModel):
-    ct = models.ForeignKey(ContentType)
+    ct = models.ForeignKey(ContentType, related_name="websites")
     label = models.CharField(max_length=100, blank=True, null=True)
     url = models.URLField()
 
@@ -115,7 +115,7 @@ class Website(TimeStampedModel):
 
 @python_2_unicode_compatible
 class File(TimeStampedModel):
-    ct = models.ForeignKey(ContentType)
+    ct = models.ForeignKey(ContentType, related_name="files")
     label = models.CharField(max_length=100, blank=True, null=True)
     item = models.FileField(help_text="The following files formats are "
         "aceptable: PDF, Excel, Word, PPT...", blank=True, null=True)
@@ -131,7 +131,7 @@ class File(TimeStampedModel):
 
 @python_2_unicode_compatible
 class Image(TimeStampedModel):
-    ct = models.ForeignKey(ContentType)
+    ct = models.ForeignKey(ContentType, related_name="images")
     caption = models.CharField(max_length=500, blank=True, null=True)
     credit = models.CharField(max_length=500, blank=True, null=True)
     image = models.ImageField(help_text="The following files formats are "

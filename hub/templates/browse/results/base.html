@@ -33,7 +33,7 @@
                 <li {% if page_obj.number == p %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
                 {% endfor %}
                 {% if page_obj.has_next %}
-                <li><a href="?page={{ page_obj.next_page_number }}"">»</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}">»</a></li>
                 {% endif %}
             </ul>
         </div>

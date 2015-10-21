@@ -1,10 +1,118 @@
 {% extends "browse/base.html" %}
 
+{% load markup_tags %}
+{% load humanize %}
+
 {% block page %}
-<div class="row">
-  <div class="col-md-12 resource-detail">
-    <h2>{{ object.title }}</h2>
-    {{ object.description|linebreaks }}
-  </div>
+<div class="profile">
+    <div class="row">
+    <!-- row -->
+
+        <!-- Resource content  -->
+        <div class="col-md-9">
+            <div class="profile-body">
+            <!-- inner body -->
+
+                <div class="profile-bio">
+                    <h2>{{ object.title }}</h2>
+                    {% for org in object.organizations.all %}{{ org.org_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                    <span><strong>Date Submitted:</strong> {{ object.published|date }}</span>
+                    <span><strong>Last Updated:</strong> {{ object.modified|date }}</span>
+
+                    <div class="margin-bottom-10"></div>
+                    <span><strong>Sustainability Topic{{ object.topics.all|length|pluralize }}:</strong>
+                        {% for t in object.topics.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+                    <span><strong>Content Type:</strong> {{ object.content_type_label }}</span>
+                    {% if object.disciplines.all %}
+                    <span><strong>Discipline{{ object.disciplines.all|length|pluralize }}:</strong>
+                        {% for t in object.disciplines.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+                    {% endif %}
+                    {% if object.keywords %}
+                    <span><strong>Keywords:</strong> {{ object.keywords }}</span>
+                    {% endif %}
+
+
+                    {% if object.description %}
+                    <hr>
+                    {{ object.description|apply_markup:"markdown" }}
+                    {% endif %}
+                </div>
+
+                {% block resource_content %}
+                {% endblock %}
+
+                <hr>
+
+                <!-- Authors -->
+                <div class="panel panel-profile">
+                    <div class="panel-heading overflow-h">
+                        <h2 class="panel-title heading-sm pull-left"><i class="icon icon-user"></i> Authors</h2>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-unstyled social-contacts-v3">
+                            {% for author in object.authors.all %}
+                            <li>
+                                <i class="rounded-x tw icon icon-user"></i>
+                                <strong>
+                                    {% if author.email %}<a href="mailto:{{ author.email }}">{% endif %}
+                                    {{ author.name }}
+                                    {% if author.email %}</a>{% endif %}
+                                </strong>
+                                {% if author.title %} - {{ author.title }}{% endif %}
+                                {% if author.organization %} | {{ author.organization.org_name }}{% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+
+                <hr>
+
+                <!-- Authors -->
+                <div class="panel panel-profile">
+                    <div class="panel-heading overflow-h">
+                        <h2 class="panel-title heading-sm pull-left"><i class="icon  icon-folder"></i> Additional Resources</h2>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-unstyled social-contacts-v3">
+                            <!-- Websites -->
+                            {% for i in object.websites.all %}
+                            <li>
+                                <i class="rounded-x tw icon icon-globe"></i>
+                                <strong>Website:</strong> <a href="{{ i.url }}"> {{ i.label|default:i.url }}</a>
+                            </li>
+                            {% endfor %}
+
+                            <!-- Files -->
+                            {% for i in object.files.all %}
+                            <li>
+                                <i class="rounded-x tw icon icon-doc"></i>
+                                <strong>File:</strong> <a href="{{ i.item.url }}"> {{ i.label|default:i.item.name }}</a>
+                            </li>
+                            {% endfor %}
+
+                            <!-- Images -->
+                            {% for i in object.images.all %}
+                            <li>
+                                <i class="rounded-x tw icon icon-eye"></i>
+                                <strong>Image:</strong> <a href="{{ i.image.url }}"> {{ i.caption|default:i.image.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+
+            <!-- /inner body -->
+            </div>
+        </div>
+
+        <!-- Resource Sidebar -->
+        <div class="col-md-3">
+       </div>
+
+    <!-- end row -->
+    </div>
 </div>
 {% endblock %}
