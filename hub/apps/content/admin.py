@@ -29,7 +29,7 @@ class ImageInline(admin.TabularInline):
 
 class BaseContentTypeAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'created')
-    list_filter = ('created', 'modified',)
+    list_filter = ('status', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
     exclude = ('content_type',)
@@ -37,7 +37,7 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
 
 class AllContentTypesAdmin(admin.ModelAdmin):
-    list_display = ('object_link', 'content_type', 'created',)
+    list_display = ('status', 'object_link', 'content_type_name', 'created', 'published',)
     list_display_links = None
     actions_on_top = False
     actions_on_bottom = False
@@ -46,13 +46,16 @@ class AllContentTypesAdmin(admin.ModelAdmin):
         return False
 
     def object_link(self, obj):
+        ct_name = CONTENT_TYPES[obj.content_type]._meta.model_name.lower()
         return '<a href="{}">{} </a>'.format(
-            reverse('admin:content_{}_change'.format(obj.content_type),
-                    args=[getattr(obj, obj.content_type).pk]),
-            obj.title,
-        )
+            reverse('admin:content_{}_change'.format(ct_name),
+                    args=[getattr(obj, ct_name).pk]), obj.title)
     object_link.allow_tags = True
     object_link.short_description = 'Edit object'
+
+    def content_type_name(self, obj):
+        return CONTENT_TYPES[obj.content_type]._meta.verbose_name
+    content_type_name.short_description = 'Content Type'
 
 admin.site.register(ContentType, AllContentTypesAdmin)
 

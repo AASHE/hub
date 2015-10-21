@@ -1,7 +1,13 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils import timezone
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
+
+
+class ContentTypeManager(models.Manager):
+    def published(self):
+        return self.filter(status=self.model.STATUS_CHOICES.published)
 
 
 @python_2_unicode_compatible
@@ -14,16 +20,22 @@ class ContentType(TimeStampedModel):
     Additionally it keeps a choice field `content_type` which holds the name of
     the related content type.
     """
-    # List of available content type models. Left side is the lowercase (!)
-    # modelname of each subclassed content type which we use to link there
-    # within the admin.
+    STATUS_CHOICES = Choices(
+        ('new', 'New'),
+        ('published', 'Published'),
+    )
+
     content_type = models.CharField(max_length=40)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
+    published = models.DateTimeField(blank=True, null=True)
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
     organizations = models.ManyToManyField('metadata.Organization', blank=True, verbose_name='Organizations')
     topics = models.ManyToManyField('metadata.SustainabilityTopic', blank=True, verbose_name='Sustainability Topics')
     disciplines = models.ManyToManyField('metadata.AcademicDiscipline', blank=True, verbose_name='Academic Disciplines')
+
+    objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Genric Content Type'
@@ -33,14 +45,17 @@ class ContentType(TimeStampedModel):
         return self.title
 
     def save(self, *args, **kwargs):
-        """
-        Save the key value of the current ContentType Sub class (!) along
-        self.content_type so we know which instance belongs to the actual
-        base ContentType instance.
-        """
-        # Kinda funky dict-find-by-value
+        # Save the key value of the current ContentType Sub class (!) along
+        # self.content_type so we know which instance belongs to the actual
+        # base ContentType instance. Kinda funky dict-find-by-value here.
         self.content_type = CONTENT_TYPES.keys()[
             CONTENT_TYPES.values().index(self.__class__)]
+
+        # Update the `published` date the first time this instance was set to
+        # published.
+        if not self.published and self.status == self.STATUS_CHOICES.published:
+            self.published = timezone.now()
+
         return super(ContentType, self).save(*args, **kwargs)
 
     @property

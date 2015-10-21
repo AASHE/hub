@@ -116,7 +116,7 @@ class BrowseView(ListView):
     def get_queryset(self):
         return self.get_filterset()(
             self.get_filterset_data(),
-            queryset=ContentType.objects.all())
+            queryset=ContentType.objects.published())
 
     def get_context_data(self, **kwargs):
         ctx = super(BrowseView, self).get_context_data(**kwargs)
