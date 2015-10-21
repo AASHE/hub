@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/bootstrap/css/bootstrap.min.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/css/style.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/css/headers/header-default.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/css/footers/footer-v1.css" %}"/>
+    <link rel="stylesheet" href="{% static "vendor/theme/css/footers/footer-default.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/animate.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/line-icons/line-icons.css" %}"/>
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/font-awesome/css/font-awesome.css" %}"/>
@@ -38,39 +38,60 @@
 </head>
 <body>
 
+
 <div class="wrapper">
-    <div class="container header">
-        <div class="topbar">
-            <h1>
-                <a href="{% url "browse-home" %}">
-                    <strong>AASHE</strong> Campus Sustainability Hub
-                </a>
-            </h1>
-            <div class="menu">
-                <div class="goto-account">
-                    <a href="http://www.aashe.org/user">My Account</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Log out</a>
-                </div>
-                <form class="search" method="GET" action="{% url "browse" %}">
-                    <input type="text" name="search" placeholder="Search the Hub"/>
-                    <input type="submit" value="Go"/>
+    <div class="header">
+    <!-- Header -->
+        <div class="container">
+            <a class="logo" href="{% url "browse-home" %}">
+                <img src="{% static "img/logo-small.png" %}" alt="AASHE logo" title=""/>
+                <h1><strong>AASHE</strong> Campus Sustainability Hub</h1>
+            </a>
+
+            <div class="topbar">
+                <ul class="loginbar pull-right">
+                    <li><a href="http://www.aashe.org/user">My Account</a></li>
+                    <li class="topbar-devider"></li>
+                    <li><a href="/login/">Login</a></li>
+                </ul>
+
+                <form class="search" action="{% url "browse" %}" method="GET">
+                    <input type="text" name="search" class="form-control" placeholder="Search">
+                    <button class="btn-u" type="submit">Go</button>
                 </form>
             </div>
         </div>
+    <!-- /Header -->
     </div>
-    <div class="container content">
-        {% block page %}{% endblock %}
-    </div>
-    <div class="container footer">
-        <p>All Material Copyright © 2005–2015 Association for the Advancement of
-            Sustainability in Higher Education. AASHE reserves the right to control
-            the reproduction and use of all material posted on this website.</p>
 
-        <p>
-            2401 Walnut Street Suite 102 Philadelphia, PA 19103 - t/f: 888-347-9997<br/>
-            For problems or questions about this site please <a href="http://www.aashe.org/contact">contact the webmaster</a><br/>
-            <a href="http://www.aashe.org/privacy-policy">Privacy Policy</a>
-        </p>
+    <div class="content">
+        <div class="container">
+        {% block page %}{% endblock %}
+        </div>
     </div>
+
+    <!-- Footer -->
+    <div class="footer-default">
+        <div class="copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p>All Material Copyright © 2005–2015 Association for the Advancement of
+                            Sustainability in Higher Education. AASHE reserves the right to control
+                            the reproduction and use of all material posted on this website.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>2401 Walnut Street Suite 102 Philadelphia, PA 19103 - t/f: 888-347-9997. For problems or questions
+                            about this site please <a href="http://www.aashe.org/contact">contact the webmaster</a> &mdash;
+                            <a href="http://www.aashe.org/privacy-policy">Privacy Policy</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Footer -->
 </div>
 
 {% block javascript %}

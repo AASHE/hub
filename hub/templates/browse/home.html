@@ -2,22 +2,53 @@
 
 {% block page %}
 <div class="row">
-  <div class="col-md-12 resource-choice">
-    Browse resources by:
-        <a href="#topic-list">Topic</a> |
-        <a href="#content-list">Content Type</a>
-  </div>
   <div class="col-md-12">
-    <div class="resource-buttons" id="topic-list">
-        {% for topic in topic_list %}
-            <a href="{% url "browse" topic=topic.slug %}" style="background-color: {{ topic.color }}">{{ topic }}</a>
-        {% endfor %}
+    <div class="tab-v1">
+        <ul class="nav nav-tabs margin-bottom-20">
+            <li class="active"><a data-toggle="tab" href="#topics" aria-expanded="true">Topic</a></li>
+            <li class=""><a data-toggle="tab" href="#contenttypes" aria-expanded="false">Content Type</a></li>
+        </ul>
+        <div class="tab-content">
+
+            <!-- Topic list -->
+            <div id="topics" class="tab-pane fade active in">
+                <div class="resource-buttons">
+                    {% for topic in topic_list %}
+                    <a href="{% url "browse" topic=topic.slug %}" style="background-color: {{ topic.color }}"
+                        class="service-block service-block-sea service-or">
+                        <div class="service-bg"></div>
+                        {{ topic }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Content list -->
+            <div id="contenttypes" class="tab-pane fade">
+                <div class="resource-buttons">
+                {% for type, label in content_type_list.items %}
+                    <a href="{% url "browse" ct=type %}"
+                        class="service-block service-block-sea service-or">
+                        <div class="service-bg"></div>
+                        {{ label }}
+                    </a>
+                {% endfor %}
+                </div>
+            </div>
+            <!-- /end -->
+        </div>
     </div>
-    <div class="resource-buttons" id="content-list" style="display: none;">
-    {% for type, label in content_type_list.items %}
-        <a href="{% url "browse" ct=type %}">{{ label }}</a>
-    {% endfor %}
+</div>
+
+<div class="call-action-v1">
+    <div class="container">
+        <div class="call-action-v1-box">
+            <div class="call-action-v1-in">
+                <p>The Campus Sustainability Hub is a one-stop shop for AASHE member to
+                    access toolkits, resource collections and benchmarking tools, and to
+                    connect with business and community partners. To get started, select
+                    a content type or enter search terms above.</p>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

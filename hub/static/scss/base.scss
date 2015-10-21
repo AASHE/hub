@@ -1,72 +1,53 @@
+$green: #72c02c;
+
 @mixin title() {
     font-family: HelveticaNeue-Light, Helvetica, Arial, sans-serif;
     font-weight: 300;
 }
-/* --------------------------------------------------------------------
-    Layout
--------------------------------------------------------------------- */
-
-.content {
-    padding-top: 0;
-}
-
-.footer {
-    border-top: solid 2px #eee;
-    padding-top: 20px;
-}
 
 /* --------------------------------------------------------------------
-    Header
+    Unify Overrides
 -------------------------------------------------------------------- */
 
-.topbar {
-    display: flex;
-    justify-content: space-between;
+.header > .container {
+    margin-bottom: 0;
+}
 
+.header .logo {
+    position: relative;
     h1 {
-        margin: 0;
-        padding: 0;
-    }
-
-    h1 a {
-        @include title();
+        display: inline-block;
         font-size: 30px;
+        position: absolute;
+        bottom: 8px;
+        left: 120px;
+        white-space: nowrap;
+        border-bottom: 3px solid white;
 
-        display: block;
-        margin: 0;
-        padding: 0;
-        min-height: 120px;
-        background-image: url(../img/logo.png);
-        background-repeat: no-repeat;
-        background-position: left bottom;
-        padding: 100px 0 0 170px;
+        strong { display: none; }
 
-        &:link, &:visited {
-            color: gray;
-        }
-
-        strong {
-            display: none;
-        }
-    }
-
-    .menu {
-        align-self: flex-end;
-
-        .goto-account {
-            text-align: right;
-            color: #333;
-            font-weight: bold;
-            font-size: .9em;
-            padding-bottom: 20px;
-
-            a:link, a:visited {
-                color: #333;
-            }
+        &:hover {
+            border-bottom: 3px solid $green;
         }
     }
 }
 
+.topbar .search {
+    width: 300px;
+    position: absolute;
+    right: 0;
+    top: 60px;
+    text-align: right;
+
+    input {
+        width: 250px;
+        display: inline-block;
+    }
+}
+
+.footer-default .copyright a {
+    margin: 0;
+}
 
 /* --------------------------------------------------------------------
     Browse
@@ -135,15 +116,17 @@
     display: inline-block;
     width: 24%;
     margin-bottom: 1%;
-    text-align: center;
-    border-radius: .8em;
     padding: 2em 0;
     font-size: 1.2em;
     background-color: #5061AA;
+    box-shadow: 0 2px 2px #ccc;
 
     &:link, &:visited {
         color: white;
     }
 }
 
-
+.call-action-v1 .call-action-v1-box {
+    margin: 0 auto;
+    width: 70%;
+}
