@@ -1,7 +1,7 @@
 <div class="inner-results">
     <h3>
         <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
-        {% if obj.member_only and not user.authenticated %}
+        {% if obj.member_only and not user.is_authenticated %}
         <span class="label label-warning"><i class="fa fa-lock"></i> Member Only</span>
         {% endif %}
     </h3>
