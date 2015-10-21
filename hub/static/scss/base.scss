@@ -1,3 +1,19 @@
+@mixin title() {
+    font-family: HelveticaNeue-Light, Helvetica, Arial, sans-serif;
+    font-weight: 300;
+}
+/* --------------------------------------------------------------------
+    Layout
+-------------------------------------------------------------------- */
+
+.content {
+    padding-top: 0;
+}
+
+.footer {
+    border-top: solid 2px #eee;
+    padding-top: 20px;
+}
 
 /* --------------------------------------------------------------------
     Header
@@ -6,39 +22,81 @@
 .topbar {
     display: flex;
     justify-content: space-between;
+
+    h1 {
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 a {
+        @include title();
+        font-size: 30px;
+
+        display: block;
+        margin: 0;
+        padding: 0;
+        min-height: 120px;
+        background-image: url(../img/logo.png);
+        background-repeat: no-repeat;
+        background-position: left bottom;
+        padding: 100px 0 0 170px;
+
+        &:link, &:visited {
+            color: gray;
+        }
+
+        strong {
+            display: none;
+        }
+    }
+
+    .menu {
+        align-self: flex-end;
+
+        .goto-account {
+            text-align: right;
+            color: #333;
+            font-weight: bold;
+            font-size: .9em;
+            padding-bottom: 20px;
+
+            a:link, a:visited {
+                color: #333;
+            }
+        }
+    }
 }
 
 
-.topbar h1 {
+/* --------------------------------------------------------------------
+    Browse
+-------------------------------------------------------------------- */
+
+
+.browse-title h2{
+    padding: 20px 0 10px 0;
     margin: 0;
-    padding: 0;
-    min-height: 120px;
-    background-image: url(../img/logo.png);
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    padding: 100px 0 0 170px;
+    @include title();
+    font-size: 25px;
+
 }
 
-.topbar h1 a:link,
-.topbar h1 a:visited {
-    color: gray;
+.browse-results {
+    background-color: #D9EAD3;
 }
 
-.topbar h1 strong {
-    display: none;
+.filter-bar {
+    border-right: 4px solid white;
 }
 
-.topbar .menu {
-    align-self: flex-end;
-}
-
-.filter-form {
+.filter-bar {
     label {
         display: block;
     }
 
     select, input, .select2-container {
-        width: 100%;
+        width: 200px;
+
     }
 
     .helptext {
@@ -46,23 +104,46 @@
     }
 }
 
+.result {
+    h3 {
+        font-size: 1em;
+
+        a:link { color: #2c6bd2; }
+        a:visited { color: #2c6bd2; }
+    }
+}
+
 /* --------------------------------------------------------------------
     Index
 -------------------------------------------------------------------- */
 
-.box-button {
-    background-color: #5061AA;
-    padding: 1em 2em;
-    line-height: 4em;
-    color: white;
-    font-weight: bold;
-    font-size: 1.2em;
-    border-radius: 1em;
-    margin: 0 .5em .5em 0;
-    white-space: nowrap;
+.resource-choice {
+    text-align: right;
+    font-size: 1.1em;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
-.box-button:hover {
-    color: white;
-    box-shadow: 0 0 .4em yellow;
+.resource-buttons {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
+
+.resource-buttons a {
+    display: inline-block;
+    width: 24%;
+    margin-bottom: 1%;
+    text-align: center;
+    border-radius: .8em;
+    padding: 2em 0;
+    font-size: 1.2em;
+    background-color: #5061AA;
+
+    &:link, &:visited {
+        color: white;
+    }
+}
+
+

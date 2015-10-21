@@ -2,7 +2,7 @@ from logging import getLogger
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, ListView, FormView
+from django.views.generic import TemplateView, ListView, FormView, DetailView
 from django import forms
 
 from ..content.models import ContentType, CONTENT_TYPES, CONTENT_TYPE_CHOICES
@@ -68,16 +68,9 @@ class BrowseView(ListView):
         If a specific 'topic' is set in the url name, we'll render a template
         for this. In all other cases we have a generic browse result template.
         """
-        if self.sustainabilty_topic:
-            template_list = (
-                'browse/topics/{}.html'.format(self.sustainabilty_topic.slug),
-                'browse/topics/generic.html'
-            )
-        else:
-            template_list = ('browse/results.html',)
-
-        logger.debug('browse template list: {}'.format(template_list))
-        return template_list
+        return self.sustainabilty_topic \
+            and ('browse/results/topic.html',) \
+             or ('browse/results/other.html',)
 
     def get_filterset(self):
         """
@@ -126,7 +119,6 @@ class BrowseView(ListView):
             'content_type': self.content_type_class,
             'content_type_list': dict(CONTENT_TYPE_CHOICES),
             'page_title': self.get_title(),
-
         })
         return ctx
 
@@ -135,7 +127,7 @@ class BaseForm(forms.ModelForm):
     pass
 
 class AddContentTypeView(FormView):
-    template_name = 'browse/add.html'
+    template_name = 'browse/add/content_type.html'
 
     def get_form(self, form_class=None):
         """
@@ -143,3 +135,19 @@ class AddContentTypeView(FormView):
         """
         model = CONTENT_TYPES[self.kwargs['ct']]
         return forms.modelform_factory(model, BaseForm, exclude=['id'])
+
+
+class ViewResource(DetailView):
+    queryset = ContentType.objects.published()
+    template_name = 'browse/details/base.html'
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        queryset = queryset.filter(
+            content_type=self.kwargs['ct'], id=self.kwargs['id'])
+        try:
+            obj = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404('Resource not found')
+        return obj

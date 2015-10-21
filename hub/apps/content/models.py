@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
 
@@ -57,6 +58,10 @@ class ContentType(TimeStampedModel):
             self.published = timezone.now()
 
         return super(ContentType, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('view', kwargs={'ct': self.content_type,
+            'id': self.pk})
 
     @property
     def content_type_label(self):

@@ -1,0 +1,10 @@
+{% extends "browse/base.html" %}
+
+{% block page %}
+<div class="row">
+  <div class="col-md-12 resource-detail">
+    <h2>{{ object.title }}</h2>
+    {{ object.description|linebreaks }}
+  </div>
+</div>
+{% endblock %}

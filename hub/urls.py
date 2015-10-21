@@ -12,6 +12,8 @@ urlpatterns = [
 
     url(r'^add/(?P<ct>[\w\-]+)/$', browse.AddContentTypeView.as_view(), name='add'),
 
+    url(r'^view/(?P<ct>[\w\-]+)/(?P<id>[\d]+)/$', browse.ViewResource.as_view(), name='view'),
+
     url(r'^api/organizations/$', api.organizations),
 
     url(r'^admin/', include(admin.site.urls)),

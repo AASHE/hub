@@ -1,6 +1,15 @@
 jQuery(document).ready(function() {
     App.init();
 
+
+$('.resource-choice a').on('click', function(){
+    var target = $(this).attr('href');
+    $('#topic-list, #content-list').slideUp(600, function(){
+        $(target).slideDown(600);
+    });
+    return false;
+});
+
 $('select:not(#id_organizations)').select2({
     minimumResultsForSearch: 20
 });

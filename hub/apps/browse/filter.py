@@ -73,7 +73,7 @@ class StudentFteFilter(filters.ChoiceFilter):
             return qs
         min, max = self.STUDENT_CHOICES_MAP[value][1]
         org_list = Organization.objects.in_fte_range(min, max)
-        return qs.filter(organizations__in=org_list)
+        return qs.filter(organizations__in=org_list).distinct()
 
 
 class CountryFilter(filters.ChoiceFilter):

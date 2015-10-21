@@ -1,0 +1,18 @@
+{% extends "browse/results/base.html" %}
+
+{% block result_list %}
+    {% for obj in object_list %}
+        <div class="result">
+            <h3><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h3>
+            <div class="subheader">
+                {% for c in obj.organizations.all %}{{ c.org_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                | {{ obj.published|date }}
+            </div>
+            <div class="teaser">
+                {{ obj.description|truncatewords:30 }}
+            </div>
+        </div>
+    {% empty %}
+        <div class="no-results">No resources match your current filter settings.</div>
+    {% endfor %}
+{% endblock result_list %}

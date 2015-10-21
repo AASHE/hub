@@ -1,0 +1,34 @@
+{% extends "browse/base.html" %}
+
+{% block page %}
+<div class="row">
+  <div class="col-md-12 browse-title">
+    <h2>{{ page_title }}</h2>
+  </div>
+</div>
+<form method="GET" action="">
+<div class="row browse-results">
+  <div class="col-md-3 filter-bar">
+        {{ object_list.form }}
+        <input type="submit"/>
+        <a href=".">Show all</a>
+  </div>
+  <div class="col-md-9" result-list>
+      <div class="sort-bar">
+        Sort by:
+            <button name="sort" value="title">Title</button>
+            <button name="sort" value="title">Insitution</button>
+            <button name="sort" value="title">Published</button>
+      </div>
+      {% block result_list %}
+      {% endblock %}
+  </div>
+</div>
+</form>
+{% endblock %}
+
+<!--
+{% if content_type %}
+    <a href="{% url "add" ct=content_type.slug %}">Add resource</a>
+{% endif %}
+-->

@@ -47,8 +47,9 @@
                 </a>
             </h1>
             <div class="menu">
-                <a href="http://www.aashe.org/user">My Account</a> |
-                <a href="#">Log out</a>
+                <div class="goto-account">
+                    <a href="http://www.aashe.org/user">My Account</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Log out</a>
+                </div>
                 <form class="search" method="GET" action="{% url "browse" %}">
                     <input type="text" name="search" placeholder="Search the Hub"/>
                     <input type="submit" value="Go"/>
