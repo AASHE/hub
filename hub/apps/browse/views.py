@@ -104,6 +104,8 @@ class BrowseView(ListView):
             return self.sustainabilty_topic.name
         if self.content_type_class:
             return self.content_type_class._meta.verbose_name
+        if self.request.GET.get('search'):
+            return 'Your Search for "{}"'.format(self.request.GET['search'])
         return 'Your Search Results'
 
     def get_queryset(self):

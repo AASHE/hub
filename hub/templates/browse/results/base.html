@@ -1,34 +1,45 @@
 {% extends "browse/base.html" %}
 
 {% block page %}
-<div class="row">
-  <div class="col-md-12 browse-title">
-    <h2>{{ page_title }}</h2>
-  </div>
-</div>
 <form method="GET" action="">
-<div class="row browse-results">
-  <div class="col-md-3 filter-bar">
-        {{ object_list.form }}
-        <input type="submit"/>
-        <a href=".">Show all</a>
-  </div>
-  <div class="col-md-9" result-list>
-      <div class="sort-bar">
-        Sort by:
-            <button name="sort" value="title">Title</button>
-            <button name="sort" value="title">Insitution</button>
-            <button name="sort" value="title">Published</button>
-      </div>
-      {% block result_list %}
-      {% endblock %}
-  </div>
+<div class="search-block-v2">
+    <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>{{ page_title }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="container s-results margin-bottom-50">
+    <div class="row">
+        <div class="col-md-3 hidden-xs related-search">
+            {{ object_list.form }}
+            <input type="submit"/>
+        </div>
+        <div class="col-md-9">
+            <span class="results-number">
+                {{ object_list.count }} results
+                {% if request.GET %} | <a href=".">Show all</a>{% endif %}
+            </span>
+          {% block result_list %}{% endblock %}
+
+          <div class="margin-bottom-30"></div>
+          <div class="text-left">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}">«</a></li>
+                {% endif %}
+                {% for p in page_obj.paginator.page_range %}
+                <li {% if page_obj.number == p %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}"">»</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        </div>
+    </div>
 </div>
 </form>
 {% endblock %}
-
-<!--
-{% if content_type %}
-    <a href="{% url "add" ct=content_type.slug %}">Add resource</a>
-{% endif %}
--->
