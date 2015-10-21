@@ -1,0 +1,100 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+
+
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+    {% if object.program_type %}
+    <div><strong>Program Type:</strong> {{ object.program_type.name }}</div>
+    {% endif %}
+
+    {% if object.institution %}
+    <div><strong>Institution:</strong> {{ object.institution.name }}</div>
+    {% endif %}
+{% endblock %}
+
+
+{% block resource_content %}
+
+    {% if object.overview %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Overview</h2>
+        </div>
+        <div class="panel-body">{{ object.overview|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.background %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Background</h2>
+        </div>
+        <div class="panel-body">{{ object.background|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.goals %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Goals</h2>
+        </div>
+        <div class="panel-body">{{ object.goals|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.implementation %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Implementation</h2>
+        </div>
+        <div class="panel-body">{{ object.implementation|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.timeline %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Timeline</h2>
+        </div>
+        <div class="panel-body">{{ object.timeline|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.financing %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Financing</h2>
+        </div>
+        <div class="panel-body">{{ object.financing|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.results %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Results</h2>
+        </div>
+        <div class="panel-body">{{ object.results|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.lessons_learned %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Lessons Learned</h2>
+        </div>
+        <div class="panel-body">{{ object.lessons_learned|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+{% endblock %}

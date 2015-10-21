@@ -13,29 +13,41 @@
             <div class="profile-body">
             <!-- inner body -->
 
-                <div class="profile-bio">
-                    <h2>{{ object.title }}</h2>
-                    {% for org in object.organizations.all %}{{ org.org_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
-                    <span><strong>Date Submitted:</strong> {{ object.published|date }}</span>
-                    <span><strong>Last Updated:</strong> {{ object.modified|date }}</span>
+                <div class="panel panel-profile">
+                    <div class="panel-heading overflow-h">
+                        <h2>{{ object.title }}</h2>
+                        {% for org in object.organizations.all %}
+                            {{ org.org_name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="panel-body">
+                        <div><strong>Date Submitted:</strong> {{ object.published|date }}</div>
+                        <div><strong>Last Updated:</strong> {{ object.modified|date }}</div>
 
-                    <div class="margin-bottom-10"></div>
-                    <span><strong>Sustainability Topic{{ object.topics.all|length|pluralize }}:</strong>
-                        {% for t in object.topics.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
-                    <span><strong>Content Type:</strong> {{ object.content_type_label }}</span>
-                    {% if object.disciplines.all %}
-                    <span><strong>Discipline{{ object.disciplines.all|length|pluralize }}:</strong>
-                        {% for t in object.disciplines.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
-                    {% endif %}
-                    {% if object.keywords %}
-                    <span><strong>Keywords:</strong> {{ object.keywords }}</span>
-                    {% endif %}
+                        <div class="margin-bottom-10"></div>
 
+                        <div><strong>Sustainability Topic{{ object.topics.all|length|pluralize }}:</strong>
+                            {% for t in object.topics.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 
-                    {% if object.description %}
-                    <hr>
-                    {{ object.description|apply_markup:"markdown" }}
-                    {% endif %}
+                        <div><strong>Content Type:</strong>
+                            <a href="{% url "browse" ct=object.content_type %}">{{ object.content_type_label }}</a></div>
+
+                        {% if object.disciplines.all %}
+                        <div><strong>Discipline{{ object.disciplines.all|length|pluralize }}:</strong>
+                            {% for t in object.disciplines.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+                        {% endif %}
+
+                        {% if object.keywords %}
+                        <div><strong>Keywords:</strong> {{ object.keywords }}</div>
+                        {% endif %}
+
+                        {% block resource_metadata %}{% endblock %}
+
+                        {% if object.description %}
+                        <hr>
+                        {{ object.description|apply_markup:"markdown" }}
+                        {% endif %}
+                    </div>
                 </div>
 
                 {% block resource_content %}

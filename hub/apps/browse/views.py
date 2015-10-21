@@ -141,15 +141,23 @@ class AddContentTypeView(FormView):
 
 class ViewResource(DetailView):
     queryset = ContentType.objects.published()
-    template_name = 'browse/details/base.html'
+
+    def get_template_names(self):
+        return (
+            'browse/details/{}.html'.format(self.kwargs['ct']),
+            'browse/details/base.html'
+        )
 
     def get_object(self, queryset=None):
+        if not self.kwargs['ct'] in CONTENT_TYPES:
+            raise Http404('Resource model does not exist')
+
         if queryset is None:
             queryset = self.get_queryset()
-        queryset = queryset.filter(
-            content_type=self.kwargs['ct'], id=self.kwargs['id'])
+
         try:
-            obj = queryset.get()
+            ct_model = CONTENT_TYPES[self.kwargs['ct']]
+            obj = ct_model.objects.get(pk=self.kwargs['id'])
         except queryset.model.DoesNotExist:
             raise Http404('Resource not found')
         return obj
