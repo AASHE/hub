@@ -28,8 +28,8 @@ class ImageInline(admin.TabularInline):
 
 
 class BaseContentTypeAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'created')
-    list_filter = ('status', 'created', 'published',)
+    list_display = ('__unicode__', 'member_only', 'published')
+    list_filter = ('status', 'member_only', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
     exclude = ('content_type',)

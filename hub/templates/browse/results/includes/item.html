@@ -1,13 +1,16 @@
 <div class="inner-results">
-    <h3><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h3>
+    <h3>
+        <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+        {% if obj.member_only and not user.authenticated %}
+        <span class="label label-warning"><i class="fa fa-lock"></i> Member Only</span>
+        {% endif %}
+    </h3>
     <ul class="list-inline up-ul">
         {% for c in obj.organizations.all %}
         <li>{{ c.org_name }}</li>
         {% endfor %}
     </ul>
-
      {{ obj.description|truncatewords:30 }}
-
     <ul class="list-inline down-ul">
         <li title="{{ obj.published|date }} {{ obj.published|time }}">Published {{ obj.published|timesince }} ago</li>
         <li><a href="{{ obj.get_absolute_url }}">View more</a></li>

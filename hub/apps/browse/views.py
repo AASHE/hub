@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView, FormView, DetailView
 from django import forms
@@ -141,6 +141,14 @@ class AddContentTypeView(FormView):
 
 class ViewResource(DetailView):
     queryset = ContentType.objects.published()
+
+    def get(self, *args, **kwargs):
+        if not self.request.user.is_authenticated():
+            obj = self.get_object()
+            if obj.member_only:
+                return HttpResponseForbidden('Member Only')
+        return super(ViewResource, self).get(*args, **kwargs)
+
 
     def get_template_names(self):
         return (

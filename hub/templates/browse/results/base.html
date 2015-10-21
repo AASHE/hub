@@ -18,7 +18,7 @@
         </div>
         <div class="col-md-9">
             <span class="results-number">
-                {{ object_list.count }} results
+                {{ object_list.count }} result{{ object_list.count|pluralize }}
                 {% if request.GET %} | <a href=".">Show all</a>{% endif %}
             </span>
           {% block result_list %}{% endblock %}
