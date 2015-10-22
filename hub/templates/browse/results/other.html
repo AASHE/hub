@@ -1,5 +1,7 @@
 {% extends "browse/results/base.html" %}
 
+{% block body_class %}page-browse-other{% endblock %}
+
 {% block result_list %}
     {% for obj in object_list %}
         {% include "browse/results/includes/item.html" %}

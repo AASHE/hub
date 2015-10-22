@@ -1,0 +1,82 @@
+{% load markup_tags %}
+
+<div class="container profile">
+<div class="row">
+  <div class="col-md-8 profile-body">
+    {% if topic.introduction %}
+    <div class="panel">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-info"></i> Introduction</h2>
+        </div>
+        <div class="panel-body">
+            {{ topic.introduction|apply_markup:"markdown" }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="margin-bottom-30"></div>
+
+    {% if featured_list %}
+    <div class="panel">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left"><i class="fa fa-star"></i> Featured Resources</h2>
+        </div>
+        <div class="panel-body">
+            <ul class="list-unstyled social-contacts-v2">
+                {% for ct in featured_list %}
+                <li>
+                    <small class="pull-right">{{ ct.content_type_label }}</small>
+                    <i class="fa fa-star-o rounded"></i>  <a href="{{ ct.get_absolute_url }}">{{ ct.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <div class="margin-bottom-30"></div>
+
+    {% if news_list %}
+    <div class="panel">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-rss-square"></i> Latest News</h2>
+        </div>
+        <div class="panel-body">
+            <ul class="list-unstyled social-contacts-v2">
+                {% for n in news_list %}
+                <li><a href="{{ n.url }}">{{ n.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-md-3">
+        <div class="margin-bottom-20"></div>
+
+        {% if new_resources_list %}
+        <div class="panel">
+            <div class="panel-heading overflow-h">
+                <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-certificate"></i> New Resources</h2>
+            </div>
+            <div class="panel-body">
+            <ul class="list-unstyled">
+                {% for obj in new_resources_list %}
+                <li class="notification">
+                    <div class="overflow-h">
+                        <a href="{{ obj.get_absolute_url }}">
+                            <span><strong>{{ obj.title }}</strong></span>
+                            <small>{{ obj.content_type_label }}<br/>Published {{ obj.published|timesince }} ago</small>
+                        </a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            </div>
+        </div>
+        {% endif %}
+  </div>
+</div>
+</div>

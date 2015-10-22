@@ -6,7 +6,7 @@ $green: #72c02c;
 }
 
 /* --------------------------------------------------------------------
-    Unify Overrides
+    Unify Overrides for Layout
 -------------------------------------------------------------------- */
 
 .header > .container {
@@ -53,67 +53,23 @@ $green: #72c02c;
 
 .search-block-v2 {
     padding: 0 0 30px 0;
+
+    small {
+        display: block;
+        font-size: 12px;
+        line-height: 24px;
+    }
 }
+
+
 
 .s-results .up-ul li {
     color: #999;
 }
 
 /* --------------------------------------------------------------------
-    Browse
+    Generic Classes
 -------------------------------------------------------------------- */
-
-
-.browse-title h2{
-    padding: 20px 0 10px 0;
-    margin: 0;
-    @include title();
-    font-size: 25px;
-
-}
-
-.browse-results {
-    background-color: #D9EAD3;
-}
-
-.filter-bar {
-    border-right: 4px solid white;
-}
-
-.filter-bar {
-    label {
-        display: block;
-    }
-
-    select, input, .select2-container {
-        width: 200px;
-
-    }
-
-    .helptext {
-        display: none;
-    }
-}
-
-.result {
-    h3 {
-        font-size: 1em;
-
-        a:link { color: #2c6bd2; }
-        a:visited { color: #2c6bd2; }
-    }
-}
-
-/* --------------------------------------------------------------------
-    Index
--------------------------------------------------------------------- */
-
-.resource-choice {
-    text-align: right;
-    font-size: 1.1em;
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
 
 .resource-buttons {
     display: flex;
@@ -136,7 +92,36 @@ $green: #72c02c;
     }
 }
 
-.call-action-v1 .call-action-v1-box {
-    margin: 0 auto;
-    width: 70%;
+.no-results {
+    padding:4em 0;
+    text-align: center;
+    font-size:1.3em;
+    color: #aaa;
+    @include title();
+}
+
+/* --------------------------------------------------------------------
+    Per-Page Overrides
+-------------------------------------------------------------------- */
+
+// Hub Overview
+.page-index {
+    .call-action-v1 .call-action-v1-box {
+        margin: 0 auto;
+        width: 70%;
+    }
+}
+
+
+// Browse results for topics
+.page-browse-topic {
+    .search-block-v2 {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .tab-content {
+        padding: 0;
+    }
 }

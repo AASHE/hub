@@ -105,8 +105,8 @@ class BrowseView(ListView):
         if self.content_type_class:
             return self.content_type_class._meta.verbose_name
         if self.request.GET.get('search'):
-            return 'Your Search for "{}"'.format(self.request.GET['search'])
-        return 'Your Search Results'
+            return 'Search for "{}"'.format(self.request.GET['search'])
+        return 'Search Results'
 
     def get_queryset(self):
         return self.get_filterset()(
@@ -122,6 +122,20 @@ class BrowseView(ListView):
             'content_type_list': dict(CONTENT_TYPE_CHOICES),
             'page_title': self.get_title(),
         })
+
+        # Additional toolkit content for topic views
+        if self.sustainabilty_topic:
+            featured = (ContentType.objects.published()
+                                   .filter(topics=self.sustainabilty_topic))
+
+            new_resources = (ContentType.objects.published()
+                                        .order_by('-published')[:10])
+
+            ctx.update({
+                'featured_list': featured,
+                'news_list': [],
+                'new_resources_list': new_resources,
+            })
         return ctx
 
 

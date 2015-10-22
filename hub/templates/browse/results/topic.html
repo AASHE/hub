@@ -1,5 +1,30 @@
 {% extends "browse/results/base.html" %}
 
+{% block body_class %}page-browse-topic{% endblock %}
+
+{% block resource_list_body %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="tab-v1">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#toolkit" aria-expanded="true">Toolkit</a></li>
+            <li class=""><a data-toggle="tab" href="#resources" aria-expanded="false">Resources</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="toolkit" class="tab-pane fade active in">
+               {% include "browse/results/includes/toolkit.html" %}
+            </div>
+            <div id="resources" class="tab-pane fade">
+                <div class="margin-bottom-30"></div>
+                {{ block.super }}
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
 {% block result_list %}
     {% for obj in object_list %}
         {% include "browse/results/includes/item.html" %}

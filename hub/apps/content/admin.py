@@ -29,7 +29,7 @@ class ImageInline(admin.TabularInline):
 
 class BaseContentTypeAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'member_only', 'published')
-    list_filter = ('status', 'member_only', 'created', 'published',)
+    list_filter = ('status', 'member_only', 'featured', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
     exclude = ('content_type',)
@@ -38,6 +38,7 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
 class AllContentTypesAdmin(admin.ModelAdmin):
     list_display = ('status', 'object_link', 'content_type_name', 'created', 'published',)
+    list_filter = ('status', 'member_only', 'featured', 'created', 'published',)
     list_display_links = None
     actions_on_top = False
     actions_on_bottom = False
