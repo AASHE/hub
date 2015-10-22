@@ -21,8 +21,9 @@
                         {% endfor %}
                     </div>
                     <div class="panel-body">
-                        <div><strong>Date Submitted:</strong> {{ object.published|date }}</div>
-                        <div><strong>Last Updated:</strong> {{ object.modified|date }}</div>
+
+                        {% include "browse/details/includes/meta.html" with label="Date Published" value=object.published|date %}
+                        {% include "browse/details/includes/meta.html" with label="Last Updated" value=object.modified|date %}
 
                         <div class="margin-bottom-10"></div>
 
@@ -37,9 +38,7 @@
                             {% for t in object.disciplines.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
                         {% endif %}
 
-                        {% if object.keywords %}
-                        <div><strong>Keywords:</strong> {{ object.keywords }}</div>
-                        {% endif %}
+                        {% include "browse/details/includes/meta.html" with label="Keywords" value=object.keywords %}
 
                         {% block resource_metadata %}{% endblock %}
 
@@ -53,9 +52,10 @@
                 {% block resource_content %}
                 {% endblock %}
 
-                <hr>
+                {# ========================================================== #}
 
-                <!-- Authors -->
+                {% if object.authors.all %}
+                <hr>
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
                         <h2 class="panel-title heading-sm pull-left"><i class="icon icon-user"></i> Authors</h2>
@@ -77,11 +77,12 @@
                         </ul>
                     </div>
                 </div>
+                {% endif %}
 
+                {# ========================================================== #}
 
+                {% if object.websites.all or object.files.all or object.images.all %}
                 <hr>
-
-                <!-- Authors -->
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
                         <h2 class="panel-title heading-sm pull-left"><i class="icon  icon-folder"></i> Additional Resources</h2>
@@ -114,6 +115,7 @@
                         </ul>
                     </div>
                 </div>
+                {% endif %}
 
 
             <!-- /inner body -->

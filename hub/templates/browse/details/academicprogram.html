@@ -1,0 +1,25 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+    {% include "browse/details/includes/meta.html" with label="Program Type" value=object.program_type.name %}
+    {% include "browse/details/includes/meta.html" with label="Founded" value=object.founded %}
+    {% include "browse/details/includes/meta.html" with label="Completion" value=object.completion %}
+    {% include "browse/details/includes/meta.html" with label="Number of Students participating" value=num_students %}
+    {% include "browse/details/includes/meta.html" with label="Distance" value=object.get_distance_display %}
+    {% include "browse/details/includes/meta.html" with label="Commitment" value=object.get_commitment_display %}
+{% endblock %}
+
+{% block resource_content %}
+    {% if object.outcomes %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Outcomes</h2>
+        </div>
+        <div class="panel-body">{{ object.outcomes|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+{% endblock %}

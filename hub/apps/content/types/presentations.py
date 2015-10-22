@@ -23,6 +23,8 @@ class Presentation(ContentType):
     institution = models.ForeignKey(InstitutionalOffice, blank=True, null=True)
     presentation_type = models.CharField(max_length=100, blank=True, null=True,
         choices=PRESENTATION_CHOICES)
+    document = models.FileField(help_text="The following files formats are "
+        "acceptable: PDF, Excel, Word, PPT, JPEG, PNG...", blank=True, null=True)
     abstract = models.TextField(blank=True, null=True)
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)

@@ -1,0 +1,25 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+    {% include "browse/details/includes/meta.html" with label="institution" value=object.institution.name %}
+{% endblock %}
+
+
+{% block resource_content %}
+    {% if object.document %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Document</h2>
+        </div>
+        <div class="panel-body">
+            {% include "browse/details/includes/download.html" with doc=object.document label="Outreach Material" %}
+            <div class="margin-bottom-10"></div>
+            {% include "browse/details/includes/meta.html" with label="Credit" value=object.credit %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

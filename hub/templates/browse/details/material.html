@@ -1,0 +1,26 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+    {% include "browse/details/includes/meta.html" with label="Material Type" value=object.get_material_type_display %}
+    {% include "browse/details/includes/meta.html" with label="Course Name" value=object.course_name %}
+    {% include "browse/details/includes/meta.html" with label="Course Level" value=object.course_level %}
+{% endblock %}
+
+
+{% block resource_content %}
+    {% if object.document %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Document</h2>
+        </div>
+        <div class="panel-body">
+            {% include "browse/details/includes/download.html" with doc=object.document label="Course Material" %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+

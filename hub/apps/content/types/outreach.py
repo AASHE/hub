@@ -1,5 +1,4 @@
 from django.db import models
-from model_utils import Choices
 
 from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
@@ -7,7 +6,6 @@ from .strings import AFFIRMATION
 
 
 class OutreachMaterial(ContentType):
-
     document = models.FileField(help_text="The following files formats are "
         "acceptable: PDF, Excel, Word, PPT, JPEG, PNG...", blank=True, null=True)
     design_credit = models.CharField(max_length=500, blank=True, null=True)

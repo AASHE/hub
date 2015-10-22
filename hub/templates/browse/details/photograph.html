@@ -1,0 +1,27 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+    {% include "browse/details/includes/meta.html" with label="institution" value=object.institution.name %}
+{% endblock %}
+
+{% block resource_content %}
+    {% if object.photo %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Photo</h2>
+        </div>
+        <div class="panel-body">
+            <img src="{{ object.photo.url }}" style="max-width: 100%;"/>
+            <div class="margin-bottom-10"></div>
+            {% include "browse/details/includes/meta.html" with label="Credit" value=object.credit %}
+            <div class="margin-bottom-10"></div>
+            {% include "browse/details/includes/download.html" with doc=object.photo label="Full Size Photo" %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+

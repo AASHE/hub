@@ -13,6 +13,7 @@
      {{ obj.description|truncatewords:30 }}
     <ul class="list-inline down-ul">
         <li title="{{ obj.published|date }} {{ obj.published|time }}">Published {{ obj.published|timesince }} ago</li>
+        <li>{{ obj.content_type_label }}</li>
         <li><a href="{{ obj.get_absolute_url }}">View more</a></li>
     </ul>
 </div>

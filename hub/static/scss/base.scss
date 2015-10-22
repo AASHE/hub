@@ -23,6 +23,8 @@ $green: #72c02c;
         left: 120px;
         white-space: nowrap;
         border-bottom: 3px solid white;
+        @include title();
+        color: #555;
 
         strong { display: none; }
 
