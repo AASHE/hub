@@ -1,9 +1,8 @@
 from logging import getLogger
 
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, ListView, FormView, DetailView
-from django import forms
+from django.views.generic import TemplateView, ListView, DetailView
 from django.shortcuts import render
 
 from ..content.models import ContentType, CONTENT_TYPES, CONTENT_TYPE_CHOICES
@@ -140,21 +139,7 @@ class BrowseView(ListView):
         return ctx
 
 
-class BaseForm(forms.ModelForm):
-    pass
-
-class AddContentTypeView(FormView):
-    template_name = 'browse/add/content_type.html'
-
-    def get_form(self, form_class=None):
-        """
-        Returns an instance of the form to be used in this view.
-        """
-        model = CONTENT_TYPES[self.kwargs['ct']]
-        return forms.modelform_factory(model, BaseForm, exclude=['id'])
-
-
-class ViewResource(DetailView):
+class ResourceView(DetailView):
     queryset = ContentType.objects.published()
 
     def get(self, *args, **kwargs):
@@ -165,7 +150,7 @@ class ViewResource(DetailView):
             obj = self.get_object()
             if obj.member_only:
                 return self._member_only_response()
-        return super(ViewResource, self).get(*args, **kwargs)
+        return super(ResourceView, self).get(*args, **kwargs)
 
     def _member_only_response(self):
         return render(self.request, 'browse/details/member_only.html', status=500)

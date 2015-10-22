@@ -33,7 +33,7 @@
                             {% for t in object.topics.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 
                         <div><strong>Content Type:</strong>
-                            <a href="{% url "browse" ct=object.content_type %}">{{ object.content_type_label }}</a></div>
+                            <a href="{% url "browse:browse" ct=object.content_type %}">{{ object.content_type_label }}</a></div>
 
                         {% if object.disciplines.all %}
                         <div><strong>Discipline{{ object.disciplines.all|length|pluralize }}:</strong>

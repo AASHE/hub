@@ -100,6 +100,20 @@ $green: #72c02c;
     @include title();
 }
 
+.errorlist {
+    font-size: 11px;
+    line-height: 18px;
+
+    margin: 5px 0 5px 0;
+    padding: 0;
+
+    li {
+        margin: 0;
+        padding: 0;
+        color: #c00;
+        list-style: none;
+    }
+}
 /* --------------------------------------------------------------------
     Per-Page Overrides
 -------------------------------------------------------------------- */
@@ -120,6 +134,7 @@ $green: #72c02c;
 .page-detail-member-only {
     h2 {
         margin-bottom: 30px;
+        margin-top: 30px;
 
         .label {
             @include title();

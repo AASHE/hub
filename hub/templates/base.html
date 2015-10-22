@@ -47,7 +47,7 @@
     <div class="header">
     <!-- Header -->
         <div class="container">
-            <a class="logo" href="{% url "browse-home" %}">
+            <a class="logo" href="{% url "home" %}">
                 <img src="{% static "img/logo-small.png" %}" alt="AASHE logo" title=""/>
                 <h1><strong>AASHE</strong> Campus Sustainability Hub</h1>
             </a>
@@ -63,7 +63,7 @@
                 {% endif %}
                 </ul>
 
-                <form class="search" action="{% url "browse" %}" method="GET">
+                <form class="search" action="{% url "browse:browse" %}" method="GET">
                     <input type="text" name="search" class="form-control" placeholder="Search">
                     <button class="btn-u" type="submit">Go</button>
                 </form>

@@ -62,7 +62,7 @@ class ContentType(TimeStampedModel):
         return super(ContentType, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('view', kwargs={'ct': self.content_type,
+        return reverse('browse:view', kwargs={'ct': self.content_type,
             'id': self.pk})
 
     @property

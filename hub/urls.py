@@ -4,19 +4,13 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
-import hub.apps.browse.views as browse
 import hub.apps.api.views as api
+from hub.apps.browse.views import HomeView
 
 urlpatterns = [
-    url(r'^$', browse.HomeView.as_view(), name='browse-home'),
-    url(r'^browse/$', browse.BrowseView.as_view(), name='browse'),
-
-    url(r'^browse/topics/(?P<topic>[\w\-]+)/$', browse.BrowseView.as_view(), name='browse'),
-    url(r'^browse/types/(?P<ct>[\w\-]+)/$', browse.BrowseView.as_view(), name='browse'),
-
-    url(r'^add/(?P<ct>[\w\-]+)/$', browse.AddContentTypeView.as_view(), name='add'),
-
-    url(r'^view/(?P<ct>[\w\-]+)/(?P<id>[\d]+)/$', browse.ViewResource.as_view(), name='view'),
+    url(r'^$', HomeView.as_view(), name='home'),
+    url(r'^browse/', include('hub.apps.browse.urls', namespace='browse')),
+    url(r'^submit-resource/', include('hub.apps.submit.urls', namespace='submit')),
 
     url(r'^api/organizations/$', api.organizations),
 

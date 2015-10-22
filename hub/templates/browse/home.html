@@ -16,7 +16,7 @@
             <div id="topics" class="tab-pane fade active in">
                 <div class="resource-buttons">
                     {% for topic in topic_list %}
-                    <a href="{% url "browse" topic=topic.slug %}" style="background-color: {{ topic.color }}"
+                    <a href="{% url "browse:browse" topic=topic.slug %}" style="background-color: {{ topic.color }}"
                         class="service-block service-block-sea service-or">
                         <div class="service-bg"></div>
                         {{ topic }}
@@ -28,7 +28,7 @@
             <div id="contenttypes" class="tab-pane fade">
                 <div class="resource-buttons">
                 {% for type, label in content_type_list.items %}
-                    <a href="{% url "browse" ct=type %}"
+                    <a href="{% url "browse:browse" ct=type %}"
                         class="service-block service-block-sea service-or">
                         <div class="service-bg"></div>
                         {{ label }}
