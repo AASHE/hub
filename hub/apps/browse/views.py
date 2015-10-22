@@ -4,6 +4,7 @@ from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView, FormView, DetailView
 from django import forms
+from django.shortcuts import render
 
 from ..content.models import ContentType, CONTENT_TYPES, CONTENT_TYPE_CHOICES
 from ..metadata.models import SustainabilityTopic
@@ -157,12 +158,17 @@ class ViewResource(DetailView):
     queryset = ContentType.objects.published()
 
     def get(self, *args, **kwargs):
+        """
+        Render a custom template for member-only content.
+        """
         if not self.request.user.is_authenticated():
             obj = self.get_object()
             if obj.member_only:
-                return HttpResponseForbidden('Member Only')
+                return self._member_only_response()
         return super(ViewResource, self).get(*args, **kwargs)
 
+    def _member_only_response(self):
+        return render(self.request, 'browse/details/member_only.html', status=500)
 
     def get_template_names(self):
         return (

@@ -104,15 +104,6 @@ $green: #72c02c;
     Per-Page Overrides
 -------------------------------------------------------------------- */
 
-// Hub Overview
-.page-index {
-    .call-action-v1 .call-action-v1-box {
-        margin: 0 auto;
-        width: 70%;
-    }
-}
-
-
 // Browse results for topics
 .page-browse-topic {
     .search-block-v2 {
@@ -123,5 +114,16 @@ $green: #72c02c;
 
     .tab-content {
         padding: 0;
+    }
+}
+
+.page-detail-member-only {
+    h2 {
+        margin-bottom: 30px;
+
+        .label {
+            @include title();
+            font-size: 30px;
+        }
     }
 }
