@@ -1,0 +1,62 @@
+{% extends "submit/base.html" %}
+
+{% load static %}
+{% load submit_tags %}
+
+{% block body_class %}page-submit-form{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/css/sky-forms.css" %}">
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css" %}">
+{% endblock css %}
+
+{% block page %}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <form action="" method="POST" class="sky-form" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Base Resource Form -->
+            <header>
+                <i class="fa  fa-check-circle-o"></i>
+                Submit a new {{ content_type_label }}
+            </header>
+            <fieldset>
+            {% for field in form %}
+            {% if field.is_hidden %}
+                {{ field }}
+            {% else %}
+                {% render_field field %}
+            {% endif %}
+            {% endfor %}
+            </fieldset>
+
+            </fieldset>
+
+
+            <!-- Additional Authors -->
+            <header>Authors</header>
+            <fieldset>
+                {% for author_form in author_formset %}
+                    {% for field in author_form %}
+                    {% if field.is_hidden %}
+                        {{ field }}
+                    {% else %}
+                        {% render_field field %}
+                    {% endif %}
+                    {% endfor %}
+                 </fieldset>
+                 {% if not forloop.last %}<fieldset>{% endif %}
+                {% endfor %}
+            </fieldset>
+            <footer>
+                <button type="submit" class="btn-u pull-right">
+                    <i class="fa  fa-check-circle-o"></i>
+                    Submit Resource
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>
+{% endblock %}

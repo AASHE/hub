@@ -1,8 +1,9 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+
+from aashe.aasheauth.views import login, logout
 
 import hub.apps.api.views as api
 from hub.apps.browse.views import HomeView
@@ -14,9 +15,8 @@ urlpatterns = [
 
     url(r'^api/organizations/$', api.organizations),
 
-    url(r'^login/$', auth_views.login, name='login'),
-    url(r'^logout/$', auth_views.logout, name='logout'),
-
+    url(r'^login/$', login, name='login'),
+    url(r'^logout/$', logout, name='logout'),
     url(r'^admin/', include(admin.site.urls)),
 ]
 

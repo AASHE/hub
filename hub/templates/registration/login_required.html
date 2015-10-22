@@ -1,0 +1,25 @@
+{% extends "registration/login.html" %}
+
+{% load markup_tags %}
+{% load humanize %}
+
+{% block body_class %}page-detail-member-only{% endblock %}
+
+{% block page %}
+<div class="profile">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+            <h2><span class="label label-warning"><i class="fa fa-lock"></i> Login Required</span></h2>
+            <div class="call-action-v1">
+                <p>
+                    You need to <a href="{% url "login" %}">login</a> to view
+                    this content.
+                </p>
+                <div class="margin-bottom-30"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ block.super }}
+{% endblock %}

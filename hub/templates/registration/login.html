@@ -9,8 +9,10 @@
 {% block page %}
     <div class="row">
         <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
-            <form class="reg-page" method="POST" action="">
+            <form class="reg-page" method="POST" action="{% url "login" %}">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.POST.next|default:request.path|urlencode }}"/>
+
                 <div class="reg-header">
                     <h2>Login to your account</h2>
                 </div>
@@ -18,13 +20,13 @@
                 {{ form.username.errors }}
                 <div class="input-group margin-bottom-20">
                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" name="{{ form.username.name }}" placeholder="Username" class="form-control">
+                    <input type="text" name="username" placeholder="Username" class="form-control">
                 </div>
 
                 {{ form.password.errors }}
                 <div class="input-group margin-bottom-20">
                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <input type="text" name="{{ form.password.name }}" placeholder="Password" class="form-control">
+                    <input type="password" name="password" placeholder="Password" class="form-control">
                 </div>
 
                 <div class="row">

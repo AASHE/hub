@@ -142,3 +142,10 @@ $green: #72c02c;
         }
     }
 }
+
+.page-submit-form {
+    textarea {
+        // Django makes textareas pretty large by default
+        height: 200px !important;
+    }
+}

@@ -1,4 +1,5 @@
 {% load markup_tags %}
+{% load browse_tags %}
 
 <div class="container profile">
 <div class="row">
@@ -26,7 +27,8 @@
                 {% for ct in featured_list %}
                 <li>
                     <small class="pull-right">{{ ct.content_type_label }}</small>
-                    <i class="fa fa-star-o rounded"></i>  <a href="{{ ct.get_absolute_url }}">{{ ct.title }}</a>
+                    <i class="fa fa-star-o rounded"></i>
+                    <a href="{{ ct.get_absolute_url }}">{{ ct.title }}</a>
                 </li>
                 {% endfor %}
             </ul>

@@ -1,0 +1,11 @@
+<section>
+    {{ field.errors }}
+    <label class="checkbox">
+        {{ field }}
+        <i></i>
+        {{ field.label }}
+        {% if field.help_text %}
+            <div class="note"><strong>Note:</strong> {{ field.help_text }}</div>
+        {% endif %}
+    </label>
+</section>

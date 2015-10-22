@@ -42,7 +42,6 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
-
 <div class="wrapper">
     <div class="header">
     <!-- Header -->
@@ -55,6 +54,7 @@
             <div class="topbar">
                 <ul class="loginbar pull-right">
                 {% if user.is_authenticated %}
+                    <li>{{ user.username }}</li>
                     <li><a href="http://www.aashe.org/user">My Account</a></li>
                     <li class="topbar-devider"></li>
                     <li><a href="{% url "logout" %}">Logout</a></li>

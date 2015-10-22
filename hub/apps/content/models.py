@@ -1,9 +1,17 @@
+from __future__ import unicode_literals
+
+from logging import getLogger
+
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
+
+from hub.permissions import get_aashe_member_flag
+
+logger = getLogger(__name__)
 
 
 class ContentTypeManager(models.Manager):
@@ -26,9 +34,15 @@ class ContentType(TimeStampedModel):
         ('published', 'Published'),
     )
 
+    PERMISSION_CHOICES = Choices(
+        ('open', 'Open - No login Required'),
+        ('login', 'Public - Login Required'),
+        ('member', 'Member - AASHE Member Status Required'),
+    )
+
     content_type = models.CharField(max_length=40)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
-    member_only = models.BooleanField(default=True)
+    permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
     featured = models.BooleanField(default=False)
     published = models.DateTimeField(blank=True, null=True)
     title = models.CharField(max_length=500)
@@ -90,6 +104,31 @@ class ContentType(TimeStampedModel):
         FilterSet.
         """
         return None
+
+    def permission_flag(self, user):
+        """
+        Returns a corresponding "Login Required" or "Member required"
+        flag based on the object permission and the given user.
+        """
+        # Open Document has no flag
+        if self.permission == self.PERMISSION_CHOICES.open:
+            return None
+
+        # If the user is logged in, and the member permission is met,
+        # all fine, no label.
+        if user.is_authenticated():
+            is_aashe_member = get_aashe_member_flag(user)
+            if (self.permission == self.PERMISSION_CHOICES.member and
+            not is_aashe_member):
+                return 'member-required'
+            else:
+                return None
+
+        # We know the user is not logged in, so give a proper label, either
+        # member or just login required.
+        if self.permission == self.PERMISSION_CHOICES.member:
+            return 'member-required'
+        return 'login-required'
 
 
 @python_2_unicode_compatible

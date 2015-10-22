@@ -37,6 +37,8 @@ INSTALLED_APPS = (
     'hub',
     'hub.apps.content',
     'hub.apps.metadata',
+    'hub.apps.browse',
+    'hub.apps.submit',
 
     'django_tables2',
     'django_markup',

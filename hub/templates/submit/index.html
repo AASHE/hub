@@ -1,0 +1,40 @@
+{% extends "submit/base.html" %}
+
+{% block body_class %}page-submit-index{% endblock %}
+
+{% block page %}
+<div class="search-block-v2">
+    <div class="container">
+        <div class="col-md-8 col-md-offset-2">
+            <h2>Select the type of resource you want to submit.</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+        <div class="resource-buttons">
+        {% for type, label in content_type_list.items %}
+            <a href="{% url "submit:form" ct=type %}"
+                class="service-block service-block-sea service-or">
+                <div class="service-bg"></div>
+                {{ label }}
+            </a>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="call-action-v1">
+        <div class="margin-bottom-30"></div>
+        <p>Guidlines for submitting resources:</p>
+        <p>Resources accepted into the Campus Sustainability Hub must
+            related to campus sustainability and be relevant to AASHE
+            member stakeholders.</p>
+        <div class="margin-bottom-30"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

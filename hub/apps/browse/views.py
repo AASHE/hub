@@ -1,14 +1,16 @@
+from __future__ import unicode_literals
+
 from logging import getLogger
 
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, ListView, DetailView
-from django.shortcuts import render
+from django.http import Http404, HttpResponseForbidden
+from django.shortcuts import get_object_or_404, render
+from django.views.generic import DetailView, ListView, TemplateView
+from django.db.models import ObjectDoesNotExist
 
-from ..content.models import ContentType, CONTENT_TYPES, CONTENT_TYPE_CHOICES
+from hub.permissions import get_aashe_member_flag
+from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic
 from .filter import GenericFilterSet
-
 
 logger = getLogger(__name__)
 
@@ -16,6 +18,8 @@ logger = getLogger(__name__)
 class HomeView(TemplateView):
     """
     The Home view.
+
+    @permisson: HomeView is visible for everybody
     """
     template_name = 'browse/home.html'
 
@@ -27,6 +31,12 @@ class HomeView(TemplateView):
         })
         return ctx
 
+# List of content type keys which don't require Login This only enables the
+# 'browse' view of the content type. Each object must still be separately set to
+# `member_only=False` to make it open.
+PUBLIC_CONTENT_TYPES = (
+    'academicprogram',
+)
 
 class BrowseView(ListView):
     """
@@ -38,15 +48,20 @@ class BrowseView(ListView):
 
         - topic view, if a topic is set, we render a custom template located
           in `browse/topic/<name>.html`.
+
+    @permission: BrowseView generally requires Login, except:
+
+        - The AcademicProgram content type view is open
+        - The Toolkit tab is open, all others not visible
     """
     template_name = 'browse/browse.html'
     content_type_class = None
     sustainabilty_topic = None
 
-    def get(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs):
         """
-        Load some generic objects into the class so we have it globally
-        available.
+        Persmission handling and load some generic objects into the class so we
+        have it globally available.
         """
         # Load the specified SustainabilityTopic
         if self.kwargs.get('topic'):
@@ -61,7 +76,19 @@ class BrowseView(ListView):
             self.content_type_class = CONTENT_TYPES[self.kwargs['ct']]
             self.content_type_class.slug = self.kwargs.get('ct')
 
-        return super(BrowseView, self).get(*args, **kwargs)
+        # Search results do generally need LoginRequired, however there
+        # are certain ContentTypes defined in PUBLIC_CONTENT_TYPES which
+        # don't even need login, they are browseable by everyone.
+        if (self.content_type_class and
+            self.content_type_class.slug in PUBLIC_CONTENT_TYPES):
+            return super(BrowseView, self).dispatch(*args, **kwargs)
+
+        # If it was not a PUBLIC content type, we do need login at least.
+        if not self.request.user.is_authenticated():
+            return render(self.request, 'registration/login_required.html',
+                status=HttpResponseForbidden.status_code)
+
+        return super(BrowseView, self).dispatch(*args, **kwargs)
 
     def get_template_names(self):
         """
@@ -140,20 +167,48 @@ class BrowseView(ListView):
 
 
 class ResourceView(DetailView):
+    """
+    Actual Detail view of ContentType objects.
+
+    @permisson:
+
+        - Login Required
+        - Each ContentType has a `member_only` attribut we will check too.
+          Some objects might only need Login.
+    """
     queryset = ContentType.objects.published()
 
-    def get(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs):
         """
-        Render a custom template for member-only content.
-        """
-        if not self.request.user.is_authenticated():
-            obj = self.get_object()
-            if obj.member_only:
-                return self._member_only_response()
-        return super(ResourceView, self).get(*args, **kwargs)
+        Check if this object is `Member Only`. If so, only AASHE members and
+        Auth superusers are able to see it.
 
-    def _member_only_response(self):
-        return render(self.request, 'browse/details/member_only.html', status=500)
+        Other than that, at least a login is required, which is provided by
+        the `LoginRequiredMixin`.
+        """
+        obj = self.get_object()
+
+        # Check if this object is open to anybody
+        if obj.permission == ContentType.PERMISSION_CHOICES.open:
+            return super(ResourceView, self).dispatch(*args, **kwargs)
+
+        # The user needs to be at least logged in from here
+        if not self.request.user.is_authenticated():
+            return render(self.request, 'registration/login_required.html',
+                status=HttpResponseForbidden.status_code)
+
+        # If the object only needs login, we're fine and can display it:
+        if obj.permission == ContentType.PERMISSION_CHOICES.login:
+            return super(ResourceView, self).dispatch(*args, **kwargs)
+
+        # User is either member, or superuser, so its' fine to view
+        if get_aashe_member_flag(self.request.user):
+            return super(ResourceView, self).dispatch(*args, **kwargs)
+
+        # Otherwise, and finally, we deny.
+        return render(self.request, 'registration/member_required.html',
+            status=HttpResponseForbidden.status_code)
+
 
     def get_template_names(self):
         return (

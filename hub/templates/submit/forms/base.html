@@ -1,0 +1,12 @@
+<section>
+    <label class="label" for="{{ field.auto_id }}">{{ field.label }}:</label>
+    <label class="{% block class %}input{% endblock %}">
+        {{ field.errors }}
+        {% block pre_field %}{% endblock %}
+        {% block field %}{{ field }}{% endblock %}
+        {% block post_field %}{% endblock %}
+        {% if field.help_text %}
+            <div class="note"><strong>Note:</strong> {{ field.help_text }}</div>
+        {% endif %}
+    </label>
+</section>
