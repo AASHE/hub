@@ -23,7 +23,7 @@
                 Submit a new {{ content_type_label }}
             </header>
             <fieldset>
-            {% for field in form %}
+            {% for field in document_form %}
             {% if field.is_hidden %}
                 {{ field }}
             {% else %}
@@ -32,24 +32,29 @@
             {% endfor %}
             </fieldset>
 
-            </fieldset>
-
-
             <!-- Additional Authors -->
-            <header>Authors</header>
+            <header>Add up to three Authors to the Document</header>
             <fieldset>
+                {{ author_formset.management_form }}
                 {% for author_form in author_formset %}
                     {% for field in author_form %}
                     {% if field.is_hidden %}
                         {{ field }}
-                    {% else %}
-                        {% render_field field %}
                     {% endif %}
                     {% endfor %}
+                    <div class="row">
+                        <div class="col-md-12">{% render_field author_form.is_author %}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">{% render_field author_form.name %}</div>
+                        <div class="col-md-4">{% render_field author_form.title %}</div>
+                        <div class="col-md-4">{% render_field author_form.email %}</div>
+                    </div>
                  </fieldset>
                  {% if not forloop.last %}<fieldset>{% endif %}
                 {% endfor %}
             </fieldset>
+
             <footer>
                 <button type="submit" class="btn-u pull-right">
                     <i class="fa  fa-check-circle-o"></i>

@@ -14,14 +14,18 @@
                     </span>
                 </a>
             </li>
-            <li class="active"><a data-toggle="tab" href="#toolkit" aria-expanded="true">Toolkit</a></li>
-            <li class=""><a data-toggle="tab" href="#resources" aria-expanded="false">Resources</a></li>
+            <li class="{% if not request.GET %}active{% endif %}">
+                <a data-toggle="tab" href="#toolkit" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Toolkit</a>
+            </li>
+            <li class="{% if request.GET %}active{% endif %}">
+                <a data-toggle="tab" href="#resources" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Resources</a>
+            </li>
         </ul>
         <div class="tab-content">
-            <div id="toolkit" class="tab-pane fade active in">
+            <div id="toolkit" class="tab-pane fade {% if not request.GET %}active in{% endif %}">
                {% include "browse/results/includes/toolkit.html" %}
             </div>
-            <div id="resources" class="tab-pane fade">
+            <div id="resources" class="tab-pane fade {% if request.GET %}active in{% endif %}">
                 <div class="margin-bottom-30"></div>
                 {{ block.super }}
             </div>

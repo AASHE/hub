@@ -1,7 +1,7 @@
 from django import forms
 
 
-from ..content.models import Author
+from ..content.models import Author, File, Image, Website
 
 class SubmitResourceForm(forms.ModelForm):
     """
@@ -13,7 +13,7 @@ class SubmitResourceForm(forms.ModelForm):
             'id',
             'content_type',
             'status',
-            'member_only',
+            'permission',
             'featured',
             'published',
             'organizations'
@@ -32,3 +32,37 @@ class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
         exclude = ('id', 'ct', 'organization')
+
+    def save(self, instance):
+        self.instance.ct = instance
+        return super(AuthorForm, self).save()
+
+
+class FileForm(forms.ModelForm):
+    class Meta:
+        model = File
+        exclude = ('id', 'ct')
+
+    def save(self, instance):
+        self.instance.ct = instance
+        return super(AuthorForm, self).save()
+
+
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        exclude = ('id', 'ct')
+
+    def save(self, instance):
+        self.instance.ct = instance
+        return super(AuthorForm, self).save()
+
+
+class WebsiteForm(forms.ModelForm):
+    class Meta:
+        model = Website
+        exclude = ('id', 'ct')
+
+    def save(self, instance):
+        self.instance.ct = instance
+        return super(AuthorForm, self).save()

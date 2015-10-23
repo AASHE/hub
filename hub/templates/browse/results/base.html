@@ -1,7 +1,16 @@
 {% extends "browse/base.html" %}
 
+{% load submit_tags %}
+{% load static %}
+
+{% block body_class %}page-browse{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/css/sky-forms.css" %}">
+    <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css" %}">
+{% endblock css %}
+
 {% block page %}
-<form method="GET" action="">
 <div class="search-block-v2">
     <div class="container">
         <div class="col-md-6 col-md-offset-3">
@@ -17,15 +26,20 @@
 <div class="container s-results margin-bottom-50">
     <div class="row">
         <div class="col-md-3 hidden-xs related-search">
-            {{ object_list.form }}
-            <input type="submit"/>
+            {% include "browse/results/includes/filter.html" %}
         </div>
         <div class="col-md-9">
             <span class="results-number">
                 {{ object_list.count }} result{{ object_list.count|pluralize }}
-                {% if request.GET %} | <a href=".">Show all</a>{% endif %}
+                {% if request.GET and not request.GET.search%} | <a href=".">Show all</a>{% endif %}
             </span>
-          {% block result_list %}{% endblock %}
+          {% block result_list %}
+            {% for obj in object_list %}
+                {% include "browse/results/includes/item.html" %}
+            {% empty %}
+                <div class="no-results">No resources match your current filter settings.</div>
+            {% endfor %}
+          {% endblock %}
 
           <div class="margin-bottom-30"></div>
           <div class="text-left">
@@ -46,5 +60,4 @@
     </div>
 </div>
 {% endblock %}
-</form>
 {% endblock %}

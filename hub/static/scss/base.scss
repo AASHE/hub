@@ -118,18 +118,35 @@ $green: #72c02c;
     Per-Page Overrides
 -------------------------------------------------------------------- */
 
-// Browse results for topics
+.page-browse-topic,
+.page-browse-content-type,
+.page-browse-search {
+    .sky-form {
+        border: none !important;
+
+        fieldset {
+            padding: 0;
+        }
+    }
+}
+
 .page-browse-topic {
+    .field_id_topics { display: none; }
+
+    .tab-content { padding: 0; }
+
     .search-block-v2 {
         margin-bottom: 0;
         padding-bottom: 0;
         border-bottom: none;
     }
-
-    .tab-content {
-        padding: 0;
-    }
 }
+
+.page-browse-content-type {
+    .field_id_content_type { display: none; }
+}
+
+.page-browse-search {}
 
 .page-detail-member-only {
     h2 {

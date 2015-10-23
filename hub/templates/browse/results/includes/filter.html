@@ -1,0 +1,15 @@
+{% load submit_tags %}
+
+<form method="GET" action="" class="sky-form">
+    <h3>Filter results</h3>
+    <fieldset>
+    {% for field in object_list.form %}
+    {% if field.is_hidden %}
+        {{ field }}
+    {% else %}
+        {% render_field field %}
+    {% endif %}
+    {% endfor %}
+    <input type="submit"/>
+    </fieldset>
+</form>

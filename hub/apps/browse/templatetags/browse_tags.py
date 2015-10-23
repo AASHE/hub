@@ -22,5 +22,5 @@ def permission_flag(obj, user):
     if flag == 'login-required':
         return mark_safe(label.format(label='Login Required'))
     if flag == 'member-required':
-        return mark_safe(label.format(label='Member Required'))
+        return mark_safe(label.format(label='Membership Required'))
     return ''

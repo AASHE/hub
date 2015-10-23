@@ -105,14 +105,13 @@ class GenericFilterSet(filters.FilterSet):
     filters dynamically per content type, using above   `CONTENT_TYPE_FILTERS`
     mapping.
     """
-    search = SearchFilter()
+    search = SearchFilter(widget=forms.HiddenInput)
     topics = TopicFilter()
     content_type = ContentTypesFilter()
     organizations = filters.MultipleChoiceFilter
     size = StudentFteFilter()
     published = filters.DateRangeFilter()
     country = CountryFilter()
-    state = filters.ChoiceFilter()
 
     class Meta:
         model = ContentType

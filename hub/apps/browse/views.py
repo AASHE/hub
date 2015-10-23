@@ -2,10 +2,10 @@ from __future__ import unicode_literals
 
 from logging import getLogger
 
-from django.http import Http404, HttpResponseForbidden
+from django.core.urlresolvers import reverse
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
-from django.db.models import ObjectDoesNotExist
 
 from hub.permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES, ContentType
@@ -76,6 +76,12 @@ class BrowseView(ListView):
             self.content_type_class = CONTENT_TYPES[self.kwargs['ct']]
             self.content_type_class.slug = self.kwargs.get('ct')
 
+        # If no content type and no topic is set, we need at least a
+        # search keyword:
+        if (not self.sustainabilty_topic and not self.content_type_class
+            and not self.request.GET.get('search')):
+            return HttpResponseRedirect(reverse('home'))
+
         # Search results do generally need LoginRequired, however there
         # are certain ContentTypes defined in PUBLIC_CONTENT_TYPES which
         # don't even need login, they are browseable by everyone.
@@ -95,9 +101,13 @@ class BrowseView(ListView):
         If a specific 'topic' is set in the url name, we'll render a template
         for this. In all other cases we have a generic browse result template.
         """
-        return self.sustainabilty_topic \
-            and ('browse/results/topic.html',) \
-             or ('browse/results/other.html',)
+        if self.sustainabilty_topic:
+            return ('browse/results/topic.html',)
+
+        if self.content_type_class:
+            return ('browse/results/content_type.html',)
+
+        return ('browse/results/search.html',)
 
     def get_filterset(self):
         """
@@ -107,7 +117,8 @@ class BrowseView(ListView):
         if self.content_type_class and hasattr(
         self.content_type_class, 'get_custom_filterset'):
             return self.content_type_class.get_custom_filterset()
-        return GenericFilterSet
+        else:
+            return GenericFilterSet
 
     def get_filterset_data(self):
         """
@@ -153,10 +164,11 @@ class BrowseView(ListView):
         # Additional toolkit content for topic views
         if self.sustainabilty_topic:
             featured = (ContentType.objects.published()
-                                   .filter(topics=self.sustainabilty_topic))
+                .filter(topics=self.sustainabilty_topic))
 
             new_resources = (ContentType.objects.published()
-                                        .order_by('-published')[:10])
+                .filter(topics=self.sustainabilty_topic)
+                .order_by('-published')[:10])
 
             ctx.update({
                 'featured_list': featured,

@@ -1,14 +1,14 @@
 from logging import getLogger
 
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.views.generic import TemplateView, FormView
 from django import forms
 from django.core.urlresolvers import reverse
-from django.forms.models import modelformset_factory, formset_factory
+from django.forms.models import formset_factory
 
 from ...permissions import LoginRequiredMixin
-from ..content.models import CONTENT_TYPES, CONTENT_TYPE_CHOICES, Author
-from .forms import SubmitResourceForm, AuthorForm
+from ..content.models import CONTENT_TYPES, CONTENT_TYPE_CHOICES
+from .forms import AuthorForm, SubmitResourceForm
 
 logger = getLogger(__name__)
 
@@ -33,6 +33,25 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         self.content_type_class.slug = self.kwargs.get('ct')
         return super(SubmitFormView, self).dispatch(*args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        forms = self.get_form()
+        return self.render_to_response(self.get_context_data(**forms))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST of multiple files.
+        """
+        forms = self.get_form()
+        document_form, author_formset = forms.values()
+
+        if document_form.is_valid() and author_formset.is_valid():
+            instance = document_form.save(self.request)
+            for form in author_formset:
+                form.save(instance=instance)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(**forms))
+
     def get_success_url(self):
         return reverse('submit:thank-you')
 
@@ -40,18 +59,31 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         ctx = super(SubmitFormView, self).get_context_data(**kwargs)
         ctx.update({
             'content_type_label': self.content_type_class._meta.verbose_name,
-            'author_formset': formset_factory(AuthorForm, min_num=0, max_num=3, extra=3),
         })
         return ctx
 
     def get_form(self, form_class=None):
         """
-        Returns an instance of the form to be used in this view.
+        Collection of our base DocumentForm and all related formsets.
         """
-        model = self.content_type_class
-        form = forms.modelform_factory(model, SubmitResourceForm)
-        return form(**self.get_form_kwargs())
+        DocumentForm = forms.modelform_factory(
+            self.content_type_class,
+            SubmitResourceForm)
 
-    def form_valid(self, form):
-        self.object = form.save(self.request)
-        return super(SubmitFormView, self).form_valid(form)
+        AuthorFormset = formset_factory(AuthorForm, max_num=3, extra=3)
+
+        document_form = DocumentForm(prefix='document', **self.get_form_kwargs())
+        author_formset = AuthorFormset(prefix='authors', **self.get_form_kwargs())
+
+        return {
+            'document_form': document_form,
+            'author_formset': author_formset,
+        }
+
+    def get_form_kwargs(self, **kwargs):
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        return kwargs
