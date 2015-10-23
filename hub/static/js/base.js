@@ -6,30 +6,26 @@ jQuery(document).ready(function() {
     // });
 
     // $("#id_organizations").select2({
-    //   ajax: {
-    //     url: "/api/organizations",
-    //     dataType: 'json',
-    //     delay: 250,
-    //     placeholder: "Type to find organization",
-
-    //       data: function (params) {
-    //         var queryParameters = {
-    //           q: params
-    //         }
-    //         return queryParameters;
-    //       },
-    //     processResults: function (data, page) {
-    //       // parse the results into the format expected by Select2.
-    //       // since we are using custom formatting functions we do not need to
-    //       // alter the remote JSON data
-    //       return {
-    //         results: data
-    //       };
+    //     ajax: {
+    //         url: "/api/organizations",
+    //         dataType: 'json',
+    //         delay: 250,
+    //         placeholder: "Type to find organization",
+    //         data: function (params) {
+    //             return {q: params };
+    //         },
+    //         processResults: function (data, page) {
+    //             return {results: data};
+    //         },
+    //         cache: true
     //     },
-    //     cache: true
-    //   },
-    //   escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-    //   minimumInputLength: 2,
+    //     escapeMarkup: function (markup) {
+    //         return markup;
+    //     },
+    //     data: [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }],
+    //     minimumInputLength: 2,
+    //     theme: 'classic',
+    //     multiple: true
     // });
 
 });

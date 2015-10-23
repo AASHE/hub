@@ -1,10 +1,29 @@
 from collections import OrderedDict
+from itertools import chain
 
 import django_filters as filters
 from django import forms
+from django.utils.encoding import force_text
 
 from ..content.models import CONTENT_TYPE_CHOICES, ContentType
-from ..metadata.models import Organization, SustainabilityTopic, ProgramType
+from ..metadata.models import Organization, ProgramType, SustainabilityTopic
+
+
+class LeanSelectMultiple(forms.SelectMultiple):
+    """
+    Works like a regular SelectMultiple widget but only renders a list of
+    initial values, rather than the full list of choices.
+    """
+
+    def render_options(self, choices, selected_choices):
+        # Normalize to strings.
+        selected_choices = set(force_text(v) for v in selected_choices)
+        output = []
+        for option_value, option_label in chain(self.choices, choices):
+            if not force_text(option_value) in selected_choices:
+                continue
+            output.append(self.render_option(selected_choices, option_value, option_label))
+        return '\n'.join(output)
 
 #==============================================================================
 # Generic Filter
@@ -77,8 +96,6 @@ class StudentFteFilter(filters.ChoiceFilter):
 
 
 class CountryFilter(filters.ChoiceFilter):
-    field_class = forms.fields.MultipleChoiceField
-
     def __init__(self, *args, **kwargs):
         countries = (Organization.objects
             .exclude(country='')
@@ -98,6 +115,35 @@ class CountryFilter(filters.ChoiceFilter):
         return qs.filter(organizations__country=value)
 
 
+class PublishedFilter(filters.ChoiceFilter):
+    def __init__(self, *args, **kwargs):
+        # Find the minimum and maximum year of all topics and put them
+        # in a range for choices.
+
+        min_year = ContentType.objects.published().order_by('published').first()
+        max_year = ContentType.objects.published().order_by('-published').first()
+
+        if not min_year or not max_year:
+            year_choices = ((2015, 2015),)
+        elif min_year.published.year == max_year.published.year:
+            year_choices = ((min_year.published.year, min_year.published.year),)
+        else:
+            year_choices = [(i, i) for i in range(
+                min_year.published.year, max_year.published.year)]
+
+        print 'xxx', year_choices
+        kwargs.update({
+            'choices': year_choices,
+            'label': 'Published',
+        })
+        super(PublishedFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(published__year=value)
+
+
 class GenericFilterSet(filters.FilterSet):
     """
     The genric Filter form handling the filtering for all views: search, content
@@ -108,9 +154,8 @@ class GenericFilterSet(filters.FilterSet):
     search = SearchFilter(widget=forms.HiddenInput)
     topics = TopicFilter()
     content_type = ContentTypesFilter()
-    organizations = filters.MultipleChoiceFilter
     size = StudentFteFilter()
-    published = filters.DateRangeFilter()
+    published = PublishedFilter()
     country = CountryFilter()
 
     class Meta:
@@ -118,9 +163,11 @@ class GenericFilterSet(filters.FilterSet):
         fields = []  # Don't set any automatic fields, we already defined
                      # a specific list above.
 
+
 #==============================================================================
 # Academic Program
 #==============================================================================
+
 
 class ProgramTypeFilter(filters.ChoiceFilter):
     """

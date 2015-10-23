@@ -114,6 +114,11 @@ $green: #72c02c;
         list-style: none;
     }
 }
+
+.select2-container {
+    width: 100%;
+}
+
 /* --------------------------------------------------------------------
     Per-Page Overrides
 -------------------------------------------------------------------- */
@@ -123,6 +128,8 @@ $green: #72c02c;
 .page-browse-search {
     .sky-form {
         border: none !important;
+
+        .note { font-weight: normal; }
 
         fieldset {
             padding: 0;
