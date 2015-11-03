@@ -9,6 +9,8 @@ from ..content.models import CONTENT_TYPE_CHOICES, ContentType
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
 
 
+ALL = (('', 'All'),)
+
 class LeanSelectMultiple(forms.SelectMultiple):
     """
     Works like a regular SelectMultiple widget but only renders a list of
@@ -102,7 +104,7 @@ class CountryFilter(filters.ChoiceFilter):
             .order_by('country')
             .values_list('country', 'country')
             .distinct())
-
+        countries = ALL + tuple(countries)
         kwargs.update({
             'choices': countries,
             'label': 'Country',
@@ -130,8 +132,7 @@ class PublishedFilter(filters.ChoiceFilter):
         else:
             year_choices = [(i, i) for i in range(
                 min_year.published.year, max_year.published.year)]
-
-        print 'xxx', year_choices
+        year_choices = ALL + year_choices
         kwargs.update({
             'choices': year_choices,
             'label': 'Published',
@@ -156,7 +157,7 @@ class GenericFilterSet(filters.FilterSet):
     content_type = ContentTypesFilter()
     size = StudentFteFilter()
     published = PublishedFilter()
-    country = CountryFilter()
+    country = CountryFilter(required=False)
 
     class Meta:
         model = ContentType
