@@ -219,5 +219,5 @@ CONTENT_TYPES = {
 # magic, it just tries to get the Content type Name out of `meta.verbose_name`,
 # otherwise it tries to auto-generate the name.
 CONTENT_TYPE_CHOICES = Choices(
-    *[(j, k._meta.verbose_name) for j, k in CONTENT_TYPES.items()]
+    *[(j, k._meta.verbose_name) for j, k in sorted(CONTENT_TYPES.items())]
 )
