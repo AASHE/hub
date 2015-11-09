@@ -1,8 +1,14 @@
 from django.contrib import admin
 from . import models
 
+class SustainabilityTopicFavoriteAdmin(admin.TabularInline):
+    model = models.SustainabilityTopicFavorite
+    raw_id_fields = ('ct',)
+    extra = 0
+
 
 class SustainabilityTopicAdmin(admin.ModelAdmin):
+    inlines = (SustainabilityTopicFavoriteAdmin,)
     prepopulated_fields = {'slug': ('name',)}
 
 

@@ -14,7 +14,6 @@ class SubmitResourceForm(forms.ModelForm):
             'content_type',
             'status',
             'permission',
-            'featured',
             'published',
             'organizations'
         )

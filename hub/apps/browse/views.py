@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from logging import getLogger
 
-from django.core.paginator import InvalidPage
 from django.core.urlresolvers import reverse
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
@@ -11,7 +10,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 
 from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES, ContentType
-from ..metadata.models import SustainabilityTopic
+from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
 from .filter import GenericFilterSet
 
 logger = getLogger(__name__)
@@ -179,8 +178,9 @@ class BrowseView(ListView):
 
         # Additional toolkit content for topic views
         if self.sustainabilty_topic:
-            featured = (ContentType.objects.published()
-                .filter(topics=self.sustainabilty_topic))
+            featured_ids = SustainabilityTopicFavorite.objects.filter(
+                topic=self.sustainabilty_topic).values_list('ct', flat=True)
+            featured = ContentType.objects.published().filter(id__in=featured_ids)
 
             new_resources = (ContentType.objects.published()
                 .filter(topics=self.sustainabilty_topic)

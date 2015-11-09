@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+from model_utils.models import TimeStampedModel
 from iss.models import Organization as ISSOrganization
 
 
@@ -26,6 +27,15 @@ class SustainabilityTopic(MetadataBaseModel):
         ordering = ('color', 'name',)
         verbose_name = 'Sustainability Topic'
         verbose_name_plural = 'Sustainability Topics'
+
+
+@python_2_unicode_compatible
+class SustainabilityTopicFavorite(TimeStampedModel):
+    topic = models.ForeignKey(SustainabilityTopic, verbose_name='Sustainability Topic')
+    ct = models.ForeignKey('content.ContentType', verbose_name='Content Type')
+
+    def __str__(self):
+        return '{} in {}'.format(self.ct, self.topic)
 
 
 class AcademicDiscipline(MetadataBaseModel):

@@ -37,14 +37,19 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
 
 class AllContentTypesAdmin(admin.ModelAdmin):
-    list_display = ('status', 'object_link', 'content_type_name', 'created', 'published',)
-    list_filter = ('status', 'permission', 'created', 'published',)
-    list_display_links = None
+    list_display = ('select_link', 'status', 'object_link', 'content_type_name', 'created', 'published',)
+    list_filter = ('status', 'topics', 'permission', 'created', 'published',)
+    list_display_links = ('select_link',)
     actions_on_top = False
     actions_on_bottom = False
 
     def has_add_permission(self, request):
         return False
+
+    def select_link(self, obj):
+        return 'Favorite'
+    select_link.allow_tags = True
+    select_link.short_description = ''
 
     def object_link(self, obj):
         ct_name = CONTENT_TYPES[obj.content_type]._meta.model_name.lower()
