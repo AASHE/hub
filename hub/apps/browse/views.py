@@ -2,11 +2,12 @@ from __future__ import unicode_literals
 
 from logging import getLogger
 
+from django.core.paginator import InvalidPage
 from django.core.urlresolvers import reverse
+from django.db.models import ObjectDoesNotExist
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
-from django.db.models import ObjectDoesNotExist
 
 from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES, ContentType
@@ -58,6 +59,8 @@ class BrowseView(ListView):
     template_name = 'browse/browse.html'
     content_type_class = None
     sustainabilty_topic = None
+    paginate_by = 2
+    filterset_form = None
 
     def dispatch(self, *args, **kwargs):
         """
@@ -148,13 +151,25 @@ class BrowseView(ListView):
         return 'Search Results'
 
     def get_queryset(self):
-        return self.get_filterset()(
+        """
+        Normally a filterset would be a FilterSet object, where its iterator
+        runs over the integrated queryset, so it pretty much acts like a regular
+        queryset. The downside is that we can't run pagination/sorting on this
+        filterset, like we'd do on a regular filterset. Therefor we transform it
+        back, and only return the actual queryset, while we put the attached
+        filter-form aside and load it separately into context.
+        """
+        filterset = self.get_filterset()(
             self.get_filterset_data(),
             queryset=ContentType.objects.published())
+        self.filterset_form = filterset.form  # Load form into class, bring it
+                                              # back below in context.
+        return filterset.qs
 
     def get_context_data(self, **kwargs):
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         ctx.update({
+            'object_list_form': self.filterset_form,
             'topic': self.sustainabilty_topic,
             'topic_list': SustainabilityTopic.objects.all(),
             'content_type': self.content_type_class,

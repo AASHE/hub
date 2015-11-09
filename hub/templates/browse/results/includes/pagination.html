@@ -1,0 +1,16 @@
+{% with request.build_absolute_uri as uri %}
+<div class="margin-bottom-30"></div>
+<div class="text-left">
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li><a href="{{ uri }}{% if "?" in uri %}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}">«</a></li>
+    {% endif %}
+    {% for p in page_obj.paginator.page_range %}
+    <li {% if page_obj.number == p %}class="active"{% endif %}><a href="{{ uri }}{% if "?" in uri %}&{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <li><a href="{{ uri }}{% if "?" in uri %}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">»</a></li>
+    {% endif %}
+</ul>
+</div>
+{% endwith %}

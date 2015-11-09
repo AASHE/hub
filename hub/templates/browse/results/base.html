@@ -41,21 +41,7 @@
             {% endfor %}
           {% endblock %}
 
-          <div class="margin-bottom-30"></div>
-          <div class="text-left">
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}">«</a></li>
-                {% endif %}
-                {% for p in page_obj.paginator.page_range %}
-                <li {% if page_obj.number == p %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
-                {% endfor %}
-                {% if page_obj.has_next %}
-                <li><a href="?page={{ page_obj.next_page_number }}">»</a></li>
-                {% endif %}
-            </ul>
-        </div>
-
+          {% include "browse/results/includes/pagination.html" %}
         </div>
     </div>
 </div>
