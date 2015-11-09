@@ -216,6 +216,7 @@ class ProgramTypeFilter(filters.ChoiceFilter):
         kwargs.update({
             'choices': ProgramType.objects.values_list('pk', 'name'),
             'label': 'Program Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(ProgramTypeFilter, self).__init__(*args, **kwargs)
 
