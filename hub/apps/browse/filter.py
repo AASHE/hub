@@ -1,7 +1,10 @@
+from operator import or_
 from collections import OrderedDict
 from itertools import chain
 
+
 import django_filters as filters
+from django.db.models import Q
 from django import forms
 from django.utils.encoding import force_text
 
@@ -48,6 +51,7 @@ class TopicFilter(filters.ChoiceFilter):
         kwargs.update({
             'choices': SustainabilityTopic.objects.values_list('slug', 'name'),
             'label': 'Sustainability Topic',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(TopicFilter, self).__init__(*args, **kwargs)
 
@@ -64,6 +68,7 @@ class ContentTypesFilter(filters.ChoiceFilter):
         kwargs.update({
             'choices': CONTENT_TYPE_CHOICES,
             'label': 'Content Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(ContentTypesFilter, self).__init__(*args, **kwargs)
 
@@ -72,10 +77,30 @@ class ContentTypesFilter(filters.ChoiceFilter):
             return qs
         return qs.filter(content_type__in=value)
 
+
+
+class OrganizationFilter(filters.ChoiceFilter):
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        organizations = Organization.objects.values_list('pk', 'org_name')
+        kwargs.update({
+            'choices': organizations,
+            'label': 'Organization',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(OrganizationFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(organizations__in=value)
+
+
 class StudentFteFilter(filters.ChoiceFilter):
+    field_class = forms.fields.MultipleChoiceField
     STUDENT_CHOICES_MAP = OrderedDict([
         # {name: (label, min/max)}
-        ('', ('All', (None, None))),
         ('lt_5000', ('<5000', (None, 5000))),
         ('5k_10k', ('5000-10,000', (5000, 10000))),
         ('10k_20k', ('10,000-20,000', (10000, 20000))),
@@ -86,14 +111,20 @@ class StudentFteFilter(filters.ChoiceFilter):
         kwargs.update({
             'choices': [(i[0], i[1][0]) for i in self.STUDENT_CHOICES_MAP.items()],
             'label': 'Institution Size',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(StudentFteFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if not value:
             return qs
-        min, max = self.STUDENT_CHOICES_MAP[value][1]
-        org_list = Organization.objects.in_fte_range(min, max)
+
+        # OPTIMIZE: this loads a big chunk of organizations just to use a
+        # very little of them to filter the result queryset down.
+        org_list = []
+        for v in value:
+            min, max = self.STUDENT_CHOICES_MAP[v][1]
+            org_list += Organization.objects.in_fte_range(min, max)
         return qs.filter(organizations__in=org_list).distinct()
 
 
@@ -118,6 +149,8 @@ class CountryFilter(filters.ChoiceFilter):
 
 
 class PublishedFilter(filters.ChoiceFilter):
+    field_class = forms.fields.MultipleChoiceField
+
     def __init__(self, *args, **kwargs):
         # Find the minimum and maximum year of all topics and put them
         # in a range for choices.
@@ -132,17 +165,19 @@ class PublishedFilter(filters.ChoiceFilter):
         else:
             year_choices = [(i, i) for i in range(
                 min_year.published.year, max_year.published.year)]
-        year_choices = ALL + year_choices
+
         kwargs.update({
             'choices': year_choices,
             'label': 'Published',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(PublishedFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if not value:
             return qs
-        return qs.filter(published__year=value)
+        query = reduce(or_, (Q(published__year=x) for x in value))
+        return qs.filter(query)
 
 
 class GenericFilterSet(filters.FilterSet):
@@ -155,6 +190,7 @@ class GenericFilterSet(filters.FilterSet):
     search = SearchFilter(widget=forms.HiddenInput)
     topics = TopicFilter()
     content_type = ContentTypesFilter()
+    #organizations = OrganizationFilter()
     size = StudentFteFilter()
     published = PublishedFilter()
     country = CountryFilter(required=False)

@@ -119,6 +119,37 @@ $green: #72c02c;
     width: 100%;
 }
 
+.select-multiple {
+    ul {
+        margin: 0 0 0 5px;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        input[type=checkbox] {
+            margin-right: 5px;
+        }
+
+        label {
+            font-weight: normal;
+        }
+    }
+
+    .select-multiple-header {
+        span {
+            float: right;
+            color: $green;
+            font-size: 11px;
+            cursor: pointer;
+        }
+    }
+}
+
 /* --------------------------------------------------------------------
     Per-Page Overrides
 -------------------------------------------------------------------- */

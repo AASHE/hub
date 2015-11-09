@@ -1,6 +1,36 @@
 jQuery(document).ready(function() {
     App.init();
 
+    // Select Multiple with checkboxes widget.
+    //
+    // By default all checkbox choices are hidden, except they are selected.
+    // A click on the corresponding `Show all` link displays them all.
+    $('.select-multiple').each(function(){
+        var sel = $(this);
+
+        // Hide all non-checked items by default
+        sel.find('input[type=checkbox]:not(:checked)').each(function(){
+            $(this).closest('li').hide();
+        });
+
+        // If all fields are checked, hide the select-all link
+        if(sel.find('input[type=checkbox]:not(:checked)').length === 0) {
+            $('.select-multiple-header span.show-all', sel).hide();
+        }
+
+        // Click on the 'show all' header will display them again
+        $('.select-multiple-header span.show-all', sel).click(function(){
+            sel.find('li:hidden').slideDown('fast');
+            $(this).parent().find('.select-all').show();
+            $(this).hide();
+        });
+
+        // Select all button
+        $('.select-multiple-header span.select-all', sel).click(function(){
+            $(this).parents('section').find('input[type=checkbox]').attr('checked', true);
+        });
+    });
+
     // $('select:not(#id_organizations)').select2({
     //     minimumResultsForSearch: 20
     // });
