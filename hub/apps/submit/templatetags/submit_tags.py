@@ -10,8 +10,9 @@ register = Library()
 # <str to search>: <template name to render>
 FIELD_MAP = {
     '<li>': 'checkbox-multiple',
+    'id_order': 'checkbox-multiple',
     'type="checkbox"': 'checkbox',
-    'type="radio"': 'radio',
+    'type="radio"': 'checkbox-multiple',
     '<select multiple="multiple"': 'select_multiple',
     '<select': 'select',
     '<textarea': 'textarea',

@@ -180,6 +180,27 @@ class PublishedFilter(filters.ChoiceFilter):
         return qs.filter(query)
 
 
+class OrderingFilter(filters.ChoiceFilter):
+    field_class = forms.fields.ChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                ('title', 'Title'),
+                ('content_type', 'Content Type'),
+                ('-published', 'Publish Date'),
+            ),
+            'label': 'Sort by',
+            'widget': forms.widgets.RadioSelect,
+        })
+        super(OrderingFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.order_by(value)
+
+
 class GenericFilterSet(filters.FilterSet):
     """
     The genric Filter form handling the filtering for all views: search, content
@@ -194,6 +215,7 @@ class GenericFilterSet(filters.FilterSet):
     size = StudentFteFilter()
     published = PublishedFilter()
     country = CountryFilter(required=False)
+    order = OrderingFilter()
 
     class Meta:
         model = ContentType
