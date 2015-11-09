@@ -6,8 +6,9 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
+from django.db.models import ObjectDoesNotExist
 
-from hub.permissions import get_aashe_member_flag
+from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic
 from .filter import GenericFilterSet
@@ -188,8 +189,6 @@ class ResourceView(DetailView):
         - Each ContentType has a `member_only` attribut we will check too.
           Some objects might only need Login.
     """
-    queryset = ContentType.objects.published()
-
     def dispatch(self, *args, **kwargs):
         """
         Check if this object is `Member Only`. If so, only AASHE members and
@@ -231,13 +230,12 @@ class ResourceView(DetailView):
     def get_object(self, queryset=None):
         if not self.kwargs['ct'] in CONTENT_TYPES:
             raise Http404('Resource model does not exist')
-
-        if queryset is None:
-            queryset = self.get_queryset()
-
         try:
             ct_model = CONTENT_TYPES[self.kwargs['ct']]
-            obj = ct_model.objects.get(pk=self.kwargs['id'])
-        except queryset.model.DoesNotExist:
+            obj = ct_model.objects.get(
+                status=ContentType.STATUS_CHOICES.published,
+                pk=self.kwargs['id']
+            )
+        except ObjectDoesNotExist:
             raise Http404('Resource not found')
         return obj
