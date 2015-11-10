@@ -33,7 +33,7 @@ class SustainabilityTopic(MetadataBaseModel):
     rss_feed = models.URLField(blank=True, null=True)
 
     class Meta:
-        ordering = ('color', 'name',)
+        ordering = ('name',)
         verbose_name = 'Sustainability Topic'
         verbose_name_plural = 'Sustainability Topics'
 

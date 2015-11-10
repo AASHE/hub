@@ -5,8 +5,10 @@ jQuery(document).ready(function() {
     //
     // By default all checkbox choices are hidden, except they are selected.
     // A click on the corresponding `Show all` link displays them all.
-    $('.select-multiple').each(function(){
+    $('.filter-form .select-multiple').each(function(){
         var $sel = $(this);
+
+        $sel.find('span.show-all').show();
 
         // Hide all non-checked items by default
         $sel.find('input[type=checkbox]:not(:checked)').each(function(){

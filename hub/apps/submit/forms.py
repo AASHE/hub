@@ -9,6 +9,11 @@ class SubmitResourceForm(forms.ModelForm):
     We'll just add some very generic validation here.
     """
     class Meta:
+        widgets = {
+            'topics': forms.widgets.CheckboxSelectMultiple,
+            'disciplines': forms.widgets.CheckboxSelectMultiple,
+        }
+
         exclude = (
             'id',
             'content_type',
