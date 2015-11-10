@@ -51,25 +51,14 @@ def render_form(form, field=None, type='input'):
     """
     response = ''
 
-    # Fetch a list of all rendered fields, as well as the base fields of the
-    # form. The latter gives us access to the widget and other attributes we
-    # need later.
     if field:  # Just this specific field
-        field_list = [form.fields.get(field)]
         rendered_field_list = [f for f in form.__iter__() if f.name == field]
     else:  # Or all fields
-        field_list = form.fields.values()
-        rendered_field_list = list(form.__iter__())
-
-    # Attach each field to the  rendered field
-    i = 0
-    for f in rendered_field_list:
-        f._field = field_list[i]
-        i += 1
+        rendered_field_list = form.__iter__()
 
     # Iterate over all fields and render each one with the matching template
     for f in rendered_field_list:
-        widget = f._field.widget.__class__
+        widget = f.field.widget.__class__
         field_type = FIELD_MAP.get(widget, 'input')
         template_name = 'forms/{}.html'.format(field_type)
         response += render_to_string(template_name, {'field': f})
