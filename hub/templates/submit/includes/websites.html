@@ -1,10 +1,15 @@
 {% load browse_tags %}
 
+{{ website_formset.management_form }}
+{% for form in website_formset %}
 <fieldset>
-    {{ website_formset.management_form }}
-    {% for form in website_formset %}
-        {% render_form form %}
-        </fieldset>
-        {% if not forloop.last %}<fieldset>{% endif %}
-    {% endfor %}
+    <div class="row">
+        <div class="col-md-6">
+            {% render_form form "label" %}
+        </div>
+        <div class="col-md-6">
+            {% render_form form "url" %}
+        </div>
+    </div>
 </fieldset>
+{% endfor %}

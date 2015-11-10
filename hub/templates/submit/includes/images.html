@@ -1,10 +1,25 @@
 {% load browse_tags %}
 
+{{ image_formset.management_form }}
+{% for form in image_formset %}
 <fieldset>
-    {{ image_formset.management_form }}
-    {% for form in image_formset %}
-        {% render_form form %}
-        </fieldset>
-        {% if not forloop.last %}<fieldset>{% endif %}
-    {% endfor %}
+    <div class="row">
+        <div class="col-md-6">
+            {% render_form form "caption" %}
+        </div>
+        <div class="col-md-6">
+            {% render_form form "credit" %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% render_form form "image" %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% render_form form "affirmation" %}
+        </div>
+    </div>
 </fieldset>
+{% endfor %}

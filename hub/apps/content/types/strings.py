@@ -1,4 +1,4 @@
-AFFIRMATION = """This should work: By checking this box, you are granting AASHE
+AFFIRMATION = """By checking this box, you are granting AASHE
 an irrevocable, royalty-free, non-exclusive and perpetual license to use the
 submitted file(s) in publications, newsletters, resources or promotional
 materials, and you are hereby representing and warranting that you own all the

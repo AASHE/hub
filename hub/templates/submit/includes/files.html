@@ -1,10 +1,20 @@
 {% load browse_tags %}
 
+{{ file_formset.management_form }}
+{% for form in file_formset %}
 <fieldset>
-    {{ file_formset.management_form }}
-    {% for form in file_formset %}
-        {% render_form form %}
-        </fieldset>
-        {% if not forloop.last %}<fieldset>{% endif %}
-    {% endfor %}
+    <div class="row">
+        <div class="col-md-6">
+            {% render_form form "item" %}
+        </div>
+        <div class="col-md-6">
+            {% render_form form "label" %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% render_form form "affirmation" %}
+        </div>
+    </div>
 </fieldset>
+{% endfor %}

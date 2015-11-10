@@ -1,10 +1,23 @@
 {% load browse_tags %}
 
+{{ author_formset.management_form }}
+{% for form in author_formset %}
 <fieldset>
-    {{ author_formset.management_form }}
-    {% for form in author_formset %}
-        {% render_form form %}
-        </fieldset>
-        {% if not forloop.last %}<fieldset>{% endif %}
-    {% endfor %}
+    <div class="row">
+        <div class="col-md-12">
+            {% render_form form "is_author" %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {% render_form form "name" %}
+        </div>
+        <div class="col-md-4">
+            {% render_form form "title" %}
+        </div>
+        <div class="col-md-4">
+            {% render_form form "email" %}
+        </div>
+    </div>
 </fieldset>
+{% endfor %}

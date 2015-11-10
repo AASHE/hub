@@ -1,5 +1,5 @@
 <section class="field_{{ field.auto_id }}">
-    <label class="label" for="{{ field.auto_id }}">{{ field.label }}:</label>
+    {% block label %}<label class="label" for="{{ field.auto_id }}">{{ field.label }}:</label>{% endblock %}
     <label class="{% block class %}input{% endblock %}">
         {{ field.errors }}
         {% block pre_field %}{% endblock %}

@@ -1,4 +1,12 @@
 {% extends "forms/base.html" %}
 
 {% block class %}checkbox{% endblock %}
+
+ {% block label %}{% endblock %}
+
+{% block field %}
+    {{ field }}
+    {{ field.label }}
+{% endblock %}
+
 {% block post_field %}<i></i>{% endblock %}
