@@ -1,5 +1,10 @@
 {% extends "search/indexes/content/base.txt" %}
 
 {% block index %}
+    Course Material Materials
     {{ block.super }}
+
+    {{ object.get_material_type_display }}
+    {{ object.course_name }}
+    {{ object.get_course_level_choices }}
 {% endblock %}

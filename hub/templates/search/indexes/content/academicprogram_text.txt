@@ -1,5 +1,14 @@
 {% extends "search/indexes/content/base.txt" %}
 
 {% block index %}
+    Academic Program Programs
     {{ block.super }}
+
+    {{ object.program_type.name }}
+    {{ object.outcomes }}
+    {{ object.founded }}
+    {{ object.completion }}
+    {{ object.num_students }}
+    {{ object.get_distance_display }}
+    {{ object.get_commitment_display }}
 {% endblock %}

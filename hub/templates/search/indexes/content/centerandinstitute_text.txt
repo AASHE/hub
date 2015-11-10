@@ -1,5 +1,12 @@
 {% extends "search/indexes/content/base.txt" %}
 
 {% block index %}
+    Research Center & Institute
+    Research Centers & Institutes
     {{ block.super }}
+
+    {{ object.institution.name }}
+    {{ object.num_paid }}
+    {{ object.founded }}
+    {{ object.budget }}
 {% endblock %}

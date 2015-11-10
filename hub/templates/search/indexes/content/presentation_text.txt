@@ -1,5 +1,12 @@
 {% extends "search/indexes/content/base.txt" %}
 
 {% block index %}
+    Conference Presentation Presentations
     {{ block.super }}
+
+    {{ object.date|date }}
+    {{ object.get_conf_name_display }}
+    {{ object.institution.name }}
+    {{ object.get_presentation_type_display }}
+    {{ object.abstract }}
 {% endblock %}

@@ -1,5 +1,9 @@
 {% extends "search/indexes/content/base.txt" %}
 
 {% block index %}
+    Outreach Material Materials
     {{ block.super }}
+
+    {{ object.design_credit }}
+    {{ object.institution.name }}
 {% endblock %}

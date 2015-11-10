@@ -1,5 +1,17 @@
 {% extends "search/indexes/content/base.txt" %}
 
 {% block index %}
+    Case Study Studies
     {{ block.super }}
+
+    {{ object.program_type.name }}
+    {{ object.overview }}
+    {{ object.background }}
+    {{ object.goals }}
+    {{ object.implementation }}
+    {{ object.timeline }}
+    {{ object.financing }}
+    {{ object.results }}
+    {{ object.lessons_learned }}
+    {{ object.institution.name }}
 {% endblock %}

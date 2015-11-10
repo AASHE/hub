@@ -1,5 +1,9 @@
 {% extends "search/indexes/content/base.txt" %}
 
 {% block index %}
+    Video Videos
     {{ block.super }}
+
+    {{ object.link }}
+    {{ object.institution.name }}
 {% endblock %}
