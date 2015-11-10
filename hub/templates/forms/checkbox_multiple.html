@@ -2,6 +2,7 @@
     {{ field.errors }}
     <div class="select-multiple-header">
         {{ field.label }}
+        {% if field.required %}<span class="required">*</span>{% endif %}
         <span class="show-all" style="display: none;">Show all</span>
         <span class="select-all" style="display: none">
             <i class="icon fa fa-check-square"></i>

@@ -7,6 +7,7 @@
 {% block field %}
     {{ field }}
     {{ field.label }}
+    {% if field.required %}<span class="required">*</span>{% endif %}
 {% endblock %}
 
 {% block post_field %}<i></i>{% endblock %}

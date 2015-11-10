@@ -1,4 +1,5 @@
 $green: #72c02c;
+$red: #c00;
 
 @mixin title() {
     font-family: HelveticaNeue-Light, Helvetica, Arial, sans-serif;
@@ -97,6 +98,11 @@ $green: #72c02c;
 /* --------------------------------------------------------------------
     Generic Classes
 -------------------------------------------------------------------- */
+
+.required {
+    color: $red;
+    font-weight: bold;
+}
 
 a.resource-button{
     display: block;
