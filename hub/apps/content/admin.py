@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+from django.core import management
 
 from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
 
@@ -34,6 +35,25 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
     exclude = ('content_type',)
     raw_id_fields = ('organizations',)
+
+    def _update_application_index(self):
+        # management.call_command('update_index', '{}.{}'.format(
+        #     self.model._meta.app_label,
+        #     self.model._meta.model_name
+        # ))
+        pass
+
+    def response_add(self, request, obj):
+        self._update_application_index()
+        return super(BaseContentTypeAdmin, self).response_add(request, obj)
+
+    def response_change(self, request, obj):
+        self._update_application_index()
+        return super(BaseContentTypeAdmin, self).response_change(request, obj)
+
+    def response_delete(self, request, obj_display, obj_id):
+        self._update_application_index()
+        return super(BaseContentTypeAdmin, self).response_delete(request, obj_display, obj_id)
 
 
 class AllContentTypesAdmin(admin.ModelAdmin):
