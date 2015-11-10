@@ -20,6 +20,6 @@ install:
 - pip install -r requirements_test.txt
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres
-script: python manage.py test activities
+script: python manage.py test
 notifications:
   email: false
