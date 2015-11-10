@@ -58,7 +58,7 @@ class BrowseView(ListView):
     template_name = 'browse/browse.html'
     content_type_class = None
     sustainabilty_topic = None
-    paginate_by = 2
+    paginate_by = 10
     filterset_form = None
 
     def dispatch(self, *args, **kwargs):
@@ -191,6 +191,7 @@ class BrowseView(ListView):
                 'news_list': [],
                 'new_resources_list': new_resources,
             })
+
         return ctx
 
 
