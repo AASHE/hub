@@ -13,37 +13,61 @@ $green: #72c02c;
     margin-bottom: 0;
 }
 
-.header .logo {
-    position: relative;
-    h1 {
-        display: inline-block;
-        font-size: 30px;
-        position: absolute;
-        bottom: 8px;
-        left: 120px;
-        white-space: nowrap;
-        border-bottom: 3px solid white;
-        @include title();
-        color: #555;
+.header {
+    .logo {
+        position: relative;
+        h1 {
+            display: inline-block;
+            font-size: 30px;
+            position: absolute;
+            bottom: 8px;
+            left: 120px;
+            white-space: nowrap;
+            border-bottom: 3px solid white;
+            @include title();
+            color: #555;
 
-        strong { display: none; }
+            strong { display: none; }
 
-        &:hover {
-            border-bottom: 3px solid $green;
+            &:hover {
+                border-bottom: 3px solid $green;
+            }
+
+
+            @media (max-width: 767px) {
+                font-size: 24px;
+                bottom: 0;
+                left: 110px;
+            }
         }
     }
-}
 
-.topbar .search {
-    width: 300px;
-    position: absolute;
-    right: 0;
-    top: 60px;
-    text-align: right;
+    .menu {
+        text-align: right;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 11px;
+        color: rgb(124, 128, 130);
+        margin-top: 40px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
 
-    input {
-        width: 250px;
-        display: inline-block;
+        a {
+            color: rgb(124, 128, 130);
+            margin-left: 15px;
+        }
+
+        @media (max-width: 991px) {
+            margin-top: -10px;
+        }
+    }
+
+    .search {
+        display: flex;
+        margin-bottom: 20px;
+
+        button {
+            margin-left: 5px;
+        }
     }
 }
 
