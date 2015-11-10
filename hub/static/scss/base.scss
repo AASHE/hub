@@ -71,17 +71,8 @@ $green: #72c02c;
     Generic Classes
 -------------------------------------------------------------------- */
 
-.resource-buttons {
-    display: flex;
-    align-content: flex-start;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.resource-buttons a {
-    display: inline-block;
-    width: 24%;
-    margin-bottom: 1%;
+a.resource-button{
+    display: block;
     padding: 2em 0;
     font-size: 1.2em;
     background-color: #5061AA;

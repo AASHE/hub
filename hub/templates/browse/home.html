@@ -14,25 +14,32 @@
 
             <!-- Topic list -->
             <div id="topics" class="tab-pane fade active in">
-                <div class="resource-buttons">
+                <div class="row">
                     {% for topic in topic_list %}
-                    <a href="{% url "browse:browse" topic=topic.slug %}" style="background-color: {{ topic.color }}"
-                        class="service-block service-block-sea service-or">
-                        <div class="service-bg"></div>
-                        {{ topic }}
-                    </a>
+                    <div class="col-md-3 col-sm-6">
+                        <a href="{% url "browse:browse" topic=topic.slug %}"
+                            style="background-color: {{ topic.color }}"
+                            class="resource-button service-block service-block-sea service-or
+                        ">
+                            <div class="service-bg"></div>
+                            {{ topic }}
+                        </a>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
             <!-- Content list -->
             <div id="contenttypes" class="tab-pane fade">
-                <div class="resource-buttons">
+                <div class="row">
                 {% for type, label in content_type_list.items %}
-                    <a href="{% url "browse:browse" ct=type %}"
-                        class="service-block service-block-sea service-or">
-                        <div class="service-bg"></div>
-                        {{ label }}
-                    </a>
+                    <div class="col-md-3 col-sm-6">
+                        <a href="{% url "browse:browse" ct=type %}"
+                            class="resource-button service-block service-block-sea service-or
+                        ">
+                            <div class="service-bg"></div>
+                            {{ label }}
+                        </a>
+                    </div>
                 {% endfor %}
                 </div>
             </div>
