@@ -8,7 +8,7 @@
         </span>
     </div>
     {{ field }}
-    {% if field.help_text %}
+    {% if field.help_text and field.help_text != "Filter" %}
         <div class="note"><strong>Note:</strong> {{ field.help_text }}</div>
     {% endif %}
 </section>
