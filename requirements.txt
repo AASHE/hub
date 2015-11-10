@@ -20,6 +20,5 @@ psycopg2
 whitenoise
 
 # Private repos
-#-e git+https://2e5f11c1b9f8882f92f333df3f0516e64e2ac61b:x-oauth-basic@github.com/AASHE/issdjango.git#egg=issdjango
--e git+https://2e5f11c1b9f8882f92f333df3f0516e64e2ac61b:x-oauth-basic@github.com/AASHE/aashe-auth.git@migrations#egg=aashe_auth
--e git+https://2e5f11c1b9f8882f92f333df3f0516e64e2ac61b:x-oauth-basic@github.com/AASHE/iss.git#egg=iss
+-e git+https://github.com/AASHE/aashe-auth.git@migrations#egg=aashe_auth
+-e git+https://github.com/AASHE/iss.git#egg=iss
