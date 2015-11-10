@@ -5,8 +5,10 @@ django-tables2==1.0.4
 django-flat-theme==1.1.1
 django-s3-folder-storage==0.3
 django-markup==0.4
+django-haystack==2.4.1
 markdown==2.6.2
 feedparser
+elasticsearch==2.1.0
 
 # Deployment specific
 dj-database-url

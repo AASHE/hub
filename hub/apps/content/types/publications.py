@@ -3,6 +3,7 @@ from model_utils import Choices
 
 from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
+from ..search import BaseIndex
 from .strings import AFFIRMATION
 
 
@@ -31,3 +32,8 @@ class Publication(ContentType):
     class Meta:
         verbose_name = 'Publication'
         verbose_name_plural = 'Publications'
+
+
+class PublicationIndex(BaseIndex):
+    def get_model(self):
+        return Publication

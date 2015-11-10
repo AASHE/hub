@@ -2,6 +2,7 @@ from django.db import models
 
 from ...metadata.models import ProgramType, InstitutionalOffice
 from ..models import ContentType
+from ..search import BaseIndex
 from .strings import AFFIRMATION
 
 
@@ -22,3 +23,8 @@ class CaseStudy(ContentType):
     class Meta:
         verbose_name = 'Case Study'
         verbose_name_plural = 'Case Studies'
+
+
+class CaseStudyIndex(BaseIndex):
+    def get_model(self):
+        return CaseStudy

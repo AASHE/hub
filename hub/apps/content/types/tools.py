@@ -2,6 +2,7 @@ from django.db import models
 
 from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
+from ..search import BaseIndex
 from .strings import AFFIRMATION
 
 
@@ -15,3 +16,8 @@ class Tool(ContentType):
     class Meta:
         verbose_name = 'Tool'
         verbose_name_plural = 'Tools'
+
+
+class ToolIndex(BaseIndex):
+    def get_model(self):
+        return Tool

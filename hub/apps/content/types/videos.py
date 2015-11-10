@@ -2,6 +2,7 @@ from django.db import models
 
 from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
+from ..search import BaseIndex
 from .strings import AFFIRMATION
 
 
@@ -14,3 +15,8 @@ class Video(ContentType):
     class Meta:
         verbose_name = 'Video'
         verbose_name_plural = 'Videos'
+
+
+class VideoIndex(BaseIndex):
+    def get_model(self):
+        return Video

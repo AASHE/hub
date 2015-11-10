@@ -2,6 +2,7 @@ from django.db import models
 
 from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
+from ..search import BaseIndex
 
 
 class CenterAndInstitute(ContentType):
@@ -17,3 +18,8 @@ class CenterAndInstitute(ContentType):
     @property
     def title_label(self):
         return 'Center Name'
+
+
+class CenterAndInstituteIndex(BaseIndex):
+    def get_model(self):
+        return CenterAndInstitute

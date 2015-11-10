@@ -3,6 +3,7 @@ from model_utils import Choices
 
 from ...metadata.models import ProgramType
 from ..models import ContentType
+from ..search import BaseIndex
 
 
 class AcademicProgram(ContentType):
@@ -37,3 +38,8 @@ class AcademicProgram(ContentType):
     def get_custom_filterset(cls):
         from ...browse.filter import AcademicBrowseFilter
         return AcademicBrowseFilter
+
+
+class AcademicProgramIndex(BaseIndex):
+    def get_model(self):
+        return AcademicProgram

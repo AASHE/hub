@@ -2,6 +2,7 @@ from django.db import models
 from model_utils import Choices
 
 from ..models import ContentType
+from ..search import BaseIndex
 from .strings import AFFIRMATION
 
 
@@ -30,3 +31,8 @@ class Material(ContentType):
     class Meta:
         verbose_name = 'Course Material'
         verbose_name_plural = 'Course Materials'
+
+
+class MaterialIndex(BaseIndex):
+    def get_model(self):
+        return Material

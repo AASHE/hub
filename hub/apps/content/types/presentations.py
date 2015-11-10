@@ -3,6 +3,7 @@ from model_utils import Choices
 
 from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
+from ..search import BaseIndex
 from .strings import AFFIRMATION
 
 
@@ -36,3 +37,8 @@ class Presentation(ContentType):
     @property
     def title_label(self):
         return 'Presentation Title'
+
+
+class PresentationIndex(BaseIndex):
+    def get_model(self):
+        return Presentation

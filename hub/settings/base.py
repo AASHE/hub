@@ -31,8 +31,8 @@ INSTALLED_APPS = (
     'flat',
 
     'aashe.aasheauth',
-    # 'issdjango',  # we'll put this back shortly
     'iss',
+    'haystack',
 
     'hub',
     'hub.apps.content',
@@ -62,7 +62,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
-
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -175,6 +174,14 @@ LOGGING = {
 # ==============================================================================
 # Third party app settings
 # ==============================================================================
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
 
 # Cache lifetime in seconds
 CACHE_TTL_SHORT = 60 * 10

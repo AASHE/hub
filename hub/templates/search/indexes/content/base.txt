@@ -1,0 +1,4 @@
+{% block index %}
+    {{ obj.title }}
+    {{ obj.description }}
+{% endblock %}

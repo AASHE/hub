@@ -2,6 +2,7 @@ from django.db import models
 
 from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
+from ..search import BaseIndex
 from .strings import AFFIRMATION
 
 class Photograph(ContentType):
@@ -15,3 +16,8 @@ class Photograph(ContentType):
     class Meta:
         verbose_name = 'Photograph'
         verbose_name_plural = 'Photographs'
+
+
+class PhotographIndex(BaseIndex):
+    def get_model(self):
+        return Photograph
