@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/AASHE/hub.svg?branch=master)](https://travis-ci.org/AASHE/hub)
+[![Coverage Status](https://coveralls.io/repos/AASHE/hub/badge.svg?branch=master&service=github)](https://coveralls.io/github/AASHE/hub?branch=master)
+
 ```
                  _            _           _
   __ _  __ _ ___| |__   ___  | |__  _   _| |__
