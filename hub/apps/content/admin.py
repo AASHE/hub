@@ -34,7 +34,7 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description', 'keywords',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
     exclude = ('content_type',)
-    raw_id_fields = ('organizations',)
+    raw_id_fields = ('organizations', 'submitted_by')
 
     def _update_application_index(self):
         # management.call_command('update_index', '{}.{}'.format(

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from logging import getLogger
 
 from django.db import models
+from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django.core.urlresolvers import reverse
@@ -44,6 +45,7 @@ class ContentType(TimeStampedModel):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
     permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
     published = models.DateTimeField(blank=True, null=True)
+    submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)

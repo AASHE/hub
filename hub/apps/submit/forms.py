@@ -14,11 +14,14 @@ class SubmitResourceForm(forms.ModelForm):
             'content_type',
             'status',
             'permission',
+            'submitted_by',
             'published',
             'organizations'
         )
 
     def save(self, request):
+        if request.user.is_authenticated():
+            self.instance.submitted_by = request.user
         return super(SubmitResourceForm, self).save()
 
     def clean_affirmation(self):

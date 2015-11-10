@@ -27,6 +27,8 @@ AUTHENTICATION_BACKENDS = (
     'aashe.aasheauth.backends.AASHEBackend',
 )
 
+AUTH_USER_MODEL = 'auth.User'
+
 INSTALLED_APPS = (
     'flat',
 

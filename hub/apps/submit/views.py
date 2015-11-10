@@ -42,12 +42,17 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         Handle POST of multiple files.
         """
         forms = self.get_form()
-        document_form, author_formset = forms.values()
 
-        if document_form.is_valid() and author_formset.is_valid():
-            instance = document_form.save(self.request)
-            for form in author_formset:
+        if (forms['document_form'].is_valid() and
+            forms['author_formset'].is_valid()):
+
+            # Base Form
+            instance = forms['document_form'].save(self.request)
+
+            # Author Form
+            for form in forms['author_formset']:
                 form.save(instance=instance)
+
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(**forms))
