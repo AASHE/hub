@@ -152,7 +152,7 @@ class Website(TimeStampedModel):
     url = models.URLField()
 
     def __str__(self):
-        return self.label
+        return self.label or 'Website object'
 
 
 @python_2_unicode_compatible
@@ -168,7 +168,7 @@ class File(TimeStampedModel):
         verbose_name_plural = 'Additional Files'
 
     def __str__(self):
-        return self.label
+        return self.label or 'File object'
 
 
 @python_2_unicode_compatible
@@ -184,7 +184,7 @@ class Image(TimeStampedModel):
         verbose_name_plural = 'Additional Images'
 
     def __str__(self):
-        return self.caption
+        return self.caption or 'Image object'
 
 #==============================================================================
 # Mapping of all available content types.

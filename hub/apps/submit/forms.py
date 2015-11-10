@@ -47,7 +47,7 @@ class FileForm(forms.ModelForm):
 
     def save(self, instance):
         self.instance.ct = instance
-        return super(AuthorForm, self).save()
+        return super(FileForm, self).save()
 
 
 class ImageForm(forms.ModelForm):
@@ -57,7 +57,7 @@ class ImageForm(forms.ModelForm):
 
     def save(self, instance):
         self.instance.ct = instance
-        return super(AuthorForm, self).save()
+        return super(ImageForm, self).save()
 
 
 class WebsiteForm(forms.ModelForm):
@@ -67,4 +67,4 @@ class WebsiteForm(forms.ModelForm):
 
     def save(self, instance):
         self.instance.ct = instance
-        return super(AuthorForm, self).save()
+        return super(WebsiteForm, self).save()

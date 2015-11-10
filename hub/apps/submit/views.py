@@ -1,14 +1,15 @@
 from logging import getLogger
 
-from django.http import Http404, HttpResponseRedirect
-from django.views.generic import TemplateView, FormView
 from django import forms
 from django.core.urlresolvers import reverse
 from django.forms.models import formset_factory
+from django.http import Http404, HttpResponseRedirect
+from django.views.generic import FormView, TemplateView
 
 from ...permissions import LoginRequiredMixin
-from ..content.models import CONTENT_TYPES, CONTENT_TYPE_CHOICES
-from .forms import AuthorForm, SubmitResourceForm
+from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES
+from .forms import AuthorForm, FileForm, ImageForm, SubmitResourceForm, \
+    WebsiteForm
 
 logger = getLogger(__name__)
 
@@ -43,14 +44,29 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         """
         forms = self.get_form()
 
-        if (forms['document_form'].is_valid() and
-            forms['author_formset'].is_valid()):
+        if (forms['document_form'].is_valid()
+        and forms['author_formset'].is_valid()
+        and forms['image_formset'].is_valid()
+        and forms['file_formset'].is_valid()
+        and forms['website_formset'].is_valid()):
 
             # Base Form
             instance = forms['document_form'].save(self.request)
 
-            # Author Form
+            # Formsets
             for form in forms['author_formset']:
+                form.save(instance=instance)
+
+            for form in forms['author_formset']:
+                form.save(instance=instance)
+
+            for form in forms['file_formset']:
+                form.save(instance=instance)
+
+            for form in forms['image_formset']:
+                form.save(instance=instance)
+
+            for form in forms['website_formset']:
                 form.save(instance=instance)
 
             return HttpResponseRedirect(self.get_success_url())
@@ -75,14 +91,23 @@ class SubmitFormView(LoginRequiredMixin, FormView):
             self.content_type_class,
             SubmitResourceForm)
 
-        AuthorFormset = formset_factory(AuthorForm, max_num=3, extra=3)
+        AuthorFormset = formset_factory(AuthorForm, max_num=5, extra=5)
+        ImageFormSet = formset_factory(ImageForm, max_num=3, extra=3)
+        FileFormSet = formset_factory(FileForm, max_num=3, extra=3)
+        WebsiteFormSet = formset_factory(WebsiteForm, max_num=1, extra=1)
 
         document_form = DocumentForm(prefix='document', **self.get_form_kwargs())
         author_formset = AuthorFormset(prefix='authors', **self.get_form_kwargs())
+        image_formset = ImageFormSet(prefix='images', **self.get_form_kwargs())
+        file_formset = FileFormSet(prefix='files', **self.get_form_kwargs())
+        website_formset = WebsiteFormSet(prefix='websites', **self.get_form_kwargs())
 
         return {
             'document_form': document_form,
             'author_formset': author_formset,
+            'image_formset': image_formset,
+            'file_formset': file_formset,
+            'website_formset': website_formset,
         }
 
     def get_form_kwargs(self, **kwargs):

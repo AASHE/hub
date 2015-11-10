@@ -14,35 +14,63 @@
 
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <form action="" method="POST" class="sky-form" enctype="multipart/form-data">
+        <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <!-- Base Resource Form -->
-            <header>
-                <i class="fa  fa-check-circle-o"></i>
-                Submit a new {{ content_type_label }}
-            </header>
-            <fieldset>
-
-            {% render_form document_form %}
-
-            <!-- Additional Authors -->
-            <header>Add up to three Authors to the Document</header>
-            <fieldset>
-                {{ author_formset.management_form }}
-                {% for author_form in author_formset %}
-                    {% render_form author_form "name" %}
-                    </fieldset>
-                    {% if not forloop.last %}<fieldset>{% endif %}
-                {% endfor %}
-            </fieldset>
-
-            <footer>
-                <button type="submit" class="btn-u pull-right">
+            <!-- Base ====================================================== -->
+            <div class="sky-form document-form">
+                <header>
                     <i class="fa  fa-check-circle-o"></i>
-                    Submit Resource
-                </button>
-            </footer>
+                    Submit a new {{ content_type_label }}
+                </header>
+                <fieldset>
+                    {% render_form document_form %}
+                </fieldset>
+            </div>
+
+
+            <h2>Add optional metadata to this {{ content_type_label }}</h2>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tab-v1">
+                        <ul class="nav nav-tabs margin-bottom-20">
+                            <li class="active"><a data-toggle="tab" href="#authors" aria-expanded="true">Authors</a></li>
+                            <li class=""><a data-toggle="tab" href="#images" aria-expanded="false">Images</a></li>
+                            <li class=""><a data-toggle="tab" href="#files" aria-expanded="false">Files</a></li>
+                            <li class=""><a data-toggle="tab" href="#websites" aria-expanded="false">Websites</a></li>
+                        </ul>
+                        <div class="tab-content">
+
+                            <div class="sky-form formset tab-pane fade active in" id="authors">
+                                {% include "submit/includes/authors.html" %}
+                            </div>
+
+                            <div class="sky-form formset tab-pane fade" id="images">
+                                {% include "submit/includes/images.html" %}
+                            </div>
+
+                            <div class="sky-form formset tab-pane fade" id="files">
+                                {% include "submit/includes/files.html" %}
+                            </div>
+
+                            <div class="sky-form formset tab-pane fade" id="websites">
+                                {% include "submit/includes/websites.html" %}
+                        </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sky-form">
+                <footer>
+                    <button type="submit" class="btn-u pull-right">
+                        <i class="fa  fa-check-circle-o"></i>
+                        Submit Resource
+                    </button>
+                </footer>
+            </div>
         </form>
     </div>
 </div>

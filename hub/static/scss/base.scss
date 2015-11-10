@@ -203,4 +203,19 @@ $green: #72c02c;
         // Django makes textareas pretty large by default
         height: 200px !important;
     }
+
+    .sky-form {
+        margin-bottom: 30px;
+    }
+
+    .document-form > header {
+        background-color: $green;
+        color: white;
+    }
+
+    h2 {
+        margin: 60px 0 30px 0;
+        font-size: 18px;
+        text-align: center;
+    }
 }

@@ -1,0 +1,10 @@
+{% load browse_tags %}
+
+<fieldset>
+    {{ author_formset.management_form }}
+    {% for form in author_formset %}
+        {% render_form form %}
+        </fieldset>
+        {% if not forloop.last %}<fieldset>{% endif %}
+    {% endfor %}
+</fieldset>
