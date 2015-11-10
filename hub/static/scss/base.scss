@@ -16,16 +16,17 @@ $green: #72c02c;
 .header {
     .logo {
         position: relative;
+
         h1 {
+            @include title();
             display: inline-block;
             font-size: 30px;
             position: absolute;
             bottom: 8px;
             left: 120px;
-            white-space: nowrap;
             border-bottom: 3px solid white;
-            @include title();
             color: #555;
+            white-space: nowrap;
 
             strong { display: none; }
 
@@ -34,10 +35,12 @@ $green: #72c02c;
             }
 
 
-            @media (max-width: 767px) {
-                font-size: 24px;
+            @media (max-width: 480px) {
+                font-size: 18px;
+                line-height: 24px;
                 bottom: 0;
-                left: 110px;
+                left: 100px;
+                white-space: normal;
             }
         }
     }
