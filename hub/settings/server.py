@@ -36,22 +36,28 @@ AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
 # ==============================================================================
 INSTALLED_APPS += ('s3_folder_storage',)
 
-DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
-DEFAULT_S3_PATH = "uploads"
-STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
-STATIC_S3_PATH = "static"
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", None)
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", None)
 
+# User uploaded media
+DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
+DEFAULT_S3_PATH = "uploads"
 MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
 MEDIA_URL = '//s3.amazonaws.com/%s/uploads/' % AWS_STORAGE_BUCKET_NAME
-STATIC_ROOT = "/%s/" % STATIC_S3_PATH
-STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
+
+# Static files, Using whitenoise now
+##STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
+##STATIC_S3_PATH = "static"
+##STATIC_ROOT = "/%s/" % STATIC_S3_PATH
+##STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
-
+# ==============================================================================
 # Enable debug logging
+# ==============================================================================
 # LOGGING['loggers']['hub']['level'] = 'DEBUG'
 # LOGGING['loggers']['django']['level'] = 'DEBUG'
 

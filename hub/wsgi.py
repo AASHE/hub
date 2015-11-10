@@ -9,8 +9,6 @@ https://docs.djangoproject.com/en/1.8/howto/deployment/wsgi/
 
 import os
 
-from django.core.wsgi import get_wsgi_application
-
 # Use the local settings file if one is present, otherwise the server.
 try:
     import hub.settings.local
@@ -18,4 +16,9 @@ try:
 except ImportError:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hub.settings.server")
 
+
+from django.core.wsgi import get_wsgi_application
+from whitenoise.django import DjangoWhiteNoise
+
 application = get_wsgi_application()
+application = DjangoWhiteNoise(application)
