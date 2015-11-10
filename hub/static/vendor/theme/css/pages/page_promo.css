@@ -7,10 +7,9 @@
 
 .slider-promo-info-bg {
 	padding: 25px 20px 20px;
-	background: url(../img/bg-black.png) repeat;
 }
 
-.slider-promo-info span.big-size { 
+.slider-promo-info span.big-size {
 	color: #fff;
 	display: block;
 	font-size: 30px;
@@ -46,10 +45,10 @@
 	font-size: 20px;
 	display: block;
 	margin: 20px 0 15px;
-	font-weight: 200; 
+	font-weight: 200;
 }
 
-.promo-box:hover strong, 
+.promo-box:hover strong,
 .promo-box:hover strong a {
 	color: #e74c3c;
 }
@@ -89,13 +88,13 @@
 }
 
 .block-blockquote {
-	margin: 20px 0; 
+	margin: 20px 0;
 	text-align: center;
 	border: dashed 1px #ccc;
 }
 
 .block-blockquote-inner {
-	padding: 15px; 
+	padding: 15px;
 }
 
 .block-blockquote p {
