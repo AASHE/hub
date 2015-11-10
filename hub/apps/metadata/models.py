@@ -1,10 +1,18 @@
 from __future__ import unicode_literals
 
+from logging import getLogger
+
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.core.urlresolvers import reverse
+from django.core.cache import cache
+from django.conf import settings
 
+import feedparser
 from model_utils.models import TimeStampedModel
 from iss.models import Organization as ISSOrganization
+
+logger = getLogger(__name__)
 
 
 @python_2_unicode_compatible
@@ -22,11 +30,40 @@ class SustainabilityTopic(MetadataBaseModel):
     color = models.CharField('HEX Color', max_length=7, default='#ff0000')
     slug = models.SlugField()
     introduction = models.TextField(blank=True, null=True)
+    rss_feed = models.URLField(blank=True, null=True)
 
     class Meta:
         ordering = ('color', 'name',)
         verbose_name = 'Sustainability Topic'
         verbose_name_plural = 'Sustainability Topics'
+
+    def get_absolute_url(self):
+        return reverse('browse:browse', kwargs={'topic': self.slug})
+
+    def get_rss_items(self):
+        """
+        Fetch, parse and cache rss items
+        """
+        if not self.rss_feed:
+            return None
+
+        CACHE_KEY = 'TOPIC_FEED_ITEMS_{}'.format(self.slug.upper())
+
+        entries = cache.get(CACHE_KEY)
+
+        if entries:
+            return entries
+
+        try:
+            feed = feedparser.parse(self.rss_feed)
+        except Exception as e: # Any error is bad here, catch all.
+            logger.error('Feed parse failed; {}'.format(self.rss_feed))
+            logger.exception(e)
+            return None
+
+        entries = feed.entries[:20]
+        cache.set(CACHE_KEY, entries, settings.CACHE_TTL_LONG)
+        return entries
 
 
 @python_2_unicode_compatible

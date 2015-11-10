@@ -6,6 +6,7 @@ django-flat-theme==1.1.1
 django-s3-folder-storage==0.3
 django-markup==0.4
 markdown==2.6.2
+feedparser
 
 # Deployment specific
 dj-database-url

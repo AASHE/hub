@@ -176,6 +176,11 @@ LOGGING = {
 # Third party app settings
 # ==============================================================================
 
+# Cache lifetime in seconds
+CACHE_TTL_SHORT = 60 * 10
+CACHE_TTL_LONG = 60 * 60 * 12
+
+
 # AASHE Auth
 AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
 AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']

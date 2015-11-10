@@ -186,9 +186,11 @@ class BrowseView(ListView):
                 .filter(topics=self.sustainabilty_topic)
                 .order_by('-published')[:10])
 
+            news_list = self.sustainabilty_topic.get_rss_items()
+
             ctx.update({
                 'featured_list': featured,
-                'news_list': [],
+                'news_list': news_list,
                 'new_resources_list': new_resources,
             })
 
