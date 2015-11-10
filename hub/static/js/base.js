@@ -16,6 +16,7 @@ jQuery(document).ready(function() {
         // If all fields are checked, hide the select-all link
         if($sel.find('input[type=checkbox]:not(:checked)').length === 0) {
             $('.select-multiple-header span.show-all', $sel).hide();
+            $('.select-multiple-header .select-all', $sel).show();
         }
 
         // Click on the 'show all' header will display them again
