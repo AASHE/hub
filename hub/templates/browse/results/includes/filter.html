@@ -1,15 +1,9 @@
-{% load submit_tags %}
+{% load browse_tags %}
 
 <form method="GET" action="" class="sky-form">
     <h3>Filter results</h3>
     <fieldset>
-    {% for field in object_list_form %}
-    {% if field.is_hidden %}
-        {{ field }}
-    {% else %}
-        {% render_field field %}
-    {% endif %}
-    {% endfor %}
+    {% render_form object_list_form %}
     <input type="submit"/>
     </fieldset>
 </form>
