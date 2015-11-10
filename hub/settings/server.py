@@ -16,10 +16,20 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
+# Database
 import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(),  # uses DATABASE_URL
     # 'iss': dj_database_url.config(os.environ.get('ISS_DB_URL')),
+}
+
+# Haystack ElasticSearch
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': os.environ.get('SEARCHBOX_SSL_URL', None),
+        'INDEX_NAME': 'haystack',
+    },
 }
 
 # ==============================================================================
