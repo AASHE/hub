@@ -31,9 +31,10 @@ class SustainabilityTopic(MetadataBaseModel):
     slug = models.SlugField()
     introduction = models.TextField(blank=True, null=True)
     rss_feed = models.URLField(blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('order', 'name')
         verbose_name = 'Sustainability Topic'
         verbose_name_plural = 'Sustainability Topics'
 

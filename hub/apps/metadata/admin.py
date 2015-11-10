@@ -10,6 +10,8 @@ class SustainabilityTopicFavoriteAdmin(admin.TabularInline):
 class SustainabilityTopicAdmin(admin.ModelAdmin):
     inlines = (SustainabilityTopicFavoriteAdmin,)
     prepopulated_fields = {'slug': ('name',)}
+    list_display = ('name', 'order')
+    list_editable = ('order',)
 
 
 class OrganizationAdmin(admin.ModelAdmin):
