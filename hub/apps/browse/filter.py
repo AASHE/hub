@@ -1,34 +1,19 @@
-from operator import or_
-from collections import OrderedDict
-from itertools import chain
+from __future__ import unicode_literals
 
+from collections import OrderedDict
+from logging import getLogger
+from operator import or_
 
 import django_filters as filters
-from django.db.models import Q
 from django import forms
-from django.utils.encoding import force_text
+from django.db.models import Q
+from haystack.query import SearchQuerySet
 
 from ..content.models import CONTENT_TYPE_CHOICES, ContentType
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
 
-
+logger = getLogger(__name__)
 ALL = (('', 'All'),)
-
-class LeanSelectMultiple(forms.SelectMultiple):
-    """
-    Works like a regular SelectMultiple widget but only renders a list of
-    initial values, rather than the full list of choices.
-    """
-
-    def render_options(self, choices, selected_choices):
-        # Normalize to strings.
-        selected_choices = set(force_text(v) for v in selected_choices)
-        output = []
-        for option_value, option_label in chain(self.choices, choices):
-            if not force_text(option_value) in selected_choices:
-                continue
-            output.append(self.render_option(selected_choices, option_value, option_label))
-        return '\n'.join(output)
 
 #==============================================================================
 # Generic Filter
@@ -41,7 +26,10 @@ class SearchFilter(filters.CharFilter):
     TODO: Implement search engine
     """
     def filter(self, qs, value):
-        return qs.filter(title__icontains=value)
+        result_ids = (SearchQuerySet().filter(content=value)
+                                      .values_list('ct_pk', flat=True))
+        logger.debug('search result ids: {}'.format(result_ids))
+        return qs.filter(pk__in=result_ids)
 
 
 class TopicFilter(filters.ChoiceFilter):
