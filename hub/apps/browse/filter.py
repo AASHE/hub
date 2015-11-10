@@ -8,6 +8,7 @@ import django_filters as filters
 from django import forms
 from django.db.models import Q
 from haystack.query import SearchQuerySet
+from haystack.inputs import Raw
 
 from ..content.models import CONTENT_TYPE_CHOICES, ContentType
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
@@ -26,8 +27,13 @@ class SearchFilter(filters.CharFilter):
     TODO: Implement search engine
     """
     def filter(self, qs, value):
-        result_ids = (SearchQuerySet().filter(content=value)
+        if not value:
+            return qs
+
+        query = Raw(value.lower())
+        result_ids = (SearchQuerySet().filter(content__contains=query)
                                       .values_list('ct_pk', flat=True))
+        logger.debug('search query: {}'.format(query))
         logger.debug('search result ids: {}'.format(result_ids))
         return qs.filter(pk__in=result_ids)
 
