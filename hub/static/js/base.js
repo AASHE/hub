@@ -41,4 +41,28 @@ jQuery(document).ready(function() {
             }
         });
     });
+
+    $('#id_organizations').selectize({
+        valueField: 'id',
+        labelField: 'text',
+        searchField: 'text',
+        load: function(query, callback) {
+            if (!query.length) return callback();
+            $.ajax({
+                url: '/api/organizations/',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    q: query,
+                    additionalDataIfRequired: 'Additional Data'
+                },
+                error: function() {
+                    callback();
+                },
+                success: function(res) {
+                    callback(res);
+                }
+            });
+        }
+    });
 });

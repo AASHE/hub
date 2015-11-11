@@ -7,7 +7,6 @@ from ..metadata.models import Organization
 def organizations(request):
     if not request.GET.get('q'):
         return HttpResponseBadRequest('No search term given')
-
     q = request.GET.get('q')
     data = []
     for o in Organization.objects.values_list('pk', 'org_name') \
