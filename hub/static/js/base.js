@@ -42,7 +42,7 @@ jQuery(document).ready(function() {
         });
     });
 
-    $('#id_organizations').selectize({
+    var options = {
         valueField: 'id',
         labelField: 'text',
         searchField: 'text',
@@ -64,8 +64,9 @@ jQuery(document).ready(function() {
                 }
             });
         }
-    });
+    }
 
+    $('select[name*=organization]').selectize(options);
 
     $('textarea[name$=keywords]').selectize({
         delimiter: ',',

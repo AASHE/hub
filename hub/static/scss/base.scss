@@ -1,4 +1,5 @@
 $green: #72c02c;
+$blue: #3299DB;
 $red: #c00;
 
 @mixin title() {
@@ -81,6 +82,7 @@ $red: #c00;
 
 .search-block-v2 {
     padding: 0 0 30px 0;
+    background: none;
 
     small {
         display: block;
@@ -180,12 +182,17 @@ a.resource-button{
 
     .item {
         font-weight: normal;
-        line-height: 16px;
-        font-size: 11px;
+
+        &.active {
+            background-color: $blue !important;
+            color: white !important;
+        }
     }
 
     input {
         font-weight: normal;
+        line-height: 16px;
+        font-size: 11px;
     }
 }
 

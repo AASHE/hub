@@ -1,6 +1,6 @@
 from django import forms
 
-
+from ..browse.filter import LeanSelectMultiple, LeanSelect
 from ..content.models import Author, File, Image, Website
 
 class SubmitResourceForm(forms.ModelForm):
@@ -12,8 +12,8 @@ class SubmitResourceForm(forms.ModelForm):
         widgets = {
             'topics': forms.widgets.CheckboxSelectMultiple,
             'disciplines': forms.widgets.CheckboxSelectMultiple,
+            'organizations': LeanSelectMultiple,
         }
-
         exclude = (
             'id',
             'content_type',
@@ -21,7 +21,6 @@ class SubmitResourceForm(forms.ModelForm):
             'permission',
             'submitted_by',
             'published',
-            'organizations'
         )
 
     def save(self, request):
@@ -38,7 +37,10 @@ class SubmitResourceForm(forms.ModelForm):
 class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
-        exclude = ('id', 'ct', 'organization')
+        exclude = ('id', 'ct')
+        widgets = {
+            'organization': LeanSelect,
+        }
 
     def save(self, instance):
         self.instance.ct = instance
