@@ -6,7 +6,7 @@ from ..content.models import ContentType
 User = get_user_model()
 
 
-class BaseBrowseTestCase(TestCase):
+class WithUserSuperuserTestCase(TestCase):
     """
     Some base models/structure to create before doing actual tests.
     """
@@ -17,10 +17,10 @@ class BaseBrowseTestCase(TestCase):
         self.user_cred = {'username': 'joe', 'password': 'password'}
         self.user = User.objects.create_user(email='user@example.com', **self.user_cred)
 
-        return super(BaseBrowseTestCase, self).setUp()
+        return super(WithUserSuperuserTestCase, self).setUp()
 
 
-class ContentTypePermissionTestCase(BaseBrowseTestCase):
+class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
     """
     Test permission handling of content type detail pages.
     """
