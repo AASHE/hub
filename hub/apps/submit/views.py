@@ -55,19 +55,24 @@ class SubmitFormView(LoginRequiredMixin, FormView):
 
             # Formsets
             for form in forms['author_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['author_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['file_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['image_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['website_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -91,10 +96,10 @@ class SubmitFormView(LoginRequiredMixin, FormView):
             self.content_type_class,
             SubmitResourceForm)
 
-        AuthorFormset = formset_factory(AuthorForm, max_num=5, extra=5)
-        ImageFormSet = formset_factory(ImageForm, max_num=3, extra=3)
-        FileFormSet = formset_factory(FileForm, max_num=3, extra=3)
-        WebsiteFormSet = formset_factory(WebsiteForm, max_num=1, extra=1)
+        AuthorFormset = formset_factory(AuthorForm, min_num=0, max_num=5, extra=5)
+        ImageFormSet = formset_factory(ImageForm, min_num=0, max_num=3, extra=3)
+        FileFormSet = formset_factory(FileForm, min_num=0, max_num=3, extra=3)
+        WebsiteFormSet = formset_factory(WebsiteForm, min_num=0, max_num=1, extra=1)
 
         document_form = DocumentForm(prefix='document', **self.get_form_kwargs())
         author_formset = AuthorFormset(prefix='authors', **self.get_form_kwargs())

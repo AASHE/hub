@@ -42,10 +42,10 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         }
         return super(SubmitVideoTestCase, self).setUp()
 
-    def _post_video(self, **form_data):
+    def _post_video(self, form_data=None):
         data = self.form_valid_data
-        data.update(form_data)
-
+        if form_data:
+            data.update(form_data)
         return self.client.post(self.form_url, data, follow=True)
 
     def test_user_needs_logged_in_to_submit(self):
@@ -53,9 +53,11 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         response = self._post_video()
         self.assertEqual(response.status_code, 403)
 
-    def test_valid_video(self):
+    def test_valid_video_with_no_formsets(self):
         """
-        Videos are very simple, they only need a video_link and title set.
+        Create a new video and check that all its auto-related data is sane.
+        Videos are very simple, they only need a video_link and title set, and
+        we don't add much more than that here.
         """
         self.client.login(**self.user_cred)
         response = self._post_video()
@@ -70,3 +72,42 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.submitted_by, self.user)
         self.assertEqual(video.status, Video.STATUS_CHOICES.new)
         self.assertEqual(video.permission, Video.PERMISSION_CHOICES.member)
+
+        # We didn't added any formsets yet, so they must be empty
+        self.assertEqual(video.authors.count(), 0)
+        self.assertEqual(video.images.count(), 0)
+        self.assertEqual(video.files.count(), 0)
+        self.assertEqual(video.websites.count(), 0)
+
+    def test_valid_video_with_authors(self):
+        """
+        Test that additional formset authors are saved along. This would apply
+        to files, images and websites as well.
+        """
+        additional_data = {
+            'authors-0-name': 'Martin',
+            'authors-0-email': 'martin@example.com',
+            'authors-0-title': 'Head of Regular Expressions',
+
+            'authors-1-name': 'Donald Duck',
+            'authors-1-email': 'dd@example.com',
+            'authors-1-title': 'Head of Entenhausen',
+        }
+
+        self.client.login(**self.user_cred)
+        response = self._post_video(additional_data)
+
+        # Video was created
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Video.objects.count(), 1)
+
+        # as new. By default new content types are 'member only'.
+        video = Video.objects.all()[0]
+        self.assertEqual(video.authors.count(), 2)
+        self.assertEqual(video.images.count(), 0)
+        self.assertEqual(video.files.count(), 0)
+        self.assertEqual(video.websites.count(), 0)
+
+        names = video.authors.values_list('name', flat=True)
+        self.assertTrue('Martin' in names)
+        self.assertTrue('Donald Duck' in names)
