@@ -59,7 +59,7 @@ class SearchFilter(filters.CharFilter):
                                       .values_list('ct_pk', flat=True))
         logger.debug('search query: {}'.format(query))
         logger.debug('search result ids: {}'.format(result_ids))
-        return qs.filter(pk__in=result_ids)
+        return qs.filter(pk__in=result_ids).distinct()
 
 
 class TopicFilter(filters.ChoiceFilter):
