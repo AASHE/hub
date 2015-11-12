@@ -9,7 +9,25 @@
     {{ block.super }}
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/css/sky-forms.css" %}">
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css" %}">
-{% endblock css %}
+    <link rel="stylesheet" href="{% static "vendor/pikaday/pikaday.css" %}">
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static "vendor/pikaday/moment.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.js" %}"></script>
+    <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.jquery.js" %}"></script>
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        $('input[name*=date]').each(function() {
+            new Pikaday({
+                field: $(this)[0],
+                format: 'MM/DD/YYYY'
+             });
+        });
+    });
+    </script>
+{% endblock %}
 
 {% block page %}
 
@@ -28,7 +46,6 @@
                     {% render_form document_form %}
                 </fieldset>
             </div>
-
 
             <h2>Add optional metadata to this {{ content_type_label }}</h2>
 
