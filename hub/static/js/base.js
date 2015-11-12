@@ -42,6 +42,28 @@ jQuery(document).ready(function() {
         });
     });
 
+    // The State field is only visible if the US or CA country is selected
+    var countries_with_states = new RegExp([
+        'united states',
+        'canada'
+    ].join('|'));
+    var $country = $('#id_country');
+    var $state = $('.filter-form .select-multiple.field_id_state');
+
+    var showHideStateForm = function() {
+        var val = $country.val();
+        $state.hide();
+
+        if(val === undefined) return;
+
+        if(countries_with_states.test(val.toLowerCase())){
+            $state.show();
+        }
+    }
+
+    $country.on('change', showHideStateForm)
+    showHideStateForm();
+
     var options = {
         valueField: 'id',
         labelField: 'text',

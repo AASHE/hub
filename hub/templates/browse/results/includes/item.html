@@ -7,7 +7,7 @@
     </h3>
     <ul class="list-inline up-ul">
         {% for c in obj.organizations.all %}
-        <li>{{ c.org_name }}</li>
+        <li>{{ c.org_name }} ({{ c.state }})</li>
         {% endfor %}
     </ul>
      {{ obj.description|truncatewords:30 }}

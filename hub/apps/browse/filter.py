@@ -15,6 +15,7 @@ from haystack.query import SearchQuerySet
 
 from ..content.models import CONTENT_TYPE_CHOICES, ContentType
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
+from .localflavor import CA_PROVINCES, US_STATES
 
 logger = getLogger(__name__)
 ALL = (('', 'All'),)
@@ -153,6 +154,7 @@ class CountryFilter(filters.ChoiceFilter):
             .order_by('country')
             .values_list('country', 'country')
             .distinct())
+
         countries = ALL + tuple(countries)
         kwargs.update({
             'choices': countries,
@@ -165,6 +167,27 @@ class CountryFilter(filters.ChoiceFilter):
             return qs
         return qs.filter(organizations__country=value)
 
+
+class StateFilter(filters.ChoiceFilter):
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        states = (
+            ('United States', US_STATES),
+            ('Canada', CA_PROVINCES),
+        )
+
+        kwargs.update({
+            'choices': states,
+            'label': 'State',
+            'widget': forms.widgets.CheckboxSelectMultiple,
+        })
+        super(StateFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(organizations__state__in=value)
 
 class PublishedFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
@@ -233,6 +256,7 @@ class GenericFilterSet(filters.FilterSet):
     size = StudentFteFilter()
     published = PublishedFilter()
     country = CountryFilter(required=False)
+    state = StateFilter(required=False)
     order = OrderingFilter()
 
     class Meta:
