@@ -85,6 +85,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         ctx = super(SubmitFormView, self).get_context_data(**kwargs)
         ctx.update({
             'content_type_label': self.content_type_class._meta.verbose_name,
+            'label_overrides': self.content_type_class.label_overrides(),
         })
         return ctx
 
@@ -92,10 +93,18 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         """
         Collection of our base DocumentForm and all related formsets.
         """
+        # The base 'document' form
         DocumentForm = forms.modelform_factory(
             self.content_type_class,
             SubmitResourceForm)
 
+        # If the content type provides label overrides, update them
+        labels = self.content_type_class.label_overrides()
+        for field, label in labels.items():
+            if field in DocumentForm.base_fields:
+                DocumentForm.base_fields[field].label = label
+
+        # Additional formsets
         AuthorFormset = formset_factory(AuthorForm, min_num=0, max_num=5, extra=5)
         ImageFormSet = formset_factory(ImageForm, min_num=0, max_num=3, extra=3)
         FileFormSet = formset_factory(FileForm, min_num=0, max_num=3, extra=3)

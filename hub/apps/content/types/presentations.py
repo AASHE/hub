@@ -31,17 +31,14 @@ class Presentation(ContentType):
         verbose_name = 'Conference Presentation'
         verbose_name_plural = 'Conference Presentations'
 
-    @property
-    def title_label(self):
-        return 'Presentation Title'
-
-    @property
-    def description_label(self):
-        return 'Description or abstract'
-
-    @property
-    def author_label(self):
-        return ('Presenter', 'Presenters')
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'title': 'Presentation Title',
+            'description': 'Description or Abstract',
+            'author': 'Presenter',
+            'authors': 'Presenters',
+        }
 
 
 class PresentationIndex(BaseIndex):

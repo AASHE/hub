@@ -17,9 +17,11 @@ class CenterAndInstitute(ContentType):
         verbose_name = 'Research Center & Institute'
         verbose_name_plural = 'Research Centers & Institutes'
 
-    @property
-    def title_label(self):
-        return 'Center Name'
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'title': 'Center Name',
+        }
 
 
 class CenterAndInstituteIndex(BaseIndex):

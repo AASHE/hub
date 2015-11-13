@@ -39,9 +39,14 @@ class AcademicProgram(ContentType):
         verbose_name = 'Academic Program'
         verbose_name_plural = 'Academic Programs'
 
-    @property
-    def title_label(self):
-        return 'Program Name'
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'title': 'Program Name',
+            'description': 'Description or Abstract',
+            'author': 'Presenter',
+            'author_plural': 'Presenters',
+        }
 
     @classmethod
     def get_custom_filterset(cls):

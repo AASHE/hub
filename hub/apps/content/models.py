@@ -113,15 +113,6 @@ class ContentType(TimeStampedModel):
         """
         return cls._meta.verbose_name_plural
 
-    @property
-    def title_label(self):
-        """
-        Content types all share the same `title` field, however it's label might
-        be different. 'Title' or 'Presentation Title'. Here you can override it
-        per content type.
-        """
-        return 'Title'
-
     @classmethod
     def custom_filterset(self):
         """
@@ -131,7 +122,26 @@ class ContentType(TimeStampedModel):
         """
         return None
 
-    def permission_flag(self, user):
+    @classmethod
+    def label_overrides(cls):
+        """
+        Each content type sub class may return a dictionary with
+
+            <field name>: <label>
+
+        overrides which is used later in the Submit form, to override the
+        label of the respective field in the document form. Example:
+
+            return {
+                'title': 'Program Name',
+                'description': 'Description or Abstract',
+                'author': 'Presenter',
+                'author_plural': 'Presenters',
+            }
+        """
+        return {}
+
+    def get_permission_flag(self, user):
         """
         Returns a corresponding "Login Required" or "Member required"
         flag based on the object permission and the given user.

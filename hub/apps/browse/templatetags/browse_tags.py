@@ -20,7 +20,7 @@ def permission_flag(obj, user):
     HTML output.
     """
     label = '<span class="label label-warning"><i class="fa fa-lock"></i> {label}</span>'
-    flag = obj.permission_flag(user)
+    flag = obj.get_permission_flag(user)
     if flag == 'login-required':
         return mark_safe(label.format(label='Login Required'))
     if flag == 'member-required':

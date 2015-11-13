@@ -53,7 +53,11 @@
                 <div class="col-md-12">
                     <div class="tab-v1">
                         <ul class="nav nav-tabs margin-bottom-20">
-                            <li class="active"><a data-toggle="tab" href="#authors" aria-expanded="true">Authors</a></li>
+                            <li class="active">
+                                <a data-toggle="tab" href="#authors" aria-expanded="true">
+                                    {{ label_overrides.authors|default:"Authors" }}
+                                </a>
+                            </li>
                             <li class=""><a data-toggle="tab" href="#images" aria-expanded="false">Images</a></li>
                             <li class=""><a data-toggle="tab" href="#files" aria-expanded="false">Files</a></li>
                             <li class=""><a data-toggle="tab" href="#websites" aria-expanded="false">Websites</a></li>
