@@ -173,6 +173,11 @@ a.resource-button{
             font-size: 11px;
             cursor: pointer;
         }
+
+        span.required {
+            color: $red !important;
+            float: none !important;
+        }
     }
 }
 
