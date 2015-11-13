@@ -62,6 +62,5 @@ def render_form(form, field=None, type='input'):
         field_type = FIELD_MAP.get(widget, 'input')
         template_name = 'forms/{}.html'.format(field_type)
         response += render_to_string(template_name, {'field': f})
-        print field_type, widget
 
     return mark_safe(response)
