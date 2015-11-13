@@ -1,7 +1,6 @@
 from django.db import models
 from model_utils import Choices
 
-from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD, IMG_UPLOAD
@@ -38,10 +37,6 @@ class Publication(ContentType):
         book chapers, enter the title of the book.''')
     _type = models.CharField(max_length=40, choices=TYPE_CHOICES, blank=True, null=True,
         verbose_name='Type of Material')
-    institutions = models.ManyToManyField(InstitutionalOffice, blank=True,
-        verbose_name='Institution Office (if relevant)',
-        help_text='''Only include if an office or division on campus is/was
-        directly involved in the case study. Select up to three.''')
 
     class Meta:
         verbose_name = 'Publication'

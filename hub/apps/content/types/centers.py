@@ -1,6 +1,5 @@
 from django.db import models
 
-from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
 from ..search import BaseIndex
 
@@ -13,10 +12,6 @@ class CenterAndInstitute(ContentType):
         blank=True, null=True, help_text='(e.g. 2009)')
     budget = models.PositiveIntegerField('Total operating budget for the center or institute (excluding salaries)?',
         blank=True, null=True, help_text='in U.S. dollars')
-    institutions = models.ManyToManyField(InstitutionalOffice, blank=True,
-        verbose_name='Institution Office (if relevant)',
-        help_text='''Only include if an office or division on campus is/was
-        directly involved in the case study. Select up to three.''')
 
     class Meta:
         verbose_name = 'Research Center & Institute'

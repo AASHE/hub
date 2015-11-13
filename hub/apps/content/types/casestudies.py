@@ -1,6 +1,6 @@
 from django.db import models
 
-from ...metadata.models import ProgramType, InstitutionalOffice
+from ...metadata.models import ProgramType
 from ..models import ContentType
 from ..search import BaseIndex
 from ..help import AFFIRMATION
@@ -32,10 +32,6 @@ class CaseStudy(ContentType):
         help_text='''Describe the lessons learned from this project. This
         section may also be used to offer advice to others who wish to
         undertake a similar project.''')
-    institutions = models.ManyToManyField(InstitutionalOffice, blank=True,
-        verbose_name='Institution Office (if relevant)',
-        help_text='''Only include if an office or division on campus is/was
-        directly involved in the case study. Select up to three.''')
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 

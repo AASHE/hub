@@ -63,6 +63,11 @@ class ContentType(TimeStampedModel):
         please complete the new organization form to have it added to our
         database.""")
 
+    institutions = models.ManyToManyField('metadata.InstitutionalOffice', blank=True,
+        verbose_name='Institution Office (if relevant)',
+        help_text='''Only include if an office or division on campus is/was
+        directly involved in the case study. Select up to three.''')
+
     topics = models.ManyToManyField('metadata.SustainabilityTopic',
         verbose_name='Sustainability Topic(s)',
         help_text="Select up to three topics that relate most closely.")
