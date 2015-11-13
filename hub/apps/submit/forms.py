@@ -20,6 +20,7 @@ class SubmitResourceForm(forms.ModelForm):
             'disciplines': forms.widgets.SelectMultiple,
             'organizations': LeanSelectMultiple,
         }
+
         exclude = (
             'id',
             'content_type',
@@ -44,6 +45,23 @@ class SubmitResourceForm(forms.ModelForm):
             raise forms.ValidationError('You need to acknowledge the affirmation')
         return self.cleaned_data.get('affirmation')
 
+    def clean_topics(self):
+        topics = self.cleaned_data.get('topics')
+        if topics and len(topics) > 3:
+            raise forms.ValidationError('Please choose no more than 3 topics.')
+        return topics
+
+    def clean_disciplines(self):
+        disciplines = self.cleaned_data.get('disciplines')
+        if disciplines and len(disciplines) > 3:
+            raise forms.ValidationError('Please choose no more than 3 disciplines.')
+        return disciplines
+
+    def clean_institutions(self):
+        institutions = self.cleaned_data.get('institutions')
+        if institutions and len(institutions) > 3:
+            raise forms.ValidationError('Please choose no more than 3 institutions.')
+        return institutions
 
 class AuthorForm(forms.ModelForm):
     class Meta:

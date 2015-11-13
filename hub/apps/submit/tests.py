@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 
 from ..metadata.models import AcademicDiscipline, Organization, \
-    SustainabilityTopic
+    SustainabilityTopic, InstitutionalOffice
 from ..content.types.videos import Video
 from ..browse.tests import WithUserSuperuserTestCase
 
@@ -11,20 +11,25 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
     has the least complex fieldset.
     """
     def setUp(self):
-        self._organization = Organization.objects.create(account_num=1,
-            org_name='Hipster University', exclude_from_website=0)
-        self._discipline = AcademicDiscipline.objects.create(name='Jumping')
-        self._topic = SustainabilityTopic.objects.create(name='Science')
-
         self.form_url = reverse('submit:form', kwargs={'ct': 'video'})
         self.form_valid_data = {
             # Document Form
             'document-title': 'My first Video',
             'document-link': 'http://example.com/video.mp4',
             'document-affirmation': True,
-            'document-organizations': [self._organization.pk],
-            'document-disciplines': [self._discipline.pk],
-            'document-topics': [self._topic.pk],
+
+            'document-organizations': [
+                Organization.objects.create(account_num=1, org_name='Hipster University', exclude_from_website=0).pk
+            ],
+            'document-disciplines': [
+                AcademicDiscipline.objects.create(name='Jumping').pk
+            ],
+            'document-topics': [
+                SustainabilityTopic.objects.create(name='Science').pk
+            ],
+            'document-institutions': [
+                InstitutionalOffice.objects.create(name='Lirum').pk
+            ],
 
             # Formset management forms
             #
@@ -186,3 +191,39 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Video.objects.count(), 0)
         self.assertEqual(len(response.context['document_form']._errors), 1)
+
+    def test_at_most_three_disciplines_topics_institutes(self):
+        """
+        The frontend forms allow at most 3 of each.
+        """
+        # Set the required title field to an empty string.
+        additional_data = {
+            'document-disciplines': [
+                AcademicDiscipline.objects.create(name='Item 1').pk,
+                AcademicDiscipline.objects.create(name='Item 2').pk,
+                AcademicDiscipline.objects.create(name='Item 3').pk,
+                AcademicDiscipline.objects.create(name='Item 4').pk,
+            ],
+            'document-topics': [
+                SustainabilityTopic.objects.create(name='Item 1').pk,
+                SustainabilityTopic.objects.create(name='Item 2').pk,
+                SustainabilityTopic.objects.create(name='Item 3').pk,
+                SustainabilityTopic.objects.create(name='Item 4').pk,
+            ],
+            'document-institutions': [
+                InstitutionalOffice.objects.create(name='Item 1').pk,
+                InstitutionalOffice.objects.create(name='Item 2').pk,
+                InstitutionalOffice.objects.create(name='Item 3').pk,
+                InstitutionalOffice.objects.create(name='Item 4').pk,
+            ],
+        }
+        self.client.login(**self.user_cred)
+        response = self._post_video(additional_data)
+
+        # print response.context['document_form']._errors
+
+        # The response code is 200, the new form is OK, however no video was
+        # created and we have an errors in our document form.
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Video.objects.count(), 0)
+        self.assertEqual(len(response.context['document_form']._errors), 3)
