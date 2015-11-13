@@ -1,5 +1,7 @@
 from django.core.urlresolvers import reverse
 
+from ..metadata.models import AcademicDiscipline, Organization, \
+    SustainabilityTopic
 from ..content.types.videos import Video
 from ..browse.tests import WithUserSuperuserTestCase
 
@@ -9,12 +11,20 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
     has the least complex fieldset.
     """
     def setUp(self):
+        self._organization = Organization.objects.create(account_num=1,
+            org_name='Hipster University', exclude_from_website=0)
+        self._discipline = AcademicDiscipline.objects.create(name='Jumping')
+        self._topic = SustainabilityTopic.objects.create(name='Science')
+
         self.form_url = reverse('submit:form', kwargs={'ct': 'video'})
         self.form_valid_data = {
             # Document Form
             'document-title': 'My first Video',
-            'document-video_link': 'http://example.com/video.mp4',
+            'document-link': 'http://example.com/video.mp4',
             'document-affirmation': True,
+            'document-organizations': [self._organization.pk],
+            'document-disciplines': [self._discipline.pk],
+            'document-topics': [self._topic.pk],
 
             # Formset management forms
             #
@@ -72,6 +82,9 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.submitted_by, self.user)
         self.assertEqual(video.status, Video.STATUS_CHOICES.new)
         self.assertEqual(video.permission, Video.PERMISSION_CHOICES.member)
+
+        self.assertEqual(video.title, self.form_valid_data['document-title'])
+        # self.assertEqual(video.link, self.form_valid_data['document-link'])
 
         # We didn't added any formsets yet, so they must be empty
         self.assertEqual(video.authors.count(), 0)

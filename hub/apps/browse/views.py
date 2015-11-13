@@ -133,7 +133,6 @@ class BrowseView(ListView):
             data['topics'] = self.sustainabilty_topic.slug
         if self.content_type_class:
             data['content_type'] = self.content_type_class.slug
-        logger.debug('filterset data: {}'.format(data))
         return data
 
     def get_title(self):
