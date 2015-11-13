@@ -11,6 +11,11 @@ class Video(ContentType):
         verbose_name = 'Video'
         verbose_name_plural = 'Videos'
 
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'title': 'Video Title',
+        }
 
 class VideoIndex(BaseIndex):
     def get_model(self):

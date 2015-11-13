@@ -58,10 +58,27 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
             data.update(form_data)
         return self.client.post(self.form_url, data, follow=True)
 
+    def test_invalid_content_type_gives_404(self):
+        self.client.logout()
+        form_url = form_url = reverse('submit:form', kwargs={'ct': 'doesnotexist'})
+        response = self.client.get(form_url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_needs_logged_in_to_see_form(self):
+        self.client.logout()
+        response = self.client.get(self.form_url)
+        self.assertEqual(response.status_code, 403)
+
     def test_user_needs_logged_in_to_submit(self):
         self.client.logout()
         response = self._post_video()
         self.assertEqual(response.status_code, 403)
+
+    def test_logged_in_user_can_see_form(self):
+        self.client.login(**self.user_cred)
+        response = self.client.get(self.form_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('document_form' in response.context)
 
     def test_valid_video_with_no_formsets(self):
         """
@@ -150,3 +167,22 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.authors.count(), 1)
         self.assertEqual(video.authors.all()[0].name, self.user.get_full_name())
         self.assertEqual(video.authors.all()[0].email, self.user.email)
+
+    def test_invalid_form_shows_up_again(self):
+        """
+        A form with invalid, or missing required data is just showed up again
+        and doesn't error out.
+        """
+        # Set the required title field to an empty string.
+        additional_data = {
+            'document-title': '',
+        }
+
+        self.client.login(**self.user_cred)
+        response = self._post_video(additional_data)
+
+        # The response code is 200, the new form is OK, however no video was
+        # created and we have an error in our document form.
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Video.objects.count(), 0)
+        self.assertEqual(len(response.context['document_form']._errors), 1)
