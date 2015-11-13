@@ -42,6 +42,13 @@ AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
 AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
 
 # ==============================================================================
+# iss
+# ==============================================================================
+SALESFORCE_USERNAME = os.environ.get('SALESFORCE_USERNAME', None)
+SALESFORCE_PASSWORD = os.environ.get('SALESFORCE_PASSWORD', None)
+SALESFORCE_SECURITY_TOKEN = os.environ.get('SALESFORCE_SECURITY_TOKEN', None)
+
+# ==============================================================================
 # S3 Media Storage
 # ==============================================================================
 INSTALLED_APPS += ('s3_folder_storage',)
