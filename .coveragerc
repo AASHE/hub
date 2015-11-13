@@ -3,3 +3,5 @@ source = hub
 omit =
     *tests*
     *migrations*
+    hub/settings/*
+    hub/wsgi.py
