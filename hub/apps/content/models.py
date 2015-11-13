@@ -113,6 +113,14 @@ class ContentType(TimeStampedModel):
         """
         return cls._meta.verbose_name_plural
 
+    @property
+    def instance_type_label(self):
+        """
+        The `verbose_name` of the attached content type subclass of this
+        main content type object.
+        """
+        return CONTENT_TYPES[self.content_type]._meta.verbose_name_plural
+
     @classmethod
     def custom_filterset(self):
         """
