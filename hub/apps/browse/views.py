@@ -11,7 +11,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
-from .filter import GenericFilterSet
+from .filterset import GenericFilterSet
 
 logger = getLogger(__name__)
 

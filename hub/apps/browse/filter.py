@@ -1,14 +1,12 @@
 from __future__ import unicode_literals
 
 from collections import OrderedDict
-from itertools import chain
 from logging import getLogger
 from operator import or_
 
 import django_filters as filters
 from django import forms
 from django.db.models import Q
-from django.utils.encoding import force_text
 
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
@@ -16,29 +14,10 @@ from haystack.query import SearchQuerySet
 from ..content.models import CONTENT_TYPE_CHOICES, ContentType
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
 from .localflavor import CA_PROVINCES, US_STATES
+from .forms import LeanSelectMultiple
 
 logger = getLogger(__name__)
 ALL = (('', 'All'),)
-
-
-class LeanSelect(forms.Select):
-    """
-    Works like a regular SelectMultiple widget but only renders a list of
-    initial values, rather than the full list of choices.
-    """
-    def render_options(self, choices, selected_choices):
-        # Normalize to strings.
-        selected_choices = set(force_text(v) for v in selected_choices)
-        output = []
-        for option_value, option_label in chain(self.choices, choices):
-            if not force_text(option_value) in selected_choices:
-                continue
-            output.append(self.render_option(selected_choices, option_value, option_label))
-        return '\n'.join(output)
-
-
-class LeanSelectMultiple(LeanSelect, forms.SelectMultiple):
-    pass
 
 
 #==============================================================================
@@ -189,6 +168,7 @@ class StateFilter(filters.ChoiceFilter):
             return qs
         return qs.filter(organizations__state__in=value)
 
+
 class PublishedFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
@@ -242,34 +222,7 @@ class OrderingFilter(filters.ChoiceFilter):
         return qs.order_by(value)
 
 
-class GenericFilterSet(filters.FilterSet):
-    """
-    The genric Filter form handling the filtering for all views: search, content
-    types and sustainability topic. The browse view might extend the list of
-    filters dynamically per content type, using above   `CONTENT_TYPE_FILTERS`
-    mapping.
-    """
-    search = SearchFilter(widget=forms.HiddenInput)
-    topics = TopicFilter()
-    content_type = ContentTypesFilter()
-    organizations = OrganizationFilter()
-    size = StudentFteFilter()
-    published = PublishedFilter()
-    country = CountryFilter(required=False)
-    state = StateFilter(required=False)
-    order = OrderingFilter()
-
-    class Meta:
-        model = ContentType
-        fields = []  # Don't set any automatic fields, we already defined
-                     # a specific list above.
-
-
-#==============================================================================
-# Academic Program
-#==============================================================================
-
-
+# Academic Program specific
 class ProgramTypeFilter(filters.ChoiceFilter):
     """
     Academic Program specific Program Type filter.
@@ -294,7 +247,3 @@ class ProgramTypeFilter(filters.ChoiceFilter):
         from ..content.types.academic import AcademicProgram
         return qs.filter(pk__in=AcademicProgram.objects.filter(
             program_type__in=value).values_list('pk', flat=True))
-
-
-class AcademicBrowseFilter(GenericFilterSet):
-    program_type = ProgramTypeFilter()

@@ -49,8 +49,8 @@ class AcademicProgram(ContentType):
 
     @classmethod
     def get_custom_filterset(cls):
-        from ...browse.filter import AcademicBrowseFilter
-        return AcademicBrowseFilter
+        from ...browse.filterset import AcademicBrowseFilterSet
+        return AcademicBrowseFilterSet
 
 
 class AcademicProgramIndex(BaseIndex):

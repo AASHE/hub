@@ -1,7 +1,8 @@
 from django import forms
 
-from ..browse.filter import LeanSelectMultiple, LeanSelect
+from ..browse.forms import LeanSelectMultiple, LeanSelect
 from ..content.models import Author, File, Image, Website
+
 
 class SubmitResourceForm(forms.ModelForm):
     """
