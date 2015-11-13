@@ -1,6 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
+from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD
@@ -32,6 +33,10 @@ class Material(ContentType):
         choices=LEVEL_CHOICES, help_text='''e.g. 100-level courses may be
         designated as introductory, 200-300 for intermediate, 400-level for
         advanced, or similar structures''')
+    institutions = models.ManyToManyField(InstitutionalOffice, blank=True,
+        verbose_name='Institution Office (if relevant)',
+        help_text='''Only include if an office or division on campus is/was
+        directly involved in the case study. Select up to three.''')
 
     class Meta:
         verbose_name = 'Course Material'
