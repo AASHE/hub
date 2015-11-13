@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from logging import getLogger
+from collections import OrderedDict
 
 from django.db import models
 from django.conf import settings
@@ -11,7 +12,7 @@ from model_utils.models import TimeStampedModel
 from model_utils import Choices
 
 from hub.permissions import get_aashe_member_flag
-from .types.strings import AFFIRMATION
+from .help import AFFIRMATION
 
 logger = getLogger(__name__)
 
@@ -47,12 +48,35 @@ class ContentType(TimeStampedModel):
     permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
     published = models.DateTimeField(blank=True, null=True)
     submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-    title = models.CharField(max_length=500)
-    description = models.TextField(blank=True, null=True)
-    keywords = models.TextField(blank=True, null=True)
-    organizations = models.ManyToManyField('metadata.Organization', blank=True, verbose_name='Organizations')
-    topics = models.ManyToManyField('metadata.SustainabilityTopic', blank=True, verbose_name='Sustainability Topics')
-    disciplines = models.ManyToManyField('metadata.AcademicDiscipline', blank=True, verbose_name='Academic Disciplines')
+
+    title = models.CharField(max_length=500) # label set by self.title_label
+
+    description = models.TextField('Description', blank=True, null=True)
+
+    keywords = models.TextField('Keywords', blank=True, null=True,
+        help_text="""Enter keywords that will be helpful for locating this
+        resource (e.g. "bottled water" for bottled water initiatives).""")
+
+    organizations = models.ManyToManyField('metadata.Organization',
+        verbose_name='Organization(s)',
+        help_text=""" Select the institution(s) and/or organization(s) that
+        offer(s) this program. If an organization is not on the dropdown list,
+        please complete the new organization form to have it added to our
+        database.""")
+
+    institutions = models.ManyToManyField('metadata.InstitutionalOffice', blank=True,
+        verbose_name='Institution Office (if relevant)',
+        help_text='''Only include if an office or division on campus is/was
+        directly involved in the case study. Select up to three.''')
+
+    topics = models.ManyToManyField('metadata.SustainabilityTopic',
+        verbose_name='Sustainability Topic(s)',
+        help_text="Select up to three topics that relate most closely.")
+
+    disciplines = models.ManyToManyField('metadata.AcademicDiscipline',
+        verbose_name='Academic Discipline(s)',
+        help_text="""Select up to three academic disciplines that relate most
+        closely to the academic program.""")
 
     objects = ContentTypeManager()
 
@@ -81,22 +105,21 @@ class ContentType(TimeStampedModel):
         return reverse('browse:view', kwargs={'ct': self.content_type,
             'id': self.pk})
 
-    @property
-    def content_type_label(self):
+    @classmethod
+    def content_type_label(cls):
         """
         The `verbose_name` of the attached content type subclass of this
         main content type object.
         """
-        return CONTENT_TYPE_CHOICES[self.content_type]
+        return cls._meta.verbose_name_plural
 
     @property
-    def title_label(self):
+    def instance_type_label(self):
         """
-        Content types all share the same `title` field, however it's label might
-        be different. 'Title' or 'Presentation Title'. Here you can override it
-        per content type.
+        The `verbose_name` of the attached content type subclass of this
+        main content type object.
         """
-        return 'Title'
+        return CONTENT_TYPES[self.content_type]._meta.verbose_name_plural
 
     @classmethod
     def custom_filterset(self):
@@ -107,7 +130,26 @@ class ContentType(TimeStampedModel):
         """
         return None
 
-    def permission_flag(self, user):
+    @classmethod
+    def label_overrides(cls):
+        """
+        Each content type sub class may return a dictionary with
+
+            <field name>: <label>
+
+        overrides which is used later in the Submit form, to override the
+        label of the respective field in the document form. Example:
+
+            return {
+                'title': 'Program Name',
+                'description': 'Description or Abstract',
+                'author': 'Presenter',
+                'author_plural': 'Presenters',
+            }
+        """
+        return {}
+
+    def get_permission_flag(self, user):
         """
         Returns a corresponding "Login Required" or "Member required"
         flag based on the object permission and the given user.
@@ -136,7 +178,6 @@ class ContentType(TimeStampedModel):
 @python_2_unicode_compatible
 class Author(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="authors")
-    is_author = models.BooleanField("I am an author", default=False)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
     organization = models.ForeignKey('metadata.Organization', blank=True, null=True)
@@ -161,7 +202,7 @@ class File(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="files")
     label = models.CharField(max_length=100, blank=True, null=True)
     item = models.FileField(help_text="The following files formats are "
-        "aceptable: PDF, Excel, Word, PPT...", blank=True, null=True)
+        "aceptable: PDF, Excel, Word, PPT...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
@@ -207,22 +248,14 @@ from .types.publications import Publication
 from .types.tools import Tool
 from .types.videos import Video
 
-CONTENT_TYPES = {
-    'academicprogram': AcademicProgram,
-    'casestudy': CaseStudy,
-    'center': CenterAndInstitute,
-    'material': Material,
-    'outreach': OutreachMaterial,
-    'photograph': Photograph,
-    'presentation': Presentation,
-    'publication': Publication,
-    'tool': Tool,
-    'video': Video,
-}
-
-# Auto-generate a list of Choices for each Content type. It doesn't add too much
-# magic, it just tries to get the Content type Name out of `meta.verbose_name`,
-# otherwise it tries to auto-generate the name.
-CONTENT_TYPE_CHOICES = Choices(
-    *[(j, k._meta.verbose_name) for j, k in sorted(CONTENT_TYPES.items())]
-)
+CONTENT_TYPES = OrderedDict()
+CONTENT_TYPES['academicprogram'] = AcademicProgram
+CONTENT_TYPES['casestudy'] = CaseStudy
+CONTENT_TYPES['presentation'] = Presentation
+CONTENT_TYPES['material'] = Material
+CONTENT_TYPES['outreach'] = OutreachMaterial
+CONTENT_TYPES['photograph'] = Photograph
+CONTENT_TYPES['publication'] = Publication
+CONTENT_TYPES['center'] = CenterAndInstitute
+CONTENT_TYPES['tool'] = Tool
+CONTENT_TYPES['video'] = Video

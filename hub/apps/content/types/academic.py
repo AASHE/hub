@@ -18,26 +18,40 @@ class AcademicProgram(ContentType):
         ('both', 'Both'),
     )
 
-    program_type = models.ForeignKey(ProgramType, blank=True, null=True, verbose_name='Program Type')
-    outcomes = models.TextField('Learning Outcomes', blank=True, null=True)
-    founded = models.PositiveIntegerField(blank=True, null=True)
-    completion = models.CharField('Expected completion time', max_length=20, blank=True, null=True)
-    num_students = models.PositiveIntegerField('Approximate number of students completing program annually', blank=True, null=True)
-    distance = models.CharField('Distance Education', max_length=20, choices=DISTANCE_CHOICES, blank=True, null=True)
-    commitment = models.CharField('Commitment', max_length=20, choices=COMMITMENT_CHOICES, blank=True, null=True)
+    program_type = models.ForeignKey(ProgramType, blank=True, null=True,
+        verbose_name='Program Type')
+    outcomes = models.TextField('Learning Outcomes', blank=True, null=True,
+        help_text="Consider completing if different from description.")
+    founded = models.PositiveIntegerField("Year Founded", blank=True, null=True,
+        help_text="(e.g. 2009)")
+    completion = models.CharField('Expected completion time', max_length=20,
+        blank=True, null=True, help_text="(e.g. 2 years and 6 months)")
+    num_students = models.PositiveIntegerField(
+        'Approximate number of students completing program annually',
+        blank=True, null=True, help_text="""We recommend referring to IPEDS data
+        and including an average over five years.""")
+    distance = models.CharField('Distance Education', max_length=20,
+        choices=DISTANCE_CHOICES, blank=True, null=True)
+    commitment = models.CharField('Commitment', max_length=20,
+        choices=COMMITMENT_CHOICES, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Academic Program'
         verbose_name_plural = 'Academic Programs'
 
-    @property
-    def title_label(self):
-        return 'Program Name'
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'title': 'Program Name',
+            'description': 'Description or Abstract',
+            'author': 'Presenter',
+            'author_plural': 'Presenters',
+        }
 
     @classmethod
     def get_custom_filterset(cls):
-        from ...browse.filter import AcademicBrowseFilter
-        return AcademicBrowseFilter
+        from ...browse.filterset import AcademicBrowseFilterSet
+        return AcademicBrowseFilterSet
 
 
 class AcademicProgramIndex(BaseIndex):

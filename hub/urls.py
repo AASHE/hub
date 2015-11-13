@@ -23,3 +23,8 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    urlpatterns += [
+        url(r'^404$', 'django.views.defaults.page_not_found'),
+        url(r'^500$', 'django.views.defaults.server_error'),
+    ]

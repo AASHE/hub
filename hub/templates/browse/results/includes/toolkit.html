@@ -26,7 +26,7 @@
             <ul class="list-unstyled social-contacts-v2">
                 {% for ct in featured_list %}
                 <li>
-                    <small class="pull-right">{{ ct.content_type_label }}</small>
+                    <small class="pull-right">{{ ct.instance_type_label }}</small>
                     <i class="fa fa-star-o rounded"></i>
                     <a href="{{ ct.get_absolute_url }}">{{ ct.title }}</a>
                 </li>

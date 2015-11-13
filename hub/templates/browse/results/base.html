@@ -6,9 +6,15 @@
 {% block body_class %}page-browse{% endblock %}
 
 {% block css %}
+    {{ block.super }}
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/css/sky-forms.css" %}">
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css" %}">
 {% endblock css %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static "js/browse-results.js" %}"></script>
+{% endblock %}
 
 {% block page %}
 <div class="search-block-v2">

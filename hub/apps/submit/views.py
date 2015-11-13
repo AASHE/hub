@@ -7,7 +7,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 
 from ...permissions import LoginRequiredMixin
-from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES
+from ..content.models import CONTENT_TYPES
 from .forms import AuthorForm, FileForm, ImageForm, SubmitResourceForm, \
     WebsiteForm
 
@@ -20,7 +20,7 @@ class SubmitIndexView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super(SubmitIndexView, self).get_context_data(**kwargs)
         ctx.update({
-            'content_type_list': dict(CONTENT_TYPE_CHOICES),
+            'content_type_list': CONTENT_TYPES,
         })
         return ctx
 
@@ -55,19 +55,24 @@ class SubmitFormView(LoginRequiredMixin, FormView):
 
             # Formsets
             for form in forms['author_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['author_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['file_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['image_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             for form in forms['website_formset']:
-                form.save(instance=instance)
+                if form.has_changed():
+                    form.save(instance=instance)
 
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -80,6 +85,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         ctx = super(SubmitFormView, self).get_context_data(**kwargs)
         ctx.update({
             'content_type_label': self.content_type_class._meta.verbose_name,
+            'label_overrides': self.content_type_class.label_overrides(),
         })
         return ctx
 
@@ -87,14 +93,22 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         """
         Collection of our base DocumentForm and all related formsets.
         """
+        # The base 'document' form
         DocumentForm = forms.modelform_factory(
             self.content_type_class,
             SubmitResourceForm)
 
-        AuthorFormset = formset_factory(AuthorForm, max_num=5, extra=5)
-        ImageFormSet = formset_factory(ImageForm, max_num=3, extra=3)
-        FileFormSet = formset_factory(FileForm, max_num=3, extra=3)
-        WebsiteFormSet = formset_factory(WebsiteForm, max_num=1, extra=1)
+        # If the content type provides label overrides, update them
+        labels = self.content_type_class.label_overrides()
+        for field, label in labels.items():
+            if field in DocumentForm.base_fields:
+                DocumentForm.base_fields[field].label = label
+
+        # Additional formsets
+        AuthorFormset = formset_factory(AuthorForm, min_num=0, max_num=5, extra=5)
+        ImageFormSet = formset_factory(ImageForm, min_num=0, max_num=3, extra=3)
+        FileFormSet = formset_factory(FileForm, min_num=0, max_num=3, extra=3)
+        WebsiteFormSet = formset_factory(WebsiteForm, min_num=0, max_num=1, extra=1)
 
         document_form = DocumentForm(prefix='document', **self.get_form_kwargs())
         author_formset = AuthorFormset(prefix='authors', **self.get_form_kwargs())

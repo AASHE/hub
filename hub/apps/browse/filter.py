@@ -7,14 +7,18 @@ from operator import or_
 import django_filters as filters
 from django import forms
 from django.db.models import Q
-from haystack.query import SearchQuerySet
-from haystack.inputs import Raw
 
-from ..content.models import CONTENT_TYPE_CHOICES, ContentType
+from haystack.inputs import Raw
+from haystack.query import SearchQuerySet
+
+from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
+from .localflavor import CA_PROVINCES, US_STATES
+from .forms import LeanSelectMultiple
 
 logger = getLogger(__name__)
 ALL = (('', 'All'),)
+
 
 #==============================================================================
 # Generic Filter
@@ -33,9 +37,7 @@ class SearchFilter(filters.CharFilter):
         query = Raw(value.lower())
         result_ids = (SearchQuerySet().filter(content__contains=query)
                                       .values_list('ct_pk', flat=True))
-        logger.debug('search query: {}'.format(query))
-        logger.debug('search result ids: {}'.format(result_ids))
-        return qs.filter(pk__in=result_ids)
+        return qs.filter(pk__in=result_ids).distinct()
 
 
 class TopicFilter(filters.ChoiceFilter):
@@ -60,7 +62,7 @@ class ContentTypesFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': CONTENT_TYPE_CHOICES,
+            'choices': [(j, k.content_type_label()) for j, k in CONTENT_TYPES.items()],
             'label': 'Content Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -81,7 +83,7 @@ class OrganizationFilter(filters.ChoiceFilter):
         kwargs.update({
             'choices': organizations,
             'label': 'Organization',
-            'widget': forms.widgets.CheckboxSelectMultiple(),
+            'widget': LeanSelectMultiple,
         })
         super(OrganizationFilter, self).__init__(*args, **kwargs)
 
@@ -129,6 +131,7 @@ class CountryFilter(filters.ChoiceFilter):
             .order_by('country')
             .values_list('country', 'country')
             .distinct())
+
         countries = ALL + tuple(countries)
         kwargs.update({
             'choices': countries,
@@ -140,6 +143,28 @@ class CountryFilter(filters.ChoiceFilter):
         if not value:
             return qs
         return qs.filter(organizations__country=value)
+
+
+class StateFilter(filters.ChoiceFilter):
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        states = (
+            ('United States', US_STATES),
+            ('Canada', CA_PROVINCES),
+        )
+
+        kwargs.update({
+            'choices': states,
+            'label': 'State',
+            'widget': forms.widgets.CheckboxSelectMultiple,
+        })
+        super(StateFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(organizations__state__in=value)
 
 
 class PublishedFilter(filters.ChoiceFilter):
@@ -195,33 +220,7 @@ class OrderingFilter(filters.ChoiceFilter):
         return qs.order_by(value)
 
 
-class GenericFilterSet(filters.FilterSet):
-    """
-    The genric Filter form handling the filtering for all views: search, content
-    types and sustainability topic. The browse view might extend the list of
-    filters dynamically per content type, using above   `CONTENT_TYPE_FILTERS`
-    mapping.
-    """
-    search = SearchFilter(widget=forms.HiddenInput)
-    topics = TopicFilter()
-    content_type = ContentTypesFilter()
-    #organizations = OrganizationFilter()
-    size = StudentFteFilter()
-    published = PublishedFilter()
-    country = CountryFilter(required=False)
-    order = OrderingFilter()
-
-    class Meta:
-        model = ContentType
-        fields = []  # Don't set any automatic fields, we already defined
-                     # a specific list above.
-
-
-#==============================================================================
-# Academic Program
-#==============================================================================
-
-
+# Academic Program specific
 class ProgramTypeFilter(filters.ChoiceFilter):
     """
     Academic Program specific Program Type filter.
@@ -246,7 +245,3 @@ class ProgramTypeFilter(filters.ChoiceFilter):
         from ..content.types.academic import AcademicProgram
         return qs.filter(pk__in=AcademicProgram.objects.filter(
             program_type__in=value).values_list('pk', flat=True))
-
-
-class AcademicBrowseFilter(GenericFilterSet):
-    program_type = ProgramTypeFilter()

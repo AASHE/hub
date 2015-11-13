@@ -1,15 +1,15 @@
 from django.db import models
 
-from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
 from ..search import BaseIndex
-from .strings import AFFIRMATION
+from ..help import AFFIRMATION, FILE_UPLOAD
 
 
 class Tool(ContentType):
-    document = models.FileField(help_text="The following files formats are "
-        "acceptable: PDF, Excel, Word, PPT...", blank=True, null=True)
-    institution = models.ForeignKey(InstitutionalOffice, blank=True, null=True)
+    website = models.URLField('Website', blank=True, null=True)
+    document = models.FileField('Document Upload',
+        blank=True, null=True, help_text=FILE_UPLOAD + ''' Provide either a
+        website or a publication document.''')
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 

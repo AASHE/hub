@@ -20,7 +20,7 @@ def permission_flag(obj, user):
     HTML output.
     """
     label = '<span class="label label-warning"><i class="fa fa-lock"></i> {label}</span>'
-    flag = obj.permission_flag(user)
+    flag = obj.get_permission_flag(user)
     if flag == 'login-required':
         return mark_safe(label.format(label='Login Required'))
     if flag == 'member-required':
@@ -62,6 +62,5 @@ def render_form(form, field=None, type='input'):
         field_type = FIELD_MAP.get(widget, 'input')
         template_name = 'forms/{}.html'.format(field_type)
         response += render_to_string(template_name, {'field': f})
-        print field_type, widget
 
     return mark_safe(response)

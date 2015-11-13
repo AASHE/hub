@@ -1,10 +1,9 @@
 from django.db import models
 from model_utils import Choices
 
-from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
 from ..search import BaseIndex
-from .strings import AFFIRMATION
+from ..help import AFFIRMATION, FILE_UPLOAD, IMG_UPLOAD
 
 
 class Publication(ContentType):
@@ -19,15 +18,25 @@ class Publication(ContentType):
         ('other', 'Other Student Research Paper'),
     )
 
-    release_date = models.DateField(blank=True, null=True)
-    publisher = models.CharField(max_length=200, blank=True, null=True)
-    periodical_name = models.CharField(max_length=200, blank=True, null=True)
-    _type = models.CharField(max_length=40, choices=TYPE_CHOICES, blank=True, null=True,
-        verbose_name='Type of Material')
-    cover_image = models.ImageField(blank=True, null=True)
-    institution = models.ForeignKey(InstitutionalOffice, blank=True, null=True)
+    website = models.URLField('Website', blank=True, null=True)
+    cover_image = models.ImageField(blank=True, null=True, help_text=IMG_UPLOAD)
+    document = models.FileField('Document Upload',
+        blank=True, null=True, help_text=FILE_UPLOAD + ''' Provide either a
+        website or a publication document.''')
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
+
+    release_date = models.DateField('Publication release date',
+        blank=True, null=True, help_text='''Providing a release date is
+        highly recommended.''')
+    publisher = models.CharField('Publisher', max_length=200,
+        blank=True, null=True, help_text='Enter the name of the publisher, if applicable.')
+    periodical_name = models.CharField('Periodical/publication name',
+        max_length=200, blank=True, null=True, help_text='''Enter the name of
+        the periodical (e.g., journal, magazine, newspaper), if applicable. For
+        book chapers, enter the title of the book.''')
+    _type = models.CharField(max_length=40, choices=TYPE_CHOICES, blank=True, null=True,
+        verbose_name='Type of Material')
 
     class Meta:
         verbose_name = 'Publication'

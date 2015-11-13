@@ -6,12 +6,21 @@
 {% block body_class %}page-submit-form{% endblock %}
 
 {% block css %}
+    {{ block.super }}
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/css/sky-forms.css" %}">
     <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css" %}">
-{% endblock css %}
+    <link rel="stylesheet" href="{% static "vendor/pikaday/pikaday.css" %}">
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static "vendor/pikaday/moment.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.js" %}"></script>
+    <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.jquery.js" %}"></script>
+    <script src="{% static "js/submit-form.js" %}"></script>
+{% endblock %}
 
 {% block page %}
-
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <form action="" method="POST" enctype="multipart/form-data">
@@ -28,14 +37,17 @@
                 </fieldset>
             </div>
 
-
             <h2>Add optional metadata to this {{ content_type_label }}</h2>
 
             <div class="row">
                 <div class="col-md-12">
                     <div class="tab-v1">
                         <ul class="nav nav-tabs margin-bottom-20">
-                            <li class="active"><a data-toggle="tab" href="#authors" aria-expanded="true">Authors</a></li>
+                            <li class="active">
+                                <a data-toggle="tab" href="#authors" aria-expanded="true">
+                                    {{ label_overrides.authors|default:"Authors" }}
+                                </a>
+                            </li>
                             <li class=""><a data-toggle="tab" href="#images" aria-expanded="false">Images</a></li>
                             <li class=""><a data-toggle="tab" href="#files" aria-expanded="false">Files</a></li>
                             <li class=""><a data-toggle="tab" href="#websites" aria-expanded="false">Websites</a></li>
