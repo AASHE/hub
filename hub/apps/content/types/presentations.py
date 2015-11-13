@@ -1,10 +1,9 @@
 from django.db import models
 from model_utils import Choices
 
-from ...metadata.models import InstitutionalOffice
 from ..models import ContentType
 from ..search import BaseIndex
-from ..help import AFFIRMATION
+from ..help import AFFIRMATION, FILE_UPLOAD
 
 
 class Presentation(ContentType):
@@ -15,18 +14,16 @@ class Presentation(ContentType):
     PRESENTATION_CHOICES = Choices(
         ('poster', 'Poster'),
         ('presentation1', 'Presentation (1 speaker)'),
-        ('presentation2plus', 'Presentation (2 or more speaker)'),
+        ('presentation2plus', 'Presentation (2 or more speakers)'),
     )
 
-    date = models.DateField(blank=True, null=True)
-    conf_name = models.CharField(max_length=100, blank=True, null=True,
+    date = models.DateField('Presentation Date')
+    conf_name = models.CharField('Conference Name', max_length=100,
         choices=CONF_NAME_CHOICES)
-    institution = models.ForeignKey(InstitutionalOffice, blank=True, null=True)
     presentation_type = models.CharField(max_length=100, blank=True, null=True,
         choices=PRESENTATION_CHOICES)
-    document = models.FileField(help_text="The following files formats are "
-        "acceptable: PDF, Excel, Word, PPT, JPEG, PNG...", blank=True, null=True)
-    abstract = models.TextField(blank=True, null=True)
+    document = models.FileField('Document Upload', help_text=FILE_UPLOAD,
+        blank=True, null=True)
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
@@ -37,6 +34,14 @@ class Presentation(ContentType):
     @property
     def title_label(self):
         return 'Presentation Title'
+
+    @property
+    def description_label(self):
+        return 'Description or abstract'
+
+    @property
+    def author_label(self):
+        return ('Presenter', 'Presenters')
 
 
 class PresentationIndex(BaseIndex):
