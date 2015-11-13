@@ -7,7 +7,7 @@ class BaseIndex(indexes.SearchIndex, indexes.Indexable):
     and the actual content type primary key, which we later use to filter
     down a queryset of content types.
     """
-    text = indexes.EdgeNgramField(document=True, use_template=True)
+    text = indexes.CharField(document=True, use_template=True)
     ct_pk = indexes.IntegerField()
 
     def prepare_ct_pk(self, obj):
