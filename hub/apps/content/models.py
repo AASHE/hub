@@ -53,8 +53,8 @@ class ContentType(TimeStampedModel):
     description = models.TextField('Description', blank=True, null=True)
 
     keywords = models.TextField('Keywords', blank=True, null=True,
-        help_text="""Enter keywords that provide greater detail on the
-        discipline or will be helpful for locating this resource.""")
+        help_text="""Enter keywords that will be helpful for locating this
+        resource (e.g. "bottled water" for bottled water initiatives).""")
 
     organizations = models.ManyToManyField('metadata.Organization',
         verbose_name='Organization(s)',
