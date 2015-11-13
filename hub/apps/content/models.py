@@ -50,9 +50,9 @@ class ContentType(TimeStampedModel):
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True, null=True)
     keywords = models.TextField(blank=True, null=True)
-    organizations = models.ManyToManyField('metadata.Organization', blank=True, verbose_name='Organizations')
-    topics = models.ManyToManyField('metadata.SustainabilityTopic', blank=True, verbose_name='Sustainability Topics')
-    disciplines = models.ManyToManyField('metadata.AcademicDiscipline', blank=True, verbose_name='Academic Disciplines')
+    organizations = models.ManyToManyField('metadata.Organization', verbose_name='Organizations')
+    topics = models.ManyToManyField('metadata.SustainabilityTopic', verbose_name='Sustainability Topics')
+    disciplines = models.ManyToManyField('metadata.AcademicDiscipline', verbose_name='Academic Disciplines')
 
     objects = ContentTypeManager()
 
