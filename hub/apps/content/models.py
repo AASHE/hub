@@ -47,12 +47,13 @@ class ContentType(TimeStampedModel):
     permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
     published = models.DateTimeField(blank=True, null=True)
     submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-    title = models.CharField(max_length=500)
-    description = models.TextField(blank=True, null=True)
-    keywords = models.TextField(blank=True, null=True)
-    organizations = models.ManyToManyField('metadata.Organization', verbose_name='Organizations')
-    topics = models.ManyToManyField('metadata.SustainabilityTopic', verbose_name='Sustainability Topics')
-    disciplines = models.ManyToManyField('metadata.AcademicDiscipline', verbose_name='Academic Disciplines')
+
+    title = models.CharField(max_length=500) # label set by self.title_label
+    description = models.TextField('Description', blank=True, null=True)
+    keywords = models.TextField('Keywords', blank=True, null=True)
+    organizations = models.ManyToManyField('metadata.Organization', verbose_name='Organization(s)')
+    topics = models.ManyToManyField('metadata.SustainabilityTopic', verbose_name='Sustainability Topic(s)')
+    disciplines = models.ManyToManyField('metadata.AcademicDiscipline', verbose_name='Academic Discipline(s)')
 
     objects = ContentTypeManager()
 
