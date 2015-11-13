@@ -1,14 +1,11 @@
 from django.db import models
 
-from ...metadata.models import ProgramType
 from ..models import ContentType
 from ..search import BaseIndex
 from ..help import AFFIRMATION
 
 
 class CaseStudy(ContentType):
-    program_type = models.ForeignKey(ProgramType, blank=True, null=True,
-        verbose_name='Program Type')
     overview = models.TextField('Project overview', blank=True, null=True,
         help_text='''Provide a very brief summary of your project. Please
         limit this summary to 100 words.''')
