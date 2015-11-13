@@ -72,6 +72,8 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.client.login(**self.user_cred)
         response = self._post_video()
 
+        #print response.context['document_form']._errors
+
         # Video was created
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Video.objects.count(), 1)
@@ -84,7 +86,7 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.permission, Video.PERMISSION_CHOICES.member)
 
         self.assertEqual(video.title, self.form_valid_data['document-title'])
-        # self.assertEqual(video.link, self.form_valid_data['document-link'])
+        self.assertEqual(video.link, self.form_valid_data['document-link'])
 
         # We didn't added any formsets yet, so they must be empty
         self.assertEqual(video.authors.count(), 0)
@@ -124,3 +126,27 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         names = video.authors.values_list('name', flat=True)
         self.assertTrue('Martin' in names)
         self.assertTrue('Donald Duck' in names)
+
+
+    def test_user_is_author_feature(self):
+        """
+        If a user submits 'I am an author' we save the logged in user object
+        as an author.
+        """
+        additional_data = {
+            'document-user_is_author': True
+        }
+
+        self.client.login(**self.user_cred)
+        response = self._post_video(additional_data)
+
+        # Video was created
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Video.objects.count(), 1)
+
+        # The author was automatically created, it's name and email
+        # were taken from the logged in user account
+        video = Video.objects.all()[0]
+        self.assertEqual(video.authors.count(), 1)
+        self.assertEqual(video.authors.all()[0].name, self.user.get_full_name())
+        self.assertEqual(video.authors.all()[0].email, self.user.email)

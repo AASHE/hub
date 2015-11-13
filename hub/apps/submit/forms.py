@@ -9,6 +9,11 @@ class SubmitResourceForm(forms.ModelForm):
     A very generic ModelForm that is later executed by a modelform_factory.
     We'll just add some very generic validation here.
     """
+    user_is_author = forms.BooleanField(label='I am an Author', required=False,
+        help_text="""By checking this field you indicate that you are an
+        author of this resource and you are automatically assigned to it.
+        You don't need to add your data in the "Authors" form below.""")
+
     class Meta:
         widgets = {
             'topics': forms.widgets.SelectMultiple,
@@ -25,9 +30,14 @@ class SubmitResourceForm(forms.ModelForm):
         )
 
     def save(self, request):
-        if request.user.is_authenticated():
-            self.instance.submitted_by = request.user
-        return super(SubmitResourceForm, self).save()
+        self.instance.submitted_by = request.user
+        obj = super(SubmitResourceForm, self).save()
+
+        # Add the requst.User as an author
+        if self.cleaned_data.get('user_is_author'):
+            Author.objects.create(ct=obj, email=request.user.email,
+                name=request.user.get_full_name())
+        return obj
 
     def clean_affirmation(self):
         if not self.cleaned_data.get('affirmation'):
