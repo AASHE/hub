@@ -6,8 +6,6 @@ from ..content.types.academic import AcademicProgram
 from ..content.models import ContentType
 from ..metadata.models import SustainabilityTopic
 
-from .views import PUBLIC_CONTENT_TYPES
-
 User = get_user_model()
 
 
@@ -182,6 +180,7 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         """
         Certain, OPEN content types are visible to anybody.
         """
+        from .views import PUBLIC_CONTENT_TYPES
         if not PUBLIC_CONTENT_TYPES:
             return
         open_url = reverse('browse:browse', kwargs={
