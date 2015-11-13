@@ -11,7 +11,7 @@ from model_utils.models import TimeStampedModel
 from model_utils import Choices
 
 from hub.permissions import get_aashe_member_flag
-from .types.strings import AFFIRMATION
+from .types import strings as help
 
 logger = getLogger(__name__)
 
@@ -49,11 +49,28 @@ class ContentType(TimeStampedModel):
     submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
 
     title = models.CharField(max_length=500) # label set by self.title_label
+
     description = models.TextField('Description', blank=True, null=True)
-    keywords = models.TextField('Keywords', blank=True, null=True)
-    organizations = models.ManyToManyField('metadata.Organization', verbose_name='Organization(s)')
-    topics = models.ManyToManyField('metadata.SustainabilityTopic', verbose_name='Sustainability Topic(s)')
-    disciplines = models.ManyToManyField('metadata.AcademicDiscipline', verbose_name='Academic Discipline(s)')
+
+    keywords = models.TextField('Keywords', blank=True, null=True,
+        help_text="""Enter keywords that provide greater detail on the
+        discipline or will be helpful for locating this resource.""")
+
+    organizations = models.ManyToManyField('metadata.Organization',
+        verbose_name='Organization(s)',
+        help_text=""" Select the institution(s) and/or organization(s) that
+        offer(s) this program. If an organization is not on the dropdown list,
+        please complete the new organization form to have it added to our
+        database.""")
+
+    topics = models.ManyToManyField('metadata.SustainabilityTopic',
+        verbose_name='Sustainability Topic(s)',
+        help_text="Select up to three topics that relate most closely.")
+
+    disciplines = models.ManyToManyField('metadata.AcademicDiscipline',
+        verbose_name='Academic Discipline(s)',
+        help_text="""Select up to three academic disciplines that relate most
+        closely to the academic program.""")
 
     objects = ContentTypeManager()
 
@@ -163,7 +180,7 @@ class File(TimeStampedModel):
     item = models.FileField(help_text="The following files formats are "
         "aceptable: PDF, Excel, Word, PPT...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
+        help_text=help.AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional File'
@@ -181,7 +198,7 @@ class Image(TimeStampedModel):
     image = models.ImageField(help_text="The following files formats are "
         "acceptable: JPEG, PNG, TIFF...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
+        help_text=help.AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional Image'
