@@ -36,8 +36,8 @@ class AcademicProgram(ContentType):
         choices=COMMITMENT_CHOICES, blank=True, null=True)
     institutions = models.ManyToManyField(InstitutionalOffice, blank=True,
         verbose_name='Institution Office (if relevant)',
-        help_text='''Only include if an office or division on campus is directly
-        tied to this academic program. Select up to three.''')
+        help_text='''Only include if an office or division on campus is/was
+        directly involved in the case study. Select up to three.''')
 
     class Meta:
         verbose_name = 'Academic Program'
