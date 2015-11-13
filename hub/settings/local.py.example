@@ -19,23 +19,13 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASES = {
-    # MySQL
     'default': {
         'NAME': 'hub',
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'root',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'USER': 'hub',
         'PASSWORD': '',
         'HOST': 'localhost',
     },
-
-    # Postgres
-    #'default': {
-    #    'NAME': 'hub',
-    #    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #    'USER': 'hub',
-    #    'PASSWORD': '',
-    #    'HOST': 'localhost',
-    #},
 }
 
 # Enable debug logging
