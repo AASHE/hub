@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
-from ...metadata.models import ProgramType
+from ...metadata.models import ProgramType, InstitutionalOffice
 from ..models import ContentType
 from ..search import BaseIndex
 
@@ -18,13 +18,26 @@ class AcademicProgram(ContentType):
         ('both', 'Both'),
     )
 
-    program_type = models.ForeignKey(ProgramType, blank=True, null=True, verbose_name='Program Type')
-    outcomes = models.TextField('Learning Outcomes', blank=True, null=True)
-    founded = models.PositiveIntegerField(blank=True, null=True)
-    completion = models.CharField('Expected completion time', max_length=20, blank=True, null=True)
-    num_students = models.PositiveIntegerField('Approximate number of students completing program annually', blank=True, null=True)
-    distance = models.CharField('Distance Education', max_length=20, choices=DISTANCE_CHOICES, blank=True, null=True)
-    commitment = models.CharField('Commitment', max_length=20, choices=COMMITMENT_CHOICES, blank=True, null=True)
+    program_type = models.ForeignKey(ProgramType, blank=True, null=True,
+        verbose_name='Program Type')
+    outcomes = models.TextField('Learning Outcomes', blank=True, null=True,
+        help_text="Consider completing if different from description.")
+    founded = models.PositiveIntegerField("Year Founded", blank=True, null=True,
+        help_text="(e.g. 2009)")
+    completion = models.CharField('Expected completion time', max_length=20,
+        blank=True, null=True, help_text="(e.g. 2 years and 6 months)")
+    num_students = models.PositiveIntegerField(
+        'Approximate number of students completing program annually',
+        blank=True, null=True, help_text="""We recommend referring to IPEDS data
+        and including an average over five years.""")
+    distance = models.CharField('Distance Education', max_length=20,
+        choices=DISTANCE_CHOICES, blank=True, null=True)
+    commitment = models.CharField('Commitment', max_length=20,
+        choices=COMMITMENT_CHOICES, blank=True, null=True)
+    institutions = models.ManyToManyField(InstitutionalOffice, blank=True,
+        verbose_name='Institution Office (if relevant)',
+        help_text='''Only include if an office or division on campus is directly
+        tied to this academic program. Select up to three.''')
 
     class Meta:
         verbose_name = 'Academic Program'
