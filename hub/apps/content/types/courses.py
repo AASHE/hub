@@ -3,7 +3,7 @@ from model_utils import Choices
 
 from ..models import ContentType
 from ..search import BaseIndex
-from .strings import AFFIRMATION
+from ..help import AFFIRMATION
 
 
 class Material(ContentType):

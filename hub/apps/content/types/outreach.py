@@ -3,7 +3,7 @@ from django.db import models
 from ...metadata.models import InstitutionalOffice
 from ..search import BaseIndex
 from ..models import ContentType
-from .strings import AFFIRMATION
+from ..help import AFFIRMATION
 
 
 class OutreachMaterial(ContentType):

@@ -11,7 +11,7 @@ from model_utils.models import TimeStampedModel
 from model_utils import Choices
 
 from hub.permissions import get_aashe_member_flag
-from .types import strings as help
+from .help import AFFIRMATION
 
 logger = getLogger(__name__)
 
@@ -180,7 +180,7 @@ class File(TimeStampedModel):
     item = models.FileField(help_text="The following files formats are "
         "aceptable: PDF, Excel, Word, PPT...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=help.AFFIRMATION)
+        help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional File'
@@ -198,7 +198,7 @@ class Image(TimeStampedModel):
     image = models.ImageField(help_text="The following files formats are "
         "acceptable: JPEG, PNG, TIFF...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=help.AFFIRMATION)
+        help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional Image'
