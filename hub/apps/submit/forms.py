@@ -11,8 +11,8 @@ class SubmitResourceForm(forms.ModelForm):
     """
     class Meta:
         widgets = {
-            'topics': forms.widgets.CheckboxSelectMultiple,
-            'disciplines': forms.widgets.CheckboxSelectMultiple,
+            'topics': forms.widgets.SelectMultiple,
+            'disciplines': forms.widgets.SelectMultiple,
             'organizations': LeanSelectMultiple,
         }
         exclude = (

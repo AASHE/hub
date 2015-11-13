@@ -17,20 +17,10 @@
     <script type="text/javascript" src="{% static "vendor/pikaday/moment.min.js" %}"></script>
     <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.js" %}"></script>
     <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.jquery.js" %}"></script>
-    <script type="text/javascript">
-    jQuery(document).ready(function() {
-        $('input[name*=date]').each(function() {
-            new Pikaday({
-                field: $(this)[0],
-                format: 'YYYY-MM-DD'
-             });
-        });
-    });
-    </script>
+    <script src="{% static "js/submit-form.js" %}"></script>
 {% endblock %}
 
 {% block page %}
-
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <form action="" method="POST" enctype="multipart/form-data">
