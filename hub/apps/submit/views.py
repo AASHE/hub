@@ -7,7 +7,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 
 from ...permissions import LoginRequiredMixin
-from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES
+from ..content.models import CONTENT_TYPES
 from .forms import AuthorForm, FileForm, ImageForm, SubmitResourceForm, \
     WebsiteForm
 
@@ -20,7 +20,7 @@ class SubmitIndexView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super(SubmitIndexView, self).get_context_data(**kwargs)
         ctx.update({
-            'content_type_list': dict(CONTENT_TYPE_CHOICES),
+            'content_type_list': CONTENT_TYPES,
         })
         return ctx
 

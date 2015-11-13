@@ -11,7 +11,7 @@ from django.db.models import Q
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
-from ..content.models import CONTENT_TYPE_CHOICES, ContentType
+from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
@@ -64,7 +64,7 @@ class ContentTypesFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': CONTENT_TYPE_CHOICES,
+            'choices': [(j, k.content_type_label()) for j, k in CONTENT_TYPES.items()],
             'label': 'Content Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })

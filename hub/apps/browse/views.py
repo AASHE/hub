@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
 
 from ...permissions import get_aashe_member_flag
-from ..content.models import CONTENT_TYPE_CHOICES, CONTENT_TYPES, ContentType
+from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
 from .filterset import GenericFilterSet
 
@@ -28,7 +28,7 @@ class HomeView(TemplateView):
         ctx = super(HomeView, self).get_context_data(**kwargs)
         ctx.update({
             'topic_list': SustainabilityTopic.objects.all(),
-            'content_type_list': dict(CONTENT_TYPE_CHOICES),
+            'content_type_list': CONTENT_TYPES,
         })
         return ctx
 
@@ -172,7 +172,7 @@ class BrowseView(ListView):
             'topic': self.sustainabilty_topic,
             'topic_list': SustainabilityTopic.objects.all(),
             'content_type': self.content_type_class,
-            'content_type_list': dict(CONTENT_TYPE_CHOICES),
+            'content_type_list': CONTENT_TYPES,
             'page_title': self.get_title(),
         })
 

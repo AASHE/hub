@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from logging import getLogger
+from collections import OrderedDict
 
 from django.db import models
 from django.conf import settings
@@ -104,13 +105,13 @@ class ContentType(TimeStampedModel):
         return reverse('browse:view', kwargs={'ct': self.content_type,
             'id': self.pk})
 
-    @property
-    def content_type_label(self):
+    @classmethod
+    def content_type_label(cls):
         """
         The `verbose_name` of the attached content type subclass of this
         main content type object.
         """
-        return CONTENT_TYPE_CHOICES[self.content_type]
+        return cls._meta.verbose_name_plural
 
     @property
     def title_label(self):
@@ -229,22 +230,14 @@ from .types.publications import Publication
 from .types.tools import Tool
 from .types.videos import Video
 
-CONTENT_TYPES = {
-    'academicprogram': AcademicProgram,
-    'casestudy': CaseStudy,
-    'center': CenterAndInstitute,
-    'material': Material,
-    'outreach': OutreachMaterial,
-    'photograph': Photograph,
-    'presentation': Presentation,
-    'publication': Publication,
-    'tool': Tool,
-    'video': Video,
-}
-
-# Auto-generate a list of Choices for each Content type. It doesn't add too much
-# magic, it just tries to get the Content type Name out of `meta.verbose_name`,
-# otherwise it tries to auto-generate the name.
-CONTENT_TYPE_CHOICES = Choices(
-    *[(j, k._meta.verbose_name) for j, k in sorted(CONTENT_TYPES.items())]
-)
+CONTENT_TYPES = OrderedDict()
+CONTENT_TYPES['academicprogram'] = AcademicProgram
+CONTENT_TYPES['casestudy'] = CaseStudy
+CONTENT_TYPES['presentation'] = Presentation
+CONTENT_TYPES['material'] = Material
+CONTENT_TYPES['outreach'] = OutreachMaterial
+CONTENT_TYPES['photograph'] = Photograph
+CONTENT_TYPES['publication'] = Publication
+CONTENT_TYPES['center'] = CenterAndInstitute
+CONTENT_TYPES['tool'] = Tool
+CONTENT_TYPES['video'] = Video
