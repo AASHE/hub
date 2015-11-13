@@ -136,7 +136,6 @@ class ContentType(TimeStampedModel):
 @python_2_unicode_compatible
 class Author(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="authors")
-    is_author = models.BooleanField("I am an author", default=False)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
     organization = models.ForeignKey('metadata.Organization', blank=True, null=True)
@@ -161,7 +160,7 @@ class File(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="files")
     label = models.CharField(max_length=100, blank=True, null=True)
     item = models.FileField(help_text="The following files formats are "
-        "aceptable: PDF, Excel, Word, PPT...", blank=True, null=True)
+        "aceptable: PDF, Excel, Word, PPT...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
 
