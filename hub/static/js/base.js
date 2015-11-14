@@ -11,18 +11,17 @@ jQuery(document).ready(function() {
     // Organizations Ajax dropdown
     // -------------------------------------------------------------------------
     $('select[name*=organization]').selectize({
-        valueField: 'id',
-        labelField: 'text',
-        searchField: 'text',
+        valueField: 'pk',
+        labelField: 'org_name',
+        searchField: 'org_name',
         load: function(query, callback) {
-            if (!query.length) return callback();
+            if (!query.length || query.length < 2) return callback();
             $.ajax({
-                url: '/api/organizations/',
+                url: '/api/v1/organizations/',
                 type: 'GET',
                 dataType: 'json',
                 data: {
-                    q: query,
-                    additionalDataIfRequired: 'Additional Data'
+                    q: query
                 },
                 error: function() {
                     callback();

@@ -5,7 +5,6 @@ from django.conf.urls.static import static
 
 from aashe.aasheauth.views import login, logout
 
-import hub.apps.api.views as api
 from hub.apps.browse.views import HomeView
 
 urlpatterns = [
@@ -13,7 +12,7 @@ urlpatterns = [
     url(r'^browse/', include('hub.apps.browse.urls', namespace='browse')),
     url(r'^submit-resource/', include('hub.apps.submit.urls', namespace='submit')),
 
-    url(r'^api/organizations/$', api.organizations),
+    url(r'^api/v1/', include('hub.apps.api.urls', namespace='api')),
 
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, name='logout'),
