@@ -189,10 +189,16 @@ HAYSTACK_CONNECTIONS = {
 CACHE_TTL_SHORT = 60 * 10
 CACHE_TTL_LONG = 60 * 60 * 12
 
-
 # AASHE Auth
 AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
 AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']
 AASHE_DRUPAL_KEY_DOMAIN = os.environ['AASHE_DRUPAL_KEY_DOMAIN']
 AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
 AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
+
+# List of content type keys which don't require Login This only enables the
+# 'browse' view of the content type. Each object must still be separately set to
+# `member_only=False` to make it open.
+PUBLIC_CONTENT_TYPES = (
+    'academicprogram',
+)

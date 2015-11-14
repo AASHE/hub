@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from logging import getLogger
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
@@ -32,12 +33,6 @@ class HomeView(TemplateView):
         })
         return ctx
 
-# List of content type keys which don't require Login This only enables the
-# 'browse' view of the content type. Each object must still be separately set to
-# `member_only=False` to make it open.
-PUBLIC_CONTENT_TYPES = (
-    'academicprogram',
-)
 
 class BrowseView(ListView):
     """
@@ -89,7 +84,7 @@ class BrowseView(ListView):
         # are certain ContentTypes defined in PUBLIC_CONTENT_TYPES which
         # don't even need login, they are browseable by everyone.
         if (self.content_type_class and
-            self.content_type_class.slug in PUBLIC_CONTENT_TYPES):
+            self.content_type_class.slug in settings.PUBLIC_CONTENT_TYPES):
             return super(BrowseView, self).dispatch(*args, **kwargs)
 
         # If it was not a PUBLIC content type, we do need login at least.

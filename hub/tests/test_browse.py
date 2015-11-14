@@ -1,36 +1,10 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
-from ..content.types.academic import AcademicProgram
-from ..content.models import ContentType
-from ..metadata.models import SustainabilityTopic
-
-User = get_user_model()
-
-
-class WithUserSuperuserTestCase(TestCase):
-    """
-    Some base models/structure to create before doing actual tests.
-    """
-    def setUp(self):
-        self.superuser_cred = {'username': 'superjoe', 'password': 'password'}
-        self.superuser = User.objects.create_superuser(
-            first_name='Jon',
-            last_name='Doe',
-            email='superuser@example.com',
-            **self.superuser_cred
-        )
-
-        self.user_cred = {'username': 'joe', 'password': 'password'}
-        self.user = User.objects.create_user(
-            first_name='Jonny',
-            last_name='Doey',
-            email='user@example.com',
-            **self.user_cred
-        )
-
-        return super(WithUserSuperuserTestCase, self).setUp()
+from ..apps.content.types.academic import AcademicProgram
+from ..apps.content.models import ContentType
+from ..apps.metadata.models import SustainabilityTopic
+from .base import WithUserSuperuserTestCase
 
 
 class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
@@ -180,11 +154,10 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         """
         Certain, OPEN content types are visible to anybody.
         """
-        from .views import PUBLIC_CONTENT_TYPES
-        if not PUBLIC_CONTENT_TYPES:
+        if not settings.PUBLIC_CONTENT_TYPES:
             return
         open_url = reverse('browse:browse', kwargs={
-            'ct': PUBLIC_CONTENT_TYPES[0]})
+            'ct': settings.PUBLIC_CONTENT_TYPES[0]})
         self.client.logout()
         response = self.client.get(open_url)
         self.assertEqual(response.status_code, 200)

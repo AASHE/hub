@@ -1,9 +1,9 @@
 from django.core.urlresolvers import reverse
 
-from ..metadata.models import AcademicDiscipline, Organization, \
+from ..apps.metadata.models import AcademicDiscipline, Organization, \
     SustainabilityTopic, InstitutionalOffice
-from ..content.types.videos import Video
-from ..browse.tests import WithUserSuperuserTestCase
+from ..apps.content.types.videos import Video
+from .base import WithUserSuperuserTestCase
 
 class SubmitVideoTestCase(WithUserSuperuserTestCase):
     """

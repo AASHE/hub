@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .models import Organization
+from ..apps.metadata.models import Organization
 
 
 class OrganizationProxyTestCase(TestCase):
