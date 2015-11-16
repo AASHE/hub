@@ -126,12 +126,7 @@ class StudentFteFilter(filters.ChoiceFilter):
 
 class CountryFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
-        countries = (Organization.objects
-            .exclude(country='')
-            .order_by('country')
-            .values_list('country', 'country')
-            .distinct())
-
+        countries = (Organization.objects.country_list())
         countries = ALL + tuple(countries)
         kwargs.update({
             'choices': countries,
@@ -142,7 +137,7 @@ class CountryFilter(filters.ChoiceFilter):
     def filter(self, qs, value):
         if not value:
             return qs
-        return qs.filter(organizations__country=value)
+        return qs.filter(organizations__country_iso=value)
 
 
 class StateFilter(filters.ChoiceFilter):
