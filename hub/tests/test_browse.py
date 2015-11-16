@@ -1,6 +1,8 @@
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 
+from ..apps.browse.templatetags.browse_tags import permission_flag
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.models import ContentType
 from ..apps.metadata.models import SustainabilityTopic
@@ -76,6 +78,76 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
         self.client.login(**self.superuser_cred)
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 200)
+
+class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
+    """
+    The `permission_flag` template tag a little HTML widget that is
+    rendered for publically listed resources, which the user has no
+    access to.
+    """
+    # Strings the template tag returns for each permission state
+    # The templatetag returns a HTML string so we can't easily compare against
+    # a context object.
+    MATCH_LOGIN_REQUIRED = 'Login Required'
+    MATCH_MEMBER_REQUIRED = 'Membership Required'
+
+    def test_permission_flag_unauthorized_user(self):
+        """
+        Unauthenticated users will see a flag according to the permission of
+        each content type, either login or membership-requird.
+        """
+        # Open resources won't have a permission flag since they can be viewed
+        # by anybody.
+        self.ct.permission = self.ct.PERMISSION_CHOICES.open
+        self.ct.save()
+        self.assertEqual(permission_flag(self.ct, AnonymousUser()), None)
+
+        # 'login required' resource has 'Login Required' in it's label
+        self.ct.permission = self.ct.PERMISSION_CHOICES.login
+        self.ct.save()
+        self.assertTrue(self.MATCH_LOGIN_REQUIRED in permission_flag(self.ct, AnonymousUser()))
+
+        # 'member required' resource has 'Membership Required' in it's label
+        self.ct.permission = self.ct.PERMISSION_CHOICES.member
+        self.ct.save()
+        self.assertTrue(self.MATCH_MEMBER_REQUIRED in permission_flag(self.ct, AnonymousUser()))
+
+    def test_permission_flag_for_logged_in_user(self):
+        """
+        Logged in users will only see a flag for content which requires
+        membership.
+        """
+        self.client.login(**self.user_cred)
+
+        self.ct.permission = self.ct.PERMISSION_CHOICES.open
+        self.ct.save()
+        self.assertEqual(permission_flag(self.ct, self.user), None)
+
+        self.ct.permission = self.ct.PERMISSION_CHOICES.login
+        self.ct.save()
+        self.assertEqual(permission_flag(self.ct, self.user), None)
+
+        self.ct.permission = self.ct.PERMISSION_CHOICES.member
+        self.ct.save()
+        self.assertTrue(self.MATCH_MEMBER_REQUIRED in permission_flag(self.ct, self.user))
+
+    def test_permission_flag_for_membership_user(self):
+        """
+        Members won't see any flag at all.
+        """
+        self.client.login(**self.superuser_cred)
+
+        self.ct.permission = self.ct.PERMISSION_CHOICES.open
+        self.ct.save()
+        self.assertEqual(permission_flag(self.ct, self.superuser), None)
+
+        self.ct.permission = self.ct.PERMISSION_CHOICES.login
+        self.ct.save()
+        self.assertEqual(permission_flag(self.ct, self.superuser), None)
+
+        self.ct.permission = self.ct.PERMISSION_CHOICES.member
+        self.ct.save()
+        self.assertEqual(permission_flag(self.ct, self.superuser), None)
 
 
 class BrowsePermissionTestCase(WithUserSuperuserTestCase):

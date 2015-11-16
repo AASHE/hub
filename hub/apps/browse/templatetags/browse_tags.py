@@ -7,6 +7,8 @@ from django.template import Library
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
+from ....permissions import get_aashe_member_flag
+
 logger = getLogger(__name__)
 register = Library()
 
@@ -15,17 +17,30 @@ register = Library()
 def permission_flag(obj, user):
     """
     Renders a HTML field using a custom template for each possible type of
-    fields we support, or Bootstrap supports. At this point we don't really know
-    which type of widget the field were, so we guess it based on the original
-    HTML output.
+    fields we support, or Bootstrap supports.
     """
     label = '<span class="label label-warning"><i class="fa fa-lock"></i> {label}</span>'
-    flag = obj.get_permission_flag(user)
-    if flag == 'login-required':
-        return mark_safe(label.format(label='Login Required'))
-    if flag == 'member-required':
+
+    # Open Document has no flag
+    if obj.permission == obj.PERMISSION_CHOICES.open:
+        return None
+
+    # If the user is logged in, and the member permission is met,
+    # all fine, no label.
+    if user.is_authenticated():
+        is_aashe_member = get_aashe_member_flag(user)
+        if (obj.permission == obj.PERMISSION_CHOICES.member and
+        not is_aashe_member):
+            return mark_safe(label.format(label='Membership Required'))
+        else:
+            return None
+
+    # We know the user is not logged in, so give a proper label, either
+    # member or just login required.
+    if obj.permission == obj.PERMISSION_CHOICES.member:
         return mark_safe(label.format(label='Membership Required'))
-    return ''
+
+    return mark_safe(label.format(label='Login Required'))
 
 
 # <widget>: <template name to render>

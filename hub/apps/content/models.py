@@ -12,7 +12,6 @@ from model_utils.models import TimeStampedModel
 from model_utils import Choices
 from slugify import slugify
 
-from ...permissions import get_aashe_member_flag
 from .help import AFFIRMATION
 
 logger = getLogger(__name__)
@@ -155,31 +154,6 @@ class ContentType(TimeStampedModel):
             }
         """
         return {}
-
-    def get_permission_flag(self, user):
-        """
-        Returns a corresponding "Login Required" or "Member required"
-        flag based on the object permission and the given user.
-        """
-        # Open Document has no flag
-        if self.permission == self.PERMISSION_CHOICES.open:
-            return None
-
-        # If the user is logged in, and the member permission is met,
-        # all fine, no label.
-        if user.is_authenticated():
-            is_aashe_member = get_aashe_member_flag(user)
-            if (self.permission == self.PERMISSION_CHOICES.member and
-            not is_aashe_member):
-                return 'member-required'
-            else:
-                return None
-
-        # We know the user is not logged in, so give a proper label, either
-        # member or just login required.
-        if self.permission == self.PERMISSION_CHOICES.member:
-            return 'member-required'
-        return 'login-required'
 
 
 @python_2_unicode_compatible
