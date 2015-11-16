@@ -24,4 +24,7 @@ class BaseIndex(indexes.SearchIndex, indexes.Indexable):
             status=self.get_model().STATUS_CHOICES.published)
 
     def get_model(self):
-        raise NotImplementedError
+        """
+        Subclasses need to overwrite this.
+        """
+        raise NotImplementedError  # pragma: no cover

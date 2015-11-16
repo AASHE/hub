@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 from aashe.aasheauth.views import login, logout
 
-from hub.apps.browse.views import HomeView
+from .apps.browse.views import HomeView
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
@@ -20,9 +20,8 @@ urlpatterns = [
 ]
 
 
-if settings.DEBUG:
+if settings.DEBUG:  # pragma: no cover
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
     urlpatterns += [
         url(r'^404$', 'django.views.defaults.page_not_found'),
         url(r'^500$', 'django.views.defaults.server_error'),
