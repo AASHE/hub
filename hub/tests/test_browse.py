@@ -1,10 +1,10 @@
-from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.urlresolvers import reverse
 
 from ..apps.browse.templatetags.browse_tags import permission_flag
-from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.models import ContentType
+from ..apps.content.types.academic import AcademicProgram
 from ..apps.metadata.models import SustainabilityTopic
 from .base import WithUserSuperuserTestCase
 
@@ -208,7 +208,7 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
 
     def test_content_type_view_is_auth_only(self):
         """
-        Unauthed members can't see the topic view.
+        Unauthed members can't see the content type view.
         """
         self.client.logout()
         response = self.client.get(self.url_ct)
@@ -236,7 +236,7 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
 
     def test_search_view_is_auth_only(self):
         """
-        Unauthed members can't see the topic view.
+        Unauthed members can't see the search view.
         """
         self.client.logout()
         response = self.client.get(self.url_search)

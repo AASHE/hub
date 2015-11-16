@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.core import management
 
 User = get_user_model()
 
@@ -26,3 +27,17 @@ class WithUserSuperuserTestCase(TestCase):
         )
 
         return super(WithUserSuperuserTestCase, self).setUp()
+
+
+class BaseSearchBackendTestCase(TestCase):
+    def tearDown(self):
+        """
+        Purge the search index before each test case run.
+        """
+        management.call_command('clear_index', interactive=False)
+
+    def _rebuild_index(self):
+        """
+        Rebuild the entire search index.
+        """
+        management.call_command('rebuild_index', interactive=False)

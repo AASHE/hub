@@ -1,30 +1,16 @@
-from django.test import TestCase
-from django.core import management
-
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
 from ..apps.content.types.academic import AcademicProgram
+from .base import BaseSearchBackendTestCase
 
 TestContentType = AcademicProgram
 
 
-class SearchBackendTestCase(TestCase):
+class SearchBackendTestCase(BaseSearchBackendTestCase):
     """
     Tests around the search backend behavior.
     """
-    def tearDown(self):
-        """
-        Purge the search index before each test case run.
-        """
-        management.call_command('clear_index', interactive=False)
-
-    def _rebuild_index(self):
-        """
-        Rebuild the entire search index.
-        """
-        management.call_command('rebuild_index', interactive=False)
-
     def _create_video_item(self, title, published=False, **kwargs):
         status = (published and TestContentType.STATUS_CHOICES.published or
                                 TestContentType.STATUS_CHOICES.new)
