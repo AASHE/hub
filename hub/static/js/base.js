@@ -13,13 +13,12 @@ jQuery(document).ready(function() {
     // Set a URL fragment for each Bootstrap3 tab on change, and automatically
     // show that tab on load.
     $(function(){
-        var hash = window.location.hash;
+        var hash = window.location.hash.replace('-panel', '');
+
         hash && $('ul.nav a[href="' + hash + '"]').tab('show');
         $('.nav-tabs a').click(function (e) {
             $(this).tab('show');
-            var scrollmem = $('body').scrollTop();
-            window.location.hash = this.hash;
-            $('html,body').scrollTop(scrollmem);
+            window.location.hash = this.hash + '-panel';
         });
     });
 
