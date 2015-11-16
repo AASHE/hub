@@ -10,8 +10,9 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
+from slugify import slugify
 
-from hub.permissions import get_aashe_member_flag
+from ...permissions import get_aashe_member_flag
 from .help import AFFIRMATION
 
 logger = getLogger(__name__)
@@ -50,6 +51,7 @@ class ContentType(TimeStampedModel):
     submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
 
     title = models.CharField(max_length=500) # label set by self.title_label
+    slug = models.CharField(max_length=500, editable=False)
 
     description = models.TextField('Description', blank=True, null=True)
 
@@ -99,11 +101,16 @@ class ContentType(TimeStampedModel):
         if not self.published and self.status == self.STATUS_CHOICES.published:
             self.published = timezone.now()
 
+        # Update the slug value on first save. This doesn't need to be unique
+        # since the actual db URL lookup is still done with the pk.
+        if not self.slug:
+            self.slug = slugify(self.title)
+
         return super(ContentType, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('browse:view', kwargs={'ct': self.content_type,
-            'id': self.pk})
+            'id': self.pk, 'slug': self.slug})
 
     @classmethod
     def content_type_label(cls):

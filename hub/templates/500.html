@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% block title %}Internal Server Error - {{ block.super }}{% endblock %}
+.
 {% block css %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static "vendor/theme/css/pages/page_log_reg_v1.css" %}"/>

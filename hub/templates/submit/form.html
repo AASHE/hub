@@ -3,6 +3,8 @@
 {% load static %}
 {% load browse_tags %}
 
+{% block title %}Submit a {{ content_type_label }} - {{ block.super }}{% endblock %}
+
 {% block body_class %}page-submit-form{% endblock %}
 
 {% block css %}

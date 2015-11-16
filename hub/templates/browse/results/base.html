@@ -3,6 +3,17 @@
 {% load browse_tags %}
 {% load static %}
 
+{% block title %}
+    {% if topic %}
+        {{ topic.name }}
+    {% elif content_type %}
+        {{ content_type.content_type_label }}
+    {% else %}
+        Search results for &quot;{{ request.GET.search }}&quot;
+    {% endif %}
+    - {{ block.super }}
+{% endblock %}
+
 {% block body_class %}page-browse{% endblock %}
 
 {% block css %}

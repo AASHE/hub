@@ -5,6 +5,8 @@
 
 {% block body_class %}page-detail{% endblock %}
 
+{% block title %}{{ object.title }} - {{ block.super }}{% endblock %}
+
 {% block page %}
 <div class="profile">
     <div class="row">
