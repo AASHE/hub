@@ -46,7 +46,8 @@ class ContentType(TimeStampedModel):
     content_type = models.CharField(max_length=40)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
     permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
-    published = models.DateTimeField(blank=True, null=True)
+    published = models.DateTimeField(blank=True, null=True, help_text='This timestamp'
+        ' is automatically set once the status becomes "Published".')
     submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
 
     title = models.CharField(max_length=500) # label set by self.title_label

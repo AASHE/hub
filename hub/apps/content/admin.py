@@ -31,6 +31,7 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'permission', 'published')
     list_filter = ('status', 'permission', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
+    readonly_fields = ('published',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
     exclude = ('content_type',)
     raw_id_fields = ('organizations', 'submitted_by')
