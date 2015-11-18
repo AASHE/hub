@@ -23,7 +23,7 @@ def permission_flag(obj, user):
 
     # Open Document has no flag
     if obj.permission == obj.PERMISSION_CHOICES.open:
-        return None
+        return ''
 
     # If the user is logged in, and the member permission is met,
     # all fine, no label.
@@ -33,7 +33,7 @@ def permission_flag(obj, user):
         not is_aashe_member):
             return mark_safe(label.format(label='Membership Required'))
         else:
-            return None
+            return ''
 
     # We know the user is not logged in, so give a proper label, either
     # member or just login required.

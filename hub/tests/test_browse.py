@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
@@ -90,6 +92,7 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
     # a context object.
     MATCH_LOGIN_REQUIRED = 'Login Required'
     MATCH_MEMBER_REQUIRED = 'Membership Required'
+    MATCH_EMPTY_LABEL = ''
 
     def test_permission_flag_unauthorized_user(self):
         """
@@ -100,7 +103,7 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
         # by anybody.
         self.ct.permission = self.ct.PERMISSION_CHOICES.open
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, AnonymousUser()), None)
+        self.assertEqual(permission_flag(self.ct, AnonymousUser()), self.MATCH_EMPTY_LABEL)
 
         # 'login required' resource has 'Login Required' in it's label
         self.ct.permission = self.ct.PERMISSION_CHOICES.login
@@ -121,11 +124,11 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.open
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.user), None)
+        self.assertEqual(permission_flag(self.ct, self.user), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.login
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.user), None)
+        self.assertEqual(permission_flag(self.ct, self.user), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.member
         self.ct.save()
@@ -139,15 +142,15 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.open
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.superuser), None)
+        self.assertEqual(permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.login
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.superuser), None)
+        self.assertEqual(permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.member
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.superuser), None)
+        self.assertEqual(permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
 
 
 class BrowsePermissionTestCase(WithUserSuperuserTestCase):
