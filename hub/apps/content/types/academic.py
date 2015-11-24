@@ -17,6 +17,7 @@ class AcademicProgram(ContentType):
         ('part', 'Part-Time'),
         ('both', 'Both'),
     )
+    ACADEMIC_DISCIPLINES_REQUIRED = True
 
     program_type = models.ForeignKey(ProgramType, blank=True, null=True,
         verbose_name='Program Type')

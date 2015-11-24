@@ -17,6 +17,7 @@ class Material(ContentType):
         ('intermediate', 'Intermediate'),
         ('advanced', 'Advanced'),
     )
+    ACADEMIC_DISCIPLINES_REQUIRED = True
 
     website = models.URLField('Website', blank=True, null=True)
     document = models.FileField('Document Upload',

@@ -13,6 +13,8 @@ class CenterAndInstitute(ContentType):
     budget = models.PositiveIntegerField('Total operating budget for the center or institute (excluding salaries)?',
         blank=True, null=True, help_text='in U.S. dollars')
 
+    ACADEMIC_DISCIPLINES_REQUIRED = True
+
     class Meta:
         verbose_name = 'Research Center & Institute'
         verbose_name_plural = 'Research Centers & Institutes'
