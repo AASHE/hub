@@ -64,3 +64,7 @@ hub/settings/local.py
 hub/static/css/*
 
 node_modules
+
+.envrc
+
+\#*#
