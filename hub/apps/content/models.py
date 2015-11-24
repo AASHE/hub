@@ -43,6 +43,8 @@ class ContentType(TimeStampedModel):
         ('member', 'Member - AASHE Member Status Required'),
     )
 
+    ACADEMIC_DISCIPLINES_REQUIRED = False
+
     content_type = models.CharField(max_length=40)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
     permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
@@ -78,10 +80,12 @@ class ContentType(TimeStampedModel):
         verbose_name='Sustainability Topic(s)',
         help_text="Select up to three topics that relate most closely.")
 
-    disciplines = models.ManyToManyField('metadata.AcademicDiscipline',
+    disciplines = models.ManyToManyField(
+        'metadata.AcademicDiscipline',
         verbose_name='Academic Discipline(s)',
         help_text="""Select up to three academic disciplines that relate most
-        closely to the academic program.""")
+        closely to the academic program.""",
+        blank=True)
 
     objects = ContentTypeManager()
 
