@@ -3,7 +3,7 @@
 ## Load a database backup from Heroku and install it locally:
 
 1. heroku pgbackups:capture
-2. heroku pgbackups:url <backup_num>  #=>backup_url
+2. heroku pg:backups public-url <backup_num>  #=>backup_url
    -  get backup_num with cmd "heroku pgbackups"
 3. curl -o latest.dump <backup_url>
 
