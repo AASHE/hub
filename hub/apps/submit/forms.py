@@ -28,6 +28,7 @@ class SubmitResourceForm(forms.ModelForm):
             'permission',
             'submitted_by',
             'published',
+            'notes'
         )
 
     def save(self, request):
