@@ -59,6 +59,9 @@ class ContentType(TimeStampedModel):
         help_text="""Enter keywords that will be helpful for locating this
         resource (e.g. "bottled water" for bottled water initiatives).""")
 
+    notes = models.TextField('Notes', blank=True, null=True, default='',
+                             help_text="Internal notes.")
+
     organizations = models.ManyToManyField('metadata.Organization',
         verbose_name='Organization(s)',
         help_text=""" Select the institution(s) and/or organization(s) that

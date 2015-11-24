@@ -28,7 +28,7 @@ class ImageInline(admin.TabularInline):
 
 
 class BaseContentTypeAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'permission', 'published')
+    list_display = ('__unicode__', 'permission', 'published', 'notes')
     list_filter = ('status', 'permission', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
     readonly_fields = ('published',)
@@ -58,7 +58,8 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
 
 class AllContentTypesAdmin(admin.ModelAdmin):
-    list_display = ('select_link', 'status', 'object_link', 'content_type_name', 'created', 'published',)
+    list_display = ('select_link', 'status', 'object_link',
+                    'content_type_name', 'created', 'published', 'notes')
     list_filter = ('status', 'topics', 'permission', 'created', 'published',)
     list_display_links = ('select_link',)
     actions_on_top = False
