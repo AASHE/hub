@@ -165,7 +165,7 @@ class BrowseView(ListView):
             queryset=ContentType.objects.published())
         # Load form into class, bring it back below in context.
         self.filterset_form = filterset.form
-        return filterset.qs
+        return filterset.qs.distinct()
 
     def get_context_data(self, **kwargs):
         ctx = super(BrowseView, self).get_context_data(**kwargs)
