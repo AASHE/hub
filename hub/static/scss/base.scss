@@ -81,7 +81,9 @@ $red: #c00;
 }
 
 .search-block-v2 {
-    padding: 0 0 30px 0;
+    margin-bottom: 0;
+    border-bottom: none;
+    padding: 0 0 0 0;
     background: none;
 
     small {
@@ -207,6 +209,16 @@ a.resource-button{
     font-weight: normal;
 }
 
+.nav-tabs > li.add-content > a:hover {
+    background: #f7f7f7;
+    color: $green;
+}
+
+.nav-tabs > li.add-content > a {
+    color: #555;
+    border-bottom: 1px solid #aaaaaa;
+}
+
 /* --------------------------------------------------------------------
     Per-Page Overrides
 -------------------------------------------------------------------- */
@@ -229,12 +241,6 @@ a.resource-button{
     .field_id_topics { display: none; }
 
     .tab-content { padding: 0; }
-
-    .search-block-v2 {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border-bottom: none;
-    }
 }
 
 .page-browse-content-type {

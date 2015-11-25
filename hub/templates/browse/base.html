@@ -1,1 +1,30 @@
 {% extends "base.html" %}
+
+{% block page %}
+
+{% block browse_above_tabs %}{% endblock %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab-v1">
+
+{% block browse_tabs %}
+    <ul class="nav nav-tabs">
+        <li class="pull-right add-content">
+            <a href="{% url "submit:new" %}">
+                <i class="fa fa-rocket"></i> Submit a Resource
+            </a>
+        </li>
+        {% block browse_additional_tabs %}{% endblock %}
+    </ul>
+{% endblock %}
+
+            <div class="tab-content">
+{% block browse_tab_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block browse_below_tab_content %}{% endblock %}
+{% endblock %}
