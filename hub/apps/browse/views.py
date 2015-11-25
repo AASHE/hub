@@ -76,20 +76,25 @@ class BrowseView(ListView):
 
         # If no content type and no topic is set, we need at least a
         # search keyword:
-        if (not self.sustainabilty_topic and not self.content_type_class
-            and not self.request.GET.get('search')):
+        if (
+            not self.sustainabilty_topic and not self.content_type_class
+            and not self.request.GET.get('search')
+        ):
             return HttpResponseRedirect(reverse('home'))
 
         # Search results do generally need LoginRequired, however there
         # are certain ContentTypes defined in PUBLIC_CONTENT_TYPES which
         # don't even need login, they are browseable by everyone.
-        if (self.content_type_class and
-            self.content_type_class.slug in settings.PUBLIC_CONTENT_TYPES):
+        if (
+            self.content_type_class and
+            self.content_type_class.slug in settings.PUBLIC_CONTENT_TYPES
+        ):
             return super(BrowseView, self).dispatch(*args, **kwargs)
 
         # If it was not a PUBLIC content type, we do need login at least.
         if not self.request.user.is_authenticated():
-            return render(self.request, 'registration/login_required.html',
+            return render(
+                self.request, 'registration/login_required.html',
                 status=HttpResponseForbidden.status_code)
 
         return super(BrowseView, self).dispatch(*args, **kwargs)
@@ -110,10 +115,13 @@ class BrowseView(ListView):
     def get_filterset(self):
         """
         Builds and returns a filter form object. Content Type classes might
-        have their own, custom FilterSet defined in `model.get_custom_filterset`.
+        have their own, custom FilterSet defined in
+        `model.get_custom_filterset`.
         """
-        if self.content_type_class and hasattr(
-        self.content_type_class, 'get_custom_filterset'):
+        if (
+            self.content_type_class and
+            hasattr(self.content_type_class, 'get_custom_filterset')
+        ):
             return self.content_type_class.get_custom_filterset()
         else:
             return GenericFilterSet
@@ -146,17 +154,17 @@ class BrowseView(ListView):
     def get_queryset(self):
         """
         Normally a filterset would be a FilterSet object, where its iterator
-        runs over the integrated queryset, so it pretty much acts like a regular
-        queryset. The downside is that we can't run pagination/sorting on this
-        filterset, like we'd do on a regular filterset. Therefor we transform it
-        back, and only return the actual queryset, while we put the attached
-        filter-form aside and load it separately into context.
+        runs over the integrated queryset, so it pretty much acts like a
+        regular queryset. The downside is that we can't run pagination/sorting
+        on this filterset, like we'd do on a regular filterset. Therefor we
+        transform it back, and only return the actual queryset, while we put
+        the attached filter-form aside and load it separately into context.
         """
         filterset = self.get_filterset()(
             self.get_filterset_data(),
             queryset=ContentType.objects.published())
-        self.filterset_form = filterset.form  # Load form into class, bring it
-                                              # back below in context.
+        # Load form into class, bring it back below in context.
+        self.filterset_form = filterset.form
         return filterset.qs
 
     def get_context_data(self, **kwargs):
@@ -174,11 +182,11 @@ class BrowseView(ListView):
         if self.sustainabilty_topic:
             featured_ids = SustainabilityTopicFavorite.objects.filter(
                 topic=self.sustainabilty_topic).values_list('ct', flat=True)
-            featured = ContentType.objects.published().filter(id__in=featured_ids)
+            featured = ContentType.objects.published().filter(
+                id__in=featured_ids)
 
-            new_resources = (ContentType.objects.published()
-                .filter(topics=self.sustainabilty_topic)
-                .order_by('-published')[:10])
+            new_resources = ContentType.objects.published().filter(
+                topics=self.sustainabilty_topic).order_by('-published')[:10]
 
             news_list = self.sustainabilty_topic.get_rss_items()
 
@@ -217,7 +225,9 @@ class ResourceView(DetailView):
 
         # The user needs to be at least logged in from here
         if not self.request.user.is_authenticated():
-            return render(self.request, 'registration/login_required.html',
+            return render(
+                self.request,
+                'registration/login_required.html',
                 status=HttpResponseForbidden.status_code)
 
         # If the object only needs login, we're fine and can display it:
@@ -229,9 +239,10 @@ class ResourceView(DetailView):
             return super(ResourceView, self).dispatch(*args, **kwargs)
 
         # Otherwise, and finally, we deny.
-        return render(self.request, 'registration/member_required.html',
+        return render(
+            self.request,
+            'registration/member_required.html',
             status=HttpResponseForbidden.status_code)
-
 
     def get_template_names(self):
         return (
