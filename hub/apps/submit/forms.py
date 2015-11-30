@@ -30,11 +30,6 @@ class SubmitResourceForm(forms.ModelForm):
             'published',
         )
 
-    def __init__(self, *args, **kwargs):
-        super(SubmitResourceForm, self).__init__(*args, **kwargs)
-        if self.instance.ACADEMIC_DISCIPLINES_REQUIRED:
-            self.fields['disciplines'].required = True
-
     def save(self, request):
         self.instance.submitted_by = request.user
         obj = super(SubmitResourceForm, self).save()

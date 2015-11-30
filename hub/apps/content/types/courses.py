@@ -17,7 +17,6 @@ class Material(ContentType):
         ('intermediate', 'Intermediate'),
         ('advanced', 'Advanced'),
     )
-    ACADEMIC_DISCIPLINES_REQUIRED = True
 
     website = models.URLField('Website', blank=True, null=True)
     document = models.FileField('Document Upload',
@@ -37,6 +36,10 @@ class Material(ContentType):
     class Meta:
         verbose_name = 'Course Material'
         verbose_name_plural = 'Course Materials'
+
+    @classmethod
+    def required_field_overrides(cls):
+        return ['disciplines']
 
 
 class MaterialIndex(BaseIndex):

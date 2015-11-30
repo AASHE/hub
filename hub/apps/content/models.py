@@ -43,8 +43,6 @@ class ContentType(TimeStampedModel):
         ('member', 'Member - AASHE Member Status Required'),
     )
 
-    ACADEMIC_DISCIPLINES_REQUIRED = False
-
     content_type = models.CharField(max_length=40)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
     permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
@@ -162,6 +160,17 @@ class ContentType(TimeStampedModel):
             }
         """
         return {}
+
+    @classmethod
+    def required_field_overrides(cls):
+        """
+        Each content type subclass may return a list of field names
+        which is used later in the Submit form to set the
+        'required' attribute of the respective fields.  Example:
+
+            return ['disciplines']  # makes disciplines field required
+        """
+        return []
 
 
 @python_2_unicode_compatible
