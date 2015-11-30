@@ -1,5 +1,7 @@
 {% extends "browse/base.html" %}
 
+{% load block_content %}
+
 {% block body_class %}page-index{% endblock %}
 
 {% block title %}{{ block.super }}{% endblock %}
@@ -47,10 +49,7 @@
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
         <div class="call-action-v1">
-            <p>The Campus Sustainability Hub is a one-stop shop for AASHE member to
-                access toolkits, resource collections and benchmarking tools, and to
-                connect with business and community partners. To get started, select
-                a content type or enter search terms above.</p>
+            {% block_content 'home_page_footer' %}
             </div>
             <div class="margin-bottom-30"></div>
         </div>

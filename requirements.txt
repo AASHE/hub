@@ -23,3 +23,4 @@ whitenoise
 # Private repos
 -e git+https://github.com/AASHE/aashe-auth.git@migrations#egg=aashe_auth
 -e git+https://github.com/AASHE/iss.git#egg=iss
+-e git+https://github.com/AASHE/django-block-content.git#egg=django-block-content
