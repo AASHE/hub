@@ -1,12 +1,12 @@
+{% load content_tags %}
+
 A new resource has been submitted and is ready for review:
 
   - Resource title: {{ resource.title }}
-  - Content type: {{ resource.content_type }}
-  - Author(s):
-  {% for author in resource.authors.all %}
-    - Name: {{ author.name }}
-    - Email: {{ author.email }}
-  {% endfor %}
+  - Content type: {% get_verbose_name resource %}
+  - Submitted by:
+    - Name: {{ resource.submitted_by.get_full_name }}
+    - Email: {{ resource.submitted_by.email }}
   - Date and time submitted: {{ resource.created }}
 
 This resource can be moderated at the following link:
