@@ -78,10 +78,12 @@ class ContentType(TimeStampedModel):
         verbose_name='Sustainability Topic(s)',
         help_text="Select up to three topics that relate most closely.")
 
-    disciplines = models.ManyToManyField('metadata.AcademicDiscipline',
+    disciplines = models.ManyToManyField(
+        'metadata.AcademicDiscipline',
         verbose_name='Academic Discipline(s)',
         help_text="""Select up to three academic disciplines that relate most
-        closely to the academic program.""")
+        closely to the academic program.""",
+        blank=True)
 
     objects = ContentTypeManager()
 
@@ -158,6 +160,17 @@ class ContentType(TimeStampedModel):
             }
         """
         return {}
+
+    @classmethod
+    def required_field_overrides(cls):
+        """
+        Each content type subclass may return a list of field names
+        which is used later in the Submit form to set the
+        'required' attribute of the respective fields.  Example:
+
+            return ['disciplines']  # makes disciplines field required
+        """
+        return []
 
 
 @python_2_unicode_compatible

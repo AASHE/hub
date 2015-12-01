@@ -104,6 +104,11 @@ class SubmitFormView(LoginRequiredMixin, FormView):
             if field in DocumentForm.base_fields:
                 DocumentForm.base_fields[field].label = label
 
+        # If the content type provides required overrides, update them
+        for field in self.content_type_class.required_field_overrides():
+            if field in DocumentForm.base_fields:
+                DocumentForm.base_fields[field].required = True
+
         # Additional formsets
         AuthorFormset = formset_factory(AuthorForm, min_num=0, max_num=5, extra=5)
         ImageFormSet = formset_factory(ImageForm, min_num=0, max_num=3, extra=3)

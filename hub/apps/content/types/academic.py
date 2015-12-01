@@ -49,6 +49,10 @@ class AcademicProgram(ContentType):
         }
 
     @classmethod
+    def required_field_overrides(cls):
+        return ['disciplines']
+
+    @classmethod
     def get_custom_filterset(cls):
         from ...browse.filterset import AcademicBrowseFilterSet
         return AcademicBrowseFilterSet

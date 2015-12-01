@@ -23,6 +23,10 @@ class CenterAndInstitute(ContentType):
             'title': 'Center Name',
         }
 
+    @classmethod
+    def required_field_overrides(cls):
+        return ['disciplines']
+
 
 class CenterAndInstituteIndex(BaseIndex):
     def get_model(self):

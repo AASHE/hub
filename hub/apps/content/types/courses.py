@@ -37,6 +37,10 @@ class Material(ContentType):
         verbose_name = 'Course Material'
         verbose_name_plural = 'Course Materials'
 
+    @classmethod
+    def required_field_overrides(cls):
+        return ['disciplines']
+
 
 class MaterialIndex(BaseIndex):
     def get_model(self):
