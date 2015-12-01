@@ -35,6 +35,7 @@ class ContentType(TimeStampedModel):
     STATUS_CHOICES = Choices(
         ('new', 'New'),
         ('published', 'Published'),
+        ('declined', 'Declined')
     )
 
     PERMISSION_CHOICES = Choices(
@@ -115,7 +116,12 @@ class ContentType(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('browse:view', kwargs={'ct': self.content_type,
-            'id': self.pk, 'slug': self.slug})
+                                              'id': self.pk,
+                                              'slug': self.slug})
+
+    def get_admin_url(self):
+        return reverse('admin:content_{0}_change'.format(self.content_type),
+                       args=[self.pk])
 
     @classmethod
     def content_type_label(cls):
