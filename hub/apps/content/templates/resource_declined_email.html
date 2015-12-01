@@ -1,0 +1,41 @@
+{% load content_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Your Resource has been Declined</title>
+  </head>
+  <body>
+    <p>
+      Dear {{ resource.submitted_by.first_name }},
+    </p>
+
+    <p>
+      Thank you for submitting a resource to AASHE’s Campus Sustainability
+      Hub.  We reviewed your submission and have decided not to post the
+      following resource at this time as it does not appear to meet our
+      Campus Sustainability Hub Submission Guidelines.
+    </p>
+
+    <ul>
+      <li>Resource title: {{ resource.title }}</li>
+      <li>Content type: {% get_verbose_name resource %}</li>
+      <li>Submitter name: {{ resource.submitted_by.get_full_name }}</li>
+    </ul>
+
+    <p>
+      If you have questions about the submission guidelines or anything else
+      related to the Hub, please don’t hesitate to let us know by emailing
+      <a href="mailto:resources@aashe.org">resources@aashe.org</a>. Thank
+      you again for your interest in the Campus Sustainability Hub.
+    </p>
+
+    <p>
+      All the best,
+      <br>
+      The AASHE Programs Team
+    </p>
+
+  </body>
+</html>

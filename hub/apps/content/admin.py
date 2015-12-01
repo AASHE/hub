@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
+from . import utils
 from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
 
 
@@ -54,7 +55,18 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
     def response_delete(self, request, obj_display, obj_id):
         self._update_application_index()
-        return super(BaseContentTypeAdmin, self).response_delete(request, obj_display, obj_id)
+        return super(BaseContentTypeAdmin, self).response_delete(request,
+                                                                 obj_display,
+                                                                 obj_id)
+
+    def save_model(self, request, obj, form, change):
+        status_tracker_changed = obj.status_tracker.changed()  # before save
+        obj.save()
+        if status_tracker_changed:
+            if obj.status == obj.STATUS_CHOICES.published:
+                utils.send_resource_approved_email(obj, request)
+            elif obj.status == obj.STATUS_CHOICES.declined:
+                utils.send_resource_declined_email(obj, request)
 
 
 class AllContentTypesAdmin(admin.ModelAdmin):
@@ -84,6 +96,7 @@ class AllContentTypesAdmin(admin.ModelAdmin):
     def content_type_name(self, obj):
         return CONTENT_TYPES[obj.content_type]._meta.verbose_name
     content_type_name.short_description = 'Content Type'
+
 
 admin.site.register(ContentType, AllContentTypesAdmin)
 

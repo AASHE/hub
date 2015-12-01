@@ -9,7 +9,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
-from model_utils import Choices
+from model_utils import Choices, FieldTracker
 from slugify import slugify
 
 from .help import AFFIRMATION
@@ -85,6 +85,8 @@ class ContentType(TimeStampedModel):
         help_text="""Select up to three academic disciplines that relate most
         closely to the academic program.""",
         blank=True)
+
+    status_tracker = FieldTracker(fields=['status'])
 
     objects = ContentTypeManager()
 

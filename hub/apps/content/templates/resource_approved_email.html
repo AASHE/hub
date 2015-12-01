@@ -1,0 +1,43 @@
+{% load content_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Your Resource has been Approved</title>
+  </head>
+  <body>
+    <p>
+      Dear {{ resource.submitted_by.first_name }},
+    </p>
+
+    <p>
+      Thank you for contributing to AASHE’s Campus Sustainability Hub! The
+      following resource has been approved and is now accessible through the
+      Hub.
+    </p>
+
+    <ul>
+      <li>Resource title: {{ resource.title }}</li>
+      <li>Content type: {% get_verbose_name resource %}</li>
+      <li>Submitter name: {{ resource.submitted_by.get_full_name }}</li>
+      <li>Link to resource:
+        <a href="{{ request.scheme }}://{{ request.get_host }}{{ resource.get_absolute_url }}">{{ request.scheme }}://{{ request.get_host }}{{ resource.get_absolute_url }}</a>
+      </li>
+    </ul>
+
+    <p>
+      If you have questions about this or other resources in the
+      Hub, please don’t hesitate to let us know by emailing
+      <a href="mailto:resources@aashe.org">resources@aashe.org</a>.
+      Thank you again for your contribution and interest in the
+      Campus Sustainability Hub!
+    </p>
+
+    <p>
+      All the best,
+      <br>
+      The AASHE Programs Team
+    </p>
+  </body>
+</html>
