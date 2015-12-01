@@ -2,7 +2,7 @@ from django import forms
 
 from ..browse.forms import LeanSelectMultiple, LeanSelect
 from ..content.models import Author, File, Image, Website
-from .utils import send_new_submitted_resource_email
+from . import utils
 
 
 class SubmitResourceForm(forms.ModelForm):
@@ -40,8 +40,8 @@ class SubmitResourceForm(forms.ModelForm):
             Author.objects.create(ct=obj, email=request.user.email,
                                   name=request.user.get_full_name())
 
-        send_new_submitted_resource_email(resource=self.instance,
-                                          request=request)
+        utils.send_resource_submitted_email(resource=self.instance,
+                                            request=request)
         return obj
 
     def clean_affirmation(self):

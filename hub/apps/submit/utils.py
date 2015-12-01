@@ -6,11 +6,9 @@ from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
 
-NEW_SUBMITTED_RESOURCE_EMAIL_TEMPLATE = 'new_submitted_resource_email.txt'
 
-
-def send_new_submitted_resource_email(resource, request):
-    content = render_to_string(NEW_SUBMITTED_RESOURCE_EMAIL_TEMPLATE,
+def send_resource_submitted_email(resource, request):
+    content = render_to_string('resource_submitted_email.txt',
                                {'resource': resource,
                                 'request': request})
     try:
