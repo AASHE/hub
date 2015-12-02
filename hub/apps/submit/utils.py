@@ -12,9 +12,9 @@ def send_resource_submitted_email(resource, request):
                                {'resource': resource,
                                 'request': request})
     try:
-        send_mail(subject='New Submitted Resource for Review',
+        send_mail(subject='Resource Submitted for Review',
                   message=content,
                   from_email='resources@aashe.org',
                   recipient_list=['resources@aashe.org'])
     except:
-        logger.exception('Failed to send mail for new submitted resource.')
+        logger.exception('Failed to send mail for resource submitted.')
