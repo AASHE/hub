@@ -64,7 +64,7 @@
             <div class="panel-body">
             <ul class="list-unstyled">
                 {% for obj in new_resources_list %}
-                <li class="notification">
+                <li class="notification{% if forloop.first %} notification-first{% endif %}">
                     <div class="overflow-h">
                         <a href="{{ obj.get_absolute_url }}">
                             <span><strong>{{ obj.title }}</strong></span>

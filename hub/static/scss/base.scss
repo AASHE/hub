@@ -219,6 +219,11 @@ a.resource-button{
     border-bottom: 1px solid #aaaaaa;
 }
 
+ul.list-unstyled > li.notification-first {
+    padding-top: 0;
+    margin-top: 0;
+}
+
 /* --------------------------------------------------------------------
     Per-Page Overrides
 -------------------------------------------------------------------- */
