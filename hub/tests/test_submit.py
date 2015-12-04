@@ -1,9 +1,12 @@
+import os
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from ..apps.metadata.models import AcademicDiscipline, Organization, \
     SustainabilityTopic, InstitutionalOffice
 from ..apps.content.types.videos import Video
 from .base import WithUserSuperuserTestCase
+
 
 class SubmitVideoTestCase(WithUserSuperuserTestCase):
     """
@@ -19,7 +22,10 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
             'document-affirmation': True,
 
             'document-organizations': [
-                Organization.objects.create(account_num=1, org_name='Hipster University', exclude_from_website=0).pk
+                Organization.objects.create(
+                    account_num=1,
+                    org_name='Hipster University',
+                    exclude_from_website=0).pk
             ],
             'document-disciplines': [
                 AcademicDiscipline.objects.create(name='Jumping').pk
@@ -65,7 +71,8 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
 
     def test_invalid_content_type_gives_404(self):
         self.client.logout()
-        form_url = form_url = reverse('submit:form', kwargs={'ct': 'doesnotexist'})
+        form_url = form_url = reverse(
+            'submit:form', kwargs={'ct': 'doesnotexist'})
         response = self.client.get(form_url)
         self.assertEqual(response.status_code, 404)
 
@@ -94,7 +101,7 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.client.login(**self.user_cred)
         response = self._post_video()
 
-        #print response.context['document_form']._errors
+        # print response.context['document_form']._errors
 
         # Video was created
         self.assertEqual(response.status_code, 200)
@@ -149,6 +156,35 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.assertTrue('Martin' in names)
         self.assertTrue('Donald Duck' in names)
 
+    def test_valid_video_with_files(self):
+        """
+
+        """
+        additional_data = {
+            'files-0-label': 'test file',
+            'files-0-affirmation': 'on',
+        }
+        filepath = os.path.join(os.path.dirname(__file__), 'media/test.txt')
+
+        self.client.login(**self.user_cred)
+        with open(filepath) as upload:
+            additional_data['files-0-item'] = upload
+            response = self._post_video(additional_data)
+
+        # Video was created
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Video.objects.count(), 1)
+
+        # as new. By default new content types are 'member only'.
+        video = Video.objects.all()[0]
+        self.assertEqual(video.files.count(), 1)
+
+        f = video.files.all()[0]
+        self.assertEqual('test file', f.label)
+        if hasattr(settings, 'USE_S3') and settings.USE_S3:
+            self.assertRegexpMatches(f.item.url, '.*s3.amazonaws.com.*')
+        else:
+            self.assertIsNotNone(f.item.url)
 
     def test_user_is_author_feature(self):
         """
@@ -170,7 +206,9 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         # were taken from the logged in user account
         video = Video.objects.all()[0]
         self.assertEqual(video.authors.count(), 1)
-        self.assertEqual(video.authors.all()[0].name, self.user.get_full_name())
+        self.assertEqual(
+            video.authors.all()[0].name,
+            self.user.get_full_name())
         self.assertEqual(video.authors.all()[0].email, self.user.email)
 
     def test_invalid_form_shows_up_again(self):
