@@ -75,10 +75,12 @@ class BrowseView(ListView):
             self.content_type_class.slug = self.kwargs.get('ct')
 
         # If no content type and no topic is set, we need at least a
-        # search keyword:
+        # search keyword or organization:
         if (
-            not self.sustainabilty_topic and not self.content_type_class
-            and not self.request.GET.get('search')
+            not self.sustainabilty_topic and
+            not self.content_type_class and
+            'search' not in self.request.GET and
+            'organizations' not in self.request.GET
         ):
             return HttpResponseRedirect(reverse('home'))
 
