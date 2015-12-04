@@ -183,12 +183,12 @@ class BrowseView(ListView):
             featured_ids = SustainabilityTopicFavorite.objects.filter(
                 topic=self.sustainabilty_topic).values_list('ct', flat=True)
             featured = ContentType.objects.published().filter(
-                id__in=featured_ids)
+                id__in=featured_ids).order_by('-published')[:5]
 
             new_resources = ContentType.objects.published().filter(
-                topics=self.sustainabilty_topic).order_by('-published')[:10]
+                topics=self.sustainabilty_topic).order_by('-published')[:5]
 
-            news_list = self.sustainabilty_topic.get_rss_items()
+            news_list = self.sustainabilty_topic.get_rss_items()[:5]
 
             ctx.update({
                 'featured_list': featured,
