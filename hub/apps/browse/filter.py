@@ -182,7 +182,7 @@ class PublishedFilter(filters.ChoiceFilter):
 
         kwargs.update({
             'choices': year_choices,
-            'label': 'Published',
+            'label': 'Posted',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(PublishedFilter, self).__init__(*args, **kwargs)

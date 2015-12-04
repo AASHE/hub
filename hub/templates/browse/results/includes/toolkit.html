@@ -53,7 +53,7 @@
     {% endif %}
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-4">
         <div class="margin-bottom-20"></div>
 
         {% if new_resources_list %}
@@ -64,11 +64,11 @@
             <div class="panel-body">
             <ul class="list-unstyled">
                 {% for obj in new_resources_list %}
-                <li class="notification">
+                <li class="notification{% if forloop.first %} list-first{% endif %}">
                     <div class="overflow-h">
                         <a href="{{ obj.get_absolute_url }}">
                             <span><strong>{{ obj.title }}</strong></span>
-                            <small>{{ obj.content_type_label }}<br/>Published {{ obj.published|timesince }} ago</small>
+                            <small>{{ obj.instance_type_label }}<br/>Published {{ obj.published|timesince }} ago</small>
                         </a>
                     </div>
                 </li>

@@ -70,7 +70,7 @@ class ContentType(TimeStampedModel):
         database.""")
 
     institutions = models.ManyToManyField('metadata.InstitutionalOffice', blank=True,
-        verbose_name='Institution Office (if relevant)',
+        verbose_name='Office or Department',
         help_text='''Only include if an office or division on campus is/was
         directly involved in the case study. Select up to three.''')
 
