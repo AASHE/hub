@@ -1,5 +1,3 @@
-{% load content_tags %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,7 +17,7 @@
 
     <ul>
       <li>Resource title: {{ resource.title }}</li>
-      <li>Content type: {% get_verbose_name resource %}</li>
+      <li>Content type: {{ resource.content_type_label }}</li>
       <li>Submitter name: {{ resource.submitted_by.get_full_name }}</li>
       <li>Link to resource:
         <a href="{{ request.scheme }}://{{ request.get_host }}{{ resource.get_absolute_url }}">{{ request.scheme }}://{{ request.get_host }}{{ resource.get_absolute_url }}</a>
