@@ -13,8 +13,8 @@ def send_resource_approved_email(resource, request):
     _send_resource_email(resource=resource,
                          request=request,
                          subject=subject,
-                         text_template='resource_approved_email.txt',
-                         html_template='resource_approved_email.html',
+                         text_template='content/resource_approved_email.txt',
+                         html_template='content/resource_approved_email.html',
                          exception_text=exception_text)
 
 
@@ -25,8 +25,8 @@ def send_resource_declined_email(resource, request):
     _send_resource_email(resource=resource,
                          request=request,
                          subject=subject,
-                         text_template='resource_declined_email.txt',
-                         html_template='resource_declined_email.html',
+                         text_template='content/resource_declined_email.txt',
+                         html_template='content/resource_declined_email.html',
                          exception_text=exception_text)
 
 
@@ -48,6 +48,7 @@ def _send_resource_email(resource, request, subject,
                                      cc=['resources@aashe.org'])
     message.attach_alternative(html_content, 'text/html')
     try:
+
         message.send()
     except:
         logger.exception(exception_text)

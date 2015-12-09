@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def send_resource_submitted_email(resource, request):
-    content = render_to_string('resource_submitted_email.txt',
+    content = render_to_string('submit/resource_submitted_email.txt',
                                {'resource': resource,
                                 'request': request})
     try:
