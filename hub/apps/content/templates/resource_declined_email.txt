@@ -1,3 +1,5 @@
+{% load content_tags %}
+
 Dear {{ resource.submitted_by.first_name }},
 
 Thank you for submitting a resource to AASHE’s Campus Sustainability
@@ -6,7 +8,7 @@ following resource at this time as it does not appear to meet our
 Campus Sustainability Hub Submission Guidelines.
 
   - Resource title: {{ resource.title }}
-  - Content type: {% resource.content_type_label %}
+  - Content type: {% get_verbose_name resource %}
   - Submitter name: {{ resource.submitted_by.get_full_name }}
 
 If you have questions about the submission guidelines or anything else
