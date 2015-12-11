@@ -13,8 +13,7 @@ class Presentation(ContentType):
     )
     PRESENTATION_CHOICES = Choices(
         ('poster', 'Poster'),
-        ('presentation1', 'Presentation (1 speaker)'),
-        ('presentation2plus', 'Presentation (2 or more speakers)'),
+        ('presentation', 'Presentation'),
     )
 
     date = models.DateField('Presentation Date')
