@@ -55,24 +55,12 @@ class ContentType(TimeStampedModel):
 
     description = models.TextField('Description', blank=True, null=True)
 
-    keywords = models.TextField('Keywords', blank=True, null=True,
-        help_text="""Enter keywords that will be helpful for locating this
-        resource (e.g. "bottled water" for bottled water initiatives).""")
-
-    notes = models.TextField('Notes', blank=True, null=True, default='',
-                             help_text="Internal notes.")
-
     organizations = models.ManyToManyField('metadata.Organization',
         verbose_name='Organization(s)',
         help_text=""" Select the institution(s) and/or organization(s) that
         offer(s) this program. If an organization is not on the dropdown list,
         please complete the new organization form to have it added to our
         database.""")
-
-    institutions = models.ManyToManyField('metadata.InstitutionalOffice', blank=True,
-        verbose_name='Office or Department',
-        help_text='''Only include if an office or division on campus is/was
-        directly involved in the case study. Select up to three.''')
 
     topics = models.ManyToManyField('metadata.SustainabilityTopic',
         verbose_name='Sustainability Topic(s)',
@@ -84,6 +72,20 @@ class ContentType(TimeStampedModel):
         help_text="""Select up to three academic disciplines that relate most
         closely to the academic program.""",
         blank=True)
+
+    institutions = models.ManyToManyField(
+        'metadata.InstitutionalOffice',
+        blank=True,
+        verbose_name='Office or Department',
+        help_text='''Only include if an office or division on campus is/was
+        directly involved in the case study. Select up to three.''')
+
+    keywords = models.TextField('Keywords', blank=True, null=True,
+        help_text="""Enter keywords that will be helpful for locating this
+        resource (e.g. "bottled water" for bottled water initiatives).""")
+
+    notes = models.TextField('Notes', blank=True, null=True, default='',
+                             help_text="Internal notes.")
 
     objects = ContentTypeManager()
 
