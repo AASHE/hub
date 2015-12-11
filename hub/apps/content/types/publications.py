@@ -35,7 +35,7 @@ class Publication(ContentType):
         max_length=200, blank=True, null=True, help_text='''Enter the name of
         the periodical (e.g., journal, magazine, newspaper), if applicable. For
         book chapers, enter the title of the book.''')
-    _type = models.CharField(max_length=40, choices=TYPE_CHOICES, blank=True, null=True,
+    _type = models.CharField(max_length=40, choices=TYPE_CHOICES, null=True,
         verbose_name='Type of Material')
 
     class Meta:
