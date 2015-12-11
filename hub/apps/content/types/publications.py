@@ -42,6 +42,10 @@ class Publication(ContentType):
         verbose_name = 'Publication'
         verbose_name_plural = 'Publications'
 
+    @classmethod
+    def required_field_overrides(cls):
+        return []
+
 
 class PublicationIndex(BaseIndex):
     def get_model(self):

@@ -55,7 +55,9 @@ class ContentType(TimeStampedModel):
 
     description = models.TextField('Description', blank=True, null=True)
 
-    organizations = models.ManyToManyField('metadata.Organization',
+    organizations = models.ManyToManyField(
+        'metadata.Organization',
+        blank=True,
         verbose_name='Organization(s)',
         help_text=""" Select the institution(s) and/or organization(s) that
         offer(s) this program. If an organization is not on the dropdown list,
@@ -170,9 +172,12 @@ class ContentType(TimeStampedModel):
         which is used later in the Submit form to set the
         'required' attribute of the respective fields.  Example:
 
-            return ['disciplines']  # makes disciplines field required
+            # makes disciplines field required
+            required_list = super(MyModel, cls).required_field_overrides()
+            required_list.append('disciplines')
+            return required_list
         """
-        return []
+        return ['organizations']
 
 
 @python_2_unicode_compatible
