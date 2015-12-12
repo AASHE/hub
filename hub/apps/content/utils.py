@@ -48,7 +48,6 @@ def _send_resource_email(resource, request, subject,
                                      cc=['resources@aashe.org'])
     message.attach_alternative(html_content, 'text/html')
     try:
-
         message.send()
     except:
         logger.exception(exception_text)
