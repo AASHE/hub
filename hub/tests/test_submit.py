@@ -188,28 +188,14 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
 
     def test_user_is_author_feature(self):
         """
-        If a user submits 'I am an author' we save the logged in user object
-        as an author.
+        Confirm that the user's information is populated in the optional author
+        form
         """
-        additional_data = {
-            'document-user_is_author': True
-        }
-
         self.client.login(**self.user_cred)
-        response = self._post_video(additional_data)
-
-        # Video was created
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Video.objects.count(), 1)
-
-        # The author was automatically created, it's name and email
-        # were taken from the logged in user account
-        video = Video.objects.all()[0]
-        self.assertEqual(video.authors.count(), 1)
+        response = self.client.get(self.form_url, follow=True)
         self.assertEqual(
-            video.authors.all()[0].name,
-            self.user.get_full_name())
-        self.assertEqual(video.authors.all()[0].email, self.user.email)
+            response.context['user_is_author_form']['email'].field.initial,
+            self.user.email)
 
     def test_invalid_form_shows_up_again(self):
         """

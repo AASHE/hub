@@ -4,14 +4,14 @@
         {{ field.label }}:
         {% if field.field.required %}<span class="required">*</span>{% endif %}
     </label>
+    {% if field.help_text and field.help_text != "Filter" %}
+        <div class="note">{{ field.help_text }}</div>
+    {% endif %}
     {% endblock %}
     <label class="{% block class %}input{% endblock %}">
         {{ field.errors }}
         {% block pre_field %}{% endblock %}
         {% block field %}{{ field }}{% endblock %}
         {% block post_field %}{% endblock %}
-        {% if field.help_text and field.help_text != "Filter" %}
-            <div class="note"><strong>Note:</strong> {{ field.help_text }}</div>
-        {% endif %}
     </label>
 </section>
