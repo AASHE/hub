@@ -5,12 +5,10 @@
  {% block label %}{% endblock %}
 
 {% block field %}
-    {{ field }}
+    {{ field }}<i></i>
     {{ field.label }}
     {% if field.required %}<span class="required">*</span>{% endif %}
     {% if field.help_text and field.help_text != "Filter" %}
         <div class="note">{{ field.help_text }}</div>
     {% endif %}
 {% endblock %}
-
-{% block post_field %}<i></i>{% endblock %}
