@@ -1,25 +1,32 @@
-{% load browse_tags %}
-
 {{ image_formset.management_form }}
-{% for form in image_formset %}
-<fieldset>
-    <div class="row">
-        <div class="col-md-6">
-            {% render_form form "caption" %}
-        </div>
-        <div class="col-md-6">
-            {% render_form form "credit" %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            {% render_form form "image" %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            {% render_form form "affirmation" %}
-        </div>
-    </div>
-</fieldset>
-{% endfor %}
+
+<div id="images-container">
+  {% for form in image_formset %}
+    <fieldset class="images-fieldset-{{ forloop.counter0 }}">
+      {% include "submit/includes/images_detail_form.html" %}
+    </fieldset>
+  {% endfor %}
+</div>
+
+<div>
+  <button class="btn-u btn-u-default" id="add-image" type="button">
+    <i class="fa fa-plus-square"></i>
+    Add Image
+  </button>
+  <button
+    class="btn-u btn-u-default"
+    id="delete-image"
+    type="button">
+    <i class="fa fa-minus-square"></i>
+  </button>
+</div>
+
+{# Templates for jquery-django-inline-forms #}
+
+<script type="text/html" id="images-template">
+  <fieldset class="images-fieldset-__prefix__"  style="display: none;">
+      {% with image_formset.empty_form as form %}
+        {% include "submit/includes/images_detail_form.html" %}
+      {% endwith %}
+  </fieldset>
+</script>
