@@ -88,7 +88,8 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         # Create a template author form for the submitting user
         f = kwargs['author_formset'].empty_form
         f.fields['name'].initial = self.request.user.get_full_name()
-        f.fields['title'].initial = self.request.user.aasheuser.get_drupal_user_dict()['profile_jobtitle']
+        if hasattr(self.request.user, 'aasheuser'):
+            f.fields['title'].initial = self.request.user.aasheuser.get_drupal_user_dict()['profile_jobtitle']
         f.fields['organization'].initial = Organization.objects.all()[0]
         f.fields['email'].initial = self.request.user.email
         
