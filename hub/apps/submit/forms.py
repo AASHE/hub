@@ -44,6 +44,10 @@ class SubmitResourceForm(forms.ModelForm):
         if institutions and len(institutions) > 3:
             raise forms.ValidationError('Please choose no more than 3 institutions.')
         return institutions
+        
+    def save(self, request):
+        self.instance.submitted_by = request.user
+        return super(SubmitResourceForm, self).save()
 
 
 class AffirmationMixin(object):
