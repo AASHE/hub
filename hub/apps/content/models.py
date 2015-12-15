@@ -205,8 +205,8 @@ class Website(TimeStampedModel):
 @python_2_unicode_compatible
 class File(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="files")
-    label = models.CharField(max_length=100, blank=True, null=True)
-    item = models.FileField(help_text="The following files formats are "
+    label = models.CharField(max_length=100, blank=True, null=True, help_text="The title of the document")
+    item = models.FileField(help_text="Valid formats are "
         "aceptable: PDF, Excel, Word, PPT...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)
