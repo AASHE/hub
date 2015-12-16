@@ -1,4 +1,8 @@
-Dear {{ resource.submitted_by.first_name }},
+{% if resource.submitted_by.first_name %}
+  Dear {{ resource.submitted_by.first_name }},
+{% else %}
+  Hello,
+{% endif %}
 
 Thank you for contributing to AASHE’s Campus Sustainability Hub! The
 following resource has been approved and is now accessible through the

@@ -6,7 +6,11 @@
   </head>
   <body>
     <p>
-      Dear {{ resource.submitted_by.first_name }},
+      {% if resource.submitted_by.first_name %}
+        Dear {{ resource.submitted_by.first_name }},
+      {% else %}
+        Hello,
+      {% endif %}
     </p>
 
     <p>
