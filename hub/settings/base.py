@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'aashe.aasheauth',
     'iss',
     'haystack',
+    'block_content',
 
     'hub',
     'hub.apps.content',

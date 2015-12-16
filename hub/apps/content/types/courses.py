@@ -39,7 +39,9 @@ class Material(ContentType):
 
     @classmethod
     def required_field_overrides(cls):
-        return ['disciplines']
+        required_list = super(Material, cls).required_field_overrides()
+        required_list.append('disciplines')
+        return required_list
 
 
 class MaterialIndex(BaseIndex):

@@ -1,20 +1,32 @@
-{% load browse_tags %}
-
 {{ file_formset.management_form }}
-{% for form in file_formset %}
-<fieldset>
-    <div class="row">
-        <div class="col-md-6">
-            {% render_form form "item" %}
-        </div>
-        <div class="col-md-6">
-            {% render_form form "label" %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            {% render_form form "affirmation" %}
-        </div>
-    </div>
-</fieldset>
-{% endfor %}
+
+<div id="files-container">
+  {% for form in file_formset %}
+    <fieldset class="files-fieldset-{{ forloop.counter0 }}">
+      {% include "submit/includes/files_detail_form.html" %}
+    </fieldset>
+  {% endfor %}
+</div>
+
+<div>
+  <button class="btn-u btn-u-default inline-add" id="add-file" type="button">
+    <i class="fa fa-plus-square"></i>
+    Add File
+  </button>
+  <button
+    class="btn-u btn-u-default inline-add"
+    id="delete-file"
+    type="button">
+    <i class="fa fa-minus-square"></i>
+  </button>
+</div>
+
+{# Templates for jquery-django-inline-forms #}
+
+<script type="text/html" id="files-template">
+  <fieldset class="files-fieldset-__prefix__"  style="display: none;">
+      {% with file_formset.empty_form as form %}
+        {% include "submit/includes/files_detail_form.html" %}
+      {% endwith %}
+  </fieldset>
+</script>

@@ -56,24 +56,14 @@ class ContentType(TimeStampedModel):
 
     description = models.TextField('Description', blank=True, null=True)
 
-    keywords = models.TextField('Keywords', blank=True, null=True,
-        help_text="""Enter keywords that will be helpful for locating this
-        resource (e.g. "bottled water" for bottled water initiatives).""")
-
-    notes = models.TextField('Notes', blank=True, null=True, default='',
-                             help_text="Internal notes.")
-
-    organizations = models.ManyToManyField('metadata.Organization',
+    organizations = models.ManyToManyField(
+        'metadata.Organization',
+        blank=True,
         verbose_name='Organization(s)',
         help_text=""" Select the institution(s) and/or organization(s) that
         offer(s) this program. If an organization is not on the dropdown list,
         please complete the new organization form to have it added to our
         database.""")
-
-    institutions = models.ManyToManyField('metadata.InstitutionalOffice', blank=True,
-        verbose_name='Institution Office (if relevant)',
-        help_text='''Only include if an office or division on campus is/was
-        directly involved in the case study. Select up to three.''')
 
     topics = models.ManyToManyField('metadata.SustainabilityTopic',
         verbose_name='Sustainability Topic(s)',
@@ -85,6 +75,20 @@ class ContentType(TimeStampedModel):
         help_text="""Select up to three academic disciplines that relate most
         closely to the academic program.""",
         blank=True)
+
+    institutions = models.ManyToManyField(
+        'metadata.InstitutionalOffice',
+        blank=True,
+        verbose_name='Office or Department',
+        help_text='''Only include if an office or division on campus is/was
+        directly involved in the case study. Select up to three.''')
+
+    keywords = models.TextField('Keywords', blank=True, null=True,
+        help_text="""Enter keywords that will be helpful for locating this
+        resource (e.g. "bottled water" for bottled water initiatives).""")
+
+    notes = models.TextField('Notes', blank=True, null=True, default='',
+                             help_text="Internal notes.")
 
     status_tracker = FieldTracker(fields=['status'])
 
@@ -176,9 +180,12 @@ class ContentType(TimeStampedModel):
         which is used later in the Submit form to set the
         'required' attribute of the respective fields.  Example:
 
-            return ['disciplines']  # makes disciplines field required
+            # makes disciplines field required
+            required_list = super(MyModel, cls).required_field_overrides()
+            required_list.append('disciplines')
+            return required_list
         """
-        return []
+        return ['organizations']
 
 
 @python_2_unicode_compatible
@@ -206,8 +213,8 @@ class Website(TimeStampedModel):
 @python_2_unicode_compatible
 class File(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="files")
-    label = models.CharField(max_length=100, blank=True, null=True)
-    item = models.FileField(help_text="The following files formats are "
+    label = models.CharField(max_length=100, blank=True, null=True, help_text="The title of the document")
+    item = models.FileField(help_text="Valid formats are "
         "aceptable: PDF, Excel, Word, PPT...")
     affirmation = models.BooleanField('Affirmation of Ownership', default=False,
         help_text=AFFIRMATION)

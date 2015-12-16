@@ -25,7 +25,10 @@ class CenterAndInstitute(ContentType):
 
     @classmethod
     def required_field_overrides(cls):
-        return ['disciplines']
+        required_list = super(
+            CenterAndInstitute, cls).required_field_overrides()
+        required_list.append('disciplines')
+        return required_list
 
 
 class CenterAndInstituteIndex(BaseIndex):

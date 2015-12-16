@@ -27,7 +27,7 @@
     <script src="{% static "js/browse-results.js" %}"></script>
 {% endblock %}
 
-{% block page %}
+{% block browse_above_tabs %}
 <div class="search-block-v2">
     <div class="container">
         <div class="col-md-6 col-md-offset-3">
@@ -38,7 +38,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block browse_tab_content %}
 {% block resource_list_body %}
 <div class="container s-results margin-bottom-50">
     <div class="row">

@@ -1,64 +1,58 @@
 {% extends "browse/base.html" %}
 
+{% load block_content %}
+
 {% block body_class %}page-index{% endblock %}
 
 {% block title %}{{ block.super }}{% endblock %}
 
-{% block page %}
-<div class="row">
-  <div class="col-md-12">
-    <div class="tab-v1">
-        <ul class="nav nav-tabs margin-bottom-20">
-            <li class="active"><a data-toggle="tab" href="#topics" aria-expanded="true">Browse Topic List</a></li>
-            <li class=""><a data-toggle="tab" href="#contenttypes" aria-expanded="false">Browse Content Types</a></li>
-        </ul>
-        <div class="tab-content">
+{% block browse_additional_tabs %}
+    <li class="active"><a data-toggle="tab" href="#topics" aria-expanded="true">Browse Topic List</a></li>
+    <li class=""><a data-toggle="tab" href="#contenttypes" aria-expanded="false">Browse Content Types</a></li>
+{% endblock %}
 
-            <!-- Topic list -->
-            <div id="topics" class="tab-pane fade active in">
-                <div class="row">
-                    {% for topic in topic_list %}
-                    <div class="col-md-3 col-sm-6">
-                        <a href="{% url "browse:browse" topic=topic.slug %}"
-                            style="background-color: {{ topic.color }}"
-                            class="resource-button service-block service-block-sea service-or
-                        ">
-                            <div class="service-bg"></div>
-                            {{ topic }}
-                        </a>
-                    </div>
-                    {% endfor %}
-                </div>
+{% block browse_tab_content %}
+    <!-- Topic list -->
+    <div id="topics" class="tab-pane fade active in">
+        <div class="row">
+            {% for topic in topic_list %}
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url "browse:browse" topic=topic.slug %}"
+                    style="background-color: {{ topic.color }}"
+                    class="resource-button service-block service-block-sea service-or
+                ">
+                    <div class="service-bg"></div>
+                    {{ topic }}
+                </a>
             </div>
-            <!-- Content list -->
-            <div id="contenttypes" class="tab-pane fade">
-                <div class="row">
-                    {% for slug, class in content_type_list.items %}
-                    <div class="col-md-3 col-sm-6">
-                        <a href="{% url "browse:browse" ct=slug %}"
-                            class="resource-button service-block service-block-sea service-or">
-                            <div class="service-bg"></div>
-                            {{ class.content_type_label }}
-                        </a>
-                    </div>
-                {% endfor %}
-                </div>
-            </div>
-            <!-- /end -->
+            {% endfor %}
         </div>
     </div>
-</div>
-
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <div class="call-action-v1">
-        <p>The Campus Sustainability Hub is a one-stop shop for AASHE member to
-            access toolkits, resource collections and benchmarking tools, and to
-            connect with business and community partners. To get started, select
-            a content type or enter search terms above.</p>
+    <!-- Content list -->
+    <div id="contenttypes" class="tab-pane fade">
+        <div class="row">
+            {% for slug, class in content_type_list.items %}
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url "browse:browse" ct=slug %}"
+                    class="resource-button service-block service-block-sea service-or">
+                    <div class="service-bg"></div>
+                    {{ class.content_type_label }}
+                </a>
+            </div>
+        {% endfor %}
         </div>
-        <div class="margin-bottom-30"></div>
     </div>
-  </div>
-</div>
+    <!-- /end -->
+{% endblock %}
+
+{% block browse_below_tab_content %}
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="call-action-v1">
+            {% block_content 'home_page_footer' %}
+            </div>
+            <div class="margin-bottom-30"></div>
+        </div>
+      </div>
+    </div>
 {% endblock %}

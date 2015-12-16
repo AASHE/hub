@@ -7,7 +7,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 
 from ...permissions import LoginRequiredMixin
-from ..content.models import CONTENT_TYPES
+from ..content.models import CONTENT_TYPES, Author
+from ..metadata.models import Organization
 from .forms import AuthorForm, FileForm, ImageForm, SubmitResourceForm, \
     WebsiteForm
 
@@ -83,9 +84,19 @@ class SubmitFormView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         ctx = super(SubmitFormView, self).get_context_data(**kwargs)
+        
+        # Create a template author form for the submitting user
+        f = kwargs['author_formset'].empty_form
+        f.fields['name'].initial = self.request.user.get_full_name()
+        if hasattr(self.request.user, 'aasheuser'):
+            f.fields['title'].initial = self.request.user.aasheuser.get_drupal_user_dict()['profile_jobtitle']
+        f.fields['organization'].initial = Organization.objects.all()[0]
+        f.fields['email'].initial = self.request.user.email
+        
         ctx.update({
             'content_type_label': self.content_type_class._meta.verbose_name,
             'label_overrides': self.content_type_class.label_overrides(),
+            'user_is_author_form': f
         })
         return ctx
 
@@ -110,9 +121,9 @@ class SubmitFormView(LoginRequiredMixin, FormView):
                 DocumentForm.base_fields[field].required = True
 
         # Additional formsets
-        AuthorFormset = formset_factory(AuthorForm, min_num=0, max_num=5, extra=5)
-        ImageFormSet = formset_factory(ImageForm, min_num=0, max_num=3, extra=3)
-        FileFormSet = formset_factory(FileForm, min_num=0, max_num=3, extra=3)
+        AuthorFormset = formset_factory(AuthorForm, min_num=0, max_num=5, extra=0)
+        ImageFormSet = formset_factory(ImageForm, min_num=0, max_num=3, extra=0)
+        FileFormSet = formset_factory(FileForm, min_num=0, max_num=3, extra=0)
         WebsiteFormSet = formset_factory(WebsiteForm, min_num=0, max_num=1, extra=1)
 
         document_form = DocumentForm(prefix='document', **self.get_form_kwargs())

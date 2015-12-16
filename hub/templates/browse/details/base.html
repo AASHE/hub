@@ -21,18 +21,23 @@
                     <div class="panel-heading overflow-h">
                         <h2>{{ object.title }}</h2>
                         {% for org in object.organizations.all %}
-                            {{ org.org_name }}{% if not forloop.last %}, {% endif %}
+                            <a href="{% url 'browse:browse' %}?organizations={{org.pk}}">
+                            {{ org.org_name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </div>
                     <div class="panel-body">
 
-                        {% include "browse/details/includes/meta.html" with label="Date Published" value=object.published|date %}
+                        {% include "browse/details/includes/meta.html" with label="Date Posted" value=object.published|date %}
                         {% include "browse/details/includes/meta.html" with label="Last Updated" value=object.modified|date %}
 
                         <div class="margin-bottom-10"></div>
 
                         <div><strong>Sustainability Topic{{ object.topics.all|length|pluralize }}:</strong>
-                            {% for t in object.topics.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+                            {% for t in object.topics.all %}
+                                <a href="{% url "browse:browse" topic=t.slug %}">
+                                    {{ t.name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
 
                         <div><strong>Content Type:</strong>
                             <a href="{% url "browse:browse" ct=object.content_type %}">{{ object.content_type_label }}</a></div>

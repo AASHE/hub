@@ -1,5 +1,8 @@
 from django.core import mail
+import os
+
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from ..apps.metadata.models import AcademicDiscipline, Organization, \
     SustainabilityTopic, InstitutionalOffice
@@ -154,29 +157,46 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         self.assertTrue('Martin' in names)
         self.assertTrue('Donald Duck' in names)
 
-    def test_user_is_author_feature(self):
+    def test_valid_video_with_files(self):
         """
-        If a user submits 'I am an author' we save the logged in user object
-        as an author.
+
         """
         additional_data = {
-            'document-user_is_author': True
+            'files-0-label': 'test file',
+            'files-0-affirmation': 'on',
         }
+        filepath = os.path.join(os.path.dirname(__file__), 'media/test.txt')
 
         self.client.login(**self.user_cred)
-        response = self._post_video(additional_data)
+        with open(filepath) as upload:
+            additional_data['files-0-item'] = upload
+            response = self._post_video(additional_data)
 
         # Video was created
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Video.objects.count(), 1)
 
-        # The author was automatically created, it's name and email
-        # were taken from the logged in user account
+        # as new. By default new content types are 'member only'.
         video = Video.objects.all()[0]
-        self.assertEqual(video.authors.count(), 1)
-        self.assertEqual(video.authors.all()[0].name,
-                         self.user.get_full_name())
-        self.assertEqual(video.authors.all()[0].email, self.user.email)
+        self.assertEqual(video.files.count(), 1)
+
+        f = video.files.all()[0]
+        self.assertEqual('test file', f.label)
+        if hasattr(settings, 'USE_S3') and settings.USE_S3:
+            self.assertRegexpMatches(f.item.url, '.*s3.amazonaws.com.*')
+        else:
+            self.assertIsNotNone(f.item.url)
+
+    def test_user_is_author_feature(self):
+        """
+        Confirm that the user's information is populated in the optional author
+        form
+        """
+        self.client.login(**self.user_cred)
+        response = self.client.get(self.form_url, follow=True)
+        self.assertEqual(
+            response.context['user_is_author_form']['email'].field.initial,
+            self.user.email)
 
     def test_invalid_form_shows_up_again(self):
         """
@@ -238,6 +258,5 @@ class SubmitVideoTestCase(WithUserSuperuserTestCase):
         """
         self.client.login(**self.user_cred)
         self._post_video()
-
         self.assertEqual(1, len(mail.outbox))
         self.assertIn('review', mail.outbox[0].subject.lower())

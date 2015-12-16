@@ -10,10 +10,6 @@ class SubmitResourceForm(forms.ModelForm):
     A very generic ModelForm that is later executed by a modelform_factory.
     We'll just add some very generic validation here.
     """
-    user_is_author = forms.BooleanField(label='I am an Author', required=False,
-        help_text="""By checking this field you indicate that you are an
-        author of this resource and you are automatically assigned to it.
-        You don't need to add your data in the "Authors" form below.""")
 
     class Meta:
         widgets = {
@@ -29,9 +25,31 @@ class SubmitResourceForm(forms.ModelForm):
             'permission',
             'submitted_by',
             'published',
+            'notes'
         )
 
+    def clean_topics(self):
+        topics = self.cleaned_data.get('topics')
+        if topics and len(topics) > 3:
+            raise forms.ValidationError('Please choose no more than 3 topics.')
+        return topics
+
+    def clean_disciplines(self):
+        disciplines = self.cleaned_data.get('disciplines')
+        if disciplines and len(disciplines) > 3:
+            raise forms.ValidationError(
+                'Please choose no more than 3 disciplines.')
+        return disciplines
+
+    def clean_institutions(self):
+        institutions = self.cleaned_data.get('institutions')
+        if institutions and len(institutions) > 3:
+            raise forms.ValidationError(
+                'Please choose no more than 3 institutions.')
+        return institutions
+
     def save(self, request):
+
         self.instance.submitted_by = request.user
         obj = super(SubmitResourceForm, self).save()
 
@@ -44,28 +62,15 @@ class SubmitResourceForm(forms.ModelForm):
                                             request=request)
         return obj
 
+
+class AffirmationMixin(object):
+
     def clean_affirmation(self):
         if not self.cleaned_data.get('affirmation'):
-            raise forms.ValidationError('You need to acknowledge the affirmation')
+            raise forms.ValidationError(
+                'You need to acknowledge the affirmation')
         return self.cleaned_data.get('affirmation')
 
-    def clean_topics(self):
-        topics = self.cleaned_data.get('topics')
-        if topics and len(topics) > 3:
-            raise forms.ValidationError('Please choose no more than 3 topics.')
-        return topics
-
-    def clean_disciplines(self):
-        disciplines = self.cleaned_data.get('disciplines')
-        if disciplines and len(disciplines) > 3:
-            raise forms.ValidationError('Please choose no more than 3 disciplines.')
-        return disciplines
-
-    def clean_institutions(self):
-        institutions = self.cleaned_data.get('institutions')
-        if institutions and len(institutions) > 3:
-            raise forms.ValidationError('Please choose no more than 3 institutions.')
-        return institutions
 
 class AuthorForm(forms.ModelForm):
     class Meta:
@@ -80,7 +85,7 @@ class AuthorForm(forms.ModelForm):
         return super(AuthorForm, self).save()
 
 
-class FileForm(forms.ModelForm):
+class FileForm(AffirmationMixin, forms.ModelForm):
     class Meta:
         model = File
         exclude = ('id', 'ct')
@@ -90,7 +95,7 @@ class FileForm(forms.ModelForm):
         return super(FileForm, self).save()
 
 
-class ImageForm(forms.ModelForm):
+class ImageForm(AffirmationMixin, forms.ModelForm):
     class Meta:
         model = Image
         exclude = ('id', 'ct')
