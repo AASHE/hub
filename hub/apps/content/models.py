@@ -9,7 +9,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
-from model_utils import Choices
+from model_utils import Choices, FieldTracker
 from slugify import slugify
 
 from .help import AFFIRMATION
@@ -35,6 +35,7 @@ class ContentType(TimeStampedModel):
     STATUS_CHOICES = Choices(
         ('new', 'New'),
         ('published', 'Published'),
+        ('declined', 'Declined')
     )
 
     PERMISSION_CHOICES = Choices(
@@ -89,6 +90,8 @@ class ContentType(TimeStampedModel):
     notes = models.TextField('Notes', blank=True, null=True, default='',
                              help_text="Internal notes.")
 
+    status_tracker = FieldTracker(fields=['status'])
+
     objects = ContentTypeManager()
 
     class Meta:
@@ -119,7 +122,12 @@ class ContentType(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('browse:view', kwargs={'ct': self.content_type,
-            'id': self.pk, 'slug': self.slug})
+                                              'id': self.pk,
+                                              'slug': self.slug})
+
+    def get_admin_url(self):
+        return reverse('admin:content_{0}_change'.format(self.content_type),
+                       args=[self.pk])
 
     @classmethod
     def content_type_label(cls):

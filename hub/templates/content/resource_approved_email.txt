@@ -1,0 +1,24 @@
+{% if resource.submitted_by.first_name %}
+  Dear {{ resource.submitted_by.first_name }},
+{% else %}
+  Hello,
+{% endif %}
+
+Thank you for contributing to AASHE’s Campus Sustainability Hub! The
+following resource has been approved and is now accessible through the
+Hub.
+
+  - Resource title: {{ resource.title }}
+  - Content type: {{ resource.content_type_label }}
+  - Submitter name: {{ resource.submitted_by.get_full_name }}
+  - Link to resource:
+
+    {{ request.scheme }}://{{ request.get_host }}{{ resource.get_absolute_url }}
+
+If you have questions about this or other resources in the Hub, please
+don’t hesitate to let us know by emailing resources@aashe.org. Thank
+you again for your contribution and interest in the Campus
+Sustainability Hub!
+
+All the best,
+The AASHE Programs Team
