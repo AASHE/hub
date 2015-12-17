@@ -30,6 +30,12 @@ class CenterAndInstitute(ContentType):
         required_list.append('disciplines')
         return required_list
 
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 1},  # required, up to 5
+        }
+
 
 class CenterAndInstituteIndex(BaseIndex):
     def get_model(self):

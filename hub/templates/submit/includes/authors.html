@@ -1,8 +1,8 @@
 {{ author_formset.management_form }}
 
-<div id="authors-container">
+<div id="author-container">
   {% for form in author_formset %}
-    <fieldset class="authors-fieldset-{{ forloop.counter0 }}">
+    <fieldset class="author-fieldset-{{ forloop.counter0 }}">
       {% include "submit/includes/author_detail_form.html" %}
     </fieldset>
   {% endfor %}
@@ -15,7 +15,7 @@
   </button>
   <button
     class="btn-u btn-u-default inline-add"
-    id="authors-delete"
+    id="author-delete"
     type="button">
     <i class="fa fa-minus-square"></i>
   </button>
@@ -27,16 +27,16 @@
 
 {# Templates for jquery-django-inline-forms #}
 
-<script type="text/html" id="authors-template">
-  <fieldset class="authors-fieldset-__prefix__" style="display: none;">
+<script type="text/html" id="author-template">
+  <fieldset class="author-fieldset-__prefix__" style="display: none;">
       {% with author_formset.empty_form as form %}
         {% include "submit/includes/author_detail_form.html" %}
       {% endwith %}
   </fieldset>
 </script>
 
-<script type="text/html" id="authors-template-user-is-author">
-  <fieldset class="authors-fieldset-__prefix__" style="display: none;">
+<script type="text/html" id="author-template-user-is-author">
+  <fieldset class="author-fieldset-__prefix__" style="display: none;">
       {% with user_is_author_form as form %}
         {% include "submit/includes/author_detail_form.html" %}
       {% endwith %}

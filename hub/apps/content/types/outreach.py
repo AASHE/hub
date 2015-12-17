@@ -32,6 +32,15 @@ class OutreachMaterial(ContentType):
         verbose_name = 'Outreach Material'
         verbose_name_plural = 'Outreach Materials'
 
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+            'file': {'max': 3, 'min': 0},  # optional, up to 3
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
+            'conditionally_required': {'website', 'file', 'image'}
+        }
+
 
 class OutreachMaterialIndex(BaseIndex):
     def get_model(self):

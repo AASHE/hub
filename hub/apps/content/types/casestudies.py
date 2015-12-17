@@ -36,6 +36,15 @@ class CaseStudy(ContentType):
         verbose_name = 'Case Study'
         verbose_name_plural = 'Case Studies'
 
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
+            'file': {'max': 3, 'min': 0},  # optional, up to 5
+            'author': {'max': 5, 'min': 1},  # required, up to 5
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+        }
+
 
 class CaseStudyIndex(BaseIndex):
     def get_model(self):

@@ -46,6 +46,16 @@ class Publication(ContentType):
     def required_field_overrides(cls):
         return []
 
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+            'author': {'max': 6, 'min': 1},  # required, up to 6
+            'file': {'max': 3, 'min': 0},  # optional, up to 3
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
+            'conditionally_required': {'website', 'file'}
+        }
+
 
 class PublicationIndex(BaseIndex):
     def get_model(self):

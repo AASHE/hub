@@ -39,6 +39,15 @@ class Presentation(ContentType):
             'authors': 'Presenters',
         }
 
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+            'author': {'max': 6, 'min': 1},  # required, up to 6
+            'file': {'max': 3, 'min': 1},  # required, up to 3
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
+        }
+
 
 class PresentationIndex(BaseIndex):
     def get_model(self):
