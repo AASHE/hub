@@ -24,6 +24,7 @@ class Video(ContentType):
             'author': {'max': 5, 'min': 0},  # optional, up to 5
         }
 
+
 class VideoIndex(BaseIndex):
     def get_model(self):
         return Video

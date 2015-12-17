@@ -29,8 +29,6 @@ class CaseStudy(ContentType):
         help_text='''Describe the lessons learned from this project. This
         section may also be used to offer advice to others who wish to
         undertake a similar project.''')
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Case Study'

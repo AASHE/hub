@@ -6,12 +6,6 @@ from ..help import AFFIRMATION, FILE_UPLOAD
 
 
 class Tool(ContentType):
-    website = models.URLField('Website', blank=True, null=True)
-    document = models.FileField('Document Upload',
-        blank=True, null=True, help_text=FILE_UPLOAD + ''' Provide either a
-        website or a publication document.''')
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Tool'

@@ -5,7 +5,6 @@ from ..search import BaseIndex
 
 
 class CenterAndInstitute(ContentType):
-    website = models.URLField('Website')
     num_paid = models.PositiveIntegerField('Number of paid staff employed at the center (FTE)',
         blank=True, null=True)
     founded = models.PositiveIntegerField('Year when center or institute was founded',

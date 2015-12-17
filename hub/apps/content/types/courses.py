@@ -18,12 +18,6 @@ class Material(ContentType):
         ('advanced', 'Advanced'),
     )
 
-    website = models.URLField('Website', blank=True, null=True)
-    document = models.FileField('Document Upload',
-        blank=True, null=True, help_text=FILE_UPLOAD + ''' Provide either a
-        website or a publication document.''')
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
     material_type = models.CharField('Type of Material', max_length=50,
         help_text='Select the best option.',
         choices=MATERIAL_TYPE_CHOICES)

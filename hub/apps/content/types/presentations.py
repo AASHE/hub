@@ -21,10 +21,6 @@ class Presentation(ContentType):
         choices=CONF_NAME_CHOICES)
     presentation_type = models.CharField(max_length=100, blank=True, null=True,
         choices=PRESENTATION_CHOICES)
-    document = models.FileField('Document Upload', help_text=FILE_UPLOAD,
-        blank=True, null=True)
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Conference Presentation'
