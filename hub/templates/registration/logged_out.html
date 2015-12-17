@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load block_content %}
 
 {% block title %}Logged out - {{ block.super }}{% endblock %}
 
@@ -18,7 +19,7 @@
                     <h2>Logged out</h2>
                 </div>
 
-                <p>Thank you for visiting the AASHE Campus Sustainability Hub!</p>
+                {% block_content 'logged_out_message' %}
                 <p><a href="{% url "login" %}">Login again</a></p>
             </form>
         </div>
