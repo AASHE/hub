@@ -1,0 +1,14 @@
+A new resource has been submitted and is ready for review:
+
+  - Resource title: {{ resource.title }}
+  - Content type: {{ resource.content_type_label }}
+  - Submitted by:
+    - Name: {{ resource.submitted_by.get_full_name }}
+    - Email: {{ resource.submitted_by.email }}
+  - Date and time submitted: {{ resource.created }}
+
+This resource can be moderated at the following link:
+
+  {{ request.scheme }}://{{ request.get_host }}{{ resource.get_admin_url }}
+
+Please review and decide within 2 business days. Happy moderating!

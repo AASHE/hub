@@ -1,4 +1,6 @@
+from django.core import mail
 import os
+
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -24,10 +26,9 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             'document-affirmation': True,
 
             'document-organizations': [
-                Organization.objects.create(
-                    account_num=1,
-                    org_name='Hipster University',
-                    exclude_from_website=0).pk
+                Organization.objects.create(account_num=1,
+                                            org_name='Hipster University',
+                                            exclude_from_website=0).pk
             ],
             'document-disciplines': [
                 AcademicDiscipline.objects.create(name='Jumping').pk
@@ -80,8 +81,8 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
 
     def test_invalid_content_type_gives_404(self):
         self.client.logout()
-        form_url = form_url = reverse(
-            'submit:form', kwargs={'ct': 'doesnotexist'})
+        form_url = form_url = reverse('submit:form',
+                                      kwargs={'ct': 'doesnotexist'})
         response = self.client.get(form_url)
         self.assertEqual(response.status_code, 404)
 
@@ -288,3 +289,11 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Material.objects.count(), 1)
         self.assertEqual(Material.objects.all()[0].websites.count(), 1)
+
+    def test_email_is_sent_upon_submission(self):
+        """Is an email sent when a resource is submitted?
+        """
+        self.client.login(**self.user_cred)
+        self._post_video()
+        self.assertEqual(1, len(mail.outbox))
+        self.assertIn('review', mail.outbox[0].subject.lower())

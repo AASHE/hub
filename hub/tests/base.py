@@ -34,10 +34,12 @@ class BaseSearchBackendTestCase(TestCase):
         """
         Purge the search index before each test case run.
         """
-        management.call_command('clear_index', interactive=False)
+        management.call_command('clear_index', verbosity=0,
+                                interactive=False)
 
     def _rebuild_index(self):
         """
         Rebuild the entire search index.
         """
-        management.call_command('rebuild_index', interactive=False)
+        management.call_command('rebuild_index', verbosity=0,
+                                interactive=False)

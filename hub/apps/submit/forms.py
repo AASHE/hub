@@ -2,6 +2,7 @@ from django import forms
 
 from ..browse.forms import LeanSelectMultiple, LeanSelect
 from ..content.models import Author, File, Image, Website
+from . import utils
 
 
 class SubmitResourceForm(forms.ModelForm):
@@ -36,25 +37,38 @@ class SubmitResourceForm(forms.ModelForm):
     def clean_disciplines(self):
         disciplines = self.cleaned_data.get('disciplines')
         if disciplines and len(disciplines) > 3:
-            raise forms.ValidationError('Please choose no more than 3 disciplines.')
+            raise forms.ValidationError(
+                'Please choose no more than 3 disciplines.')
         return disciplines
 
     def clean_institutions(self):
         institutions = self.cleaned_data.get('institutions')
         if institutions and len(institutions) > 3:
-            raise forms.ValidationError('Please choose no more than 3 institutions.')
+            raise forms.ValidationError(
+                'Please choose no more than 3 institutions.')
         return institutions
-        
+
     def save(self, request):
+
         self.instance.submitted_by = request.user
-        return super(SubmitResourceForm, self).save()
+        obj = super(SubmitResourceForm, self).save()
+
+        # Add the requst.User as an author
+        if self.cleaned_data.get('user_is_author'):
+            Author.objects.create(ct=obj, email=request.user.email,
+                                  name=request.user.get_full_name())
+
+        utils.send_resource_submitted_email(resource=self.instance,
+                                            request=request)
+        return obj
 
 
 class AffirmationMixin(object):
 
     def clean_affirmation(self):
         if not self.cleaned_data.get('affirmation'):
-            raise forms.ValidationError('You need to acknowledge the affirmation')
+            raise forms.ValidationError(
+                'You need to acknowledge the affirmation')
         return self.cleaned_data.get('affirmation')
 
 
