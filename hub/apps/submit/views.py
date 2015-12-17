@@ -129,6 +129,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         return kwargs
 
     def get_author_form_template(self, **kwargs):
+        f = kwargs['author_formset'].empty_form
         org = None
         if hasattr(self.request.user, 'aasheuser'):
             drupal_dict = self.request.user.aasheuser.get_drupal_user_dict()
@@ -137,8 +138,6 @@ class SubmitFormView(LoginRequiredMixin, FormView):
                 org = org[0]
             f.fields['organization'].initial = org
             f.fields['title'].initial = drupal_dict['profile_jobtitle']
-
-        f = kwargs['author_formset'].empty_form
         f.fields['name'].initial = self.request.user.get_full_name()
         f.fields['email'].initial = self.request.user.email
         return f
