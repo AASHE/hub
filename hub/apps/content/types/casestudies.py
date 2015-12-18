@@ -6,9 +6,6 @@ from ..help import AFFIRMATION
 
 
 class CaseStudy(ContentType):
-    overview = models.TextField('Project overview', blank=True, null=True,
-        help_text='''Provide a very brief summary of your project. Please
-        limit this summary to 100 words.''')
     background = models.TextField('Background', blank=True, null=True,
         help_text='''Describe the circumstances that led to the initiation of
         this project.''')
@@ -35,6 +32,12 @@ class CaseStudy(ContentType):
     class Meta:
         verbose_name = 'Case Study'
         verbose_name_plural = 'Case Studies'
+
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'background': 'Project Overview',
+        }
 
 
 class CaseStudyIndex(BaseIndex):
