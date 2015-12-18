@@ -1,4 +1,5 @@
 {% load static from staticfiles %}
+{% load block_content %}
 
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
@@ -84,20 +85,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8">
-                        <p>
-                            All Material Copyright © 2005–2015 Association for the Advancement of
-                            Sustainability in Higher Education.<br/>AASHE reserves the right to control
-                            the reproduction and use of all material posted on this website.
-                        </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p>
-                            2401 Walnut Street Suite 102 Philadelphia, PA 19103 - t/f: 888-347-9997<br/>
-                            For problems or questions about this site please <a href="http://www.aashe.org/contact">contact the webmaster</a>
-                            &mdash; <a href="http://www.aashe.org/privacy-policy">Privacy Policy</a>
-                        </p>
+                        {% block_content 'footer_text' %}
                     </div>
                 </div>
             </div>
