@@ -3,10 +3,11 @@
 {% load markup_tags %}
 {% load humanize %}
 {% load block_content %}
+{% load typogrify_tags %}
 
 {% block body_class %}page-detail{% endblock %}
 
-{% block title %}{{ object.title }} - {{ block.super }}{% endblock %}
+{% block title %}{{ object.title|titlecase }} - {{ block.super }}{% endblock %}
 
 {% block page %}
 <div class="profile">
@@ -20,7 +21,7 @@
 
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
-                        <h2>{{ object.title }}</h2>
+                        <h2>{{ object.title|titlecase }}</h2>
                         {% for org in object.organizations.all %}
                             <a href="{% url 'browse:browse' %}?organizations={{org.pk}}">
                             {{ org.org_name }}</a>{% if not forloop.last %}, {% endif %}

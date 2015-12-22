@@ -1,5 +1,6 @@
 {% load markup_tags %}
 {% load browse_tags %}
+{% load typogrify_tags %}
 
 <div class="container profile">
 <div class="row">
@@ -28,7 +29,7 @@
                 <li>
                     <small class="pull-right">{{ ct.instance_type_label }}</small>
                     <i class="fa fa-star-o rounded"></i>
-                    <a href="{{ ct.get_absolute_url }}">{{ ct.title }}</a>
+                    <a href="{{ ct.get_absolute_url }}">{{ ct.title|titlecase }}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -49,7 +50,7 @@
         <div class="panel-body">
             <ul class="list-unstyled social-contacts-v2">
                 {% for n in news_list %}
-                <li><a href="{{ n.link }}">{{ n.title }}</a></li>
+                <li><a href="{{ n.link }}">{{ n.title|titlecase }}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -71,7 +72,7 @@
                 <li class="notification{% if forloop.first %} list-first{% endif %}">
                     <div class="overflow-h">
                         <a href="{{ obj.get_absolute_url }}">
-                            <span><strong>{{ obj.title }}</strong></span>
+                            <span><strong>{{ obj.title|titlecase }}</strong></span>
                             <small>{{ obj.instance_type_label }}<br/>Published {{ obj.published|timesince }} ago</small>
                         </a>
                     </div>

@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'iss',
     'haystack',
     'block_content',
+    'typogrify',
 
     'hub',
     'hub.apps.content',
