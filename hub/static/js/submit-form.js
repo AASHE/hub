@@ -32,29 +32,31 @@ jQuery(document).ready(function() {
             }
         }
     });
-    
+
     // -------------------------------------------------------------------------
     // Initialize the in-line form buttons
     // -------------------------------------------------------------------------
     $('#add-author').djangoInlineFormAdd({
-      prefix: "authors",
+      prefix: "author",
       postClick: $.updateOrgDropdowns,
       formHeight: 200,
     });
     $('#i-am-author').djangoInlineFormAdd({
-      prefix: 'authors',
-      templateId: '#authors-template-user-is-author',
+      prefix: 'author',
+      templateId: '#author-template-user-is-author',
       postClick: $.updateOrgDropdowns,
       formHeight: 200
     });
     $('#add-file').djangoInlineFormAdd({
-      prefix: "files",
+      prefix: "file",
       formHeight: 300,
-      deleteButtonId: '#delete-file'
     });
     $('#add-image').djangoInlineFormAdd({
-      prefix: "images",
+      prefix: "image",
       formHeight: 300,
-      deleteButtonId: '#delete-image'
+    });
+    $('#add-website').djangoInlineFormAdd({
+      prefix: "website",
+      formHeight: 150,
     });
 });
