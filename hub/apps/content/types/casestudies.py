@@ -43,6 +43,13 @@ class CaseStudy(ContentType):
             'website': {'max': 5, 'min': 0},  # optional, up to 5
         }
 
+    @classmethod
+    def required_field_overrides(cls):
+        required_list = super(
+            CaseStudy, cls).required_field_overrides()
+        required_list.append('description')
+        return required_list
+
 
 class CaseStudyIndex(BaseIndex):
     def get_model(self):
