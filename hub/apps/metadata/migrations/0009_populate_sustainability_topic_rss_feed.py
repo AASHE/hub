@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-from django.http.utils import urlquote
+from django.utils.http import urlquote
 
 
 def populate_rss_feed(apps, schema_editor):
