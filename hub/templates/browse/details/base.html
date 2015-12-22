@@ -2,6 +2,7 @@
 
 {% load markup_tags %}
 {% load humanize %}
+{% load block_content %}
 
 {% block body_class %}page-detail{% endblock %}
 
@@ -140,7 +141,7 @@
                     <div class="overflow-h">
                         <a href="mailto:resources@aashe.org">
                             <span><strong>Request a change</strong></span>
-                            <small>If you think this resource needs to be improved, please let us know.</small>
+                            {% block_content 'request_a_change' %}
                         </a>
                     </div>
                 </li>
