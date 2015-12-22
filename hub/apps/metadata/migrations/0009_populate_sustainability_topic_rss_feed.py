@@ -2,14 +2,15 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
+from django.http.utils import urlquote
 
 
 def populate_rss_feed(apps, schema_editor):
     SustainabilityTopic = apps.get_model("metadata", "SustainabilityTopic")
     for sustainability_topic in SustainabilityTopic.objects.all():
         sustainability_topic.rss_feed = (
-            "http://bulletin.aashe.org/rss/news/category/{}".format(
-                sustainability_topic.name.lower()))
+            "http://bulletin.aashe.org/rss/news/category/" +
+            urlquote(sustainability_topic.name.lower()) + "/")
         sustainability_topic.save()
 
 
