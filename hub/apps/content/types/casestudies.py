@@ -36,7 +36,7 @@ class CaseStudy(ContentType):
     @classmethod
     def label_overrides(cls):
         return {
-            'background': 'Project Overview',
+            'description': 'Project Overview',
         }
 
 
