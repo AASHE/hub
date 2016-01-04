@@ -65,10 +65,6 @@ else:
     MEDIA_ROOT = os.environ.get("MEDIA_ROOT", None)
     STATIC_ROOT = 'staticfiles'
 
-STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'static'),
-)
-
 # ==============================================================================
 # Enable debug logging
 # ==============================================================================
