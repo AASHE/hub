@@ -3,6 +3,24 @@
 {% load markup_tags %}
 {% load humanize %}
 {% load block_content %}
+{% load static %}
+{% load thumbnail %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/theme/plugins/fancybox/source/jquery.fancybox.css' %}">
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'vendor/theme/plugins/fancybox/source/jquery.fancybox.pack.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/theme/js/plugins/fancy-box.js' %}"></script>
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        FancyBox.initFancybox();
+    });
+</script>
+{% endblock %}
 
 {% block body_class %}page-detail{% endblock %}
 
@@ -91,7 +109,37 @@
 
                 {# ========================================================== #}
 
-                {% if object.websites.all or object.files.all or object.images.all %}
+                {% if object.images.all %}
+                <hr>
+                <div class="panel panel-profile">
+                    <div class="panel-heading overflow-h">
+                        <h2 class="panel-title heading-sm pull-left"><i class="icon icon-eye"></i> Images</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                        {% for image in object.images.all %}
+                            <div class="col-md-4">
+                                <div class="thumbnails thumbnail-style">
+                                    <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image.url }}">
+                                        {% thumbnail image.image "300x300" crop="center" as im %}
+                                            <img class="img-responsive" src="{{ im.url }}" alt="{{ image.caption }}">
+                                        {% endthumbnail %}
+                                    </a>
+                                    <div class="caption">
+                                        <p>{{ image.caption }}</p>
+                                        <p><em>Credit: {{ image.credit }}</em></p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {# ========================================================== #}
+
+                {% if object.websites.all or object.files.all %}
                 <hr>
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
@@ -112,14 +160,6 @@
                             <li>
                                 <i class="rounded-x tw icon icon-doc"></i>
                                 <strong>File:</strong> <a href="{{ i.item.url }}"> {{ i.label|default:i.item.name }}</a>
-                            </li>
-                            {% endfor %}
-
-                            <!-- Images -->
-                            {% for i in object.images.all %}
-                            <li>
-                                <i class="rounded-x tw icon icon-eye"></i>
-                                <strong>Image:</strong> <a href="{{ i.image.url }}"> {{ i.caption|default:i.image.name }}</a>
                             </li>
                             {% endfor %}
                         </ul>

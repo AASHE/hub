@@ -1,3 +1,4 @@
+awesome-slugify==1.6.5
 django==1.8.6
 django-model-utils==2.3.1
 django-filter==0.11.0
@@ -6,17 +7,16 @@ django-flat-theme==1.1.1
 django-s3-folder-storage==0.3
 django-markup==0.4
 django-haystack==2.4.1
-markdown==2.6.2
-feedparser
 elasticsearch==2.1.0
-awesome-slugify==1.6.5
+feedparser
+markdown==2.6.2
+sorl-thumbnail==12.3
 
 # Deployment specific
 dj-database-url
 gunicorn
 ipython
 Pillow
-mysql-python
 psycopg2
 whitenoise
 

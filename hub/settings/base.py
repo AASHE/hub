@@ -33,9 +33,10 @@ INSTALLED_APPS = (
     'flat',
 
     'aashe.aasheauth',
-    'iss',
-    'haystack',
     'block_content',
+    'haystack',
+    'iss',
+    'sorl.thumbnail',
 
     'hub',
     'hub.apps.content',
