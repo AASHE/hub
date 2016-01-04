@@ -51,10 +51,23 @@ SALESFORCE_SECURITY_TOKEN = os.environ.get('SALESFORCE_SECURITY_TOKEN', None)
 # ==============================================================================
 # S3 Media Storage
 # ==============================================================================
-from integration_settings.media.s3 import *
-INSTALLED_APPS += ('s3_folder_storage',)
 
-STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
+USE_S3 = os.environ.get('USE_S3', None)  # Support local dev with this config
+
+if USE_S3:
+    from integration_settings.media.s3 import *
+    INSTALLED_APPS += ('s3_folder_storage',)
+
+    STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
+else:
+    MEDIA_URL = "/media/"
+    STATIC_URL = "/static/"
+    MEDIA_ROOT = os.environ.get("MEDIA_ROOT", None)
+    STATIC_ROOT = 'staticfiles'
+
+STATICFILES_DIRS = (
+    os.path.join(os.path.dirname(__file__), 'static'),
+)
 
 # ==============================================================================
 # Enable debug logging
