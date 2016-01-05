@@ -57,7 +57,7 @@ class SustainabilityTopic(MetadataBaseModel):
 
         try:
             feed = feedparser.parse(self.rss_feed)
-        except Exception as e: # Any error is bad here, catch all.
+        except Exception as e:  # Any error is bad here, catch all.
             logger.error('Feed parse failed; {}'.format(self.rss_feed))
             logger.exception(e)
             return None
@@ -69,7 +69,8 @@ class SustainabilityTopic(MetadataBaseModel):
 
 @python_2_unicode_compatible
 class SustainabilityTopicFavorite(TimeStampedModel):
-    topic = models.ForeignKey(SustainabilityTopic, verbose_name='Sustainability Topic')
+    topic = models.ForeignKey(
+        SustainabilityTopic, verbose_name='Sustainability Topic')
     ct = models.ForeignKey('content.ContentType', verbose_name='Content Type')
 
     def __str__(self):
@@ -101,7 +102,7 @@ class OrganizationManager(models.Manager):
     def country_list(self):
         """
         Returns a list of of Choices of all countries in the ISS organization
-        database, **where the ISO code is set**. Some records don't have it set.
+        database, **where the ISO code is set**. Some records don't have it set
         """
         return (self.exclude(country_iso='')
                     .order_by('country')
