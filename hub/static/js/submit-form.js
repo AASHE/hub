@@ -17,7 +17,9 @@ jQuery(document).ready(function() {
     // -------------------------------------------------------------------------
     // Other large dropdowns
     // -------------------------------------------------------------------------
-    $('select[name*=topics], select[name*=disciplines], select[name*=institutions]').selectize();
+    $('select[name*=topics], select[name*=disciplines], select[name*=institutions]').selectize({
+        maxItems: 3
+    });
 
     // -------------------------------------------------------------------------
     // Keywords (like tags)
