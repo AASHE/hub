@@ -130,8 +130,14 @@ class StudentFteFilter(filters.ChoiceFilter):
 
 class CountryFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
-        countries = (Organization.objects.country_list())
-        countries = ALL + tuple(countries)
+        # @WARNING: keep an eye on performance here.
+        # We might want to use caching
+        
+        # countries = (Organization.objects.country_list())
+        qs = ContentType.objects.published().values_list(
+            'organizations__country_iso',
+            'organizations__country').distinct()
+        countries = ALL + tuple([c for c in qs if c[0] is not None])
         kwargs.update({
             'choices': countries,
             'label': 'Country/ies',
