@@ -7,6 +7,7 @@ from operator import or_
 import django_filters as filters
 from django import forms
 from django.db.models import Q
+from django.utils.timezone import now
 
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
@@ -173,12 +174,12 @@ class PublishedFilter(filters.ChoiceFilter):
         max_year = ContentType.objects.published().order_by('-published').first()
 
         if not min_year or not max_year:
-            year_choices = ((2015, 2015),)
+            year_choices = ((now().year, now().year),)
         elif min_year.published.year == max_year.published.year:
             year_choices = ((min_year.published.year, min_year.published.year),)
         else:
             year_choices = [(i, i) for i in range(
-                min_year.published.year, max_year.published.year)]
+                min_year.published.year, max_year.published.year + 1)]
 
         kwargs.update({
             'choices': year_choices,
