@@ -45,13 +45,21 @@ class ContentType(TimeStampedModel):
     )
 
     content_type = models.CharField(max_length=40)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
-    permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
-    published = models.DateTimeField(blank=True, null=True, help_text='This timestamp'
-        ' is automatically set once the status becomes "Published".')
-    submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
+    permission = models.CharField(
+        max_length=20,
+        choices=PERMISSION_CHOICES,
+        default=PERMISSION_CHOICES.member)
+    published = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text='This timestamp is automatically set once the status becomes'
+        ' "Published".')
+    submitted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, blank=True, null=True)
 
-    title = models.CharField(max_length=500) # label set by self.title_label
+    title = models.CharField(max_length=500)  # label set by self.title_label
     slug = models.CharField(max_length=500, editable=False)
 
     description = models.TextField('Description', blank=True, null=True)
@@ -65,7 +73,8 @@ class ContentType(TimeStampedModel):
         please complete the new organization form to have it added to our
         database.""")
 
-    topics = models.ManyToManyField('metadata.SustainabilityTopic',
+    topics = models.ManyToManyField(
+        'metadata.SustainabilityTopic',
         verbose_name='Sustainability Topic(s)',
         help_text="Select up to three topics that relate most closely.")
 
@@ -83,7 +92,8 @@ class ContentType(TimeStampedModel):
         help_text='''Only include if an office or division on campus is/was
         directly involved in the case study. Select up to three.''')
 
-    keywords = models.TextField('Keywords', blank=True, null=True,
+    keywords = models.TextField(
+        'Keywords', blank=True, null=True,
         help_text="""Enter keywords that will be helpful for locating this
         resource (e.g. "bottled water" for bottled water initiatives).""")
 
@@ -225,7 +235,8 @@ class Author(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="authors")
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
-    organization = models.ForeignKey('metadata.Organization', blank=True, null=True)
+    organization = models.ForeignKey(
+        'metadata.Organization', blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
@@ -245,11 +256,13 @@ class Website(TimeStampedModel):
 @python_2_unicode_compatible
 class File(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="files")
-    label = models.CharField(max_length=100, blank=True, null=True, help_text="The title of the document")
-    item = models.FileField(help_text="Valid formats are "
-        "aceptable: PDF, Excel, Word, PPT...")
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
+    label = models.CharField(
+        max_length=100, blank=True, null=True,
+        help_text="The title of the document")
+    item = models.FileField(
+        help_text="Valid formats are aceptable: PDF, Excel, Word, PPT...")
+    affirmation = models.BooleanField(
+        'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional File'
@@ -264,10 +277,11 @@ class Image(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="images")
     caption = models.CharField(max_length=500, blank=True, null=True)
     credit = models.CharField(max_length=500, blank=True, null=True)
-    image = models.ImageField(help_text="The following files formats are "
-        "acceptable: JPEG, PNG, TIFF...")
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
+    image = models.ImageField(
+        help_text="The following files formats are acceptable: JPEG, PNG,"
+        " TIFF...")
+    affirmation = models.BooleanField(
+        'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional Image'
@@ -276,12 +290,12 @@ class Image(TimeStampedModel):
     def __str__(self):
         return self.caption or 'Image object'
 
-#==============================================================================
+# =============================================================================
 # Mapping of all available content types.
 #
 # We also load the content types here into the models namespace, so they are
 # registered in the system, and the migration.
-#==============================================================================
+# =============================================================================
 from .types.academic import AcademicProgram
 from .types.casestudies import CaseStudy
 from .types.centers import CenterAndInstitute
