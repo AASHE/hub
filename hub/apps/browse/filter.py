@@ -21,9 +21,9 @@ logger = getLogger(__name__)
 ALL = (('', 'All'),)
 
 
-#==============================================================================
+# =============================================================================
 # Generic Filter
-#==============================================================================
+# =============================================================================
 
 class SearchFilter(filters.CharFilter):
     """
@@ -63,7 +63,9 @@ class ContentTypesFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': [(j, k.content_type_label()) for j, k in CONTENT_TYPES.items()],
+            'choices': [
+                (j, k.content_type_label()) for j, k in CONTENT_TYPES.items()
+            ],
             'label': 'Content Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -73,7 +75,6 @@ class ContentTypesFilter(filters.ChoiceFilter):
         if not value:
             return qs
         return qs.filter(content_type__in=value)
-
 
 
 class OrganizationFilter(filters.ChoiceFilter):
@@ -106,7 +107,9 @@ class StudentFteFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': [(i[0], i[1][0]) for i in self.STUDENT_CHOICES_MAP.items()],
+            'choices': [
+                (i[0], i[1][0]) for i in self.STUDENT_CHOICES_MAP.items()
+            ],
             'label': 'Student FTE',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -169,14 +172,17 @@ class PublishedFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         # Find the minimum and maximum year of all topics and put them
         # in a range for choices.
+        qs = ContentType.objects.published()
 
-        min_year = ContentType.objects.published().order_by('published').first()
-        max_year = ContentType.objects.published().order_by('-published').first()
+        min_year = qs.order_by('published').first()
+        max_year = qs.order_by('-published').first()
 
         if not min_year or not max_year:
             year_choices = ((now().year, now().year),)
         elif min_year.published.year == max_year.published.year:
-            year_choices = ((min_year.published.year, min_year.published.year),)
+            year_choices = (
+                (min_year.published.year, min_year.published.year),
+            )
         else:
             year_choices = [(i, i) for i in range(
                 min_year.published.year, max_year.published.year + 1)]
