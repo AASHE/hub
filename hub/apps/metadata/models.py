@@ -123,6 +123,10 @@ class OrganizationManager(models.Manager):
         elif max:
             return self.filter(enrollment_fte__lte=max)
 
+    def get_queryset(self):
+        qs = super(OrganizationManager, self).get_queryset()
+        return qs.exclude(exclude_from_website=True)
+
 
 @python_2_unicode_compatible
 class Organization(ISSOrganization):
