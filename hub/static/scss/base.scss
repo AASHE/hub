@@ -114,9 +114,16 @@ $red: #c00;
     font-weight: bold;
 }
 
+#contenttypes a.resource-button {
+    padding: 2em 0;
+}
+
+#topics a.resource-button {
+    padding: 1em 0;
+}
+
 a.resource-button{
     display: block;
-    padding: 2em 0;
     font-size: 1.2em;
     background-color: $blue;
     box-shadow: 0 2px 2px #ccc;
@@ -128,7 +135,12 @@ a.resource-button{
 
 a.resource-button > i {
     font-size: 1.5em;
-    margin-right: .2em;
+    margin: .2em;
+    display: block;
+
+    &:hover, &:link {
+        text-decoration: none;
+    }
 }
 
 a.resource-button.blue { background-color: $blue }
