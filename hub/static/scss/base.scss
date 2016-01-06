@@ -136,6 +136,7 @@ a.resource-button{
     font-size: 1.2em;
     background-color: $blue;
     box-shadow: 0 2px 2px #ccc;
+    border-radius: 10px;
 
     &:link, &:visited {
         color: white;
