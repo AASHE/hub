@@ -1,0 +1,15 @@
+{% load browse_tags %}
+
+<div class="row">
+    <div class="col-md-6">
+        {% render_form form "item" %}
+    </div>
+    <div class="col-md-6">
+        {% render_form form "label" %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {% render_form form "affirmation" %}
+    </div>
+</div>

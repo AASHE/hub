@@ -9,7 +9,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
-from model_utils import Choices
+from model_utils import Choices, FieldTracker
 from slugify import slugify
 
 from .help import AFFIRMATION
@@ -35,6 +35,7 @@ class ContentType(TimeStampedModel):
     STATUS_CHOICES = Choices(
         ('new', 'New'),
         ('published', 'Published'),
+        ('declined', 'Declined')
     )
 
     PERMISSION_CHOICES = Choices(
@@ -44,44 +45,62 @@ class ContentType(TimeStampedModel):
     )
 
     content_type = models.CharField(max_length=40)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
-    permission = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default=PERMISSION_CHOICES.member)
-    published = models.DateTimeField(blank=True, null=True, help_text='This timestamp'
-        ' is automatically set once the status becomes "Published".')
-    submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES.new)
+    permission = models.CharField(
+        max_length=20,
+        choices=PERMISSION_CHOICES,
+        default=PERMISSION_CHOICES.member)
+    published = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text='This timestamp is automatically set once the status becomes'
+        ' "Published".')
+    submitted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, blank=True, null=True)
 
-    title = models.CharField(max_length=500) # label set by self.title_label
+    title = models.CharField(max_length=500)  # label set by self.title_label
     slug = models.CharField(max_length=500, editable=False)
 
     description = models.TextField('Description', blank=True, null=True)
 
-    keywords = models.TextField('Keywords', blank=True, null=True,
-        help_text="""Enter keywords that will be helpful for locating this
-        resource (e.g. "bottled water" for bottled water initiatives).""")
-
-    notes = models.TextField('Notes', blank=True, null=True, default='',
-                             help_text="Internal notes.")
-
-    organizations = models.ManyToManyField('metadata.Organization',
+    organizations = models.ManyToManyField(
+        'metadata.Organization',
+        blank=True,
         verbose_name='Organization(s)',
         help_text=""" Select the institution(s) and/or organization(s) that
         offer(s) this program. If an organization is not on the dropdown list,
         please complete the new organization form to have it added to our
         database.""")
 
-    institutions = models.ManyToManyField('metadata.InstitutionalOffice', blank=True,
-        verbose_name='Institution Office (if relevant)',
-        help_text='''Only include if an office or division on campus is/was
-        directly involved in the case study. Select up to three.''')
-
-    topics = models.ManyToManyField('metadata.SustainabilityTopic',
+    topics = models.ManyToManyField(
+        'metadata.SustainabilityTopic',
         verbose_name='Sustainability Topic(s)',
         help_text="Select up to three topics that relate most closely.")
 
-    disciplines = models.ManyToManyField('metadata.AcademicDiscipline',
+    disciplines = models.ManyToManyField(
+        'metadata.AcademicDiscipline',
         verbose_name='Academic Discipline(s)',
         help_text="""Select up to three academic disciplines that relate most
-        closely to the academic program.""")
+        closely to the academic program.""",
+        blank=True)
+
+    institutions = models.ManyToManyField(
+        'metadata.InstitutionalOffice',
+        blank=True,
+        verbose_name='Office or Department',
+        help_text='''Only include if an office or division on campus is/was
+        directly involved in the case study. Select up to three.''')
+
+    keywords = models.TextField(
+        'Keywords', blank=True, null=True,
+        help_text="""Enter keywords that will be helpful for locating this
+        resource (e.g. "bottled water" for bottled water initiatives).""")
+
+    notes = models.TextField('Notes', blank=True, null=True, default='',
+                             help_text="Internal notes.")
+
+    status_tracker = FieldTracker(fields=['status'])
 
     objects = ContentTypeManager()
 
@@ -113,7 +132,12 @@ class ContentType(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('browse:view', kwargs={'ct': self.content_type,
-            'id': self.pk, 'slug': self.slug})
+                                              'id': self.pk,
+                                              'slug': self.slug})
+
+    def get_admin_url(self):
+        return reverse('admin:content_{0}_change'.format(self.content_type),
+                       args=[self.pk])
 
     @classmethod
     def content_type_label(cls):
@@ -159,13 +183,60 @@ class ContentType(TimeStampedModel):
         """
         return {}
 
+    @classmethod
+    def required_field_overrides(cls):
+        """
+        Each content type subclass may return a list of field names
+        which is used later in the Submit form to set the
+        'required' attribute of the respective fields.  Example:
+
+            # makes disciplines field required
+            required_list = super(MyModel, cls).required_field_overrides()
+            required_list.append('disciplines')
+            return required_list
+        """
+        return ['organizations']
+
+    @classmethod
+    def required_metadata(cls):
+        """
+        Each content type has different requirements for metadata.
+        For example:
+         - a photo only requires an Image, but no Author or Files.
+         - a conference presentation requires a file upload, but limits to 3
+         - a publication requires either a document or a website
+
+        To handle this we use a simple dictionary for each class. Here's an
+        example of Photographs:
+            {
+                'website': {'max': 5, 'min': 0},  # optional, up to 5
+                'image': {'max': 5, 'min': 1},  # one image is required
+                # files are not included (no key)
+                # authors are not included (no key)
+            }
+        And Course Materials:
+            {
+                # images not included
+                'website': {'max': 5, 'min': 0},  # optional, up to 5
+                'author': {'max': 5, 'min': 0},  # optional, up to 5
+                'file': {'max': 3, 'min': 0},  # optional, up to 3
+                # at least one file or website is required
+                'conditionally_required': {'website', 'file'}
+            }
+
+        `conditionally_required` means that the at least one of the objects
+        must be submitted with the resource.
+        """
+        return {}
+
 
 @python_2_unicode_compatible
 class Author(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="authors")
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
-    organization = models.ForeignKey('metadata.Organization', blank=True, null=True)
+    organization = models.ForeignKey(
+        'metadata.Organization', blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
@@ -185,11 +256,13 @@ class Website(TimeStampedModel):
 @python_2_unicode_compatible
 class File(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="files")
-    label = models.CharField(max_length=100, blank=True, null=True)
-    item = models.FileField(help_text="The following files formats are "
-        "aceptable: PDF, Excel, Word, PPT...")
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
+    label = models.CharField(
+        max_length=100, blank=True, null=True,
+        help_text="The title of the document")
+    item = models.FileField(
+        help_text="Valid formats are aceptable: PDF, Excel, Word, PPT...")
+    affirmation = models.BooleanField(
+        'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional File'
@@ -204,10 +277,11 @@ class Image(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="images")
     caption = models.CharField(max_length=500, blank=True, null=True)
     credit = models.CharField(max_length=500, blank=True, null=True)
-    image = models.ImageField(help_text="The following files formats are "
-        "acceptable: JPEG, PNG, TIFF...")
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
+    image = models.ImageField(
+        help_text="The following files formats are acceptable: JPEG, PNG,"
+        " TIFF...")
+    affirmation = models.BooleanField(
+        'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Additional Image'
@@ -216,12 +290,12 @@ class Image(TimeStampedModel):
     def __str__(self):
         return self.caption or 'Image object'
 
-#==============================================================================
+# =============================================================================
 # Mapping of all available content types.
 #
 # We also load the content types here into the models namespace, so they are
 # registered in the system, and the migration.
-#==============================================================================
+# =============================================================================
 from .types.academic import AcademicProgram
 from .types.casestudies import CaseStudy
 from .types.centers import CenterAndInstitute

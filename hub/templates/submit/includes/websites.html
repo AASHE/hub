@@ -1,15 +1,37 @@
 {% load browse_tags %}
 
 {{ website_formset.management_form }}
+
+<div id="website-container">
+  {% with website_formset as formset %}
+    {% include 'submit/includes/errors.html' %}
+  {% endwith %}
 {% for form in website_formset %}
-<fieldset>
-    <div class="row">
-        <div class="col-md-6">
-            {% render_form form "label" %}
-        </div>
-        <div class="col-md-6">
-            {% render_form form "url" %}
-        </div>
-    </div>
-</fieldset>
+  <fieldset class="website-fieldset-{{ forloop.counter0 }}">
+    {% include "submit/includes/websites_detail_form.html" %}
+  </fieldset>
 {% endfor %}
+</div>
+
+<div>
+  <button class="btn-u btn-u-default inline-add" id="add-website" type="button">
+    <i class="fa fa-plus-square"></i>
+    Add Website
+  </button>
+  <button
+    class="btn-u btn-u-default inline-add"
+    id="website-delete"
+    type="button">
+    <i class="fa fa-minus-square"></i>
+  </button>
+</div>
+
+{# Templates for jquery-django-inline-forms #}
+
+<script type="text/html" id="website-template">
+  <fieldset class="image-fieldset-__prefix__"  style="display: none;">
+      {% with website_formset.empty_form as form %}
+        {% include "submit/includes/websites_detail_form.html" %}
+      {% endwith %}
+  </fieldset>
+</script>

@@ -10,6 +10,7 @@ from django.conf import settings
 
 import feedparser
 from model_utils.models import TimeStampedModel
+from model_utils import Choices
 from iss.models import Organization as ISSOrganization
 
 logger = getLogger(__name__)
@@ -27,7 +28,19 @@ class MetadataBaseModel(models.Model):
 
 
 class SustainabilityTopic(MetadataBaseModel):
-    color = models.CharField('HEX Color', max_length=7, default='#ff0000')
+    CSS_CLASS_CHOICES = Choices(
+        'blue',
+        'lightblue',
+        'green',
+        'purple',
+        'lightpurple',
+        'yellow',
+        'alt'
+    )
+    css_class = models.CharField(
+        choices=CSS_CLASS_CHOICES,
+        default=CSS_CLASS_CHOICES.blue,
+        max_length=16)
     slug = models.SlugField()
     introduction = models.TextField(blank=True, null=True)
     rss_feed = models.URLField(blank=True, null=True)
@@ -58,7 +71,7 @@ class SustainabilityTopic(MetadataBaseModel):
 
         try:
             feed = feedparser.parse(self.rss_feed)
-        except Exception as e: # Any error is bad here, catch all.
+        except Exception as e:  # Any error is bad here, catch all.
             logger.error('Feed parse failed; {}'.format(self.rss_feed))
             logger.exception(e)
             return None
@@ -70,7 +83,8 @@ class SustainabilityTopic(MetadataBaseModel):
 
 @python_2_unicode_compatible
 class SustainabilityTopicFavorite(TimeStampedModel):
-    topic = models.ForeignKey(SustainabilityTopic, verbose_name='Sustainability Topic')
+    topic = models.ForeignKey(
+        SustainabilityTopic, verbose_name='Sustainability Topic')
     ct = models.ForeignKey('content.ContentType', verbose_name='Content Type')
 
     def __str__(self):
@@ -102,7 +116,7 @@ class OrganizationManager(models.Manager):
     def country_list(self):
         """
         Returns a list of of Choices of all countries in the ISS organization
-        database, **where the ISO code is set**. Some records don't have it set.
+        database, **where the ISO code is set**. Some records don't have it set
         """
         return (self.exclude(country_iso='')
                     .order_by('country')
@@ -122,6 +136,10 @@ class OrganizationManager(models.Manager):
             return self.filter(enrollment_fte__gte=min)
         elif max:
             return self.filter(enrollment_fte__lte=max)
+
+    def get_queryset(self):
+        qs = super(OrganizationManager, self).get_queryset()
+        return qs.exclude(exclude_from_website=True)
 
 
 @python_2_unicode_compatible

@@ -1,4 +1,5 @@
 {% extends "submit/base.html" %}
+{% load block_content %}
 
 {% block body_class %}page-submit-index{% endblock %}
 
@@ -9,8 +10,7 @@
     <div class="container">
         <div class="col-md-8 col-md-offset-2">
             <h2>
-                Thank you!
-                <small>Your resource was submitted and is reviewed by our team soon.</small>
+                {% block_content 'submission_thank_you' %}
             </h2>
         </div>
     </div>

@@ -1,26 +1,28 @@
-django==1.8.6
-django-model-utils==2.3.1
-django-filter==0.11.0
-django-tables2==1.0.4
-django-flat-theme==1.1.1
-django-s3-folder-storage==0.3
-django-markup==0.4
-django-haystack==2.4.1
-markdown==2.6.2
-feedparser
-elasticsearch==2.1.0
 awesome-slugify==1.6.5
+django==1.8.6
+django-filter==0.11.0
+django-flat-theme==1.1.1
+django-haystack==2.4.1
+django-markup==0.4
+django-model-utils==2.3.1
+django-s3-folder-storage==0.3
+django-tables2==1.0.4
+elasticsearch==2.1.0
+feedparser
+markdown==2.6.2
+sorl-thumbnail==12.3
 
 # Deployment specific
+Pillow
 dj-database-url
 gunicorn
 ipython
-Pillow
-mysql-python
 psycopg2
 whitenoise
 
 # Private repos
--e git+https://github.com/AASHE/aashe-auth.git@migrations#egg=aashe_auth
+-e git+https://github.com/AASHE/aashe-auth.git#egg=aashe_auth
 -e git+https://github.com/AASHE/iss.git#egg=iss
 -e git+https://github.com/AASHE/django-block-content.git#egg=django-block-content
+-e git+https://github.com/AASHE/django-integration-settings.git#egg=django-integration-settings
+-e git+https://github.com/chrisdrackett/django-typogrify.git#egg=django-typogrify

@@ -20,6 +20,7 @@
     <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.js" %}"></script>
     <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.jquery.js" %}"></script>
     <script src="{% static "js/submit-form.js" %}"></script>
+    <script src="{% static "vendor/jquery-django-inline-form/django-inline-form.js" %}"></script>
 {% endblock %}
 
 {% block page %}
@@ -34,46 +35,65 @@
                     <i class="fa  fa-check-circle-o"></i>
                     Submit a new {{ content_type_label }}
                 </header>
+                {% if errors %}
+                  <div class="alert alert-warning fade in">
+                    <i class="fa fa-arrow-down"></i>
+                    Please fix the errors below.
+                  </div>
+                {% endif %}
+                {% if document_form.non_field_errors %}
+                  {% for error in document_form.non_field_errors %}
+                    <div class="alert alert-danger fade in">
+                      <i class="fa fa-flag"></i>
+                      {{error}}
+                    </div>
+                  {% endfor %}
+                {% endif %}
                 <fieldset>
                     {% render_form document_form %}
                 </fieldset>
             </div>
 
-            <h2>Add optional metadata to this {{ content_type_label }}</h2>
+            <!-- MetaData ================================================== -->
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="tab-v1">
-                        <ul class="nav nav-tabs margin-bottom-20">
-                            <li class="active">
-                                <a data-toggle="tab" href="#authors" aria-expanded="true">
-                                    {{ label_overrides.authors|default:"Authors" }}
-                                </a>
-                            </li>
-                            <li class=""><a data-toggle="tab" href="#images" aria-expanded="false">Images</a></li>
-                            <li class=""><a data-toggle="tab" href="#files" aria-expanded="false">Files</a></li>
-                            <li class=""><a data-toggle="tab" href="#websites" aria-expanded="false">Websites</a></li>
-                        </ul>
-                        <div class="tab-content">
 
-                            <div class="sky-form formset tab-pane fade active in" id="authors">
-                                {% include "submit/includes/authors.html" %}
-                            </div>
+                    {% if author_formset %}
+                    <a name="authors"></a>
+                    <h3>{{ label_overrides.authors|default:"Authors" }}</h3>
 
-                            <div class="sky-form formset tab-pane fade" id="images">
-                                {% include "submit/includes/images.html" %}
-                            </div>
-
-                            <div class="sky-form formset tab-pane fade" id="files">
-                                {% include "submit/includes/files.html" %}
-                            </div>
-
-                            <div class="sky-form formset tab-pane fade" id="websites">
-                                {% include "submit/includes/websites.html" %}
-                        </div>
-
-                        </div>
+                    <div class="sky-form formset" id="authors">
+                        {% include "submit/includes/authors.html" %}
                     </div>
+                    {% endif %}
+
+                    {% if image_formset %}
+                    <a name="images"></a>
+                    <h3>Images</h3>
+
+                    <div class="sky-form formset" id="images">
+                        {% include "submit/includes/images.html" %}
+                    </div>
+                    {% endif %}
+
+                    {% if file_formset %}
+                    <a name="files"></a>
+                    <h3>Files</h3>
+
+                    <div class="sky-form formset" id="files">
+                        {% include "submit/includes/files.html" %}
+                    </div>
+                    {% endif %}
+
+                    {% if website_formset %}
+                    <a name="websites"></a>
+                    <h3>Websites</h3>
+
+                    <div class="sky-form formset" id="websites">
+                        {% include "submit/includes/websites.html" %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 

@@ -18,9 +18,7 @@
             {% for topic in topic_list %}
             <div class="col-md-3 col-sm-6">
                 <a href="{% url "browse:browse" topic=topic.slug %}"
-                    style="background-color: {{ topic.color }}"
-                    class="resource-button service-block service-block-sea service-or
-                ">
+                    class="resource-button service-block service-block-sea service-or {{ topic.css_class}}">
                     <div class="service-bg"></div>
                     {% if topic.icon %}<i class="{{ topic.icon }}"></i>{% endif %}
                     {{ topic }}

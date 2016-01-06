@@ -18,8 +18,8 @@ class AcademicProgram(ContentType):
         ('both', 'Both'),
     )
 
-    program_type = models.ForeignKey(ProgramType, blank=True, null=True,
-        verbose_name='Program Type')
+    program_type = models.ForeignKey(
+        ProgramType, null=True, verbose_name='Program Type')
     outcomes = models.TextField('Learning Outcomes', blank=True, null=True,
         help_text="Consider completing if different from description.")
     founded = models.PositiveIntegerField("Year Founded", blank=True, null=True,
@@ -49,9 +49,21 @@ class AcademicProgram(ContentType):
         }
 
     @classmethod
+    def required_field_overrides(cls):
+        required_list = super(AcademicProgram, cls).required_field_overrides()
+        required_list.append('disciplines')
+        return required_list
+
+    @classmethod
     def get_custom_filterset(cls):
         from ...browse.filterset import AcademicBrowseFilterSet
         return AcademicBrowseFilterSet
+
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 1},  # required, up to 5
+        }
 
 
 class AcademicProgramIndex(BaseIndex):

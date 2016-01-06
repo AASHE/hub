@@ -7,6 +7,7 @@ from operator import or_
 import django_filters as filters
 from django import forms
 from django.db.models import Q
+from django.utils.timezone import now
 
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
@@ -20,9 +21,9 @@ logger = getLogger(__name__)
 ALL = (('', 'All'),)
 
 
-#==============================================================================
+# =============================================================================
 # Generic Filter
-#==============================================================================
+# =============================================================================
 
 class SearchFilter(filters.CharFilter):
     """
@@ -62,7 +63,9 @@ class ContentTypesFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': [(j, k.content_type_label()) for j, k in CONTENT_TYPES.items()],
+            'choices': [
+                (j, k.content_type_label()) for j, k in CONTENT_TYPES.items()
+            ],
             'label': 'Content Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -74,7 +77,6 @@ class ContentTypesFilter(filters.ChoiceFilter):
         return qs.filter(content_type__in=value)
 
 
-
 class OrganizationFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
@@ -82,7 +84,7 @@ class OrganizationFilter(filters.ChoiceFilter):
         organizations = Organization.objects.values_list('pk', 'org_name')
         kwargs.update({
             'choices': organizations,
-            'label': 'Organization',
+            'label': 'Organization(s)',
             'widget': LeanSelectMultiple,
         })
         super(OrganizationFilter, self).__init__(*args, **kwargs)
@@ -105,8 +107,10 @@ class StudentFteFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': [(i[0], i[1][0]) for i in self.STUDENT_CHOICES_MAP.items()],
-            'label': 'Institution Size',
+            'choices': [
+                (i[0], i[1][0]) for i in self.STUDENT_CHOICES_MAP.items()
+            ],
+            'label': 'Student FTE',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(StudentFteFilter, self).__init__(*args, **kwargs)
@@ -126,11 +130,17 @@ class StudentFteFilter(filters.ChoiceFilter):
 
 class CountryFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
-        countries = (Organization.objects.country_list())
-        countries = ALL + tuple(countries)
+        # @WARNING: keep an eye on performance here.
+        # We might want to use caching
+        
+        # countries = (Organization.objects.country_list())
+        qs = ContentType.objects.published().values_list(
+            'organizations__country_iso',
+            'organizations__country').distinct()
+        countries = ALL + tuple([c for c in qs if c[0] is not None])
         kwargs.update({
             'choices': countries,
-            'label': 'Country',
+            'label': 'Country/ies',
         })
         super(CountryFilter, self).__init__(*args, **kwargs)
 
@@ -151,7 +161,7 @@ class StateFilter(filters.ChoiceFilter):
 
         kwargs.update({
             'choices': states,
-            'label': 'State',
+            'label': 'State(s) or Province(s)',
             'widget': forms.widgets.CheckboxSelectMultiple,
         })
         super(StateFilter, self).__init__(*args, **kwargs)
@@ -168,21 +178,24 @@ class PublishedFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         # Find the minimum and maximum year of all topics and put them
         # in a range for choices.
+        qs = ContentType.objects.published()
 
-        min_year = ContentType.objects.published().order_by('published').first()
-        max_year = ContentType.objects.published().order_by('-published').first()
+        min_year = qs.order_by('published').first()
+        max_year = qs.order_by('-published').first()
 
         if not min_year or not max_year:
-            year_choices = ((2015, 2015),)
+            year_choices = ((now().year, now().year),)
         elif min_year.published.year == max_year.published.year:
-            year_choices = ((min_year.published.year, min_year.published.year),)
+            year_choices = (
+                (min_year.published.year, min_year.published.year),
+            )
         else:
             year_choices = [(i, i) for i in range(
-                min_year.published.year, max_year.published.year)]
+                min_year.published.year, max_year.published.year + 1)]
 
         kwargs.update({
             'choices': year_choices,
-            'label': 'Published',
+            'label': 'Year Posted',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(PublishedFilter, self).__init__(*args, **kwargs)
@@ -202,9 +215,9 @@ class OrderingFilter(filters.ChoiceFilter):
             'choices': (
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
-                ('-published', 'Publish Date'),
+                ('-published', 'Most Recent'),
             ),
-            'label': 'Sort by',
+            'label': 'Sort',
             'widget': forms.widgets.RadioSelect,
         })
         super(OrderingFilter, self).__init__(*args, **kwargs)

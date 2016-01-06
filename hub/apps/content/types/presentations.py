@@ -13,8 +13,7 @@ class Presentation(ContentType):
     )
     PRESENTATION_CHOICES = Choices(
         ('poster', 'Poster'),
-        ('presentation1', 'Presentation (1 speaker)'),
-        ('presentation2plus', 'Presentation (2 or more speakers)'),
+        ('presentation', 'Presentation'),
     )
 
     date = models.DateField('Presentation Date')
@@ -22,10 +21,6 @@ class Presentation(ContentType):
         choices=CONF_NAME_CHOICES)
     presentation_type = models.CharField(max_length=100, blank=True, null=True,
         choices=PRESENTATION_CHOICES)
-    document = models.FileField('Document Upload', help_text=FILE_UPLOAD,
-        blank=True, null=True)
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Conference Presentation'
@@ -38,6 +33,15 @@ class Presentation(ContentType):
             'description': 'Description or Abstract',
             'author': 'Presenter',
             'authors': 'Presenters',
+        }
+
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+            'author': {'max': 6, 'min': 1},  # required, up to 6
+            'file': {'max': 3, 'min': 1},  # required, up to 3
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
         }
 
 

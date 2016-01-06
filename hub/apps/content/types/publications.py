@@ -18,13 +18,7 @@ class Publication(ContentType):
         ('other', 'Other Student Research Paper'),
     )
 
-    website = models.URLField('Website', blank=True, null=True)
     cover_image = models.ImageField(blank=True, null=True, help_text=IMG_UPLOAD)
-    document = models.FileField('Document Upload',
-        blank=True, null=True, help_text=FILE_UPLOAD + ''' Provide either a
-        website or a publication document.''')
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
 
     release_date = models.DateField('Publication release date',
         blank=True, null=True, help_text='''Providing a release date is
@@ -35,12 +29,26 @@ class Publication(ContentType):
         max_length=200, blank=True, null=True, help_text='''Enter the name of
         the periodical (e.g., journal, magazine, newspaper), if applicable. For
         book chapers, enter the title of the book.''')
-    _type = models.CharField(max_length=40, choices=TYPE_CHOICES, blank=True, null=True,
+    _type = models.CharField(max_length=40, choices=TYPE_CHOICES, null=True,
         verbose_name='Type of Material')
 
     class Meta:
         verbose_name = 'Publication'
         verbose_name_plural = 'Publications'
+
+    @classmethod
+    def required_field_overrides(cls):
+        return []
+
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+            'author': {'max': 6, 'min': 1},  # required, up to 6
+            'file': {'max': 3, 'min': 0},  # optional, up to 3
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
+            'conditionally_required': {'website', 'file'}
+        }
 
 
 class PublicationIndex(BaseIndex):

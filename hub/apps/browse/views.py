@@ -75,10 +75,12 @@ class BrowseView(ListView):
             self.content_type_class.slug = self.kwargs.get('ct')
 
         # If no content type and no topic is set, we need at least a
-        # search keyword:
+        # search keyword or organization:
         if (
-            not self.sustainabilty_topic and not self.content_type_class
-            and not self.request.GET.get('search')
+            not self.sustainabilty_topic and
+            not self.content_type_class and
+            'search' not in self.request.GET and
+            'organizations' not in self.request.GET
         ):
             return HttpResponseRedirect(reverse('home'))
 
@@ -183,12 +185,18 @@ class BrowseView(ListView):
             featured_ids = SustainabilityTopicFavorite.objects.filter(
                 topic=self.sustainabilty_topic).values_list('ct', flat=True)
             featured = ContentType.objects.published().filter(
-                id__in=featured_ids)
+                id__in=featured_ids).order_by('-published')
+            if featured:
+                featured = featured[:5]
 
             new_resources = ContentType.objects.published().filter(
-                topics=self.sustainabilty_topic).order_by('-published')[:10]
+                topics=self.sustainabilty_topic).order_by('-published')
+            if new_resources:
+                new_resources = new_resources[:5]
 
             news_list = self.sustainabilty_topic.get_rss_items()
+            if news_list:
+                news_list = news_list[:5]
 
             ctx.update({
                 'featured_list': featured,

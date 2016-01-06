@@ -51,8 +51,8 @@ jQuery(document).ready(function() {
     // The State field is only visible if the US or CA country is selected
     // -------------------------------------------------------------------------
     var countries_with_states = new RegExp([
-        'united states',
-        'canada'
+        'US',
+        'CA'
     ].join('|'));
     var $country = $('#id_country');
     var $state = $('.filter-form .select-multiple.field_id_state');
@@ -63,7 +63,7 @@ jQuery(document).ready(function() {
 
         if(val === undefined) return;
 
-        if(countries_with_states.test(val.toLowerCase())){
+        if(countries_with_states.test(val)){
             $state.show();
         }
     }

@@ -33,9 +33,11 @@ INSTALLED_APPS = (
     'flat',
 
     'aashe.aasheauth',
-    'iss',
-    'haystack',
     'block_content',
+    'haystack',
+    'iss',
+    'sorl.thumbnail',
+    'typogrify',
 
     'hub',
     'hub.apps.content',
@@ -133,6 +135,22 @@ MEDIA_URL = '/uploads/'
 
 STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
 MEDIA_ROOT = os.path.join(VAR_ROOT, 'uploads')
+
+# ==============================================================================
+# Email
+# ==============================================================================
+
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND', 'django.core.mail.backends.filebased.EmailBackend')
+EMAIL_FILE_PATH = os.environ.get(
+    'EMAIL_FILE_PATH', '/tmp/hub-email-messages')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', None)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
+EMAIL_PORT = os.environ.get('EMAIL_PORT', None)
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', None)
+EMAIL_REPLY_TO = os.environ.get('EMAIL_REPLY_TO', None)
 
 # ==============================================================================
 # Miscellaneous project settings

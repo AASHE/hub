@@ -5,7 +5,6 @@ from ..search import BaseIndex
 
 
 class CenterAndInstitute(ContentType):
-    website = models.URLField('Website')
     num_paid = models.PositiveIntegerField('Number of paid staff employed at the center (FTE)',
         blank=True, null=True)
     founded = models.PositiveIntegerField('Year when center or institute was founded',
@@ -21,6 +20,19 @@ class CenterAndInstitute(ContentType):
     def label_overrides(cls):
         return {
             'title': 'Center Name',
+        }
+
+    @classmethod
+    def required_field_overrides(cls):
+        required_list = super(
+            CenterAndInstitute, cls).required_field_overrides()
+        required_list.append('disciplines')
+        return required_list
+
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 1},  # required, up to 5
         }
 
 
