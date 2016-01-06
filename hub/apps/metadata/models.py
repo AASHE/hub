@@ -10,6 +10,7 @@ from django.conf import settings
 
 import feedparser
 from model_utils.models import TimeStampedModel
+from model_utils import Choices
 from iss.models import Organization as ISSOrganization
 
 logger = getLogger(__name__)
@@ -27,7 +28,19 @@ class MetadataBaseModel(models.Model):
 
 
 class SustainabilityTopic(MetadataBaseModel):
-    color = models.CharField('HEX Color', max_length=7, default='#ff0000')
+    CSS_CLASS_CHOICES = Choices(
+        'blue',
+        'lightblue',
+        'green',
+        'purple',
+        'lightpurple',
+        'yellow',
+        'alt'
+    )
+    css_class = models.CharField(
+        choices=CSS_CLASS_CHOICES,
+        default=CSS_CLASS_CHOICES.blue,
+        max_length=16)
     slug = models.SlugField()
     introduction = models.TextField(blank=True, null=True)
     rss_feed = models.URLField(blank=True, null=True)
