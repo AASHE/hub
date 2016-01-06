@@ -1,6 +1,8 @@
-$green: #72c02c;
+
 $blue: #3299DB;
 $red: #c00;
+
+@import 'aashe_unify';
 
 @mixin title() {
     font-family: HelveticaNeue-Light, Helvetica, Arial, sans-serif;
@@ -33,7 +35,7 @@ $red: #c00;
             strong { display: none; }
 
             &:hover {
-                border-bottom: 3px solid $green;
+                border-bottom: 3px solid $primarycolor;
             }
 
 
@@ -116,13 +118,23 @@ a.resource-button{
     display: block;
     padding: 2em 0;
     font-size: 1.2em;
-    background-color: #5061AA;
+    background-color: $blue;
     box-shadow: 0 2px 2px #ccc;
 
     &:link, &:visited {
         color: white;
     }
 }
+
+a.resource-button.blue { background-color: $blue }
+a.resource-button.lightblue { background-color: $lightblue }
+a.resource-button.green { background-color: $green }
+a.resource-button.lightgreen { background-color: $lightgreen }
+a.resource-button.purple { background-color: $purple }
+a.resource-button.lightpurple { background-color: $lightpurple }
+a.resource-button.yellow { background-color: $yellow }
+a.resource-button.alt { background-color: $offgreen }
+
 
 .no-results {
     padding:4em 0;
@@ -175,7 +187,7 @@ a.resource-button{
     .select-multiple-header {
         span {
             float: right;
-            color: $green;
+            color: $primarycolor;
             font-size: 11px;
             cursor: pointer;
         }
@@ -215,12 +227,16 @@ a.resource-button{
 
 .nav-tabs > li.add-content > a:hover {
     background: #f7f7f7;
-    color: $green;
+    color: $primarycolor;
 }
 
 .nav-tabs > li.add-content > a {
-    color: #555;
-    border-bottom: 1px solid #aaaaaa;
+    color: #555 !important;
+    border-bottom: 1px solid #aaaaaa !important;
+}
+
+body.page-index div.tab-content {
+    padding-top: 20px;
 }
 
 ul.list-unstyled > li.list-first {
@@ -230,6 +246,10 @@ ul.list-unstyled > li.list-first {
 
 .inline-add {
   margin-top: 10px;
+}
+
+i.icon-bg-green {
+    background-color: $green;
 }
 
 /* --------------------------------------------------------------------
@@ -286,7 +306,7 @@ ul.list-unstyled > li.list-first {
     }
 
     .document-form > header {
-        background-color: $green;
+        background-color: $primarycolor;
         color: white;
     }
 
