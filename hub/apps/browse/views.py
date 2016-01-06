@@ -148,7 +148,7 @@ class BrowseView(ListView):
         if self.sustainabilty_topic:
             return self.sustainabilty_topic.name
         if self.content_type_class:
-            return self.content_type_class._meta.verbose_name
+            return self.content_type_class._meta.verbose_name_plural
         if self.request.GET.get('search'):
             return 'Search for "{}"'.format(self.request.GET['search'])
         return 'Search Results'
