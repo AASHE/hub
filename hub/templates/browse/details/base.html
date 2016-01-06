@@ -39,6 +39,11 @@
 
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
+                        {% if user.is_staff %}
+                            <a href="{{ object.get_admin_url }}" class="pull-right">
+                                Edit in Admin
+                            </a>
+                        {% endif %}
                         <h2>{{ object.title|titlecase }}</h2>
                         {% for org in object.organizations.all %}
                             <a href="{% url 'browse:browse' %}?organizations={{org.pk}}">
