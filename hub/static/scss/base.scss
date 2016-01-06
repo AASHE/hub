@@ -93,8 +93,6 @@ $red: #c00;
     }
 }
 
-
-
 .s-results .up-ul li {
     color: #999;
 }
@@ -118,6 +116,11 @@ a.resource-button{
     &:link, &:visited {
         color: white;
     }
+}
+
+a.resource-button > i {
+    font-size: 1.5em;
+    margin-right: .2em;
 }
 
 .no-results {

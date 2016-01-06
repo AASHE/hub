@@ -32,6 +32,7 @@ class SustainabilityTopic(MetadataBaseModel):
     introduction = models.TextField(blank=True, null=True)
     rss_feed = models.URLField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
+    icon = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
         ordering = ('order', 'name')
