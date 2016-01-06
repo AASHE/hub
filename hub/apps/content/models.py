@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import os
+
 from logging import getLogger
 from collections import OrderedDict
 
@@ -289,6 +291,9 @@ class Image(TimeStampedModel):
 
     def __str__(self):
         return self.caption or 'Image object'
+
+    def get_filename(self):
+        return os.path.basename(self.image.name)
 
 # =============================================================================
 # Mapping of all available content types.

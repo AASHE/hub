@@ -127,8 +127,16 @@
                                         {% endthumbnail %}
                                     </a>
                                     <div class="caption">
+                                        {% if image.caption %}
                                         <p>{{ image.caption }}</p>
+                                        {% endif %}
+                                        {% if image.credit %}
                                         <p><em>Credit: {{ image.credit }}</em></p>
+                                        {% endif %}
+                                        <p class="text-right">
+                                            <a href={{ image.image.url }} download="{{ image.get_filename }}">
+                                            <i class='fa fa-download'></i> Download
+                                        </a></p>
                                     </div>
                                 </div>
                             </div>
