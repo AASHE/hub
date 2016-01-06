@@ -20,6 +20,7 @@
                 <a href="{% url "browse:browse" topic=topic.slug %}"
                     class="resource-button service-block service-block-sea service-or {{ topic.css_class}}">
                     <div class="service-bg"></div>
+                    {% if topic.icon %}<i class="{{ topic.icon }}"></i>{% endif %}
                     {{ topic }}
                 </a>
             </div>
