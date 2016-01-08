@@ -37,6 +37,7 @@ class CaseStudy(ContentType):
             'description': 'Project Overview',
         }
 
+    @classmethod
     def required_metadata(cls):
         return {
             'image': {'max': 5, 'min': 0},  # optional, up to 5
