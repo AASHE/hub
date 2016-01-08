@@ -59,6 +59,12 @@ class AcademicProgram(ContentType):
         from ...browse.filterset import AcademicBrowseFilterSet
         return AcademicBrowseFilterSet
 
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 1},  # required, up to 5
+        }
+
 
 class AcademicProgramIndex(BaseIndex):
     def get_model(self):

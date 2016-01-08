@@ -1,8 +1,11 @@
 {{ file_formset.management_form }}
 
-<div id="files-container">
+<div id="file-container">
+  {% with file_formset as formset %}
+    {% include 'submit/includes/errors.html' %}
+  {% endwith %}
   {% for form in file_formset %}
-    <fieldset class="files-fieldset-{{ forloop.counter0 }}">
+    <fieldset class="file-fieldset-{{ forloop.counter0 }}">
       {% include "submit/includes/files_detail_form.html" %}
     </fieldset>
   {% endfor %}
@@ -15,7 +18,7 @@
   </button>
   <button
     class="btn-u btn-u-default inline-add"
-    id="delete-file"
+    id="file-delete"
     type="button">
     <i class="fa fa-minus-square"></i>
   </button>
@@ -23,8 +26,8 @@
 
 {# Templates for jquery-django-inline-forms #}
 
-<script type="text/html" id="files-template">
-  <fieldset class="files-fieldset-__prefix__"  style="display: none;">
+<script type="text/html" id="file-template">
+  <fieldset class="file-fieldset-__prefix__"  style="display: none;">
       {% with file_formset.empty_form as form %}
         {% include "submit/includes/files_detail_form.html" %}
       {% endwith %}

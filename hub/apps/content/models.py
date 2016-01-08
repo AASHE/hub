@@ -187,6 +187,38 @@ class ContentType(TimeStampedModel):
         """
         return ['organizations']
 
+    @classmethod
+    def required_metadata(cls):
+        """
+        Each content type has different requirements for metadata.
+        For example:
+         - a photo only requires an Image, but no Author or Files.
+         - a conference presentation requires a file upload, but limits to 3
+         - a publication requires either a document or a website
+
+        To handle this we use a simple dictionary for each class. Here's an
+        example of Photographs:
+            {
+                'website': {'max': 5, 'min': 0},  # optional, up to 5
+                'image': {'max': 5, 'min': 1},  # one image is required
+                # files are not included (no key)
+                # authors are not included (no key)
+            }
+        And Course Materials:
+            {
+                # images not included
+                'website': {'max': 5, 'min': 0},  # optional, up to 5
+                'author': {'max': 5, 'min': 0},  # optional, up to 5
+                'file': {'max': 3, 'min': 0},  # optional, up to 3
+                # at least one file or website is required
+                'conditionally_required': {'website', 'file'}
+            }
+
+        `conditionally_required` means that the at least one of the objects
+        must be submitted with the resource.
+        """
+        return {}
+
 
 @python_2_unicode_compatible
 class Author(TimeStampedModel):

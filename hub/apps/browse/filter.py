@@ -82,7 +82,7 @@ class OrganizationFilter(filters.ChoiceFilter):
         organizations = Organization.objects.values_list('pk', 'org_name')
         kwargs.update({
             'choices': organizations,
-            'label': 'Organization',
+            'label': 'Organization(s)',
             'widget': LeanSelectMultiple,
         })
         super(OrganizationFilter, self).__init__(*args, **kwargs)
@@ -106,7 +106,7 @@ class StudentFteFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         kwargs.update({
             'choices': [(i[0], i[1][0]) for i in self.STUDENT_CHOICES_MAP.items()],
-            'label': 'Institution Size',
+            'label': 'Student FTE',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(StudentFteFilter, self).__init__(*args, **kwargs)
@@ -130,7 +130,7 @@ class CountryFilter(filters.ChoiceFilter):
         countries = ALL + tuple(countries)
         kwargs.update({
             'choices': countries,
-            'label': 'Country',
+            'label': 'Country/ies',
         })
         super(CountryFilter, self).__init__(*args, **kwargs)
 
@@ -151,7 +151,7 @@ class StateFilter(filters.ChoiceFilter):
 
         kwargs.update({
             'choices': states,
-            'label': 'State',
+            'label': 'State(s) or Province(s)',
             'widget': forms.widgets.CheckboxSelectMultiple,
         })
         super(StateFilter, self).__init__(*args, **kwargs)
@@ -182,7 +182,7 @@ class PublishedFilter(filters.ChoiceFilter):
 
         kwargs.update({
             'choices': year_choices,
-            'label': 'Posted',
+            'label': 'Year Posted',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(PublishedFilter, self).__init__(*args, **kwargs)
@@ -202,9 +202,9 @@ class OrderingFilter(filters.ChoiceFilter):
             'choices': (
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
-                ('-published', 'Publish Date'),
+                ('-published', 'Most Recent'),
             ),
-            'label': 'Sort by',
+            'label': 'Sort',
             'widget': forms.widgets.RadioSelect,
         })
         super(OrderingFilter, self).__init__(*args, **kwargs)

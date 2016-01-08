@@ -1,6 +1,8 @@
+{% load typogrify_tags %}
+
 A new resource has been submitted and is ready for review:
 
-  - Resource title: {{ resource.title }}
+  - Resource title: {{ resource.title|titlecase }}
   - Content type: {{ resource.content_type_label }}
   - Submitted by:
     - Name: {{ resource.submitted_by.get_full_name }}

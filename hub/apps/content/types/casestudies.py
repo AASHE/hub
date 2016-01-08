@@ -26,8 +26,6 @@ class CaseStudy(ContentType):
         help_text='''Describe the lessons learned from this project. This
         section may also be used to offer advice to others who wish to
         undertake a similar project.''')
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
 
     class Meta:
         verbose_name = 'Case Study'
@@ -38,6 +36,21 @@ class CaseStudy(ContentType):
         return {
             'description': 'Project Overview',
         }
+
+    def required_metadata(cls):
+        return {
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
+            'file': {'max': 3, 'min': 0},  # optional, up to 5
+            'author': {'max': 5, 'min': 1},  # required, up to 5
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+        }
+
+    @classmethod
+    def required_field_overrides(cls):
+        required_list = super(
+            CaseStudy, cls).required_field_overrides()
+        required_list.append('description')
+        return required_list
 
 
 class CaseStudyIndex(BaseIndex):

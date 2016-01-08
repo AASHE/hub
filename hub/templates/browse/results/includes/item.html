@@ -1,8 +1,9 @@
 {% load browse_tags %}
+{% load typogrify_tags %}
 
 <div class="inner-results">
     <h3>
-        <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+        <a href="{{ obj.get_absolute_url }}">{{ obj.title|titlecase }}</a>
         {% permission_flag obj user %}
     </h3>
     <ul class="list-inline up-ul">

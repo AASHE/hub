@@ -17,12 +17,6 @@ class OutreachMaterial(ContentType):
         ('other', 'Other'),
     )
 
-    website = models.URLField('Website', blank=True, null=True)
-    document = models.FileField('Document Upload',
-        blank=True, null=True, help_text=FILE_UPLOAD + ''' Provide either a
-        website or a publication document.''')
-    affirmation = models.BooleanField('Affirmation of Ownership', default=False,
-        help_text=AFFIRMATION)
     _type = models.CharField(max_length=40, choices=TYPE_CHOICES, blank=True, null=True,
         verbose_name='Type of Material')
     design_credit = models.CharField('Design credit (name and/or organization)',
@@ -31,6 +25,15 @@ class OutreachMaterial(ContentType):
     class Meta:
         verbose_name = 'Outreach Material'
         verbose_name_plural = 'Outreach Materials'
+
+    @classmethod
+    def required_metadata(cls):
+        return {
+            'website': {'max': 5, 'min': 0},  # optional, up to 5
+            'file': {'max': 3, 'min': 0},  # optional, up to 3
+            'image': {'max': 5, 'min': 0},  # optional, up to 5
+            'conditionally_required': {'website', 'file', 'image'}
+        }
 
 
 class OutreachMaterialIndex(BaseIndex):
