@@ -13,7 +13,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
     https://docs.google.com/spreadsheets/d/1ADsnCZXKU1lhA4GHc2xhsY5ddLRi7kgvYJLSTHZKlmw/
     """
     def setUp(self):
-        
+
         self.submission_types = [
             {
                 'ct': 'academicprogram',
@@ -25,7 +25,9 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             {
                 'ct': 'casestudy',
                 'expected_fields': [
-                    'topics', 'organizations', 'description'
+                    'topics', 'organizations', 'description', 'background',
+                    'goals', 'implementation', 'timeline', 'financing',
+                    'results', 'lessons_learned'
                 ],
                 'min_reqs': ['author']
             },
@@ -85,7 +87,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                     'topics', 'organizations', 'link'
                 ]
             },
-            
+
         ]
         self.management_form_data = {
             'author-TOTAL_FORMS': 0,
@@ -108,13 +110,13 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             'image-MIN_NUM_FORMS': 0,
             'image-MAX_NUM_FORMS': 5,
         }
-        
+
         return super(RequiredFieldsTestCase, self).setUp()
-        
+
     def test_requirements(self):
         self.client.login(**self.user_cred)
         for sub in self.submission_types:
-            
+
             url = reverse('submit:form', kwargs={'ct': sub['ct']})
             response = self.client.post(url, self.management_form_data)
             errors = response.context['document_form']._errors
@@ -137,6 +139,6 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                 for req in sub['conditionally_required']:
                     self.assertTrue(req in errors['__all__'][0],
                     "%s in __all__ error" % req)
-            
+
             # match the total error count
             self.assertEqual(error_count, len(errors.keys()), errors.keys())

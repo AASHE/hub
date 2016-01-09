@@ -20,7 +20,7 @@ class CaseStudy(ContentType):
         help_text='''Describe the costs (both upfront and reoccurring) for each
         component of the project and explain how the project was financed.''')
     results = models.TextField('Project Results (or results to date)',
-        blank=True, null=True, help_text='''Describe the outcomes that resulted
+        help_text='''Describe the outcomes that resulted
         from the project implementation.''')
     lessons_learned = models.TextField('Lessons learned',
         help_text='''Describe the lessons learned from this project. This
