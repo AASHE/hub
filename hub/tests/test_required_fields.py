@@ -57,7 +57,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                 'expected_fields': [
                     'topics', 'organizations',
                 ],
-                'min_reqs': ['image',]
+                'min_reqs': ['image', ]
             },
             {
                 'ct': 'publication',
@@ -72,7 +72,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                 'expected_fields': [
                     'topics', 'disciplines', 'organizations'
                 ],
-                'min_reqs': ['website',]
+                'min_reqs': ['website', ]
             },
             {
                 'ct': 'tool',
@@ -129,7 +129,8 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             if 'min_reqs' in sub.keys():
                 for min_req in sub['min_reqs']:
                     self.assertEqual(
-                        response.context["%s_formset" % min_req]._non_form_errors[0],
+                        response.context[
+                            "%s_formset" % min_req]._non_form_errors[0],
                         u'Please submit 1 or more forms.'
                     )
 
@@ -137,8 +138,9 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             if 'conditionally_required' in sub.keys():
                 error_count += 1
                 for req in sub['conditionally_required']:
-                    self.assertTrue(req in errors['__all__'][0],
-                    "%s in __all__ error" % req)
+                    self.assertTrue(
+                        req in errors['__all__'][0],
+                        "%s in __all__ error" % req)
 
             # match the total error count
             self.assertEqual(error_count, len(errors.keys()), errors.keys())
