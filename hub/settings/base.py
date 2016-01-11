@@ -35,7 +35,7 @@ INSTALLED_APPS = (
     'aashe.aasheauth',
     'aashe_theme',
     'block_content',
-    'compressor',
+    # 'compressor',
     'haystack',
     'iss',
     'sorl.thumbnail',
@@ -130,7 +130,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
+    # 'compressor.finders.CompressorFinder',
 )
 
 STATIC_URL = '/static/'
@@ -139,7 +139,7 @@ MEDIA_URL = '/uploads/'
 STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
 MEDIA_ROOT = os.path.join(VAR_ROOT, 'uploads')
 
-COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', True)
+# COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', True)
 # COMPRESS_CSS_FILTERS = [
 #     # 'compressor.filters.cssmin.rCSSMinFilter',
 #     # 'compressor.filters.cleancss.CleanCSSFilter',
