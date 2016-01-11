@@ -46,7 +46,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                 'conditionally_required': ['website', 'file']
             },
             {
-                'ct': 'outreach',  # outreach material
+                'ct': 'outreachmaterial',  # outreach material
                 'expected_fields': [
                     'topics', 'organizations',
                 ],
@@ -68,7 +68,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                 'conditionally_required': ['website', 'file']
             },
             {
-                'ct': 'center',
+                'ct': 'centerandinstitute',
                 'expected_fields': [
                     'topics', 'disciplines', 'organizations'
                 ],
