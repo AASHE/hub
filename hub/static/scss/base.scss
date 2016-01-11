@@ -2,6 +2,31 @@
 $blue: #3299DB;
 $red: #c00;
 
+// From aashe_theme/static/scss/aashe_theme.scss
+// make updates there and copy them here
+$darkblue: #15387F;
+$blue: #0080CF;
+$lightblue: #00BCE4;
+
+$green: #00A060;
+$lightgreen: #6BBC49;
+$yellow: #CEDC45;
+
+$darkpurple: #3C2985;
+$purple: #5160AB;
+$lightpurple: #A486BD;
+
+$offgreen: #253d51;
+$transgreen: rgba(164, 134, 189, 0.9);
+$transyellow: rgba(206, 220, 69, 0.075);
+
+$primarycolor: $lightgreen;
+$supportcolor: $yellow;
+$extracolor: $offgreen;
+$transprimary: $transgreen;
+$transsecondary: $transyellow;
+// end aashe_theme
+
 @mixin title() {
     font-family: HelveticaNeue-Light, Helvetica, Arial, sans-serif;
     font-weight: 300;
