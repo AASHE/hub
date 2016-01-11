@@ -9,18 +9,18 @@
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/css/sky-forms.css" %}">
-    <link rel="stylesheet" href="{% static "vendor/theme/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css" %}">
-    <link rel="stylesheet" href="{% static "vendor/pikaday/pikaday.css" %}">
+    <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/sky-forms-pro/skyforms/css/sky-forms.css' %}">
+    <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/pikaday/pikaday.css' %}">
 {% endblock %}
 
 {% block javascript %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static "vendor/pikaday/moment.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.js" %}"></script>
-    <script type="text/javascript" src="{% static "vendor/pikaday/pikaday.jquery.js" %}"></script>
-    <script src="{% static "js/submit-form.js" %}"></script>
-    <script src="{% static "vendor/jquery-django-inline-form/django-inline-form.js" %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/pikaday/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/pikaday/pikaday.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/pikaday/pikaday.jquery.js' %}"></script>
+    <script src="{% static 'js/submit-form.js' %}"></script>
+    <script src="{% static 'vendor/jquery-django-inline-form/django-inline-form.js' %}"></script>
 {% endblock %}
 
 {% block page %}
@@ -100,7 +100,7 @@
             <div class="sky-form">
                 <footer>
                     <button type="submit" class="btn-u pull-right">
-                        <i class="fa  fa-check-circle-o"></i>
+                        <i class="fa fa-check-circle-o"></i>
                         Submit Resource
                     </button>
                 </footer>

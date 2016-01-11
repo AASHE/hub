@@ -3,9 +3,9 @@
 # Import global settings to make it easier to extend settings.
 from django.conf.global_settings import *   # pylint: disable=W0614,W0401
 
-#==============================================================================
+# =============================================================================
 # Generic Django project settings
-#==============================================================================
+# =============================================================================
 
 WSGI_APPLICATION = 'hub.wsgi.application'
 
@@ -33,7 +33,9 @@ INSTALLED_APPS = (
     'flat',
 
     'aashe.aasheauth',
+    'aashe_theme',
     'block_content',
+    'compressor',
     'haystack',
     'iss',
     'sorl.thumbnail',
@@ -99,8 +101,8 @@ ve_path = os.path.dirname(os.path.dirname(os.path.dirname(PROJECT_DIR)))
 if os.path.exists(os.path.join(PYTHON_BIN, 'activate_this.py')):
     # We're running with a virtualenv python executable.
     VAR_ROOT = os.path.join(os.path.dirname(PYTHON_BIN), 'var')
-elif ve_path and os.path.exists(os.path.join(ve_path, 'bin',
-        'activate_this.py')):
+elif ve_path and os.path.exists(os.path.join(
+        ve_path, 'bin', 'activate_this.py')):
     # We're running in [virtualenv_root]/src/[project_name].
     VAR_ROOT = os.path.join(ve_path, 'var')
 else:
@@ -128,6 +130,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 STATIC_URL = '/static/'
@@ -135,6 +138,12 @@ MEDIA_URL = '/uploads/'
 
 STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
 MEDIA_ROOT = os.path.join(VAR_ROOT, 'uploads')
+
+COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', True)
+# COMPRESS_CSS_FILTERS = [
+#     # 'compressor.filters.cssmin.rCSSMinFilter',
+#     # 'compressor.filters.cleancss.CleanCSSFilter',
+# ]
 
 # ==============================================================================
 # Email
@@ -196,9 +205,10 @@ LOGGING = {
 # Third party app settings
 # ==============================================================================
 
+eng = 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine'
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'ENGINE': eng,
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
     },
@@ -216,8 +226,8 @@ AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
 AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
 
 # List of content type keys which don't require Login This only enables the
-# 'browse' view of the content type. Each object must still be separately set to
-# `member_only=False` to make it open.
+# 'browse' view of the content type. Each object must still be separately set
+# to `member_only=False` to make it open.
 PUBLIC_CONTENT_TYPES = (
     'academicprogram',
 )

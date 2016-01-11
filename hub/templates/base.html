@@ -16,26 +16,14 @@
     <meta content="" name="author"/>
 
     <link rel="shortcut icon" href="{% static "img/favicon.ico" %}"/>
-    <link rel="shortcut" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600&subset=cyrillic,latin"/>
 
     {% block css %}
-    <!-- CSS Theme -->
-    <link rel="stylesheet" href="{% static "vendor/theme/plugins/bootstrap/css/bootstrap.min.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/css/style.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/css/headers/header-default.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/css/footers/footer-default.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/plugins/animate.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/plugins/line-icons/line-icons.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/plugins/font-awesome/css/font-awesome.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/css/theme-colors/default.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/css/pages/page_search_inner.css" %}"/>
-    <link rel="stylesheet" href="{% static "vendor/theme/css/pages/profile.css" %}"/>
-
-    <!-- CSS Plugins -->
-    <link rel="stylesheet" href="{% static "vendor/selectize/css/selectize.css" %}"/>
-
-    <!-- CSS App Level -->
-    <link rel="stylesheet" href="{% static "css/base.css" %}"/>
+            <!-- CSS Theme -->
+            {% include 'aashe_theme/styles.html' %}
+            <!-- CSS Plugins -->
+            <link rel="stylesheet" href="{% static "vendor/selectize/css/selectize.css" %}"/>
+            <!-- CSS App Level -->
+            <link rel="stylesheet" href="{% static "css/base.css" %}"/>
     {% endblock css %}
 {% endblock %}
 </head>
@@ -95,26 +83,12 @@
 </div>
 
 {% block javascript %}
-<!-- JS Theme -->
-<script src="{% static "vendor/theme/plugins/jquery/jquery.min.js" %}"></script>
-<script src="{% static "vendor/theme/plugins/jquery/jquery-migrate.min.js" %}"></script>
-<script src="{% static "vendor/theme/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
-<script src="{% static "vendor/theme/plugins/back-to-top.js" %}"></script>
-<script src="{% static "vendor/theme/plugins/smoothScroll.js" %}"></script>
-<script src="{% static "vendor/theme/js/custom.js" %}"></script>
-<script src="{% static "vendor/theme/js/app.js" %}"></script>
-
-<!-- JS Plugins -->
-<script src="{% static "vendor/selectize/js/standalone/selectize.js" %}"></script>
-
-<!-- JS App Level -->
-<script src="{% static "js/base.js" %}"></script>
-
-<!--[if lt IE 9]>
-    <script src="{% static "vendor/theme/plugins/respond.js" %}"></script>
-    <script src="{% static "vendor/theme/plugins/html5shiv.js" %}"></script>
-    <script src="{% static "vendor/theme/plugins/placeholder-IE-fixes.js" %}"></script>
-<![endif]-->
+        <!-- JS Theme -->
+        {% include 'aashe_theme/javascript.html' %}
+        <!-- JS Plugins -->
+        <script src="{% static "vendor/selectize/js/standalone/selectize.js" %}"></script>
+        <!-- JS App Level -->
+        <script src="{% static "js/base.js" %}"></script>
 {% endblock %}
 </body>
 </html>
