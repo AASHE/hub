@@ -1,4 +1,5 @@
 {% extends "submit/base.html" %}
+{% load block_content %}
 
 {% block body_class %}page-submit-index{% endblock %}
 
@@ -33,10 +34,7 @@
   <div class="col-md-8 col-md-offset-2">
     <div class="call-action-v1">
         <div class="margin-bottom-30"></div>
-        <p>Guidlines for submitting resources:</p>
-        <p>Resources accepted into the Campus Sustainability Hub must
-            related to campus sustainability and be relevant to AASHE
-            member stakeholders.</p>
+        {% block_content 'submission_guidelines' %}
         <div class="margin-bottom-30"></div>
     </div>
   </div>
