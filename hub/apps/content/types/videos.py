@@ -5,7 +5,6 @@ from ..search import BaseIndex
 
 
 class Video(ContentType):
-    link = models.URLField('Video Link')
 
     class Meta:
         verbose_name = 'Video'
