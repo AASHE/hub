@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django_webtest import WebTest
 
-from ..apps.content.types.videos import Video
+from ..apps.content.types.videos import Video, Website
 from ..apps.metadata.models import (Organization,
                                     SustainabilityTopic,
                                     InstitutionalOffice)
@@ -25,9 +25,10 @@ class AdminTestCase(WebTest):
                               permission='open',
                               title='Test Video Resource',
                               slug='test-video-resource',
-                              link='http://example.com/video',
                               submitted_by=self.superuser)
         self.resource.save()
+        self.resource.websites.add(
+            Website.objects.create(url="http://www.aashe.org/video.mp4"))
         self.resource.organizations.add(
             Organization.objects.create(account_num=1,
                                         org_name='Hipster University',

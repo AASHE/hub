@@ -19,7 +19,7 @@ class Video(ContentType):
     @classmethod
     def required_metadata(cls):
         return {
-            'website': {'max': 5, 'min': 0},  # optional, up to 5
+            'website': {'max': 5, 'min': 1},  # optional, up to 5
             'author': {'max': 5, 'min': 0},  # optional, up to 5
         }
 

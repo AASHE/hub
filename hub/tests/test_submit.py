@@ -22,7 +22,6 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.video_form_valid_data = {
             # Document Form
             'document-title': 'My first Video',
-            'document-link': 'http://example.com/video.mp4',
             'document-affirmation': True,
 
             'document-organizations': [
@@ -63,6 +62,12 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             'file-INITIAL_FORMS': 0,
             'file-MIN_NUM_FORMS': 0,
             'file-MAX_NUM_FORMS': 5,
+        })
+
+        self.video_form_valid_data.update({
+            'website-TOTAL_FORMS': 1,
+            'website-MIN_NUM_FORMS': 1,
+            'website-0-url': 'http://example.com/video.mp4',
         })
 
         return super(SubmitResourceTestCase, self).setUp()
@@ -126,14 +131,13 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
 
         self.assertEqual(
             video.title, self.video_form_valid_data['document-title'])
-        self.assertEqual(
-            video.link, self.video_form_valid_data['document-link'])
+        self.assertEqual(video.websites.count(), 1)
 
         # We didn't added any formsets yet, so they must be empty
         self.assertEqual(video.authors.count(), 0)
         self.assertEqual(video.images.count(), 0)
         self.assertEqual(video.files.count(), 0)
-        self.assertEqual(video.websites.count(), 0)
+        self.assertEqual(video.websites.count(), 1)
 
     def test_valid_video_with_authors(self):
         """
@@ -164,7 +168,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.authors.count(), 2)
         self.assertEqual(video.images.count(), 0)
         self.assertEqual(video.files.count(), 0)
-        self.assertEqual(video.websites.count(), 0)
+        self.assertEqual(video.websites.count(), 1)
 
         names = video.authors.values_list('name', flat=True)
         self.assertTrue('Martin' in names)
@@ -275,7 +279,10 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         """
         self.client.login(**self.user_cred)
         response = self._post_material()
-        err = response.context['document_form']._errors['__all__']
+        try:
+            err = response.context['document_form']._errors['__all__']
+        except:
+            import pdb; pdb.set_trace()
         self.assertEqual(
             err[0],
             "At least one website or file is required for this resource.")

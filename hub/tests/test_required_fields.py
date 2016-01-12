@@ -85,7 +85,8 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                 'ct': 'video',
                 'expected_fields': [
                     'topics', 'organizations', 'link'
-                ]
+                ],
+                'min_reqs': ['website']
             },
 
         ]
