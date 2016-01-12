@@ -18,7 +18,7 @@ dj-database-url
 gunicorn
 ipython
 psycopg2
-whitenoise
+https://github.com/jamstooks/whitenoise/archive/master.zip
 
 # Non-pypi repos
 https://github.com/AASHE/django-aashe-theme/archive/master.zip

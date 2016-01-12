@@ -53,6 +53,8 @@ SALESFORCE_SECURITY_TOKEN = os.environ.get('SALESFORCE_SECURITY_TOKEN', None)
 # ==============================================================================
 
 USE_S3 = os.environ.get('USE_S3', None)  # Support local dev with this config
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+WHITENOISE_IGNORE_MISSING_FILES = True
 
 if USE_S3:
     from integration_settings.media.s3 import *
