@@ -18,8 +18,6 @@ class Publication(ContentType):
         ('other', 'Other Student Research Paper'),
     )
 
-    cover_image = models.ImageField(blank=True, null=True, help_text=IMG_UPLOAD)
-
     release_date = models.DateField('Publication release date',
         blank=True, null=True, help_text='''Providing a release date is
         highly recommended.''')

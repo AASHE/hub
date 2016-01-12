@@ -69,7 +69,6 @@ class AdminURLTestCase(TestCase):
         Create each content type and then get the admin_url
         """
         for key, klass in CONTENT_TYPES.items():
-            print "Creating %s" % klass.__name__
             prop_dict = self.generic_properties.copy()
             prop_dict.update({
                 'content_type': key,
@@ -77,4 +76,5 @@ class AdminURLTestCase(TestCase):
             if key in self.ct_specific_fields.keys():
                 prop_dict.update(self.ct_specific_fields[key])
             ct = klass.objects.create(**prop_dict)
-            print ct.get_admin_url()
+            # just make sure no exceptions are raised
+            url = ct.get_admin_url()

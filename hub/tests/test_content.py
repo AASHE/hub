@@ -29,7 +29,9 @@ class AdminTestCase(WebTest):
                               submitted_by=self.superuser)
         self.resource.save()
         self.resource.websites.add(
-            Website.objects.create(url="http://www.aashe.org/video.mp4"))
+            Website.objects.create(
+                ct=self.resource,
+                url="http://www.aashe.org/video.mp4"))
         self.resource.organizations.add(
             Organization.objects.create(account_num=1,
                                         org_name='Hipster University',

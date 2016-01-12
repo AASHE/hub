@@ -10,18 +10,3 @@
     {% include "browse/details/includes/meta.html" with label="Type" value=object.get_type_display %}
     {% include "browse/details/includes/meta.html" with label="Institution" value=object.institution.name %}
 {% endblock %}
-
-{% block resource_content %}
-    {% if object.cover_image %}
-    <div class="margin-bottom-30"></div>
-    <div class="panel panel-profile">
-        <div class="panel-heading overflow-h">
-            <h2 class="panel-title heading-sm pull-left">Cover Image</h2>
-        </div>
-        <div class="panel-body">
-            <img src="{{ object.cover_image.url }}" style="max-width: 400px"/>
-        </div>
-    </div>
-    {% endif %}
-{% endblock %}
-
