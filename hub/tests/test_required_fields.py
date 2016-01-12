@@ -84,7 +84,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             {
                 'ct': 'video',
                 'expected_fields': [
-                    'topics', 'organizations', 'link'
+                    'topics', 'organizations'
                 ],
                 'min_reqs': ['website']
             },
@@ -125,7 +125,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             expected = sub['expected_fields']
             expected.append('title')  # title applies everywhere
             for f in sub['expected_fields']:
-                self.assertTrue(f in errors.keys())
+                self.assertTrue(f in errors.keys(), "%s not found in keys" % f)
 
             if 'min_reqs' in sub.keys():
                 for min_req in sub['min_reqs']:

@@ -2,7 +2,8 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django_webtest import WebTest
 
-from ..apps.content.types.videos import Video, Website
+from ..apps.content.types.videos import Video
+from ..apps.content.models import Website
 from ..apps.metadata.models import (Organization,
                                     SustainabilityTopic,
                                     InstitutionalOffice)
