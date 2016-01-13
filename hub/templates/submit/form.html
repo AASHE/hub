@@ -61,7 +61,7 @@
 
                     {% if author_formset %}
                     <a name="authors"></a>
-                    <h3>{{ label_overrides.authors|default:"Authors" }}</h3>
+                    <h3>{{ label_overrides.authors|default:"Author(s)" }}</h3>
 
                     <div class="sky-form formset" id="authors">
                         {% include "submit/includes/authors.html" %}
@@ -70,7 +70,7 @@
 
                     {% if image_formset %}
                     <a name="images"></a>
-                    <h3>Images</h3>
+                    <h3>Image(s)</h3>
 
                     <div class="sky-form formset" id="images">
                         {% include "submit/includes/images.html" %}
@@ -79,7 +79,7 @@
 
                     {% if file_formset %}
                     <a name="files"></a>
-                    <h3>Files</h3>
+                    <h3>File(s)</h3>
 
                     <div class="sky-form formset" id="files">
                         {% include "submit/includes/files.html" %}
@@ -88,7 +88,7 @@
 
                     {% if website_formset %}
                     <a name="websites"></a>
-                    <h3>Websites</h3>
+                    <h3>Link(s)</h3>
 
                     <div class="sky-form formset" id="websites">
                         {% include "submit/includes/websites.html" %}

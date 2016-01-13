@@ -162,6 +162,14 @@ class SubmitFormView(LoginRequiredMixin, FormView):
                     validate_max=True,
                     extra=0)
                 formset = formsetKlass(prefix=key, **self.get_form_kwargs())
+                if(
+                    key is "author"
+                    and len(formset.forms) == 1
+                    and not formset.forms[0].is_bound
+                ):
+                    # remove any unbound author forms,
+                    # even though a min is required
+                    del formset.forms[0]
                 for form in formset:
                     form.empty_permitted = False
                 ctx["%s_formset" % key] = formset
