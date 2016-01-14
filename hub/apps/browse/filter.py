@@ -132,7 +132,7 @@ class CountryFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         # @WARNING: keep an eye on performance here.
         # We might want to use caching
-        
+
         # countries = (Organization.objects.country_list())
         qs = ContentType.objects.published().values_list(
             'organizations__country_iso',
@@ -253,3 +253,45 @@ class ProgramTypeFilter(filters.ChoiceFilter):
         from ..content.types.academic import AcademicProgram
         return qs.filter(pk__in=AcademicProgram.objects.filter(
             program_type__in=value).values_list('pk', flat=True))
+
+
+class OrgTypeFilter(filters.ChoiceFilter):
+    def __init__(self, *args, **kwargs):
+
+        self.carnegie_class_choices = [
+            ("Associate", "Associate (2-year) Institution"),
+            ("Baccalaureate", "Baccalaureate Institution"),
+            ("Doctorate", "Doctoral/Research Institution"),
+            ("Master", "Master's Institution"),
+        ]
+
+        self.type_choices = [
+            ("Business", "Business"),
+            ("System Office", "College or University System"),
+            ("Government Agency", "Government Agency"),
+            ("K-12 School", "K-12 School"),
+            ("Nonprofit/NGO", "Non-profit/NGO"),
+        ]
+
+        kwargs.update({
+            'choices': self.carnegie_class_choices + self.type_choices,
+            'label': 'Organization Type',
+        })
+        super(OrgTypeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if value:
+            # filter according to either carnegie or type
+            cc_values = [x[0] for x in self.carnegie_class_choices]
+            t_values = [x[0] for x in self.type_choices]
+            try:
+                carnegie_index = cc_values.index(value)
+                return qs.filter(organizations__carnegie_class=value)
+            except ValueError:
+                try:
+                    type_index = t_values.index(value)
+                    return qs.filter(organizations__org_type=value)
+                except ValueError:
+                    pass
+
+        return qs

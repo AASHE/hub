@@ -16,18 +16,36 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         self.topic = SustainabilityTopic.objects.create(name='Curriculum')
 
-        self.org = Organization.objects.create(account_num=1, org_name='Washington',
-            country_iso='AUS', country='Australia', enrollment_fte=2000,
-            exclude_from_website=0)
+        self.org = Organization.objects.create(
+            account_num=1, org_name='Washington', country_iso='AUS',
+            country='Australia', enrollment_fte=2000, exclude_from_website=0,
+            carnegie_class="Associate", org_type="Business")
 
-        self.ct = AcademicProgram.objects.create(title='My Keyword resource',
-            status=AcademicProgram.STATUS_CHOICES.published, published=now())
+        self.ct = AcademicProgram.objects.create(
+            title='My Keyword resource',
+            status=AcademicProgram.STATUS_CHOICES.published,
+            published=now())
 
         self.ct.topics.add(self.topic)
         self.ct.organizations.add(self.org)
 
         # Update search index
         self._rebuild_index()
+
+        self.filter_data = {
+            'search': 'keyword',
+            'topics': [self.topic.slug],
+            'content_type': ['academicprogram'],
+            'organizations': [self.org.pk],
+            'organization_type': 'Associate',
+            'size': ['lt_5000'],
+            'published': self.ct.published.year,
+            # FIXME: If I provide a `country` filter argument, that filter is
+            #        not even called. It is when I don't provide one.
+            #        Why? Becaues required=False?
+            # 'country': 'AUS',
+            'order': 'title',
+        }
 
         return super(FilterTestCase, self).setUp()
 
@@ -44,20 +62,8 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         easily here.
         """
         self.client.login(**self.superuser_cred)
-        filter_data = {
-            'search': 'keyword',
-            'topics': [self.topic.slug],
-            'content_type': ['academicprogram'],
-            'organizations': [self.org.pk],
-            'size': ['lt_5000'],
-            'published': self.ct.published.year,
-            # FIXME: If I provide a `country` filter argument, that filter is
-            #        not even called. It is when I don't provide one.
-            #        Why? Becaues required=False?
-            # 'country': 'AUS',
-            'order': 'title',
-        }
-        response = self.client.get(self.url_search, filter_data)
+
+        response = self.client.get(self.url_search, self.filter_data)
 
         # One item was found, our AcademicProgram
         self.assertEqual(response.status_code, 200)
@@ -67,3 +73,23 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         # Program", it lists the Base classes, but there is an easy way to
         # fetch that one:
         self.assertTrue(self.ct.contenttype_ptr in response.context['object_list'])
+
+    def test_org_type_filter(self):
+        """
+        Additional test for variable org_type filter
+        """
+
+        _filter_data = {'organization_type': 'Business'}
+        _filter_data.update(self.filter_data)
+        self.client.login(**self.superuser_cred)
+
+        response = self.client.get(self.url_search, _filter_data)
+
+        # One item was found, our AcademicProgram
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['object_list']), 1)
+
+        _filter_data['organization_type'] = 'System'
+        response = self.client.get(self.url_search, _filter_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['object_list']), 0)
