@@ -24,7 +24,7 @@
         <div class="margin-bottom-30"></div>
         {{ block.super }}
     </div>
-    <div id="stars" class="tab-pane fade">
+    <div id="stars" class="tab-pane fade" style="padding: 20px;">
         {% if topic.stars_tab_content %}
         {{ topic.stars_tab_content|apply_markup:"markdown" }}
         {% endif %}
