@@ -231,6 +231,16 @@ class ContentType(TimeStampedModel):
         """
         return {}
 
+    @classmethod
+    def preset_topics(cls):
+        """
+        Some resource types require certain topics to be selected, like
+        "Curriculum" for AcademicProgram
+
+        return ['Curriculum']
+        """
+        return {}
+
 
 @python_2_unicode_compatible
 class Author(TimeStampedModel):

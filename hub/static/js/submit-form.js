@@ -18,8 +18,14 @@ jQuery(document).ready(function() {
     // Other large dropdowns
     // -------------------------------------------------------------------------
     $('select[name*=topics], select[name*=disciplines], select[name*=institutions]').selectize({
-        maxItems: 3
+        maxItems: 3,
+        plugins: ['required-options',],
+        required_values: []
     });
+
+    if(preset_topics != undefined) {
+        $('select[name*=topics]')[0].selectize.settings.required_values = preset_topics
+    }
 
     // -------------------------------------------------------------------------
     // Keywords (like tags)

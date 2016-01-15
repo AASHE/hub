@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/AASHE/hub#readme",
   "dependencies": {
-    "node-sass": "^3.3.3"
+    "node-sass": "^3.3.3",
+    "selectize-no-delete": "akrikos/selectize-no-delete"
   }
 }
