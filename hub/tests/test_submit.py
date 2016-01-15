@@ -18,7 +18,9 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
     """
     def setUp(self):
         self.video_form_url = reverse('submit:form', kwargs={'ct': 'video'})
-        self.material_form_url = reverse('submit:form', kwargs={'ct': 'material'})
+        self.material_form_url = reverse(
+            'submit:form', kwargs={'ct': 'material'})
+
         self.video_form_valid_data = {
             # Document Form
             'document-title': 'My first Video',
@@ -282,10 +284,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         """
         self.client.login(**self.user_cred)
         response = self._post_material()
-        try:
-            err = response.context['document_form']._errors['__all__']
-        except:
-            import pdb; pdb.set_trace()
+        err = response.context['document_form']._errors['__all__']
         self.assertEqual(
             err[0],
             "At least one website or file is required for this resource.")
@@ -307,3 +306,37 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self._post_video()
         self.assertEqual(1, len(mail.outbox))
         self.assertIn('review', mail.outbox[0].subject.lower())
+
+    def test_required_topics(self):
+        """
+        Some content types require specific topics
+        """
+
+        additional_data = {
+            'document-topics': [
+                SustainabilityTopic.objects.get(name='Science').pk,
+            ],
+            'file-0-label': 'test file',
+            'file-0-affirmation': 'on',
+            'file-TOTAL_FORMS': '1',
+        }
+        filepath = os.path.join(os.path.dirname(__file__), 'media/test.txt')
+
+        self.client.login(**self.user_cred)
+        with open(filepath) as upload:
+            additional_data['file-0-item'] = upload
+            response = self._post_material(additional_data)
+            self.assertEqual(
+                response.context['document_form']._errors['topics'],
+                [u'The following topics are required: Curriculum'])
+
+        additional_data.update({
+            'document-topics': [
+                SustainabilityTopic.objects.get(name="Curriculum").pk,
+            ]
+        })
+        with open(filepath) as upload:
+            additional_data['file-0-item'] = upload
+            response = self._post_material(additional_data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(Material.objects.count(), 1)
