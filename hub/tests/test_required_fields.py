@@ -1,6 +1,7 @@
 from django.core import mail
 import os
 
+from ..apps.metadata.models import SustainabilityTopic
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -88,8 +89,8 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                 ],
                 'min_reqs': ['website']
             },
-
         ]
+
         self.management_form_data = {
             'author-TOTAL_FORMS': 0,
             'author-INITIAL_FORMS': 0,
@@ -111,6 +112,9 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             'image-MIN_NUM_FORMS': 0,
             'image-MAX_NUM_FORMS': 5,
         }
+
+        SustainabilityTopic.objects.create(name="Curriculum")
+        SustainabilityTopic.objects.create(name="Research")
 
         return super(RequiredFieldsTestCase, self).setUp()
 

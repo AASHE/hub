@@ -33,7 +33,8 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
                 AcademicDiscipline.objects.create(name='Jumping').pk
             ],
             'document-topics': [
-                SustainabilityTopic.objects.create(name='Science').pk
+                SustainabilityTopic.objects.create(name='Science').pk,
+                SustainabilityTopic.objects.create(name="Curriculum").pk
             ],
             'document-institutions': [
                 InstitutionalOffice.objects.create(name='Lirum').pk
@@ -69,6 +70,8 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             'website-MIN_NUM_FORMS': 1,
             'website-0-url': 'http://example.com/video.mp4',
         })
+
+        SustainabilityTopic.objects.create(name="Research")
 
         return super(SubmitResourceTestCase, self).setUp()
 
