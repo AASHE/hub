@@ -1,5 +1,6 @@
 from django.db import models
 
+from ...metadata.models import SustainabilityTopic
 from ..models import ContentType
 from ..search import BaseIndex
 
@@ -34,6 +35,13 @@ class CenterAndInstitute(ContentType):
         return {
             'website': {'max': 5, 'min': 1},  # required, up to 5
         }
+
+    @classmethod
+    def preset_topics(cls):
+        """
+        Require "Research" in topics
+        """
+        return [SustainabilityTopic.objects.get(name="Research")]
 
 
 class CenterAndInstituteIndex(BaseIndex):

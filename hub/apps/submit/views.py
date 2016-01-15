@@ -89,6 +89,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         ctx.update({
             'content_type_label': self.content_type_class._meta.verbose_name,
             'label_overrides': self.content_type_class.label_overrides(),
+            'content_type_class': self.content_type_class,
         })
         return ctx
 
@@ -111,6 +112,11 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         for field in self.content_type_class.required_field_overrides():
             if field in DocumentForm.base_fields:
                 DocumentForm.base_fields[field].required = True
+
+        # If the content type has required topics
+        initial_topics = self.content_type_class.preset_topics()
+        if len(initial_topics) > 0:
+            DocumentForm.base_fields['topics'].initial = initial_topics
 
         document_form = DocumentForm(
             prefix='document', **self.get_form_kwargs())

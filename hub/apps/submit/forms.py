@@ -29,10 +29,17 @@ class SubmitResourceForm(forms.ModelForm):
         )
 
     def clean_topics(self):
-        topics = self.cleaned_data.get('topics')
-        if topics and len(topics) > 3:
+        selected_topics = self.cleaned_data.get('topics')
+        required_topics = self.instance.preset_topics()
+        for required_topic in required_topics:
+            if required_topic not in selected_topics:
+                msg = "The following topics are required: %s" % (
+                    ", ".join([x.name for x in required_topics]))
+                raise forms.ValidationError(msg)
+
+        if selected_topics and len(selected_topics) > 3:
             raise forms.ValidationError('Please choose no more than 3 topics.')
-        return topics
+        return selected_topics
 
     def clean_disciplines(self):
         disciplines = self.cleaned_data.get('disciplines')

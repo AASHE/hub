@@ -1,6 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
+from ...metadata.models import SustainabilityTopic
 from ..models import ContentType
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD
@@ -45,6 +46,13 @@ class Material(ContentType):
             'file': {'max': 3, 'min': 0},  # optional, up to 3
             'conditionally_required': {'website', 'file'}
         }
+
+    @classmethod
+    def preset_topics(cls):
+        """
+        Require "Curriculum" in topics
+        """
+        return [SustainabilityTopic.objects.get(name="Curriculum")]
 
 
 class MaterialIndex(BaseIndex):

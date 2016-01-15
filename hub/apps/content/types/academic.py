@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
-from ...metadata.models import ProgramType
+from ...metadata.models import ProgramType, SustainabilityTopic
 from ..models import ContentType
 from ..search import BaseIndex
 
@@ -64,6 +64,13 @@ class AcademicProgram(ContentType):
         return {
             'website': {'max': 5, 'min': 1},  # required, up to 5
         }
+
+    @classmethod
+    def preset_topics(cls):
+        """
+        Require "Curriculum" in topics
+        """
+        return [SustainabilityTopic.objects.get(name="Curriculum")]
 
 
 class AcademicProgramIndex(BaseIndex):
