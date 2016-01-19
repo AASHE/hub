@@ -43,14 +43,17 @@ $transsecondary: $transyellow;
 .header {
     .logo {
         position: relative;
+    }
 
+    .site-name {
         h1 {
+            position: relative;
             @include title();
             display: inline-block;
             font-size: 30px;
             position: absolute;
             bottom: 8px;
-            left: 120px;
+            left: 170px;
             border-bottom: 3px solid white;
             color: #555;
             white-space: nowrap;
@@ -63,10 +66,10 @@ $transsecondary: $transyellow;
 
 
             @media (max-width: 480px) {
-                font-size: 18px;
+                font-size: 20px;
                 line-height: 24px;
                 bottom: 0;
-                left: 100px;
+                left: 150px;
                 white-space: normal;
             }
         }
