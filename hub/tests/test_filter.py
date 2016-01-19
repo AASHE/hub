@@ -37,7 +37,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             'topics': [self.topic.slug],
             'content_type': ['academicprogram'],
             'organizations': [self.org.pk],
-            'organization_type': 'Associate',
+            'organization_type': ['Associate'],
             'size': ['lt_5000'],
             'published': self.ct.published.year,
             # FIXME: If I provide a `country` filter argument, that filter is
@@ -72,14 +72,15 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         # The frontend does not list actual content types like "Academic
         # Program", it lists the Base classes, but there is an easy way to
         # fetch that one:
-        self.assertTrue(self.ct.contenttype_ptr in response.context['object_list'])
+        self.assertTrue(
+            self.ct.contenttype_ptr in response.context['object_list'])
 
     def test_org_type_filter(self):
         """
         Additional test for variable org_type filter
         """
 
-        _filter_data = {'organization_type': 'Business'}
+        _filter_data = {'organization_type': ['Business']}
         _filter_data.update(self.filter_data)
         self.client.login(**self.superuser_cred)
 
@@ -89,7 +90,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 1)
 
-        _filter_data['organization_type'] = 'System'
+        _filter_data['organization_type'] = ['System']
         response = self.client.get(self.url_search, _filter_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 0)

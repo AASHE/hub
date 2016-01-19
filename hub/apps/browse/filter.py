@@ -256,6 +256,11 @@ class ProgramTypeFilter(filters.ChoiceFilter):
 
 
 class OrgTypeFilter(filters.ChoiceFilter):
+    """
+    Filter on the organization type from the ISS
+    """
+    field_class = forms.fields.MultipleChoiceField
+
     def __init__(self, *args, **kwargs):
 
         self.carnegie_class_choices = [
@@ -276,22 +281,37 @@ class OrgTypeFilter(filters.ChoiceFilter):
         kwargs.update({
             'choices': self.carnegie_class_choices + self.type_choices,
             'label': 'Organization Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(OrgTypeFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if value:
-            # filter according to either carnegie or type
             cc_values = [x[0] for x in self.carnegie_class_choices]
             t_values = [x[0] for x in self.type_choices]
-            try:
-                carnegie_index = cc_values.index(value)
-                return qs.filter(organizations__carnegie_class=value)
-            except ValueError:
+            selected_cc_values = []
+            selected_t_values = []
+            for v in value:
+                # filter according to either carnegie or type
                 try:
-                    type_index = t_values.index(value)
-                    return qs.filter(organizations__org_type=value)
+                    carnegie_index = cc_values.index(v)
+                    selected_cc_values.append(v)
                 except ValueError:
-                    pass
+                    try:
+                        type_index = t_values.index(v)
+                        selected_t_values.append(v)
+                    except ValueError:
+                        pass
+
+            cc_kwargs = {
+                'organizations__carnegie_class__in': selected_cc_values}
+            t_kwargs = {'organizations__org_type__in': selected_t_values}
+
+            if selected_cc_values and selected_t_values:
+                return qs.filter(Q(**cc_kwargs) | Q(**t_kwargs))
+            elif selected_cc_values:
+                return qs.filter(**cc_kwargs)
+            else:
+                return qs.filter(**t_kwargs)
 
         return qs
