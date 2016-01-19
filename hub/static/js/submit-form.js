@@ -42,6 +42,41 @@ jQuery(document).ready(function() {
     });
 
     // -------------------------------------------------------------------------
+    // Tagging
+    // -------------------------------------------------------------------------
+    $('input[name*=tags]').selectize({
+        delimiter: ',',
+        persist: true,
+        create: function(input) {
+            return {
+                name: input,
+                text: input
+            }
+        },
+        valueField: 'name',
+        labelField: 'name',
+        searchField: 'name',
+        load: function(query, callback) {
+          if (!query.length || query.length <= 2) return callback();
+          $.ajax({
+              url: '/api/v1/tags/',
+              type: 'GET',
+              dataType: 'json',
+              data: {
+                  q: query
+              },
+              error: function() {
+                  callback();
+              },
+              success: function(res) {
+                  console.log("success!");
+                  callback(res);
+              }
+          });
+        }
+    });
+
+    // -------------------------------------------------------------------------
     // Initialize the in-line form buttons
     // -------------------------------------------------------------------------
     $('#add-author').djangoInlineFormAdd({

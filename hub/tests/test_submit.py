@@ -25,6 +25,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             # Document Form
             'document-title': 'My first Video',
             'document-affirmation': True,
+            'document-keywords': "tag1, tag2",
 
             'document-organizations': [
                 Organization.objects.create(account_num=1,
@@ -112,10 +113,10 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('document_form' in response.context)
 
-    def test_valid_video_with_no_formsets(self):
+    def test_valid_video_with_link_formset(self):
         """
         Create a new video and check that all its auto-related data is sane.
-        Videos are very simple, they only need a video_link and title set, and
+        Videos are very simple, they only need a link and title set, and
         we don't add much more than that here.
         """
         self.client.login(**self.user_cred)
@@ -143,6 +144,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.images.count(), 0)
         self.assertEqual(video.files.count(), 0)
         self.assertEqual(video.websites.count(), 1)
+        self.assertEqual(video.keywords.count(), 2)
 
     def test_valid_video_with_authors(self):
         """

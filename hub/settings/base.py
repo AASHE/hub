@@ -35,10 +35,10 @@ INSTALLED_APPS = (
     'aashe.aasheauth',
     'aashe_theme',
     'block_content',
-    # 'compressor',
     'haystack',
     'iss',
     'sorl.thumbnail',
+    'tagulous',
     'typogrify',
 
     'hub',
