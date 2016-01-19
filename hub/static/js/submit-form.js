@@ -32,7 +32,7 @@ jQuery(document).ready(function() {
     // -------------------------------------------------------------------------
     $('input[name*=keywords]').selectize({
         delimiter: ',',
-        persist: true,
+        persist: false,
         create: function(input) {
             return {
                 name: input,
