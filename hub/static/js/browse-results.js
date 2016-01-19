@@ -30,6 +30,7 @@ jQuery(document).ready(function() {
         $('.select-multiple-header span.show-all', $sel).click(function(){
             $sel.find('li:hidden').slideDown('fast');
             $(this).parent().find('.select-all').show();
+            $(this).parent().find('.hide-unselected').show();
             $(this).hide();
         });
 
@@ -44,6 +45,17 @@ jQuery(document).ready(function() {
             } else {
                 $ckb.attr('checked', true);
             }
+            console.log('here');
+        });
+
+        // Collapse button
+        $('.select-multiple-header span.hide-unselected', $sel).click(function(){
+            $sel.find('input[type=checkbox]:not(:checked)').each(function(){
+                $(this).closest('li').hide();
+            });
+            $(this).hide();
+            $(this).parent().find('.select-all').hide();
+            $('.select-multiple-header span.show-all', $sel).show();
         });
     });
 
