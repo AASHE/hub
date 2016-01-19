@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
         // Collapse button
         $('.select-multiple-header span.hide-unselected', $sel).click(function(){
             $sel.find('input[type=checkbox]:not(:checked)').each(function(){
-                $(this).closest('li').hide();
+                $(this).closest('li').slideUp('fast');
             });
             $(this).hide();
             $(this).parent().find('.select-all').hide();
