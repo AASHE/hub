@@ -4,26 +4,15 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from ..apps.metadata.models import Organization
+from ..apps.content.models import AcademicProgram
 
 
-class OrganizationsApiTestCase(TestCase):
-    """
-    Test the organization matching API.
-    """
-    def setUp(self):
-        self.api_url = reverse('api:organizations')
-        defaults = {'exclude_from_website': '0'}
-        self.org1 = Organization.objects.create(
-            account_num=1, org_name='Washington', enrollment_fte=2000, **defaults)
-        self.org2 = Organization.objects.create(
-            account_num=2, org_name='New York', enrollment_fte=4000, **defaults)
-        self.org3 = Organization.objects.create(
-            account_num=3, org_name='Los York', enrollment_fte=12000, **defaults)
+class BaseApiTestCase(TestCase):
 
     def _get_response(self, keyword):
         return self.client.get(self.api_url, data={'q': keyword})
 
-    def test_min_length(self):
+    def min_length_test(self):
         """
         The api keyword needs to be at least 2 characters long.
         """
@@ -35,6 +24,27 @@ class OrganizationsApiTestCase(TestCase):
 
         response = self._get_response('aa')
         self.assertEqual(response.status_code, 200)
+
+
+class OrganizationsApiTestCase(BaseApiTestCase):
+    """
+    Test the organization matching API.
+    """
+    def setUp(self):
+        self.api_url = reverse('api:organizations')
+        defaults = {'exclude_from_website': '0'}
+        self.org1 = Organization.objects.create(
+            account_num=1, org_name='Washington',
+            enrollment_fte=2000, **defaults)
+        self.org2 = Organization.objects.create(
+            account_num=2, org_name='New York',
+            enrollment_fte=4000, **defaults)
+        self.org3 = Organization.objects.create(
+            account_num=3, org_name='Los York',
+            enrollment_fte=12000, **defaults)
+
+    def test_min_length(self):
+        self.min_length_test()
 
     def test_json_and_matching(self):
         """
@@ -60,3 +70,30 @@ class OrganizationsApiTestCase(TestCase):
         # a list.
         for match in data:
             self.assertTrue(match['pk'] in (self.org2.pk, self.org3.pk))
+
+
+class KeywordsApiTestCase(BaseApiTestCase):
+    """
+    Test the keyword matching API.
+    """
+    def setUp(self):
+        self.api_url = reverse('api:tags_autocomplete')
+        self.ap = AcademicProgram.objects.create(
+            title="Testing", status=AcademicProgram.STATUS_CHOICES.published)
+        self.ap.keywords.add("pizza")
+
+    def test_min_length(self):
+        self.min_length_test()
+
+    def test_api_endpoint(self):
+        """
+        Confirm that the keyword is found
+        """
+        response = self._get_response('pi')
+        self.assertEqual(response.status_code, 200)
+
+        # If it's not JSON it fails here
+        data = loads(response.content)
+
+        # The respons includes pizza
+        self.assertEqual(data[0]['name'], 'pizza')

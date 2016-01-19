@@ -86,6 +86,7 @@ class TagsApiView(AutoCompleteView):
         return 'api_tags_{}'.format(slugify(self.q))
 
     def get_data(self):
+        # @todo: should we limit this to only tags on published contenttypes?
         qs = ContentType.keywords.tag_model.objects.values('pk', 'name').distinct('name')
         # data = (Organization.objects.values('pk', 'org_name')
         qs = qs.filter(name__icontains=self.q)
