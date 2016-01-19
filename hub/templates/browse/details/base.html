@@ -72,7 +72,13 @@
                             {% for t in object.disciplines.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
                         {% endif %}
 
-                        {% include "browse/details/includes/meta.html" with label="Keywords" value=object.keywords %}
+                        <div>
+                            <strong>Keywords:</strong>
+                            {% for kw in object.keywords.all %}
+                                <a href="{% url "browse:browse" %}?search={{ kw.name }}">
+                                {{ kw }}</a>{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        </div>
 
                         {% block resource_metadata %}{% endblock %}
 
