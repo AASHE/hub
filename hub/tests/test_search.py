@@ -12,9 +12,11 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
     Tests around the search backend behavior.
     """
     def _create_video_item(self, title, published=False, **kwargs):
-        status = (published and TestContentType.STATUS_CHOICES.published or
-                                TestContentType.STATUS_CHOICES.new)
-        return TestContentType.objects.create(title=title, status=status, **kwargs)
+        status = (
+            published and TestContentType.STATUS_CHOICES.published or
+            TestContentType.STATUS_CHOICES.new)
+        return TestContentType.objects.create(
+            title=title, status=status, **kwargs)
 
     def test_unpublished_item_is_not_indexed(self):
         """
@@ -56,7 +58,8 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
 
         # One item is in the search index
         self.assertEqual(SearchQuerySet().filter(text=Raw('diver')).count(), 0)
-        self.assertEqual(SearchQuerySet().filter(text=Raw('diver*')).count(), 1)
+        self.assertEqual(
+            SearchQuerySet().filter(text=Raw('diver*')).count(), 1)
 
     def test_multiple_items_are_properly_indexed(self):
         """
@@ -69,3 +72,13 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
 
         # 'first' only returns two elements
         self.assertEqual(SearchQuerySet().filter(text=Raw('first')).count(), 2)
+
+    def test_keyword_tags_are_properly_indexed(self):
+        vid = self._create_video_item(
+            'another test item', True)
+        vid.keywords.add('figure')
+
+        self._rebuild_index()
+
+        self.assertEqual(SearchQuerySet().filter(
+            text=Raw('figure')).count(), 1)

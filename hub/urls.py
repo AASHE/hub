@@ -3,9 +3,13 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+from .apps.content.models import ContentType
+from .apps.browse.views import HomeView
+
 from aashe.aasheauth.views import login, logout
 
-from .apps.browse.views import HomeView
+from tagulous.views import autocomplete
+
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),

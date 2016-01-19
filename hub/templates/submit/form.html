@@ -23,15 +23,15 @@
     <script src="{% static 'vendor/jquery-django-inline-form/django-inline-form.js' %}"></script>
     <script src="{% static 'js/selectize-required-options.js' %}"></script>
 
-    {% if content_type_class.preset_topics %}
     <script type="text/javascript">
         var preset_topics = [
+        {% if content_type_class.preset_topics %}
         {% for t in content_type_class.preset_topics %}
             "{{ t.id }}",
         {% endfor %}
+        {% endif %}
         ];
     </script>
-    {% endif %}
 {% endblock %}
 
 {% block page %}

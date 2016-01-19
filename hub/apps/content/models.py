@@ -4,6 +4,7 @@ import os
 
 from logging import getLogger
 from collections import OrderedDict
+import tagulous
 
 from django.db import models
 from django.conf import settings
@@ -94,8 +95,8 @@ class ContentType(TimeStampedModel):
         help_text='''Only include if an office or division on campus is/was
         directly involved in the case study. Select up to three.''')
 
-    keywords = models.TextField(
-        'Keywords', blank=True, null=True,
+    keywords = tagulous.models.TagField(
+        blank=True,
         help_text="""Enter keywords that will be helpful for locating this
         resource (e.g. "bottled water" for bottled water initiatives).""")
 

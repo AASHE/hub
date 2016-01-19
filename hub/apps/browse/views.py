@@ -14,6 +14,8 @@ from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
 from .filterset import GenericFilterSet
 
+from tagulous.views import autocomplete
+
 logger = getLogger(__name__)
 
 
@@ -270,3 +272,13 @@ class ResourceView(DetailView):
         except ObjectDoesNotExist:
             raise Http404('Resource not found')
         return obj
+
+
+def autocomplete_tags(request):
+    """
+        The tags autocomplete view
+    """
+    return autocomplete(
+        request,
+        ContentType.tags.tag_model.objects.all().distinct()
+    )

@@ -8,6 +8,7 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.template.defaultfilters import slugify
 
 from ..metadata.models import Organization
+from ..content.models import ContentType
 
 logger = getLogger(__name__)
 
@@ -37,15 +38,7 @@ class BaseApiView(View):
         return data
 
 
-class OrganizationsApiView(BaseApiView):
-    """
-    Returns a list of organizations matching a given `q` keyword.
-    """
-    cache = True
-
-    # API view specific
-    max_num_results = 50
-    min_keyword_length = 2
+class AutoCompleteView(BaseApiView):
 
     def get(self, request, *args, **kwargs):
         """
@@ -57,7 +50,18 @@ class OrganizationsApiView(BaseApiView):
         if len(self.q) < self.min_keyword_length:
             return HttpResponseBadRequest('Search term must be at least {} '
                 'characters long.'.format(self.min_keyword_length))
-        return super(OrganizationsApiView, self).get(request, *args, **kwargs)
+        return super(AutoCompleteView, self).get(request, *args, **kwargs)
+
+
+class OrganizationsApiView(AutoCompleteView):
+    """
+    Returns a list of organizations matching a given `q` keyword.
+    """
+    cache = True
+
+    # API view specific
+    max_num_results = 50
+    min_keyword_length = 2
 
     def get_cache_key(self):
         return 'api_organizations_{}'.format(slugify(self.q))
@@ -66,3 +70,23 @@ class OrganizationsApiView(BaseApiView):
         data = (Organization.objects.values('pk', 'org_name')
             .filter(org_name__icontains=self.q))
         return list(data)
+
+
+class TagsApiView(AutoCompleteView):
+    """
+    Returns a list of tags matching a given `q` keyword.
+    """
+    cache = True
+
+    # API view specific
+    max_num_results = 50
+    min_keyword_length = 2
+
+    def get_cache_key(self):
+        return 'api_tags_{}'.format(slugify(self.q))
+
+    def get_data(self):
+        qs = ContentType.tags.tag_model.objects.values('pk', 'name').distinct('name')
+        # data = (Organization.objects.values('pk', 'org_name')
+        qs = qs.filter(name__icontains=self.q)
+        return list(qs)
