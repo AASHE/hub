@@ -28,20 +28,6 @@ jQuery(document).ready(function() {
     }
 
     // -------------------------------------------------------------------------
-    // Keywords (like tags)
-    // -------------------------------------------------------------------------
-    // $('textarea[name$=keywords]').selectize({
-    //     delimiter: ',',
-    //     persist: false,
-    //     create: function(input) {
-    //         return {
-    //             value: input,
-    //             text: input
-    //         }
-    //     }
-    // });
-
-    // -------------------------------------------------------------------------
     // Tagging (Keywords)
     // -------------------------------------------------------------------------
     $('input[name*=keywords]').selectize({
