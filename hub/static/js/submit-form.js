@@ -30,21 +30,21 @@ jQuery(document).ready(function() {
     // -------------------------------------------------------------------------
     // Keywords (like tags)
     // -------------------------------------------------------------------------
-    $('textarea[name$=keywords]').selectize({
-        delimiter: ',',
-        persist: false,
-        create: function(input) {
-            return {
-                value: input,
-                text: input
-            }
-        }
-    });
+    // $('textarea[name$=keywords]').selectize({
+    //     delimiter: ',',
+    //     persist: false,
+    //     create: function(input) {
+    //         return {
+    //             value: input,
+    //             text: input
+    //         }
+    //     }
+    // });
 
     // -------------------------------------------------------------------------
-    // Tagging
+    // Tagging (Keywords)
     // -------------------------------------------------------------------------
-    $('input[name*=tags]').selectize({
+    $('input[name*=keywords]').selectize({
         delimiter: ',',
         persist: true,
         create: function(input) {
