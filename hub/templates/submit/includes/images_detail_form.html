@@ -1,14 +1,14 @@
 {% load browse_tags %}
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         {% render_form form "caption" %}
-    </div>
-    <div class="col-md-6">
-        {% render_form form "credit" %}
     </div>
 </div>
 <div class="row">
+    <div class="col-md-12">
+        {% render_form form "credit" %}
+    </div>
     <div class="col-md-12">
         {% render_form form "image" %}
     </div>
