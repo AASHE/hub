@@ -15,19 +15,14 @@
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-        <div class="row">
         {% for slug, class in content_type_list.items %}
             <div class="col-md-3 col-sm-6">
                 <a href="{% url "submit:form" ct=slug %}"
-                    class="resource-button service-block service-block-sea service-or">
-                    <div class="service-bg"></div>
+                    class="resource-button service-block">
                     {{ class.content_type_label }}
                 </a>
             </div>
         {% endfor %}
-        </div>
-    </div>
 </div>
 
 <div class="row">
