@@ -49,8 +49,8 @@
         </div>
         <div class="col-md-9">
             <span class="results-number">
-                {{ object_list.count }} result{{ object_list.count|pluralize }}
-                {% if request.GET and not request.GET.search%} | <a href=".?show-all">Show all</a>{% endif %}
+                {{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}
+                <!-- {% if request.GET and not request.GET.search%} | <a href=".?show-all">Show all</a>{% endif %} -->
             </span>
           {% block result_list %}
             {% for obj in object_list %}

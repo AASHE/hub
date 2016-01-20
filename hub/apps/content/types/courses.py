@@ -39,6 +39,11 @@ class Material(ContentType):
         return required_list
 
     @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import MaterialBrowseFilterSet
+        return MaterialBrowseFilterSet
+
+    @classmethod
     def required_metadata(cls):
         return {
             'website': {'max': 5, 'min': 0},  # optional, up to 5
