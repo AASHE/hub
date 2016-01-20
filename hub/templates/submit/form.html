@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load browse_tags %}
+{% load block_content %}
 
 {% block title %}Submit a {{ content_type_label }} - {{ block.super }}{% endblock %}
 
@@ -46,6 +47,9 @@
                     <i class="fa  fa-check-circle-o"></i>
                     Submit a new {{ content_type_label }}
                 </header>
+                {% with slug|add:"_submit_form" as key %}
+                {% block_content key %}
+                {% endwith %}
                 {% if errors %}
                   <div class="alert alert-warning fade in">
                     <i class="fa fa-arrow-down"></i>

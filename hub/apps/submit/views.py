@@ -90,6 +90,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
             'content_type_label': self.content_type_class._meta.verbose_name,
             'label_overrides': self.content_type_class.label_overrides(),
             'content_type_class': self.content_type_class,
+            'slug': self.content_type_class.slug,
         })
         return ctx
 
