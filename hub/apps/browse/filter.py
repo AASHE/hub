@@ -12,7 +12,7 @@ from django.utils.timezone import now
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
-from ..content.models import CONTENT_TYPES, ContentType
+from ..content.models import CONTENT_TYPES, ContentType, Material
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
@@ -314,4 +314,48 @@ class OrgTypeFilter(filters.ChoiceFilter):
             else:
                 return qs.filter(**t_kwargs)
 
+        return qs
+
+
+class MaterialTypeFilter(filters.ChoiceFilter):
+    """
+    Filter a course Material by type
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+
+        kwargs.update({
+            'choices': Material.MATERIAL_TYPE_CHOICES,
+            'label': 'Material Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(MaterialTypeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if value:
+            return qs.filter(pk__in=Material.objects.filter(
+                material_type__in=value).values_list('pk', flat=True))
+        return qs
+
+
+class CourseLevelFilter(filters.ChoiceFilter):
+    """
+    Filter a course Material on level
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+
+        kwargs.update({
+            'choices': Material.LEVEL_CHOICES,
+            'label': 'Course Level',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(CourseLevelFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if value:
+            return qs.filter(pk__in=Material.objects.filter(
+                course_level__in=value).values_list('pk', flat=True))
         return qs

@@ -28,3 +28,8 @@ class GenericFilterSet(filters.FilterSet):
 
 class AcademicBrowseFilterSet(GenericFilterSet):
     program_type = ProgramTypeFilter()
+
+
+class MaterialBrowseFilterSet(GenericFilterSet):
+    material_type = MaterialTypeFilter()
+    course_level = CourseLevelFilter()

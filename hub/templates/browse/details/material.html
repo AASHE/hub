@@ -4,9 +4,15 @@
 
 {% block resource_metadata %}
     <div class="margin-bottom-10"></div>
-    {% include "browse/details/includes/meta.html" with label="Material Type" value=object.get_material_type_display %}
+    <div><strong>Material Type:</strong>
+        <a href="{% url "browse:browse" ct=object.content_type %}?material_type={{ object.material_type }}">
+            {{ object.get_material_type_display }}</a>
+    </div>
     {% include "browse/details/includes/meta.html" with label="Course Name" value=object.course_name %}
-    {% include "browse/details/includes/meta.html" with label="Course Level" value=object.course_level %}
+    <div><strong>Course Level:</strong>
+        <a href="{% url "browse:browse" ct=object.content_type %}?course_level={{ object.course_level }}">
+            {{ object.course_level }}</a>
+    </div>
 {% endblock %}
 
 
@@ -23,4 +29,3 @@
     </div>
     {% endif %}
 {% endblock %}
-
