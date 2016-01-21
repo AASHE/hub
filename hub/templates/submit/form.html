@@ -47,7 +47,7 @@
                     <i class="fa  fa-check-circle-o"></i>
                     Submit a new {{ content_type_label }}
                 </header>
-                {% with slug|add:"_submit_form" as key %}
+                {% with content_type_slug|add:"_submit_form" as key %}
                 {% block_content key %}
                 {% endwith %}
                 {% if errors %}
