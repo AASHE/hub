@@ -180,6 +180,7 @@ class BrowseView(ListView):
             'content_type': self.content_type_class,
             'content_type_list': CONTENT_TYPES,
             'page_title': self.get_title(),
+            'content_type_slug': self.kwargs.get('ct'),
         })
 
         # Additional toolkit content for topic views

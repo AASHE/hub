@@ -3,6 +3,11 @@
 {% load static %}
 {% load block_content %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li>Logged Out</li>
+{% endblock %}
+
 {% block title %}Logged out - {{ block.super }}{% endblock %}
 
 {% block css %}
