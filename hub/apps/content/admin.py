@@ -78,6 +78,7 @@ class AllContentTypesAdmin(BaseContentTypeAdmin):
     list_display = ('select_link', 'status', 'object_link',
                     'content_type_name', 'created', 'published', 'notes')
     list_filter = ('status', 'topics', 'permission', 'created', 'published',)
+    list_sort = ('object_link', 'content_type_name',)
     list_display_links = ('select_link',)
     actions_on_top = True
     actions_on_bottom = False
@@ -97,10 +98,12 @@ class AllContentTypesAdmin(BaseContentTypeAdmin):
                     args=[getattr(obj, ct_name).pk]), obj.title)
     object_link.allow_tags = True
     object_link.short_description = 'Edit object'
+    object_link.admin_order_field = 'slug'
 
     def content_type_name(self, obj):
         return CONTENT_TYPES[obj.content_type]._meta.verbose_name
     content_type_name.short_description = 'Content Type'
+    content_type_name.admin_order_field = 'content_type'
 
     STATUS_CHOICES = Choices(
         ('new', 'New'),
