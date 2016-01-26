@@ -7,6 +7,16 @@
 {% load thumbnail %}
 {% load typogrify_tags %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li>
+        <a href="{% url "browse:browse" ct=object.content_type %}">{{ object.content_type_label }}</a>
+    </li>
+    <li>
+        <a href={{ object.get_absolute_url }}>{{ object.title|titlecase }}</a>
+    </li>
+{% endblock %}
+
 {% block css %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/fancybox/source/jquery.fancybox.css' %}">
