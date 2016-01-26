@@ -3,6 +3,19 @@
 {% load browse_tags %}
 {% load static %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li>
+        {% if topic %}
+            <a href="{% url "browse:browse" topic=topic.slug %}">{{ topic.name }}</a>
+        {% elif content_type %}
+            <a href="{% url "browse:browse" ct=content_type_slug %}">{{ content_type.content_type_label }}</a>
+        {% else %}
+            Search
+        {% endif %}
+    </li>
+{% endblock %}
+
 {% block title %}
     {% if topic %}
         {{ topic.name }}

@@ -4,6 +4,13 @@
 {% load browse_tags %}
 {% load block_content %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li>
+        <a href="{% url "submit:form" ct=content_type_slug %}">{{ content_type_label }}</a>
+    </li>
+{% endblock %}
+
 {% block title %}Submit a {{ content_type_label }} - {{ block.super }}{% endblock %}
 
 {% block body_class %}page-submit-form{% endblock %}
