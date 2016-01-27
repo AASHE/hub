@@ -55,10 +55,12 @@
                             </a>
                         {% endif %}
                         <h2>{{ object.title|titlecase }}</h2>
+                        <h4>
                         {% for org in object.organizations.all %}
                             <a href="{% url 'browse:browse' %}?organizations={{org.pk}}">
                             {{ org.org_name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
+                        </h4>
                     </div>
                     <div class="panel-body">
 
@@ -83,7 +85,7 @@
                         {% endif %}
 
                         <div>
-                            <strong>Keywords:</strong>
+                            <strong>Tags:</strong>
                             {% for kw in object.keywords.all %}
                                 <a href="{% url "browse:browse" %}?search={{ kw.name }}">
                                 {{ kw }}</a>{% if not forloop.last %},{% endif %}
@@ -92,12 +94,18 @@
 
                         {% block resource_metadata %}{% endblock %}
 
-                        {% if object.description %}
-                        <hr>
-                        {{ object.description|apply_markup:"markdown" }}
-                        {% endif %}
                     </div>
                 </div>
+
+                {% if object.description %}
+                <div class="margin-bottom-30"></div>
+                <div class="panel panel-profile">
+                    <div class="panel-heading overflow-h">
+                        <h2 class="panel-title heading-sm pull-left">{{ label_overrides.description|default:"Description" }}</h2>
+                    </div>
+                    <div class="panel-body">{{ object.description|apply_markup:"markdown" }}</div>
+                </div>
+                {% endif %}
 
                 {% block resource_content %}
                 {% endblock %}
@@ -108,7 +116,7 @@
                 <hr>
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
-                        <h2 class="panel-title heading-sm pull-left"><i class="icon icon-user"></i> Authors</h2>
+                        <h2 class="panel-title heading-sm pull-left"><i class="icon icon-user"></i> {{ label_overrides.authors|default:"Authors" }}</h2>
                     </div>
                     <div class="panel-body">
                         <ul class="list-unstyled social-contacts-v3">

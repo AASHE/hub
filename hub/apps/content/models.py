@@ -96,6 +96,7 @@ class ContentType(TimeStampedModel):
         directly involved in the case study. Select up to three.''')
 
     keywords = tagulous.models.TagField(
+        verbose_name='Tags',
         blank=True,
         help_text="""Enter keywords that will be helpful for locating this
         resource (e.g. "bottled water" for bottled water initiatives).""")

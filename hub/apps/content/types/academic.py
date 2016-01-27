@@ -45,7 +45,7 @@ class AcademicProgram(ContentType):
             'title': 'Program Name',
             'description': 'Description or Abstract',
             'author': 'Presenter',
-            'author_plural': 'Presenters',
+            'authors': 'Presenters',
         }
 
     @classmethod
