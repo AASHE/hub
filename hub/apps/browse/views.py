@@ -274,6 +274,13 @@ class ResourceView(DetailView):
             raise Http404('Resource not found')
         return obj
 
+    def get_context_data(self, **kwargs):
+        ctx = super(ResourceView, self).get_context_data(**kwargs)
+        ctx.update({
+            'label_overrides': self.object.label_overrides(),
+        })
+        return ctx
+
 
 def autocomplete_tags(request):
     """
