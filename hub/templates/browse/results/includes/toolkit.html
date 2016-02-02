@@ -50,7 +50,7 @@
         <div class="panel-body">
             <ul class="list-unstyled social-contacts-v2">
                 {% for n in news_list %}
-                <li><a href="{{ n.link }}">{{ n.title|titlecase }}</a></li>
+                  <li><a href="{{ n.link }}">{{ n.title|safe|titlecase }}</a></li>
                 {% endfor %}
             </ul>
         </div>
