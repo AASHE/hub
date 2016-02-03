@@ -88,6 +88,10 @@ class SustainabilityTopicFavorite(TimeStampedModel):
     topic = models.ForeignKey(
         SustainabilityTopic, verbose_name='Sustainability Topic')
     ct = models.ForeignKey('content.ContentType', verbose_name='Content Type')
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ('order',)
 
     def __str__(self):
         return '{} in {}'.format(self.ct, self.topic)

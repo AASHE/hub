@@ -1,9 +1,12 @@
 from django.contrib import admin
 from . import models
 
+
 class SustainabilityTopicFavoriteAdmin(admin.TabularInline):
     model = models.SustainabilityTopicFavorite
     raw_id_fields = ('ct',)
+    list_display = ('order',)
+    list_editable = ('order',)
     extra = 0
 
 
