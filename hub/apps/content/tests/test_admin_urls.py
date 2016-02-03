@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-from django.test import TestCase
-
+from django.test import TestCase, Client
+from django.core.urlresolvers import reverse
 from datetime import datetime
 
 from hub.apps.content.models import (
@@ -19,6 +19,14 @@ from ...metadata.models import (
     Organization,
     SustainabilityTopic,
     InstitutionalOffice)
+from hub.apps.content.admin import (
+    BaseContentTypeAdmin,
+    SpecificContentTypeAdmin,
+    AllContentTypesAdmin)
+from hub.apps.content.models import ContentType
+from django.contrib.admin.sites import AdminSite
+from django.test.client import RequestFactory
+from django.contrib.messages.storage.fallback import FallbackStorage
 
 
 class AdminURLTestCase(TestCase):
@@ -63,6 +71,7 @@ class AdminURLTestCase(TestCase):
                 'date': datetime.now()
             }
         }
+        self.client = Client()
 
     def test_admin_urls(self):
         """
@@ -78,3 +87,44 @@ class AdminURLTestCase(TestCase):
             ct = klass.objects.create(**prop_dict)
             # just make sure no exceptions are raised
             url = ct.get_admin_url()
+
+    def test_admin_content_functions(self):
+        """
+        Verify that the admin actions successfully publish, unpublish, and decline content.
+        """
+        # Need a user object to avoid errors when utils.send_resource_* methods are called upon success
+        user = User.objects.create_user('test_user', email='test@aashe.org')
+        # Set that user as submitted_by for our test content piece
+        content = Video.objects.create(submitted_by=user)
+        # Verify this was all set up with the correct attribute values
+        self.assertEqual(content.status, 'new')
+        self.assertEqual(content.submitted_by.email, 'test@aashe.org')
+
+        # Create the request object needed as argument for admin methods
+        request = RequestFactory().get('/admin/content/contenttype/')
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        # Instantiate admin site so we can call its methods directly
+        content_admin = AllContentTypesAdmin(ContentType, AdminSite())
+
+        # Test Publish Action (need to retrieve queryset to operate on first)
+        queryset = Video.objects.filter(pk=1)
+        self.assertTrue(queryset)
+        content_admin.publish(request, queryset)
+        queryset = Video.objects.filter(pk=1)
+        self.assertTrue(queryset)
+        self.assertEqual(queryset[0].status, 'published')
+
+        # Test Unpublish Action (status is already 'published' and queryset loaded)
+        content_admin.unpublish(request, queryset)
+        queryset = Video.objects.filter(pk=1)
+        self.assertTrue(queryset)
+        self.assertEqual(queryset[0].status, 'new')
+
+        # Test Decline Action (status already 'new' and queryset loaded)
+        content_admin.decline(request, queryset)
+        queryset = Video.objects.filter(pk=1)
+        self.assertTrue(queryset)
+        self.assertEqual(queryset[0].status, 'declined')

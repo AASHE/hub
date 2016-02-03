@@ -42,7 +42,7 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
                 utils.send_resource_declined_email(obj, request)
 
 
-class SpecificContentType(BaseContentTypeAdmin):
+class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     list_display = ('__unicode__', 'permission', 'published', 'notes')
     list_filter = ('status', 'permission', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
