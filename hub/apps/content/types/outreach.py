@@ -8,13 +8,14 @@ from ..help import AFFIRMATION, FILE_UPLOAD
 
 class OutreachMaterial(ContentType):
     TYPE_CHOICES = Choices(
-        ('logo', 'Logo'),
-        ('signs/poster', 'Signs/Poster'),
-        ('sticker', 'Sticker'),
         ('flyer', 'Flyer/Brochure'),
         ('guide', 'Guide'),
+        ('infographics', 'Infographics'),
+        ('logo', 'Logo'),
         ('map', 'Map'),
         ('other', 'Other'),
+        ('signs/poster', 'Signs/Poster'),
+        ('sticker', 'Sticker'),
     )
 
     _type = models.CharField(max_length=40, choices=TYPE_CHOICES, blank=True, null=True,
