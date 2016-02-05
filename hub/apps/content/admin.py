@@ -5,6 +5,8 @@ from django.core.urlresolvers import reverse
 
 from . import utils
 from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
+from django.utils import timezone
+from model_utils import Choices
 
 
 class AuthorInline(admin.TabularInline):
@@ -29,6 +31,18 @@ class ImageInline(admin.TabularInline):
 
 
 class BaseContentTypeAdmin(admin.ModelAdmin):
+
+    def save_model(self, request, obj, form, change):
+        status_tracker_changed = obj.status_tracker.changed()  # before save
+        obj.save()
+        if status_tracker_changed:
+            if obj.status == obj.STATUS_CHOICES.published:
+                utils.send_resource_approved_email(obj, request)
+            elif obj.status == obj.STATUS_CHOICES.declined:
+                utils.send_resource_declined_email(obj, request)
+
+
+class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     list_display = ('__unicode__', 'permission', 'published', 'notes')
     list_filter = ('status', 'permission', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
@@ -59,22 +73,14 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
                                                                  obj_display,
                                                                  obj_id)
 
-    def save_model(self, request, obj, form, change):
-        status_tracker_changed = obj.status_tracker.changed()  # before save
-        obj.save()
-        if status_tracker_changed:
-            if obj.status == obj.STATUS_CHOICES.published:
-                utils.send_resource_approved_email(obj, request)
-            elif obj.status == obj.STATUS_CHOICES.declined:
-                utils.send_resource_declined_email(obj, request)
 
-
-class AllContentTypesAdmin(admin.ModelAdmin):
+class AllContentTypesAdmin(BaseContentTypeAdmin):
     list_display = ('select_link', 'status', 'object_link',
                     'content_type_name', 'created', 'published', 'notes')
     list_filter = ('status', 'topics', 'permission', 'created', 'published',)
+    list_sort = ('object_link', 'content_type_name',)
     list_display_links = ('select_link',)
-    actions_on_top = False
+    actions_on_top = True
     actions_on_bottom = False
 
     def has_add_permission(self, request):
@@ -92,11 +98,50 @@ class AllContentTypesAdmin(admin.ModelAdmin):
                     args=[getattr(obj, ct_name).pk]), obj.title)
     object_link.allow_tags = True
     object_link.short_description = 'Edit object'
+    object_link.admin_order_field = 'slug'
 
     def content_type_name(self, obj):
         return CONTENT_TYPES[obj.content_type]._meta.verbose_name
     content_type_name.short_description = 'Content Type'
+    content_type_name.admin_order_field = 'content_type'
 
+    STATUS_CHOICES = Choices(
+        ('new', 'New'),
+        ('published', 'Published'),
+        ('declined', 'Declined')
+    )
+
+    def change_status(self, request, queryset, new_status):
+        # changes the status of selected content to `new_status`
+        for obj in queryset:
+            # Need to retrieve the child instance first
+            child_class = CONTENT_TYPES[obj.content_type]
+            obj = child_class.objects.get(pk=obj.pk)
+            obj.status = new_status
+            self.save_model(self, obj=obj, form=None, change=None)
+        if len(queryset) == 1:
+            message_bit = "1 item was"
+        else:
+            message_bit = "%s items were" % len(queryset)
+        self.message_user(
+            request, "%s changed to status: %s" % (message_bit, new_status))
+
+    def publish(self, request, queryset):
+        # Changes status of selected content to "Published"
+        self.change_status(request, queryset, self.STATUS_CHOICES.published)
+    publish.short_description = 'Publish selected content'
+
+    def unpublish(self, request, queryset):
+        # Resets status of content to "New"
+        self.change_status(request, queryset, self.STATUS_CHOICES.new)
+    unpublish.short_description = 'Unpublish selected content'
+
+    def decline(self, request, queryset):
+        # Changes status of selected content to "Declined"
+        self.change_status(request, queryset, self.STATUS_CHOICES.declined)
+    decline.short_description = 'Decline selected content'
+
+    actions = [publish, unpublish, decline]
 
 admin.site.register(ContentType, AllContentTypesAdmin)
 
