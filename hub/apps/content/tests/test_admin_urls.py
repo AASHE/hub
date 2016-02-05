@@ -1,6 +1,11 @@
+from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.contrib.messages.storage.fallback import FallbackStorage
+from django.core import mail
 from django.core.urlresolvers import reverse
+from django.test import TestCase, Client
+from django.test.client import RequestFactory
+
 from datetime import datetime
 
 from hub.apps.content.models import (
@@ -24,9 +29,6 @@ from hub.apps.content.admin import (
     SpecificContentTypeAdmin,
     AllContentTypesAdmin)
 from hub.apps.content.models import ContentType
-from django.contrib.admin.sites import AdminSite
-from django.test.client import RequestFactory
-from django.contrib.messages.storage.fallback import FallbackStorage
 
 
 class AdminURLTestCase(TestCase):
@@ -90,9 +92,11 @@ class AdminURLTestCase(TestCase):
 
     def test_admin_content_functions(self):
         """
-        Verify that the admin actions successfully publish, unpublish, and decline content.
+        Verify that the admin actions successfully
+        publish, unpublish, and decline content.
         """
-        # Need a user object to avoid errors when utils.send_resource_* methods are called upon success
+        # Need a user object to avoid errors when utils.send_resource_* methods
+        # are called upon success
         user = User.objects.create_user('test_user', email='test@aashe.org')
         # Set that user as submitted_by for our test content piece
         content = Video.objects.create(submitted_by=user)
@@ -116,8 +120,11 @@ class AdminURLTestCase(TestCase):
         queryset = Video.objects.filter(pk=1)
         self.assertTrue(queryset)
         self.assertEqual(queryset[0].status, 'published')
+        self.assertEqual(1, len(mail.outbox))
+        self.assertTrue("Content type: Videos" in mail.outbox[0].body)
 
-        # Test Unpublish Action (status is already 'published' and queryset loaded)
+        # Test Unpublish Action
+        # (status is already 'published' and queryset loaded)
         content_admin.unpublish(request, queryset)
         queryset = Video.objects.filter(pk=1)
         self.assertTrue(queryset)
@@ -128,3 +135,5 @@ class AdminURLTestCase(TestCase):
         queryset = Video.objects.filter(pk=1)
         self.assertTrue(queryset)
         self.assertEqual(queryset[0].status, 'declined')
+        self.assertEqual(2, len(mail.outbox))
+        self.assertTrue("Content type: Videos" in mail.outbox[1].body)
