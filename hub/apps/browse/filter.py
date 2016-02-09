@@ -134,10 +134,12 @@ class CountryFilter(filters.ChoiceFilter):
         # We might want to use caching
 
         # countries = (Organization.objects.country_list())
-        qs = ContentType.objects.published().values_list(
+        qs = ContentType.objects.published().order_by('organizations__country')
+        qs = qs.values_list(
             'organizations__country_iso',
             'organizations__country').distinct()
-        countries = ALL + tuple([c for c in qs if c[0] is not None])
+        countries = ALL + tuple(
+            [c for c in qs if (c[0] is not None and c[0] is not '')])
         kwargs.update({
             'choices': countries,
             'label': 'Country/ies',
@@ -150,26 +152,39 @@ class CountryFilter(filters.ChoiceFilter):
         return qs.filter(organizations__country_iso=value)
 
 
-class StateFilter(filters.ChoiceFilter):
+class BaseStateFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
-        states = (
-            ('United States', US_STATES),
-            ('Canada', CA_PROVINCES),
-        )
-
         kwargs.update({
-            'choices': states,
-            'label': 'State(s) or Province(s)',
+            'choices': self.get_choices(),
+            'label': self.get_label(),
             'widget': forms.widgets.CheckboxSelectMultiple,
         })
-        super(StateFilter, self).__init__(*args, **kwargs)
+        super(BaseStateFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if not value:
             return qs
         return qs.filter(organizations__state__in=value)
+
+
+class StateFilter(BaseStateFilter):
+
+    def get_choices(self):
+        return US_STATES
+
+    def get_label(self):
+        return 'State(s)'
+
+
+class ProvinceFilter(BaseStateFilter):
+
+    def get_choices(self):
+        return CA_PROVINCES
+
+    def get_label(self):
+        return 'Province(s)'
 
 
 class PublishedFilter(filters.ChoiceFilter):

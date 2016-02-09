@@ -17,6 +17,7 @@ class GenericFilterSet(filters.FilterSet):
     published = PublishedFilter()
     country = CountryFilter(required=False)
     state = StateFilter(required=False)
+    province = ProvinceFilter(required=False)
     order = OrderingFilter()
 
     class Meta:
