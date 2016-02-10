@@ -122,7 +122,7 @@
                         <ul class="list-unstyled social-contacts-v3">
                             {% for author in object.authors.all %}
                             <li>
-                                <i class="rounded-x tw icon icon-user"></i>
+                                <i class="icon-bg-blue rounded-x tw icon icon-user"></i>
                                 <strong>
                                     {% if author.email %}<a href="mailto:{{ author.email }}">{% endif %}
                                     {{ author.name }}
