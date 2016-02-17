@@ -11,10 +11,12 @@
 {% block breadcrumbs %}
   {{ block.super }}
   <li>
-    <a href="{{ request.get_full_path }}">{{ flatpage.title }}</a>
+    <a href="{{ flatpage.url }}">{{ flatpage.title }}</a>
   </li>
 {% endblock %}
 
 {% block page %}
-  {{ flatpage.content|apply_markup:"markdown" }}
+  <div class="col-md-offset-2 col-md-8">
+    {{ flatpage.content|apply_markup:"markdown" }}
+  </div>
 {% endblock %}
