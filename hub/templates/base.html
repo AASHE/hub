@@ -1,129 +1,113 @@
+{% extends 'aashe_theme/base.html' %}
+
 {% load static from staticfiles %}
 {% load block_content %}
 
-<!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
-<head>
-{% block head %}
-  <title>{% block title %}AASHE Campus Sustainability Hub{% endblock %}</title>
+{% block title %}AASHE Campus Sustainability Hub{% endblock %}
 
-  <!-- Meta -->
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <meta content="{% block meta_description %}{% endblock %}" name="description"/>
-  <meta content="" name="author"/>
+{% block css %}
+  {{ block.super }}
+  <!-- CSS Plugins -->
+  <link rel="stylesheet" href="{% static "vendor/selectize/css/selectize.css" %}"/>
+  <!-- CSS App Level -->
+  <link rel="stylesheet" href="{% static "css/base.css" %}"/>
+{% endblock css %}
 
-  <link rel="shortcut icon" href="{% static "img/favicon.ico" %}"/>
-
-  {% block css %}
-    <!-- CSS Theme -->
-    {% include 'aashe_theme/styles.html' %}
-    <!-- CSS Plugins -->
-    <link rel="stylesheet" href="{% static "vendor/selectize/css/selectize.css" %}"/>
-    <!-- CSS App Level -->
-    <link rel="stylesheet" href="{% static "css/base.css" %}"/>
-  {% endblock css %}
-{% endblock %}
-</head>
-
-<body class="{% block body_class %}{% endblock %}">
-
-  <div class="wrapper">
-    <div class="header">
-      <!-- Header -->
-      <div class="container">
-        <div class="row top-nav">
-          <div class="col-md-8 col-sm-12 aashe-tabs">
-            <a href="http://www.aashe.org/" class="left">
-              aashe</a>
-            <a href="http://stars.aashe.org/" class="left">
-              stars</a>
-            <a href="http://conference.aashe.org/" class="left">
-              conference</a>
-            <a href="http://bulletin.aashe.org/" %}" class="left">
-              bulletin</a>
-          </div>
-          <div class="col-md-4 col-sm-12 pull-right">
-            <div class="menu">
-              {% if user.is_authenticated %}
-                <a href="http://www.aashe.org/user"><i class="fa fa-user"></i> My Account</a>
-                <a href="{% url "logout" %}">
-                  <i class="fa fa-lock"></i> Logout, {{ user.email }}
-                </a>
-              {% else %}
-                <a href="{% url "login" %}"><i class="fa fa-lock"></i> Login</a>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-8 col-sm-12">
-            <a href="http://www.aashe.org/" class="logo">
-              <img src="{% static 'img/aashe10_logo.png' %}" alt="AASHE logo" title=""/>
-            </a>
-            <a href="{% url "home" %}" class="site-name">
-              <h1><strong>AASHE</strong> Campus Sustainability Hub</h1>
-            </a>
-          </div>
-          <div class="col-md-4 col-sm-12">
-            <form class="search" action="{% url "browse:browse" %}" method="GET">
-              <input type="text" name="search" class="form-control" placeholder="Search" value="{{ request.GET.search }}">
-              <button class="btn-u" type="submit">Go</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <!-- /Header -->
-    </div>
+{% block header %}
+  <div class="header">
+    <!-- Header -->
     <div class="container">
-      <div id="breadcrumbs">
-        <ul class="breadcrumb">
-          {% block breadcrumbs %}
-            <li>
-              <a href="{% url 'home' %}"><i class="fa fa-home"></i></a>
-            </li>
-          {% endblock %}
-        </ul>
-      </div>
-    </div>
-
-    <div class="content">
-      <div class="container">
-        {% block page %}{% endblock %}
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer-default">
-      <div class="copyright">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-8">
-              {% block_content 'footer_text' %}
-            </div>
-            <div class="col-md-offset-2 col-md-2">
-              <p>
-                <a href="/about/">About</a><br>
-                <a href="/guidelines/">Submission Guidelines</a><br>
-              </p>
-            </div>
+      <div class="row top-nav">
+        <div class="col-md-8 col-sm-12 aashe-tabs">
+          <a href="http://www.aashe.org/" class="left">
+            aashe</a>
+          <a href="http://stars.aashe.org/" class="left">
+            stars</a>
+          <a href="http://conference.aashe.org/" class="left">
+            conference</a>
+          <a href="http://bulletin.aashe.org/" class="left">
+            bulletin</a>
+        </div>
+        <div class="col-md-4 col-sm-12 pull-right">
+          <div class="menu">
+            {% if user.is_authenticated %}
+              <a href="http://www.aashe.org/user"><i class="fa fa-user"></i> My Account</a>
+              <a href="{% url "logout" %}">
+                <i class="fa fa-lock"></i> Logout, {{ user.email }}
+              </a>
+            {% else %}
+              <a href="{% url "login" %}"><i class="fa fa-lock"></i> Login</a>
+            {% endif %}
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-8 col-sm-12">
+          <a href="http://www.aashe.org/" class="logo">
+            <img src="{% static 'img/aashe10_logo.png' %}" alt="AASHE logo" title=""/>
+          </a>
+          <a href="{% url "home" %}" class="site-name">
+            <h1><strong>AASHE</strong> Campus Sustainability Hub</h1>
+          </a>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <form class="search" action="{% url "browse:browse" %}" method="GET">
+            <input type="text" name="search" class="form-control" placeholder="Search" value="{{ request.GET.search }}">
+            <button class="btn-u" type="submit">Go</button>
+          </form>
+        </div>
+      </div>
     </div>
-    <!-- /Footer -->
+  </div>
+  <!-- /Header -->
+{% endblock header %}
+
+{% block body %}
+  <div class="container">
+    <div id="breadcrumbs">
+      <ul class="breadcrumb">
+        {% block breadcrumbs %}
+          <li>
+            <a href="{% url 'home' %}"><i class="fa fa-home"></i></a>
+          </li>
+        {% endblock %}
+      </ul>
+    </div>
   </div>
 
-  {% block javascript %}
-    <!-- JS Theme -->
-    {% include 'aashe_theme/javascript.html' %}
-    <!-- JS Plugins -->
-    <script src="{% static "vendor/selectize/js/standalone/selectize.js" %}"></script>
-    <!-- JS App Level -->
-    <script src="{% static "js/base.js" %}"></script>
-  {% endblock %}
-</body>
+  <div class="content">
+    <div class="container">
+      {% block page %}{% endblock %}
+    </div>
+  </div>
+{% endblock body %}
 
-</html>
+{% block footer %}
+  <!-- Footer -->
+  <div class="footer-default">
+    <div class="copyright">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            {% block_content 'footer_text' %}
+          </div>
+          <div class="col-md-offset-2 col-md-2">
+            <p>
+              <a href="/about/">About</a><br>
+              <a href="/guidelines/">Submission Guidelines</a><br>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Footer -->
+{% endblock footer %}
+
+{% block javascript %}
+  {{ block.super }}
+  <!-- JS Plugins -->
+  <script src="{% static "vendor/selectize/js/standalone/selectize.js" %}"></script>
+  <!-- JS App Level -->
+  <script src="{% static "js/base.js" %}"></script>
+{% endblock %}
