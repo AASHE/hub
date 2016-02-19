@@ -128,19 +128,36 @@ for row in ws.rows:
     # if release_date:
     #     datetime.strptime(release_date, DATE_FORMAT)
     
+    # confirm newlines appear in description
+    desc = row[columns.index("Description")].value
+    if desc:
+        desc = desc.replace("\n", "\n\n")
+        print desc
+    
     pub = Publication.objects.create(
+        # global fields
         status=Publication.STATUS_CHOICES.published,
         published=datetime.now().date(),
         submitted_by=user,
         title=row[columns.index("Title")].value,
         slug=slugify(row[columns.index("Title")].value),
-        description=row[columns.index("Description")].value,
-        
+        description=desc,
+        # ct-specific fields
         release_date=release_date.date(),
         publisher=row[columns.index("Publisher")].value,
-        periodical_name=row[columns.index("Periodical/Publication Name")].value,
-        _type=row[columns.index("Type of Material")].value,
+        periodical_name=row[columns.index("Periodical/Publication Name")].value
     )
+    
+    # get the material type
+    mat_type = row[columns.index("Type of Material")].value
+    for t in Publication.TYPE_CHOICES:
+        if mat_type == t[1]:
+            pub._type = t[0]
+            pub.save()
+            break
+    if mat_type and not pub._type:
+        print "material type not found: %s" % mat_type
+        assert False
 
     # match organizations
     for i in range(1, 7):
