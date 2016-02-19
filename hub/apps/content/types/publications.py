@@ -13,9 +13,9 @@ class Publication(ContentType):
         ('journal article', 'Journal Article'),
         ('news', 'News or Magazine Article'),
         ('blog', 'Blog Article'),
-        ('report', 'Report (Non-Student)'),
-        ('thesis', 'Student Thesis/Dissertation'),
-        ('other', 'Other Student Research Paper'),
+        ('report', 'Published Report'),
+        ('graduate', 'Graduate Student Research'),
+        ('undergrad', 'Undergraduate Student Research'),
     )
 
     release_date = models.DateField('Publication release date',
