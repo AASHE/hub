@@ -164,7 +164,7 @@ for row in ws.rows:
         key = "Organization%d" % i
         org_name = row[columns.index(key)].value
         org_id = row[columns.index("%sid" % key)].value
-        if org_id and org_id != 20096:
+        if org_id:
             print "%s: %d" % (org_name, org_id)
             org = Organization.objects.get(pk=org_id)
             if org.org_name.lower() != org_name.lower():
@@ -225,7 +225,7 @@ for row in ws.rows:
         if name:
             author = Author(ct=pub, name=name, title=title)
             # confirm org exists
-            if org_id and org_id != 20096:
+            if org_id:
                 org = Organization.objects.get(pk=org_id)
                 if org.org_name.lower() != org_name.lower():
                     print "ORG NAME WRONG!!!"
