@@ -61,7 +61,7 @@ def create_file_from_url(parent, file_url, image=False):
         file.item.save(file_name, files.File(lf))
     else:
         image = Image(ct=parent, affirmation=True)
-        iamge.image.save(file_name, files.File(lf))
+        image.image.save(file_name, files.File(lf))
 
 
 def get_base_kwargs(columns, column_mappings, row, default_permission=ContentType.PERMISSION_CHOICES.member):
