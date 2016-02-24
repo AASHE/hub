@@ -10,19 +10,3 @@
     {% include "browse/details/includes/meta.html" with label="Type" value=object.get_presentation_type_display %}
 {% endblock %}
 
-{% block resource_content %}
-    <div class="margin-bottom-30"></div>
-    <div class="panel panel-profile">
-        <div class="panel-heading overflow-h">
-            <h2 class="panel-title heading-sm pull-left">Presentation</h2>
-        </div>
-        <div class="panel-body">
-            {% include "browse/details/includes/download.html" with doc=object.document label="Presentation Material" %}
-            {% if object.abstract %}
-            <div class="margin-bottom-10"></div>
-            {{ object.abstract|apply_markup:"markdown" }}
-            {% endif %}
-        </div>
-    </div>
-{% endblock %}
-
