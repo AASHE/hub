@@ -21,6 +21,86 @@ def get_rows(path, sheet):
     return ws.rows
     
 
+def sanity_check(rows, columns, column_mappings):
+    """
+        Just checks to make sure all the organizations exist and prints any failures
+        
+        Returns a list of resource titles where the issue occurs
+    """
+    index_list = []
+    
+    organizations_key = "Organization%d"
+    organizations_id_key = "Organization%did"
+    if 'organizations' in column_mappings.keys():
+        organizations_key = column_mappings['organizations']
+    if 'organizations_id' in column_mappings.keys():
+        organizations_id_key = column_mappings['organizations_id']
+
+    count = 0
+    for row in rows:
+        count += 1
+        # skip the headers
+        if count == 1:
+            continue
+        # match organizations
+        for i in range(1, 7):
+            name_key = organizations_key % i
+            id_key = organizations_id_key % i
+            if name_key in columns:
+                org_name = row[columns.index(name_key)].value
+                org_id = row[columns.index(id_key)].value
+                if org_id:
+                    try:
+                        org = Organization.objects.get(pk=org_id)
+                    except Organization.DoesNotExist:
+                        print count
+                        if count not in index_list:
+                            index_list.append(count)
+                        print "Org not found: %s (%s)" % (org_name, org_id)
+                    if org.org_name.lower() != org_name.lower():
+                        print count
+                        if count not in index_list:
+                            index_list.append(count)
+                        print "Org name doesn't match db:"
+                        print "%s != %s" % (org.org_name, org_name)
+                            
+        # match author organizations
+        # authors
+        author_name_key = "Author%dName"
+        author_title_key = "Author%dTitle"
+        author_org_name_key = "Author%dOrg"
+        author_org_id_key = "Author%dOrgID"
+        if 'author_name' in column_mappings.keys():
+            author_name_key = column_mappings['author_name']
+        if 'author_title' in column_mappings.keys():
+            author_title_key = column_mappings['author_title']
+        if 'author_org' in column_mappings.keys():
+            author_org_name_key = column_mappings['author_org']
+        if 'author_org_id' in column_mappings.keys():
+            author_org_id_key = column_mappings['author_org_id']
+        for i in range(1, 7):
+            if author_name_key % i in columns:
+                org_name = row[columns.index(author_org_name_key % i)].value
+                org_id = row[columns.index(author_org_id_key % i)].value
+                if org_name and org_id:
+                    # confirm org exists
+                    try:
+                        org = Organization.objects.get(pk=org_id)
+                    except Organization.DoesNotExist:
+                        print count
+                        if count not in index_list:
+                            index_list.append(count)
+                        print "Author Org not found: %s (%s)" % (org_name, org_id)
+                    if org.org_name.lower() != org_name.lower():
+                        print count
+                        if count not in index_list:
+                            index_list.append(count)
+                        print "Author Org name doesn't match db:"
+                        print "%s != %s" % (org.org_name, org_name)
+                        
+    return index_list
+    
+
 def create_file_from_url(parent, file_url, image=False):
     """
         Thanks:

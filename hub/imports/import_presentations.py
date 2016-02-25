@@ -1,4 +1,4 @@
-from utils import get_rows, get_base_kwargs, get_base_m2m
+from utils import get_rows, get_base_kwargs, get_base_m2m, sanity_check
 from hub.apps.content.types.presentations import Presentation
 
 columns = [
@@ -122,11 +122,17 @@ def get_obj_kwargs():
     
 rows = get_rows('hub/imports/fixtures/ConferencePresentations.xlsx', 'data')
 
+# run the sanity check first
+skip_index_list = sanity_check(rows, columns, column_mappings)
+
+print "importing presentations"
+
+rows = get_rows('hub/imports/fixtures/ConferencePresentations.xlsx', 'data')
 count = 0
 for row in rows:
-    
+
     count += 1
-    if count == 1:
+    if count == 1 or count in skip_index_list:
         continue
     print count
 
