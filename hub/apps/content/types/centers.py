@@ -9,7 +9,7 @@ class CenterAndInstitute(ContentType):
     num_paid = models.PositiveIntegerField('Number of paid staff employed at the center (FTE)',
         blank=True, null=True)
     founded = models.PositiveIntegerField('Year when center or institute was founded',
-        blank=True, null=True, help_text='(e.g. 2009)')
+        blank=True, null=True, help_text="Enter a four digit year (e.g., 2009)")
     budget = models.PositiveIntegerField('Total operating budget for the center or institute (excluding salaries)?',
         blank=True, null=True, help_text='in U.S. dollars')
 
