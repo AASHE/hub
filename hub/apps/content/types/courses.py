@@ -24,9 +24,9 @@ class Material(ContentType):
         choices=MATERIAL_TYPE_CHOICES)
     course_name = models.CharField('Course Name', max_length=500, blank=True, null=True)
     course_level = models.CharField('Course Level', max_length=50, blank=True, null=True,
-        choices=LEVEL_CHOICES, help_text='''e.g. 100-level courses may be
-        designated as introductory, 200-300 for intermediate, 400-level for
-        advanced, or similar structures''')
+        choices=LEVEL_CHOICES, help_text='''100-level courses (or equivalents)
+        may be designated as introductory, 200- or 300-level as intermediate,
+        and 400-level or graduate courses as advanced.''')
 
     class Meta:
         verbose_name = 'Course Material'
