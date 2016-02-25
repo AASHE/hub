@@ -23,7 +23,7 @@ columns = [
 ]
 
 column_mappings = {
-    'topics': "SustainabilityTopic%d",
+    'topics': "Sust_Topic_%d",
     'organizations': "Org%d_name",
     'organizations_id': "Org%d_ID",
     'disciplines': "Acad_Disc_%d",

@@ -27,7 +27,7 @@ columns = [
 
 column_mappings = {
     'title': "Center Name",
-    'topics': "SustainabilityTopic%d",
+    'topics': "SustainabilityTopic_%d",
     'organizations_id': "Organization%d_id",
     'disciplines': "AcadDiscipline_%d",
     'links': "Links",
