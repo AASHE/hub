@@ -291,7 +291,7 @@ class File(TimeStampedModel):
 class Image(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="images")
     caption = models.CharField(max_length=500, blank=True, null=True)
-    credit = models.CharField(max_length=500, blank=True, null=True)
+    credit = models.CharField('Photographer credit', max_length=500, blank=True, null=True)
     image = models.ImageField(
         help_text="The following files formats are acceptable: JPEG, PNG,"
         " TIFF...")

@@ -55,7 +55,7 @@ class BrowseView(ListView):
     template_name = 'browse/browse.html'
     content_type_class = None
     sustainabilty_topic = None
-    paginate_by = 10
+    paginate_by = 50
     filterset_form = None
 
     def dispatch(self, *args, **kwargs):
