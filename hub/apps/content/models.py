@@ -71,35 +71,36 @@ class ContentType(TimeStampedModel):
         'metadata.Organization',
         blank=True,
         verbose_name='Organization(s)',
-        help_text=""" Select the institution(s) and/or organization(s) that
-        offer(s) this program. If an organization is not on the dropdown list,
-        please complete the new organization form to have it added to our
-        database.""")
+        help_text="""Select the institution(s) and/or organization(s) that are
+        directly tied to this resource. If an organization is not on the
+        dropdown list, please contact resources@aashe.org.""")
 
     topics = models.ManyToManyField(
         'metadata.SustainabilityTopic',
         verbose_name='Sustainability Topic(s)',
-        help_text="Select up to three topics that relate most closely.")
+        help_text="""Select up to three topics that relate most closely to 
+        this resource.""")
 
     disciplines = models.ManyToManyField(
         'metadata.AcademicDiscipline',
         verbose_name='Academic Discipline(s)',
-        help_text="""Select up to three academic disciplines that relate most
-        closely to the academic program.""",
+        help_text="""Only include if an academic discipline is directly tied to
+        this resource (select up to three).""",
         blank=True)
 
     institutions = models.ManyToManyField(
         'metadata.InstitutionalOffice',
         blank=True,
         verbose_name='Office or Department',
-        help_text='''Only include if an office or division on campus is/was
-        directly involved in the case study. Select up to three.''')
+        help_text='''Only include if an office or division on campus is
+        directly tied to this resource (select up to three).''')
 
     keywords = tagulous.models.TagField(
         verbose_name='Tags',
         blank=True,
-        help_text="""Enter keywords that will be helpful for locating this
-        resource (e.g. "bottled water" for bottled water initiatives).""")
+        help_text="""Enter keywords that will be helpful for grouping this
+        resource (e.g. "bottled water" for bottled water initiatives). For
+        multiple tags, use comma or return as separator.""")
 
     notes = models.TextField('Notes', blank=True, null=True, default='',
                              help_text="Internal notes.")

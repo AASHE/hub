@@ -23,13 +23,14 @@ class AcademicProgram(ContentType):
     outcomes = models.TextField('Learning Outcomes', blank=True, null=True,
         help_text="Consider completing if different from description.")
     founded = models.PositiveIntegerField("Year Founded", blank=True, null=True,
-        help_text="(e.g. 2009)")
+        help_text="Enter a four digit year (e.g., 2009)")
     completion = models.CharField('Expected completion time', max_length=20,
-        blank=True, null=True, help_text="(e.g. 2 years and 6 months)")
+        blank=True, null=True, help_text='(e.g., "2.5 years" or "12 months")')
     num_students = models.PositiveIntegerField(
         'Approximate number of students completing program annually',
-        blank=True, null=True, help_text="""We recommend referring to IPEDS data
-        and including an average over five years.""")
+        blank=True, null=True, help_text="""Enter student headcounts instead of
+        FTE. We recommend referring to Integrated Postsecondary Education Data
+        System (IPEDS) data and including an average over five years.""")
     distance = models.CharField('Distance Education', max_length=20,
         choices=DISTANCE_CHOICES, blank=True, null=True)
     commitment = models.CharField('Commitment', max_length=20,
