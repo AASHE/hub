@@ -91,7 +91,7 @@ class ContentType(TimeStampedModel):
     institutions = models.ManyToManyField(
         'metadata.InstitutionalOffice',
         blank=True,
-        verbose_name='Office or Department',
+        verbose_name='Office(s) or Department(s)',
         help_text='''Only include if an office or division on campus is
         directly tied to this resource (select up to three).''')
 
