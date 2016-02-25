@@ -68,6 +68,13 @@ else:
     STATIC_ROOT = 'staticfiles'
 
 # ==============================================================================
+# Sentry Error Logging
+# ==============================================================================
+
+from integration_settings.logging.sentry import *
+INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+
+# ==============================================================================
 # Enable debug logging
 # ==============================================================================
 # LOGGING['loggers']['hub']['level'] = 'DEBUG'
