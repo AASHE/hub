@@ -66,6 +66,8 @@ column_mappings = {
     'author_title': "Author%d_Title",
     'author_org': "Author%d_Org",
     'author_org_id': "Author%d_OrgID",
+    'disciplines': "AcademicDiscipline%d",
+    'institutions': "OfficeDepartment%d",
 }
 
 """
