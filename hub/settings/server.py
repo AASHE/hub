@@ -19,7 +19,7 @@ MANAGERS = ADMINS
 # Database
 import dj_database_url
 DATABASES = {
-    'default': dj_database_url.config(os.environ.get('HUB_DB_URL')),  # uses DATABASE_URL
+    'default': dj_database_url.parse(os.environ.get('HUB_DB_URL')),  # uses DATABASE_URL
 }
 
 # Haystack ElasticSearch
