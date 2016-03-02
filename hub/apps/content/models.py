@@ -328,11 +328,11 @@ from .types.videos import Video
 CONTENT_TYPES = OrderedDict()
 CONTENT_TYPES['academicprogram'] = AcademicProgram
 CONTENT_TYPES['casestudy'] = CaseStudy
-CONTENT_TYPES['presentation'] = Presentation
+CONTENT_TYPES['centerandinstitute'] = CenterAndInstitute
 CONTENT_TYPES['material'] = Material
 CONTENT_TYPES['outreachmaterial'] = OutreachMaterial
 CONTENT_TYPES['photograph'] = Photograph
+CONTENT_TYPES['presentation'] = Presentation
 CONTENT_TYPES['publication'] = Publication
-CONTENT_TYPES['centerandinstitute'] = CenterAndInstitute
 CONTENT_TYPES['tool'] = Tool
 CONTENT_TYPES['video'] = Video

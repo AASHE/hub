@@ -71,6 +71,9 @@ class AdminURLTestCase(TestCase):
         self.ct_specific_fields = {
             'presentation': {
                 'date': datetime.now()
+            },
+            'casestudy': {
+                'consider_for_award': False
             }
         }
         self.client = Client()

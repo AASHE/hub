@@ -7,6 +7,6 @@
     {% include "browse/details/includes/meta.html" with label="Release Date" value=object.release_date|date %}
     {% include "browse/details/includes/meta.html" with label="Publisher" value=object.publisher %}
     {% include "browse/details/includes/meta.html" with label="Periodical Name" value=object.periodical_name %}
-    {% include "browse/details/includes/meta.html" with label="Type" value=object.get_type_display %}
+    {% include "browse/details/includes/meta.html" with label="Type" value=object.get__type_display %}
     {% include "browse/details/includes/meta.html" with label="Institution" value=object.institution.name %}
 {% endblock %}
