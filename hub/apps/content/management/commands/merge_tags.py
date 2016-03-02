@@ -13,11 +13,20 @@ class Command(BaseCommand):
         # merge tags with leading spaces where possible
         for tag in tag_model.objects.order_by('name'):
             if tag.name[0] == " ":
-                # if there is another tag with this name merge them
+                # if there is another tag with this name merge into that one
                 try:
                     good_tag = tag_model.objects.get(name=tag.name[1:])
                     print "merging: '%s' into '%s'" % (tag.name, good_tag.name)
                     good_tag.merge_tags([tag])
+                    # make sure it's deleted (sometimes merge doesn't delete!?)
+                    try:
+                        bad_tag = tag_model.objects.get(name=tag.name)
+                        if not bad_tag.get_related_objects():
+                            bad_tag.delete()
+                        else:
+                            print "Bad Tag (%s) still has objects!!!" % bad_tag.name()
+                    except:
+                        pass # expected
                 except tag_model.DoesNotExist:
                     print "good tag not found for: '%s'" % tag.name
         
