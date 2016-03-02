@@ -209,21 +209,25 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.url_topic)
         self.assertEqual(response.status_code, 200)
 
-    def test_content_type_view_is_auth_only(self):
-        """
-        Unauthed members can't see the content type view.
-        """
-        self.client.logout()
-        response = self.client.get(self.url_ct)
-        self.assertEqual(response.status_code, 403)
-
-        self.client.login(**self.user_cred)
-        response = self.client.get(self.url_ct)
-        self.assertEqual(response.status_code, 200)
-
-        self.client.login(**self.superuser_cred)
-        response = self.client.get(self.url_ct)
-        self.assertEqual(response.status_code, 200)
+    """
+     We have removed this functionality. All content types are now open to
+     the public. Individual resources retain their permissions.
+    """
+    # def test_content_type_view_is_auth_only(self):
+    #     """
+    #     Unauthed members can't see the content type view.
+    #     """
+    #     self.client.logout()
+    #     response = self.client.get(self.url_ct)
+    #     self.assertEqual(response.status_code, 403)
+    #
+    #     self.client.login(**self.user_cred)
+    #     response = self.client.get(self.url_ct)
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #     self.client.login(**self.superuser_cred)
+    #     response = self.client.get(self.url_ct)
+    #     self.assertEqual(response.status_code, 200)
 
     def test_open_ct_is_visible_to_anybody(self):
         """
