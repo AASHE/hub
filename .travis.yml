@@ -8,7 +8,7 @@ services:
     - elasticsearch
 env:
   global:
-  - DATABASE_URL=postgresql://postgres@localhost/travis_ci_test
+  - HUB_DB_URL=postgresql://postgres@localhost/travis_ci_test
   - SECRET_KEY=blahblahblah
   - AASHE_DRUPAL_URI=http://www.aashe.org/services/xmlrpc
   - AASHE_DRUPAL_KEY_DOMAIN=acupcc.aashe.org
