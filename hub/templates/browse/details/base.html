@@ -35,7 +35,9 @@
 
 {% block body_class %}page-detail{% endblock %}
 
-{% block title %}{{ object.title|titlecase }} - {{ block.super }}{% endblock %}
+{% block title %}
+  {{ object.title|safe|titlecase }} - {{ block.super }}
+{% endblock %}
 
 {% block page %}
 <div class="profile">
@@ -54,7 +56,7 @@
                                 Edit in Admin
                             </a>
                         {% endif %}
-                        <h2>{{ object.title|titlecase }}</h2>
+                        <h2>{{ object.title|safe|titlecase }}</h2>
                         <h4>
                         {% for org in object.organizations.all %}
                             <a href="{% url 'browse:browse' %}?organizations={{org.pk}}">
