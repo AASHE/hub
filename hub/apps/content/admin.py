@@ -146,4 +146,4 @@ class AllContentTypesAdmin(BaseContentTypeAdmin):
 admin.site.register(ContentType, AllContentTypesAdmin)
 
 for _, model in CONTENT_TYPES.items():
-    admin.site.register(model, BaseContentTypeAdmin)
+    admin.site.register(model, SpecificContentTypeAdmin)
