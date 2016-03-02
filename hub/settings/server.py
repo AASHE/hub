@@ -72,7 +72,6 @@ else:
 
 raven_dsn = os.environ.get('RAVEN_DSN', None)
 if raven_dsn:
-    import pdb; pdb.set_trace()
     from integration_settings.logging.sentry import *
     INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
 
