@@ -26,6 +26,9 @@ class CaseStudy(ContentType):
     lessons_learned = models.TextField('Lessons learned',
         help_text='''Describe what you learned though this project that would
         be helpful to others wishing to undertake a similar project.''')
+    consider_for_award = models.BooleanField('Student Leadership Award',
+        help_text='''Would you like this case study to be considered for an
+        AASHE Student Leadership Award? The first author must be a student.''')
 
     class Meta:
         verbose_name = 'Case Study'
