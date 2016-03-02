@@ -23,6 +23,7 @@ dj-database-url
 gunicorn
 ipython
 psycopg2
+raven==5.10.2
 whitenoise
 
 # Non-pypi repos
