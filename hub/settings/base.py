@@ -2,14 +2,14 @@
 
 # Import global settings to make it easier to extend settings.
 from django.conf.global_settings import *   # pylint: disable=W0614,W0401
+import os
 
 # =============================================================================
 # Generic Django project settings
 # =============================================================================
-
 WSGI_APPLICATION = 'hub.wsgi.application'
 
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', False)
 
 SITE_ID = 1
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'tagulous',
     'typogrify',
+    'integration_settings.google_analytics',
 
     'hub',
     'hub.apps.content',
@@ -83,7 +84,10 @@ TEMPLATES = [{
             'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
+            'django.core.context_processors.request',
+            'integration_settings.google_analytics.context_processor.google_analytics',
         ],
+        'debug': DEBUG,
     }
 }]
 
@@ -235,3 +239,6 @@ AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
 PUBLIC_CONTENT_TYPES = (
     'academicprogram',
 )
+
+GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', None)
+GOOGLE_ANALYTICS_DOMAIN = os.environ.get('GOOGLE_ANALYTICS_DOMAIN', None)
