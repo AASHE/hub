@@ -11,6 +11,11 @@
   <link rel="stylesheet" href="{% static "vendor/selectize/css/selectize.css" %}"/>
   <!-- CSS App Level -->
   <link rel="stylesheet" href="{% static "css/base.css" %}"/>
+  <style>
+  div.related-widget-wrapper {
+      z-index: 120;
+  }
+  </style>
 {% endblock css %}
 
 {% block header %}
@@ -109,5 +114,6 @@
   <!-- JS Plugins -->
   <script src="{% static "vendor/selectize/js/standalone/selectize.js" %}"></script>
   <!-- JS App Level -->
-  <script src="{% static "js/base.js" %}"></script>
+  <script src="{% static 'js/selectize-dropdowns.js' %}"></script>
+  <script src="{% static 'js/base.js' %}"></script>
 {% endblock %}
