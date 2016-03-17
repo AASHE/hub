@@ -96,12 +96,6 @@ class BrowseView(ListView):
         ):
             return super(BrowseView, self).dispatch(*args, **kwargs)
 
-        # If it was not a PUBLIC content type, we do need login at least.
-        if not self.request.user.is_authenticated():
-            return render(
-                self.request, 'registration/login_required.html',
-                status=HttpResponseForbidden.status_code)
-
         return super(BrowseView, self).dispatch(*args, **kwargs)
 
     def get_template_names(self):
