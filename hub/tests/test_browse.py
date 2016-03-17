@@ -193,13 +193,13 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.url_home)
         self.assertEqual(response.status_code, 200)
 
-    def test_topic_view_is_auth_only(self):
+    def test_topic_view_is_public(self):
         """
-        Unauthed members can't see the topic view.
+        All users can see the topic view.
         """
         self.client.logout()
         response = self.client.get(self.url_topic)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
         self.client.login(**self.user_cred)
         response = self.client.get(self.url_topic)
@@ -241,13 +241,13 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         response = self.client.get(open_url)
         self.assertEqual(response.status_code, 200)
 
-    def test_search_view_is_auth_only(self):
+    def test_search_view_is_public(self):
         """
-        Unauthed members can't see the search view.
+        All users can see the search view.
         """
         self.client.logout()
         response = self.client.get(self.url_search)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
         self.client.login(**self.user_cred)
         response = self.client.get(self.url_search)
