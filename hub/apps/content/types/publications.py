@@ -31,9 +31,10 @@ class Publication(ContentType):
         book chapers, enter the title of the book.''')
     _type = models.CharField(max_length=40, choices=TYPE_CHOICES, null=True,
         verbose_name='Type of Material',
-        help_text='''"Graduate Student Research" or "Undergraduate Student
-        Research" submissions will be considered for AASHE's Annual Student
-        Research Award.''')
+        help_text='''"Journal Article," "Graduate Student Research" and
+        "Undergraduate Student Research" submissions will be automatically
+        considered for a Campus Sustainability Research Award as part of
+        AASHE's annual awards program.''')
 
     class Meta:
         verbose_name = 'Publication'
