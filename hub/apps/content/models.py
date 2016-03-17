@@ -98,6 +98,7 @@ class ContentType(TimeStampedModel):
     keywords = tagulous.models.TagField(
         verbose_name='Tags',
         blank=True,
+        space_delimiter=False,
         help_text="""Enter keywords that will be helpful for grouping this
         resource (e.g. "bottled water" for bottled water initiatives). For
         multiple tags, use comma or return as separator.""")

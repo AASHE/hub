@@ -89,7 +89,7 @@
                         <div>
                             <strong>Tags:</strong>
                             {% for kw in object.keywords.all %}
-                                <a href="{% url "browse:browse" %}?search={{ kw.name }}">
+                                <a href="{% url "browse:browse" %}?tagfilter={{ kw.slug }}">
                                 {{ kw }}</a>{% if not forloop.last %},{% endif %}
                             {% endfor %}
                         </div>

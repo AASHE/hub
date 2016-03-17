@@ -25,5 +25,10 @@ jQuery(document).ready(function() {
     // -------------------------------------------------------------------------
     // Init Organizations Ajax dropdown
     // -------------------------------------------------------------------------
-    updateOrgDropdowns();
+    updateOrgDropdowns(); // from selectize-dropdowns.js
+    
+    // -------------------------------------------------------------------------
+    // Tagging (Keywords)
+    // -------------------------------------------------------------------------
+    updateTagFilterDropdowns(); // from selectize-dropdowns.js
 });

@@ -13,6 +13,7 @@ class GenericFilterSet(filters.FilterSet):
     content_type = ContentTypesFilter()
     organizations = OrganizationFilter()
     organization_type = OrgTypeFilter()
+    tagfilter = TagFilter('tags')
     size = StudentFteFilter()
     published = PublishedFilter()
     country = CountryFilter(required=False)
