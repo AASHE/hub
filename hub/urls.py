@@ -20,7 +20,7 @@ urlpatterns = [
 
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, name='logout'),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^_ad/', include(admin.site.urls)),
     url(r'^', include('django.contrib.flatpages.urls')),
 ]
 
