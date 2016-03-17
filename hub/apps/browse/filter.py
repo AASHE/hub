@@ -81,6 +81,8 @@ class OrganizationFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
+        # @todo: do I really need to load all the organizations,
+        # or can I just load the selected ones?
         organizations = Organization.objects.values_list('pk', 'org_name')
         kwargs.update({
             'choices': organizations,
@@ -93,6 +95,33 @@ class OrganizationFilter(filters.ChoiceFilter):
         if not value:
             return qs
         return qs.filter(organizations__in=value)
+
+
+class TagFilter(filters.ChoiceFilter):
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        # @todo: how to avoid loading this every time?
+        # it would be nice if the choices could only be the selected values
+        # although I guess this provides some degree of validation
+        tag_choices = ContentType.keywords.tag_model.objects.distinct('name')
+        # tag_choices = tag_choices.filter(name__startswith="behav")
+        tag_choices = tag_choices.values_list('slug', 'name')
+        # import pdb; pdb.set_trace()
+        
+        kwargs.update({
+            'choices': tag_choices,
+            'label': 'Tags(s)',
+            'widget': LeanSelectMultiple,
+        })
+        super(TagFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        
+        new_qs = qs
+        for slug in value:
+            new_qs = new_qs.filter(keywords__slug=slug)
+        return new_qs
 
 
 class StudentFteFilter(filters.ChoiceFilter):

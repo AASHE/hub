@@ -32,14 +32,23 @@ class ImageInline(admin.TabularInline):
 
 # Custom model form for the admin
 from django import forms
-from ..browse.forms import LeanSelectMultiple  
+from ..browse.forms import LeanSelectMultiple
 class ContentTypeAdminForm(forms.ModelForm):
-  class Meta:
-    model = ContentType
-    fields = '__all__'
-    widgets = {
-      'organizations': LeanSelectMultiple(),
-    }
+    class Meta:
+        model = ContentType
+        fields = '__all__'
+        widgets = {
+            'organizations': LeanSelectMultiple(),
+            # 'keywords': LeanSelectMultiple(),
+            # 'keywords': forms.SelectMultiple(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ContentTypeAdminForm, self).__init__(*args, **kwargs)
+        # import pdb; pdb.set_trace()
+        # tag_choices = ContentType.keywords.tag_model.objects.distinct('name').order_by('name')
+        # tag_choices = tag_choices.values_list('pk', 'name')
+        # self.fields['keywords'].widget.choices = tag_choices
 
 
 class BaseContentTypeAdmin(admin.ModelAdmin):

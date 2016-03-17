@@ -82,7 +82,8 @@ class BrowseView(ListView):
             not self.sustainabilty_topic and
             not self.content_type_class and
             'search' not in self.request.GET and
-            'organizations' not in self.request.GET
+            'organizations' not in self.request.GET and
+            'tagfilter' not in self.request.GET
         ):
             return HttpResponseRedirect(reverse('home'))
 

@@ -26,11 +26,11 @@ jQuery(document).ready(function() {
     if(preset_topics != undefined) {
         $('select[name*=topics]')[0].selectize.settings.required_values = preset_topics
     }
-
+    
     // -------------------------------------------------------------------------
     // Tagging (Keywords)
     // -------------------------------------------------------------------------
-    updateTagDropdowns(); // from selectize-dropdowns.js
+    updateTagSubmitDropdowns();
 
     // -------------------------------------------------------------------------
     // Initialize the in-line form buttons

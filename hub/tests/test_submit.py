@@ -25,7 +25,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             # Document Form
             'document-title': 'My first Video',
             'document-affirmation': True,
-            'document-keywords': "tag1, tag2",
+            'document-keywords': "tag 1, tag 2",
 
             'document-organizations': [
                 Organization.objects.create(account_num=1,
