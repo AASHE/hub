@@ -30,6 +30,9 @@
                     <small class="pull-right">{{ ct.instance_type_label }}</small>
                     <i class="fa fa-star-o rounded"></i>
                     <a href="{{ ct.get_absolute_url }}">{{ ct.title|titlecase }}</a>
+                    {% with True as icon_only %}
+                      {% permission_flag ct user icon_only %}
+                    {% endwith %}
                 </li>
                 {% endfor %}
             </ul>
@@ -72,7 +75,13 @@
                 <li class="notification{% if forloop.first %} list-first{% endif %}">
                     <div class="overflow-h">
                         <a href="{{ obj.get_absolute_url }}">
-                            <span><strong>{{ obj.title|titlecase }}</strong></span>
+                            <span>
+                              <strong>{{ obj.title|titlecase }}
+                              {% with True as icon_only %}
+                                {% permission_flag obj user icon_only %}
+                              {% endwith %}
+                              </strong>
+                            </span>
                             <small>{{ obj.instance_type_label }}<br/>Published {{ obj.published|timesince }} ago</small>
                         </a>
                     </div>
