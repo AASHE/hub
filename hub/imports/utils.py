@@ -144,7 +144,7 @@ def create_file_from_url(parent, file_url, image=False):
         image.image.save(file_name, files.File(lf))
 
 
-def get_base_kwargs(columns, column_mappings, row, default_permission=ContentType.PERMISSION_CHOICES.member):
+def get_base_kwargs(columns, column_mappings, row, default_permission=ContentType.PERMISSION_CHOICES.member, published_date=None):
     """
         content_type = models.CharField(max_length=40)
         status = models.CharField(default=STATUS_CHOICES.new)
@@ -181,6 +181,9 @@ def get_base_kwargs(columns, column_mappings, row, default_permission=ContentTyp
         'slug': slugify(row[columns.index(title_key)].value),
         'description': desc
     }
+    
+    if published_date:
+        kwargs['published'] = published_date
     
     return kwargs
 
@@ -339,7 +342,17 @@ def get_base_m2m(parent, columns, column_mappings, row):
     link_key = "Link1"
     if 'links' in column_mappings.keys():
         link_key = column_mappings['links']
-    if link_key in columns:
-        url = row[columns.index(link_key)].value
-        if url:
-            Website.objects.create(ct=parent, url=url)
+    if 'links_label' in column_mappings.keys():
+        label_key = column_mappings['links_label']
+        
+    for i in range(1, 5):
+        key = link_key % i
+        if key in columns:
+            url = row[columns.index(key)].value
+            if label_key:
+                l_key = label_key % i
+                label = row[columns.index(l_key)].value
+            else:
+                label = None
+            if url:
+                Website.objects.create(ct=parent, url=url, label=label)
