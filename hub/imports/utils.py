@@ -144,7 +144,10 @@ def create_file_from_url(parent, file_url, image=False):
         image.image.save(file_name, files.File(lf))
 
 
-def get_base_kwargs(columns, column_mappings, row, default_permission=ContentType.PERMISSION_CHOICES.member, published_date=None):
+def get_base_kwargs(columns, column_mappings, row,
+    default_permission=ContentType.PERMISSION_CHOICES.member,
+    published_date=None,
+    submitter=None):
     """
         content_type = models.CharField(max_length=40)
         status = models.CharField(default=STATUS_CHOICES.new)
@@ -169,14 +172,15 @@ def get_base_kwargs(columns, column_mappings, row, default_permission=ContentTyp
     desc = row[columns.index(description_key)].value
     if desc:
         desc = desc.replace("\n", "\n\n")
-    user = User.objects.get(email='monika.urbanski@aashe.org')
+    if not submitter:
+        submitter = User.objects.get(email='monika.urbanski@aashe.org')
     
     kwargs = {
         'submitted_by': User.objects.get(email='monika.urbanski@aashe.org'),
         'status': ContentType.STATUS_CHOICES.published,
         'permission': default_permission,
         'published': datetime.now().date(),
-        'submitted_by': user,
+        'submitted_by': submitter,
         'title': row[columns.index(title_key)].value,
         'slug': slugify(row[columns.index(title_key)].value),
         'description': desc
