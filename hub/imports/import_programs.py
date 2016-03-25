@@ -128,7 +128,7 @@ for row in rows:
     kwargs = get_base_kwargs(
         columns, column_mappings, row,
         default_permission=ContentType.PERMISSION_CHOICES.open,
-        published_date=datetime.date(year=2015, month=1, day=25))
+        published_date=datetime.date(year=2016, month=2, day=25))
     kwargs.update(get_obj_kwargs())
     program = AcademicProgram.objects.create(**kwargs)
     get_base_m2m(program, columns, column_mappings, row)
