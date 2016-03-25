@@ -37,13 +37,13 @@ jQuery(document).ready(function() {
     // -------------------------------------------------------------------------
     $('#add-author').djangoInlineFormAdd({
       prefix: "author",
-      postClick: $.updateOrgDropdowns,
+      postClick: updateOrgDropdowns,
       formHeight: 200,
     });
     $('#i-am-author').djangoInlineFormAdd({
       prefix: 'author',
       templateId: '#author-template-user-is-author',
-      postClick: $.updateOrgDropdowns,
+      postClick: updateOrgDropdowns,
       formHeight: 200
     });
     $('#add-file').djangoInlineFormAdd({
