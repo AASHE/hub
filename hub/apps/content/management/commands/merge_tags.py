@@ -12,7 +12,10 @@ class Command(BaseCommand):
         
         # merge tags with leading spaces where possible
         for tag in tag_model.objects.order_by('name'):
-            if tag.name[0] == " ":
+            # fix empty tags
+            if tag.name == '':
+                tag.delete()
+            elif tag.name[0] == " ":
                 # if there is another tag with this name merge into that one
                 try:
                     good_tag = tag_model.objects.get(name=tag.name[1:])
