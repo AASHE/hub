@@ -65,10 +65,6 @@ else:
     STATIC_URL = "/static/"
     MEDIA_ROOT = os.environ.get("MEDIA_ROOT", None)
     STATIC_ROOT = 'staticfiles'
-    
-# CDN Settings
-STATIC_HOST = os.environ.get('DJANGO_STATIC_HOST', '')
-STATIC_URL = STATIC_HOST + '/static/'
 
 # ==============================================================================
 # Sentry Error Logging
