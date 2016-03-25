@@ -250,7 +250,7 @@ class ContentType(TimeStampedModel):
 class Author(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="authors")
     name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True, null=True)
+    title = models.CharField(max_length=128, blank=True, null=True)
     organization = models.ForeignKey(
         'metadata.Organization', blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
