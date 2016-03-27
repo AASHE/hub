@@ -13,7 +13,7 @@
         <a href="{% url "browse:browse" ct=object.content_type %}">{{ object.content_type_label }}</a>
     </li>
     <li>
-        <a href={{ object.get_absolute_url }}>{{ object.title|titlecase }}</a>
+        <a href={{ object.get_absolute_url }}>{{ object.title|safe|titlecase }}</a>
     </li>
 {% endblock %}
 

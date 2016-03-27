@@ -29,7 +29,7 @@
                 <li>
                     <small class="pull-right">{{ ct.instance_type_label }}</small>
                     <i class="fa fa-star-o rounded"></i>
-                    <a href="{{ ct.get_absolute_url }}">{{ ct.title|titlecase }}</a>
+                    <a href="{{ ct.get_absolute_url }}">{{ ct.title|safe|titlecase }}</a>
                     {% with True as icon_only %}
                       {% permission_flag ct user icon_only %}
                     {% endwith %}
@@ -76,7 +76,7 @@
                     <div class="overflow-h">
                         <a href="{{ obj.get_absolute_url }}">
                             <span>
-                              <strong>{{ obj.title|titlecase }}
+                              <strong>{{ obj.title|safe|titlecase }}
                               {% with True as icon_only %}
                                 {% permission_flag obj user icon_only %}
                               {% endwith %}
