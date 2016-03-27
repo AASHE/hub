@@ -2,6 +2,7 @@
 
 {% load static from staticfiles %}
 {% load block_content %}
+{% load add_analytics %}
 
 {% block title %}AASHE Campus Sustainability Hub{% endblock %}
 
@@ -120,4 +121,5 @@
   <!-- JS App Level -->
   <script src="{% static 'js/selectize-dropdowns.js' %}"></script>
   <script src="{% static 'js/base.js' %}"></script>
+  {% add_analytics %}
 {% endblock %}
