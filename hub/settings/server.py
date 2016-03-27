@@ -60,6 +60,7 @@ if USE_S3:
     INSTALLED_APPS += ('s3_folder_storage',)
 
     STATIC_ROOT = os.path.join(VAR_ROOT, 'static')
+    AWS_S3_SECURE_URLS = False
 else:
     MEDIA_URL = "/media/"
     STATIC_URL = "/static/"
