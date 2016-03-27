@@ -93,7 +93,6 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
             'django.core.context_processors.request',
-            'integration_settings.google_analytics.context_processor.google_analytics',
         ],
         'debug': DEBUG,
     }
@@ -244,4 +243,3 @@ PUBLIC_CONTENT_TYPES = (
 )
 
 GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', None)
-GOOGLE_ANALYTICS_DOMAIN = os.environ.get('GOOGLE_ANALYTICS_DOMAIN', None)

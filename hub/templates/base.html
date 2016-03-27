@@ -121,11 +121,5 @@
   <!-- JS App Level -->
   <script src="{% static 'js/selectize-dropdowns.js' %}"></script>
   <script src="{% static 'js/base.js' %}"></script>
-{% endblock %}
-
-{% block extra_scripts %}
-    {% toggle_analytics as toggle %}
-    {% if toggle %}
-        {% add_analytics %}
-    {% endif %}
+  {% add_analytics %}
 {% endblock %}
