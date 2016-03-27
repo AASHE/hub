@@ -24,7 +24,7 @@ class AcademicProgram(ContentType):
         help_text="Consider completing if different from description.")
     founded = models.PositiveIntegerField("Year Founded", blank=True, null=True,
         help_text="Enter a four digit year (e.g., 2009)")
-    completion = models.CharField('Expected completion time', max_length=20,
+    completion = models.CharField('Expected completion time', max_length=128,
         blank=True, null=True, help_text='(e.g., "2.5 years" or "12 months")')
     num_students = models.PositiveIntegerField(
         'Approximate number of students completing program annually',

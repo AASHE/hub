@@ -28,6 +28,8 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         self.ct.topics.add(self.topic)
         self.ct.organizations.add(self.org)
+        self.ct.keywords.add("tag 1")
+        self.ct.keywords.add("tag2")
 
         # Update search index
         self._rebuild_index()
@@ -37,6 +39,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             'topics': [self.topic.slug],
             'content_type': ['academicprogram'],
             'organizations': [self.org.pk],
+            'tag_filter': ['tag 1'],
             'organization_type': ['Associate'],
             'size': ['lt_5000'],
             'published': self.ct.published.year,

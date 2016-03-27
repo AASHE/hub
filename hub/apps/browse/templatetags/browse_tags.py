@@ -14,12 +14,20 @@ register = Library()
 
 
 @register.simple_tag
-def permission_flag(obj, user):
+def permission_flag(obj, user, icon_only=False):
     """
     Renders a HTML field using a custom template for each possible type of
     fields we support, or Bootstrap supports.
     """
-    label = '<span class="label label-warning"><i class="fa fa-lock"></i> {label}</span>'
+    if icon_only:
+        label = '''<i
+            class="icon-sm icon-warning fa fa-lock"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="{label}"></i>'''
+    else:
+        label = '<span class="label label-warning"><i class="fa fa-lock"></i> {label}</span>'
+    
 
     # Open Document has no flag
     if obj.permission == obj.PERMISSION_CHOICES.open:

@@ -4,6 +4,14 @@
 from django.conf.global_settings import *   # pylint: disable=W0614,W0401
 import os
 
+import os
+import sys
+import hub as project_module
+
+PROJECT_DIR = os.path.dirname(os.path.realpath(project_module.__file__))
+
+PYTHON_BIN = os.path.dirname(sys.executable)
+
 # =============================================================================
 # Generic Django project settings
 # =============================================================================
@@ -76,7 +84,7 @@ MIDDLEWARE_CLASSES = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [],
+    'DIRS': [os.path.join(PROJECT_DIR, 'templates'),],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -95,13 +103,6 @@ TEMPLATES = [{
 # Calculation of directories relative to the project module location
 # ==============================================================================
 
-import os
-import sys
-import hub as project_module
-
-PROJECT_DIR = os.path.dirname(os.path.realpath(project_module.__file__))
-
-PYTHON_BIN = os.path.dirname(sys.executable)
 ve_path = os.path.dirname(os.path.dirname(os.path.dirname(PROJECT_DIR)))
 # Assume that the presence of 'activate_this.py' in the python bin/
 # directory means that we're running in a virtual environment.
@@ -151,6 +152,8 @@ MEDIA_ROOT = os.path.join(VAR_ROOT, 'uploads')
 #     # 'compressor.filters.cssmin.rCSSMinFilter',
 #     # 'compressor.filters.cleancss.CleanCSSFilter',
 # ]
+
+TAGULOUS_AUTOCOMPLETE_JS = None
 
 # ==============================================================================
 # Email

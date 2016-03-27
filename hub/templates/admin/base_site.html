@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}{{ title }} | AASHE Hub Administration{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">AASHE Hub Administration</a></h1>
+{% endblock %}
+
+{% block extrahead %}
+  <link rel="stylesheet" href="{% static "vendor/selectize/css/selectize.css" %}"/>
+  
+  <script src="{% static 'aashe_theme/unify/plugins/jquery/jquery.min.js' %}"></script>
+  <!-- JS Plugins -->
+  <script src="{% static 'vendor/selectize/js/standalone/selectize.js' %}"></script>
+  <!-- JS App Level -->
+  <script src="{% static 'js/selectize-dropdowns.js' %}"></script>
+  
+  <script>
+  jQuery(document).ready(function() {
+    updateOrgDropdowns();
+    updateTagSubmitDropdowns();
+  });
+  </script>
+{% endblock %}

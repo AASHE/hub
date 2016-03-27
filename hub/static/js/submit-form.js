@@ -26,54 +26,24 @@ jQuery(document).ready(function() {
     if(preset_topics != undefined) {
         $('select[name*=topics]')[0].selectize.settings.required_values = preset_topics
     }
-
+    
     // -------------------------------------------------------------------------
     // Tagging (Keywords)
     // -------------------------------------------------------------------------
-    $('input[name*=keywords]').selectize({
-        delimiter: ',',
-        persist: false,
-        create: function(input) {
-            return {
-                name: input,
-                text: input
-            }
-        },
-        valueField: 'name',
-        labelField: 'name',
-        searchField: 'name',
-        load: function(query, callback) {
-          if (!query.length || query.length <= 2) return callback();
-          $.ajax({
-              url: '/api/v1/tags/',
-              type: 'GET',
-              dataType: 'json',
-              data: {
-                  q: query
-              },
-              error: function() {
-                  callback();
-              },
-              success: function(res) {
-                  console.log("success!");
-                  callback(res);
-              }
-          });
-        }
-    });
+    updateTagSubmitDropdowns();
 
     // -------------------------------------------------------------------------
     // Initialize the in-line form buttons
     // -------------------------------------------------------------------------
     $('#add-author').djangoInlineFormAdd({
       prefix: "author",
-      postClick: $.updateOrgDropdowns,
+      postClick: updateOrgDropdowns,
       formHeight: 200,
     });
     $('#i-am-author').djangoInlineFormAdd({
       prefix: 'author',
       templateId: '#author-template-user-is-author',
-      postClick: $.updateOrgDropdowns,
+      postClick: updateOrgDropdowns,
       formHeight: 200
     });
     $('#add-file').djangoInlineFormAdd({

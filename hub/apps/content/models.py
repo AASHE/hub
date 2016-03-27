@@ -98,6 +98,7 @@ class ContentType(TimeStampedModel):
     keywords = tagulous.models.TagField(
         verbose_name='Tags',
         blank=True,
+        space_delimiter=False,
         help_text="""Enter keywords that will be helpful for grouping this
         resource (e.g. "bottled water" for bottled water initiatives). For
         multiple tags, use comma or return as separator.""")
@@ -249,7 +250,7 @@ class ContentType(TimeStampedModel):
 class Author(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="authors")
     name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True, null=True)
+    title = models.CharField(max_length=128, blank=True, null=True)
     organization = models.ForeignKey(
         'metadata.Organization', blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
@@ -328,11 +329,11 @@ from .types.videos import Video
 CONTENT_TYPES = OrderedDict()
 CONTENT_TYPES['academicprogram'] = AcademicProgram
 CONTENT_TYPES['casestudy'] = CaseStudy
-CONTENT_TYPES['centerandinstitute'] = CenterAndInstitute
+CONTENT_TYPES['presentation'] = Presentation
 CONTENT_TYPES['material'] = Material
 CONTENT_TYPES['outreachmaterial'] = OutreachMaterial
 CONTENT_TYPES['photograph'] = Photograph
-CONTENT_TYPES['presentation'] = Presentation
 CONTENT_TYPES['publication'] = Publication
+CONTENT_TYPES['centerandinstitute'] = CenterAndInstitute
 CONTENT_TYPES['tool'] = Tool
 CONTENT_TYPES['video'] = Video

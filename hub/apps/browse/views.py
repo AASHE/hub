@@ -82,7 +82,8 @@ class BrowseView(ListView):
             not self.sustainabilty_topic and
             not self.content_type_class and
             'search' not in self.request.GET and
-            'organizations' not in self.request.GET
+            'organizations' not in self.request.GET and
+            'tagfilter' not in self.request.GET
         ):
             return HttpResponseRedirect(reverse('home'))
 
@@ -94,12 +95,6 @@ class BrowseView(ListView):
             self.content_type_class.slug in settings.PUBLIC_CONTENT_TYPES
         ):
             return super(BrowseView, self).dispatch(*args, **kwargs)
-
-        # If it was not a PUBLIC content type, we do need login at least.
-        if not self.request.user.is_authenticated():
-            return render(
-                self.request, 'registration/login_required.html',
-                status=HttpResponseForbidden.status_code)
 
         return super(BrowseView, self).dispatch(*args, **kwargs)
 

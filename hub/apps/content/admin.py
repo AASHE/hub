@@ -30,8 +30,30 @@ class ImageInline(admin.TabularInline):
     extra = 0
 
 
-class BaseContentTypeAdmin(admin.ModelAdmin):
+# Custom model form for the admin
+from django import forms
+from ..browse.forms import LeanSelectMultiple
+class ContentTypeAdminForm(forms.ModelForm):
+    class Meta:
+        model = ContentType
+        fields = '__all__'
+        widgets = {
+            'organizations': LeanSelectMultiple(),
+            # 'keywords': LeanSelectMultiple(),
+            # 'keywords': forms.SelectMultiple(),
+        }
 
+    def __init__(self, *args, **kwargs):
+        super(ContentTypeAdminForm, self).__init__(*args, **kwargs)
+        # import pdb; pdb.set_trace()
+        # tag_choices = ContentType.keywords.tag_model.objects.distinct('name').order_by('name')
+        # tag_choices = tag_choices.values_list('pk', 'name')
+        # self.fields['keywords'].widget.choices = tag_choices
+
+
+class BaseContentTypeAdmin(admin.ModelAdmin):
+    form = ContentTypeAdminForm
+    
     def save_model(self, request, obj, form, change):
         status_tracker_changed = obj.status_tracker.changed()  # before save
         obj.save()
@@ -49,7 +71,7 @@ class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     readonly_fields = ('published',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
     exclude = ('content_type',)
-    raw_id_fields = ('organizations', 'submitted_by')
+    raw_id_fields = ('submitted_by',)
 
     def _update_application_index(self):
         # from django.core import management
