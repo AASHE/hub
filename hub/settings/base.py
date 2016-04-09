@@ -220,6 +220,7 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': eng,
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
+        'TIMEOUT': 30
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
