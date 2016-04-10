@@ -28,6 +28,7 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': os.environ.get('SEARCHBOX_SSL_URL', None),
         'INDEX_NAME': 'haystack',
+        'TIMEOUT': 30
     },
 }
 
