@@ -28,12 +28,12 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': os.environ.get('SEARCHBOX_SSL_URL', None),
         'INDEX_NAME': 'haystack',
-        'TIMEOUT': 30
+        'TIMEOUT': 60 * 5
     },
 }
 
 # ==============================================================================
-# aasheauth
+# Aasheauth
 # ==============================================================================
 AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
 AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']
