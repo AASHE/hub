@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from .apps.content.models import ContentType
 from .apps.browse.views import HomeView
@@ -12,6 +13,7 @@ from tagulous.views import autocomplete
 
 
 urlpatterns = [
+    
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^browse/', include('hub.apps.browse.urls', namespace='browse')),
     url(r'^submit-resource/', include('hub.apps.submit.urls', namespace='submit')),
@@ -21,6 +23,13 @@ urlpatterns = [
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, name='logout'),
     url(r'^_ad/', include(admin.site.urls)),
+    
+    # Let's Encrypt:
+    # /.well-known/acme-challenge/LFXMNwnQa62iSYtEMNQM83szumdmYnSvb38LBQldAz0
+    url(
+        r'^.well-known/acme-challenge/LFXMNwnQa62iSYtEMNQM83szumdmYnSvb38LBQldAz0',
+        TemplateView.as_view(template_name='well-known/acme-challenge.html')),
+
     url(r'^', include('django.contrib.flatpages.urls')),
 ]
 
