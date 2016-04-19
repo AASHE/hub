@@ -33,3 +33,4 @@ https://github.com/AASHE/iss/archive/master.zip
 https://github.com/AASHE/django-block-content/archive/master.zip
 https://github.com/AASHE/django-integration-settings/archive/master.zip
 https://github.com/chrisdrackett/django-typogrify/archive/master.zip
+https://github.com/jamstooks/django-acme-challenge/archive/master.zip

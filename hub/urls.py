@@ -2,7 +2,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
 
 from .apps.content.models import ContentType
 from .apps.browse.views import HomeView
@@ -24,11 +23,8 @@ urlpatterns = [
     url(r'^logout/$', logout, name='logout'),
     url(r'^_ad/', include(admin.site.urls)),
     
-    # Let's Encrypt:
-    # /.well-known/acme-challenge/LFXMNwnQa62iSYtEMNQM83szumdmYnSvb38LBQldAz0
-    url(
-        r'^.well-known/acme-challenge/LFXMNwnQa62iSYtEMNQM83szumdmYnSvb38LBQldAz0',
-        TemplateView.as_view(template_name='well-known/acme-challenge.html')),
+    # Let's Encrypt (django-acme-challenge)
+    url(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
 
     url(r'^', include('django.contrib.flatpages.urls')),
 ]

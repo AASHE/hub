@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'hub.apps.browse',
     'hub.apps.submit',
 
+    'acme_challenge',
     'django_tables2',
     'django_markup',
 
@@ -244,3 +245,7 @@ PUBLIC_CONTENT_TYPES = (
 )
 
 GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', None)
+
+# django-acme-challenge for Let's Encrypt
+ACME_CHALLENGE_URL_SLUG = os.environ.get('ACME_CHALLENGE_URL_SLUG', None)
+ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get('ACME_CHALLENGE_TEMPLATE_CONTENT', None)
