@@ -12,7 +12,6 @@ DEBUG = os.environ.get('DEBUG', False)  # Set env var to 1
 
 ADMINS = (
     ('Benjamin Stookey', 'ben@aashe.org'),
-    ('Martin Mahner', 'martin@lincolnloop.com')
 )
 MANAGERS = ADMINS
 
