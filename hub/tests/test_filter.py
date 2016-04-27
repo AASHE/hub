@@ -97,3 +97,18 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         response = self.client.get(self.url_search, _filter_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 0)
+        
+    def test_search_handles_special_characters(self):
+        """
+        ElasticSearch has some characters that must be escaped
+        Confirm that we escape them by appending them to the query
+        to see if results are still returned.
+        """
+        self.client.login(**self.superuser_cred)
+        url = "%s%s" % (self.url_search, '+-&|!\(\){}[]^"~*?:\\\/')
+
+        response = self.client.get(url)
+        
+        # One item should still be returned
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['object_list']), 1)

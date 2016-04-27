@@ -35,7 +35,13 @@ class SearchFilter(filters.CharFilter):
         if not value:
             return qs
 
-        query = Raw(value.lower())
+        # Remove any special characters
+        # http://lucene.apache.org/core/3_4_0/queryparsersyntax.html#Escaping%20Special%20Characters
+        esc_string = '+-&|!\(\){}[]^"~*?:\\\/'
+        translation_table = dict.fromkeys(map(ord, esc_string), None)
+        query = value.translate(translation_table)
+        
+        query = Raw(query.lower())
         result_ids = (SearchQuerySet().filter(content__contains=query)
                                       .values_list('ct_pk', flat=True))
         return qs.filter(pk__in=result_ids).distinct()
