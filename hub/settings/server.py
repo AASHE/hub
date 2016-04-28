@@ -6,6 +6,9 @@ import os
 
 ALLOWED_HOSTS = ('*',)
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SSLIFY_DISABLE = os.environ.get('SSLIFY_DISABLE', False)
+
 SECRET_KEY = os.environ.get('SECRET_KEY', None)
 
 DEBUG = os.environ.get('DEBUG', False)  # Set env var to 1
