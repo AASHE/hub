@@ -30,6 +30,10 @@ class GenericFilterSet(filters.FilterSet):
 
 class AcademicBrowseFilterSet(GenericFilterSet):
     program_type = ProgramTypeFilter()
+    
+
+class PublicationBrowseFilterSet(GenericFilterSet):
+    publication_type = PublicationTypeFilter()
 
 
 class MaterialBrowseFilterSet(GenericFilterSet):

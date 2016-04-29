@@ -12,7 +12,7 @@ from django.utils.timezone import now
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
-from ..content.models import CONTENT_TYPES, ContentType, Material
+from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
@@ -409,3 +409,30 @@ class CourseLevelFilter(filters.ChoiceFilter):
             return qs.filter(pk__in=Material.objects.filter(
                 course_level__in=value).values_list('pk', flat=True))
         return qs
+
+
+# Publication specific
+class PublicationTypeFilter(filters.ChoiceFilter):
+    """
+    Publication specific Type filter.
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': Publication.TYPE_CHOICES,
+            'label': 'Publication Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(PublicationTypeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        """
+        Filters always work against the base `ContenType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not value:
+            return qs
+        from ..content.types.publications import Publication
+        return qs.filter(pk__in=Publication.objects.filter(
+            _type__in=value).values_list('pk', flat=True))
