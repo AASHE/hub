@@ -17,7 +17,7 @@ class Command(BaseCommand):
         url_pattern = r'dl.php\?f=(\d+) Download.*'
         filename_pattern = r'.*filename=\"(.+)\"'
         
-        for p in Presentation.objects.filter(date__year=2008)[:4]:
+        for p in Presentation.objects.filter(date__year=2008):
             for f in p.files.all():
                 print f.label
                 m = re.match(url_pattern, f.label)
