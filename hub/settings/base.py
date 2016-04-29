@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'hub.apps.metadata',
     'hub.apps.browse',
     'hub.apps.submit',
+    'hub.imports',
 
     'acme_challenge',
     'django_tables2',
