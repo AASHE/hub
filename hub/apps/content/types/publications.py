@@ -18,11 +18,6 @@ class Publication(ContentType):
         ('undergrad', 'Undergraduate Student Research'),
     )
 
-    release_date = models.DateField('Publication release date',
-        blank=True, null=True, help_text='''If you don't know the exact day,
-        choose the first day of the month. Use January 1 if you only know the
-        year. You can use the calendar widget or type in a date in YYYY-MM-DD
-        format.''')
     publisher = models.CharField('Publisher', max_length=200,
         blank=True, null=True, help_text='Enter the name of the publisher, if applicable.')
     periodical_name = models.CharField('Periodical/publication name',
@@ -39,6 +34,12 @@ class Publication(ContentType):
     class Meta:
         verbose_name = 'Publication'
         verbose_name_plural = 'Publications'
+        
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'date_created': 'Publication Release Date',
+        }
 
     @classmethod
     def required_field_overrides(cls):

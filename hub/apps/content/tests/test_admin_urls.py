@@ -66,12 +66,10 @@ class AdminURLTestCase(TestCase):
             'title': "test resource",
             'slug': "test_resource",
             'description': "testing this",
+            'date_created': datetime.now()
         }
 
         self.ct_specific_fields = {
-            'presentation': {
-                'date': datetime.now()
-            },
             'casestudy': {
                 'consider_for_award': False
             }
