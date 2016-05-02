@@ -24,7 +24,7 @@ def move_dates(apps, schema_editor):
     CenterAndInstitute = apps.get_model("content", "CenterAndInstitute")
     for c in CenterAndInstitute.objects.all():
         if c.founded:
-            c.date_created = date(year=p.founded, month=1, day=1)
+            c.date_created = date(year=c.founded, month=1, day=1)
             c.save()
     
     Presentation = apps.get_model("content", "Presentation")
