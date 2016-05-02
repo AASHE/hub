@@ -5,7 +5,6 @@
 {% block resource_metadata %}
     <div class="margin-bottom-10"></div>
     {% include "browse/details/includes/meta.html" with label="Program Type" value=object.program_type.name %}
-    {% include "browse/details/includes/meta.html" with label="Founded" value=object.founded %}
     {% include "browse/details/includes/meta.html" with label="Completion" value=object.completion %}
     {% include "browse/details/includes/meta.html" with label="Number of Students participating" value=num_students %}
     {% include "browse/details/includes/meta.html" with label="Distance" value=object.get_distance_display %}
