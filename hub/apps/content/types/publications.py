@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD, IMG_UPLOAD
 
@@ -30,6 +30,8 @@ class Publication(ContentType):
         "Undergraduate Student Research" submissions will be automatically
         considered for a Campus Sustainability Research Award as part of
         AASHE's annual awards program.''')
+        
+    objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Publication'

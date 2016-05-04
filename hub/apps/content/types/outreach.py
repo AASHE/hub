@@ -2,7 +2,7 @@ from django.db import models
 from model_utils import Choices
 
 from ..search import BaseIndex
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..help import AFFIRMATION, FILE_UPLOAD
 
 
@@ -23,9 +23,16 @@ class OutreachMaterial(ContentType):
     design_credit = models.CharField('Design credit (name and/or organization)',
         max_length=500, blank=True, null=True)
 
+    objects = ContentTypeManager()
+
     class Meta:
         verbose_name = 'Outreach Material'
         verbose_name_plural = 'Outreach Materials'
+
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import OutreachBrowseFilterSet
+        return OutreachBrowseFilterSet
 
     @classmethod
     def required_metadata(cls):

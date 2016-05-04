@@ -24,6 +24,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         self.ct = AcademicProgram.objects.create(
             title='My Keyword resource',
+            date_created=now(),
             status=AcademicProgram.STATUS_CHOICES.published,
             published=now())
 
@@ -44,6 +45,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             'organization_type': ['Associate'],
             'size': ['lt_5000'],
             'published': self.ct.published.year,
+            'date_created': now().year,
             # FIXME: If I provide a `country` filter argument, that filter is
             #        not even called. It is when I don't provide one.
             #        Why? Becaues required=False?
