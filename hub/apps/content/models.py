@@ -65,7 +65,11 @@ class ContentType(TimeStampedModel):
     title = models.CharField(max_length=500)  # label set by self.title_label
     slug = models.CharField(max_length=500, editable=False)
 
-    description = models.TextField('Description', blank=True, null=True)
+    description = models.TextField(
+        'Description', blank=True, null=True,
+        help_text='''Styling with
+        <a href="https://simplemde.com/markdown-guide" target="_blank">Markdown</a>
+        is supported''')
 
     organizations = models.ManyToManyField(
         'metadata.Organization',

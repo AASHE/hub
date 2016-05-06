@@ -5,7 +5,7 @@
         {% if field.field.required %}<span class="required">*</span>{% endif %}
     </label>
     {% if field.help_text and field.help_text != "Filter" %}
-        <div class="note">{{ field.help_text }}</div>
+        <div class="note">{{ field.help_text|safe }}</div>
     {% endif %}
     {% endblock %}
     <label class="{% block class %}input{% endblock %}">
