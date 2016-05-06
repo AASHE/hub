@@ -2,7 +2,7 @@ from django.db import models
 from model_utils import Choices
 
 from ...metadata.models import ProgramType, SustainabilityTopic
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 
 
@@ -33,6 +33,8 @@ class AcademicProgram(ContentType):
         choices=DISTANCE_CHOICES, blank=True, null=True)
     commitment = models.CharField('Commitment', max_length=20,
         choices=COMMITMENT_CHOICES, blank=True, null=True)
+
+    objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Academic Program'

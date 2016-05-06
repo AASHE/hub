@@ -1,10 +1,12 @@
 from django.db import models
 
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 
 
 class Video(ContentType):
+
+    objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Video'
@@ -15,6 +17,11 @@ class Video(ContentType):
         return {
             'title': 'Video Title',
         }
+
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import VideoBrowseFilterSet
+        return VideoBrowseFilterSet
 
     @classmethod
     def required_metadata(cls):

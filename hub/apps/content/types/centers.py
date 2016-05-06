@@ -1,7 +1,7 @@
 from django.db import models
 
 from ...metadata.models import SustainabilityTopic
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 
 
@@ -10,6 +10,8 @@ class CenterAndInstitute(ContentType):
         blank=True, null=True)
     budget = models.PositiveIntegerField('Total operating budget for the center or institute (excluding salaries)?',
         blank=True, null=True, help_text='in U.S. dollars')
+
+    objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Research Center & Institute'
@@ -28,6 +30,11 @@ class CenterAndInstitute(ContentType):
             CenterAndInstitute, cls).required_field_overrides()
         required_list.append('disciplines')
         return required_list
+
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import CenterAndInstituteBrowseFilterSet
+        return CenterAndInstituteBrowseFilterSet
 
     @classmethod
     def required_metadata(cls):

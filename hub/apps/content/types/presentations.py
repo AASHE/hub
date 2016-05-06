@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD
 
@@ -23,6 +23,8 @@ class Presentation(ContentType):
     presentation_type = models.CharField(max_length=100, blank=True, null=True,
         choices=PRESENTATION_CHOICES)
 
+    objects = ContentTypeManager()
+
     class Meta:
         verbose_name = 'Conference Presentation'
         verbose_name_plural = 'Conference Presentations'
@@ -43,6 +45,11 @@ class Presentation(ContentType):
             Presentation, cls).required_field_overrides()
         required_list.append('date_created')
         return required_list
+
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import PresentationBrowseFilterSet
+        return PresentationBrowseFilterSet
 
     @classmethod
     def required_metadata(cls):

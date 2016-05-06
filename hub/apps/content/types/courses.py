@@ -2,7 +2,7 @@ from django.db import models
 from model_utils import Choices
 
 from ...metadata.models import SustainabilityTopic
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD
 
@@ -27,6 +27,8 @@ class Material(ContentType):
         choices=LEVEL_CHOICES, help_text='''100-level courses (or equivalents)
         may be designated as introductory, 200- or 300-level as intermediate,
         and 400-level or graduate courses as advanced.''')
+
+    objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Course Material'

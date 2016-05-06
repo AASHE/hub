@@ -226,10 +226,11 @@ class PublishedFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
-        # Find the minimum and maximum year of all topics and put them
-        # in a range for choices.
         qs = ContentType.objects.published()
 
+        # Find the minimum and maximum year of all ct's and put them
+        # in a range for choices.
+        # @todo - add caching here for performance
         min_year = qs.order_by('published').first()
         max_year = qs.order_by('-published').first()
 
@@ -436,3 +437,42 @@ class PublicationTypeFilter(filters.ChoiceFilter):
         from ..content.types.publications import Publication
         return qs.filter(pk__in=Publication.objects.filter(
             _type__in=value).values_list('pk', flat=True))
+
+
+class CreatedFilter(filters.ChoiceFilter):
+    """
+        This filter takes an optional argument of ContentTypeClass which allows
+        us to show only the years that have values.
+    """
+    
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, ContentTypeClass=ContentType, *args, **kwargs):
+        
+        qs = ContentTypeClass.objects.published().filter(date_created__isnull=False)
+        qs = qs.order_by('-date_created')
+
+        # Find the minimum and maximum year of all ct's and put them
+        # in a range for choices.
+        # @todo - add caching here for performance
+        all_dates = qs.values_list('date_created', flat=True)
+        if all_dates:
+            # using set to remove duplicates
+            distinct_years = list(set([d.year for d in all_dates]))
+            distinct_years.sort(reverse=True)
+            year_choices = [(i,i) for i in distinct_years]
+        else:
+            year_choices = ((now().year, now().year),)
+
+        kwargs.update({
+            'choices': year_choices,
+            'label': 'Year created, published, or presented',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(CreatedFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        query = reduce(or_, (Q(date_created__year=x) for x in value))
+        return qs.filter(query)

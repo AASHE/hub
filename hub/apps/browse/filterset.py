@@ -16,6 +16,7 @@ class GenericFilterSet(filters.FilterSet):
     tagfilter = TagFilter('tags')
     size = StudentFteFilter()
     published = PublishedFilter()
+    created = CreatedFilter()
     country = CountryFilter(required=False)
     state = StateFilter(required=False)
     province = ProvinceFilter(required=False)
@@ -27,15 +28,64 @@ class GenericFilterSet(filters.FilterSet):
         # a specific list above.
         fields = []
 
+##############################################################################
+# All Content Types get their own filterset
+##############################################################################
 
 class AcademicBrowseFilterSet(GenericFilterSet):
     program_type = ProgramTypeFilter()
-    
+    from ..content.types.academic import AcademicProgram
+    created = CreatedFilter(AcademicProgram)
 
-class PublicationBrowseFilterSet(GenericFilterSet):
-    publication_type = PublicationTypeFilter()
+
+class CaseStudyBrowseFilterSet(GenericFilterSet):
+    from ..content.types.casestudies import CaseStudy
+    created = CreatedFilter(CaseStudy)
+
+
+class CenterAndInstituteBrowseFilterSet(GenericFilterSet):
+    from ..content.types.centers import CenterAndInstitute
+    created = CreatedFilter(CenterAndInstitute)
+
+
+class CaseStudyBrowseFilterSet(GenericFilterSet):
+    from ..content.types.courses import Material
+    created = CreatedFilter(Material)
 
 
 class MaterialBrowseFilterSet(GenericFilterSet):
     material_type = MaterialTypeFilter()
     course_level = CourseLevelFilter()
+    from ..content.types.courses import Material
+    created = CreatedFilter(Material)
+
+
+class OutreachBrowseFilterSet(GenericFilterSet):
+    from ..content.types.outreach import OutreachMaterial
+    created = CreatedFilter(OutreachMaterial)
+
+
+class PhotographBrowseFilterSet(GenericFilterSet):
+    from ..content.types.photographs import Photograph
+    created = CreatedFilter(Photograph)
+
+
+class PresentationBrowseFilterSet(GenericFilterSet):
+    from ..content.types.presentations import Presentation
+    created = CreatedFilter(Presentation)
+
+
+class PublicationBrowseFilterSet(GenericFilterSet):
+    publication_type = PublicationTypeFilter()
+    from ..content.types.publications import Publication
+    created = CreatedFilter(Publication)
+
+
+class ToolBrowseFilterSet(GenericFilterSet):
+    from ..content.types.tools import Tool
+    created = CreatedFilter(Tool)
+
+
+class VideoBrowseFilterSet(GenericFilterSet):
+    from ..content.types.videos import Video
+    created = CreatedFilter(Video)
