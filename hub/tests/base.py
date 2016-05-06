@@ -43,3 +43,24 @@ class BaseSearchBackendTestCase(TestCase):
         """
         management.call_command('rebuild_index', verbosity=0,
                                 interactive=False)
+
+
+# The kwargs required for `create` for each content type
+EXTRA_REQUIRED_CT_KWARGS = {
+    'casestudy': {
+        'background': "blah",
+        'goals': "blah",
+        'implementation': "blah",
+        'timeline': "blah",
+        'financing': "blah",
+        'results': "blah",
+        'lessons_learned': "blah",
+        'consider_for_award': False,
+    },
+    'material': {
+        'material_type': "assignment",
+    },
+    'presentation': {
+        'conf_name': "aashe",
+    }
+}

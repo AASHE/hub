@@ -4,7 +4,11 @@ from django.core.urlresolvers import reverse
 from ..apps.metadata.models import Organization, SustainabilityTopic
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.publications import Publication
-from .base import BaseSearchBackendTestCase, WithUserSuperuserTestCase
+from ..apps.content.models import CONTENT_TYPES
+from .base import (
+    BaseSearchBackendTestCase,
+    WithUserSuperuserTestCase,
+    EXTRA_REQUIRED_CT_KWARGS)
 
 
 class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
@@ -122,40 +126,24 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
     Test some specific filters for different content types
     """
     
-    def setUp(self):
+    def test_pub_type_filter(self):
         """
-        Create some sane default objects that will match almost all filter
-        variants.
+        Test for the publication type filter
         """
-        self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
 
-        self.topic = SustainabilityTopic.objects.create(name='Curriculum')
-
-        self.org = Organization.objects.create(
-            account_num=1, org_name='Washington', country_iso='AUS',
-            country='Australia', enrollment_fte=2000, exclude_from_website=0,
-            carnegie_class="Associate", org_type="Business")
-
-        self.ct = Publication.objects.create(
+        ct = Publication.objects.create(
             title='Test Publication 1',
             _type=Publication.TYPE_CHOICES.book,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
             )
 
-        self.ct = Publication.objects.create(
+        ct2 = Publication.objects.create(
             title='Test Publication 2',
             _type=Publication.TYPE_CHOICES.news,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
             )
-        
-        return super(SpecificFilterTestCase, self).setUp()
-    
-    def test_pub_type_filter(self):
-        """
-        Test for the publication type filter
-        """
 
         _url = reverse('browse:browse', kwargs={'ct': 'publication'})
         _filter_data = {'publication_type': ['book']}
@@ -168,3 +156,29 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
         response = self.client.get(_url, _filter_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 1)
+        
+    def test_date_created_filter(self):
+        """
+        Each content type has a slightly different implementation of the
+        date_created filter (prepopulated with relevant dates)
+        """
+        
+        for k, ct_class in CONTENT_TYPES.items():
+            
+            ct_kwargs = {
+                'title': 'Date Created Resource',
+                'date_created': now(),
+                'status': ct_class.STATUS_CHOICES.published,
+                'published': now(),
+            }
+            if k in EXTRA_REQUIRED_CT_KWARGS.keys():
+                ct_kwargs.update(EXTRA_REQUIRED_CT_KWARGS[k])
+            ct = ct_class.objects.create(**ct_kwargs)
+            
+            _url = reverse('browse:browse', kwargs={'ct': k})
+            _filter_data = {'date_created': [now().year]}
+            self.client.login(**self.superuser_cred)
+            
+            response = self.client.get(_url, _filter_data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(response.context['object_list']), 1)
