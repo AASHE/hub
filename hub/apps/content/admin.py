@@ -5,6 +5,8 @@ from django.core.urlresolvers import reverse
 
 from . import utils
 from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
+from .types.casestudies import CaseStudy
+from .types.publications import Publication
 from django.utils import timezone
 from model_utils import Choices
 
@@ -65,7 +67,7 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
 
 class SpecificContentTypeAdmin(BaseContentTypeAdmin):
-    list_display = ('__unicode__', 'permission', 'published', 'notes')
+    list_display = ('__unicode__', 'permission', 'published',)
     list_filter = ('status', 'permission', 'created', 'published',)
     search_fields = ('title', 'description', 'keywords',)
     readonly_fields = ('published',)
@@ -167,5 +169,23 @@ class AllContentTypesAdmin(BaseContentTypeAdmin):
 
 admin.site.register(ContentType, AllContentTypesAdmin)
 
+# register each content type
+# case studies and publications require custom admins
+
 for _, model in CONTENT_TYPES.items():
-    admin.site.register(model, SpecificContentTypeAdmin)
+    if _ != 'publication' and _ != 'casestudy':
+        admin.site.register(model, SpecificContentTypeAdmin)
+
+
+class PublicationAdmin(SpecificContentTypeAdmin):
+    list_display = ('__unicode__', 'permission', 'published', 'date_created', '_type')
+    list_filter = ('status', 'permission', 'created', 'published', 'date_created', '_type')
+    
+admin.site.register(Publication, PublicationAdmin)
+
+
+class CaseStudyAdmin(SpecificContentTypeAdmin):
+    list_display = ('__unicode__', 'permission', 'created', 'consider_for_award')
+    list_filter = ('status', 'permission', 'created', 'consider_for_award')
+    
+admin.site.register(CaseStudy, CaseStudyAdmin)

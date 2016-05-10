@@ -4,7 +4,6 @@
 
 {% block resource_metadata %}
     <div class="margin-bottom-10"></div>
-    {% include "browse/details/includes/meta.html" with label="Release Date" value=object.release_date|date %}
     {% include "browse/details/includes/meta.html" with label="Publisher" value=object.publisher %}
     {% include "browse/details/includes/meta.html" with label="Periodical Name" value=object.periodical_name %}
     {% include "browse/details/includes/meta.html" with label="Type" value=object.get__type_display %}

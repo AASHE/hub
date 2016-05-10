@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD
 
@@ -16,16 +16,14 @@ class Presentation(ContentType):
         ('presentation', 'Presentation'),
     )
 
-    date = models.DateField('Presentation Date', help_text='''If you don't know
-    the exact day, choose the first day of the month. Use January 1 if you only
-    know the year. You can use the calendar widget or type in a date in
-    YYYY-MM-DD format.''')
     conf_name = models.CharField('Conference Name', max_length=100,
         choices=CONF_NAME_CHOICES, help_text='''If your conference is not
         listed, please select "other" and recommend a change by emailing
         resources@aashe.org''')
     presentation_type = models.CharField(max_length=100, blank=True, null=True,
         choices=PRESENTATION_CHOICES)
+
+    objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Conference Presentation'
@@ -38,7 +36,20 @@ class Presentation(ContentType):
             'description': 'Description or Abstract',
             'author': 'Presenter',
             'authors': 'Presenters',
+            'date_created': 'Presentation Date',
         }
+        
+    @classmethod
+    def required_field_overrides(cls):
+        required_list = super(
+            Presentation, cls).required_field_overrides()
+        required_list.append('date_created')
+        return required_list
+
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import PresentationBrowseFilterSet
+        return PresentationBrowseFilterSet
 
     @classmethod
     def required_metadata(cls):

@@ -55,7 +55,9 @@ INSTALLED_APPS = (
     'hub.apps.metadata',
     'hub.apps.browse',
     'hub.apps.submit',
+    'hub.imports',
 
+    'acme_challenge',
     'django_tables2',
     'django_markup',
 
@@ -71,6 +73,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -220,6 +223,7 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': eng,
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
+        'TIMEOUT': 30
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
@@ -243,3 +247,7 @@ PUBLIC_CONTENT_TYPES = (
 )
 
 GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', None)
+
+# django-acme-challenge for Let's Encrypt
+ACME_CHALLENGE_URL_SLUG = os.environ.get('ACME_CHALLENGE_URL_SLUG', None)
+ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get('ACME_CHALLENGE_TEMPLATE_CONTENT', None)
