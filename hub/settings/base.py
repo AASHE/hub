@@ -226,7 +226,6 @@ HAYSTACK_CONNECTIONS = {
         'TIMEOUT': 30
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # Cache lifetime in seconds
 CACHE_TTL_SHORT = 60 * 10
