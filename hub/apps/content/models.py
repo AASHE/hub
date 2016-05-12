@@ -63,7 +63,7 @@ class ContentType(TimeStampedModel):
         settings.AUTH_USER_MODEL, blank=True, null=True)
 
     title = models.CharField(max_length=500)  # label set by self.title_label
-    slug = models.CharField(max_length=500, editable=False)
+    slug = models.CharField(max_length=500)
 
     description = models.TextField(
         'Description', blank=True, null=True,
