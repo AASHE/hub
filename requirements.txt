@@ -20,6 +20,7 @@ requests
 # Deployment specific
 Pillow
 dj-database-url
+django-password-protect
 django-sslify
 gunicorn
 ipython

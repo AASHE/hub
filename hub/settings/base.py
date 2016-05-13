@@ -73,6 +73,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django_password_protect.PasswordProtectMiddleware',
     'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -250,3 +251,9 @@ GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', No
 # django-acme-challenge for Let's Encrypt
 ACME_CHALLENGE_URL_SLUG = os.environ.get('ACME_CHALLENGE_URL_SLUG', None)
 ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get('ACME_CHALLENGE_TEMPLATE_CONTENT', None)
+
+# Optional password protection for dev sites
+PASSWORD_PROTECT = os.environ.get('PASSWORD_PROTECT', False)
+PASSWORD_PROTECT_USERNAME = os.environ.get('PASSWORD_PROTECT_USERNAME', None)
+PASSWORD_PROTECT_PASSWORD = os.environ.get('PASSWORD_PROTECT_PASSWORD', None)
+PASSWORD_PROTECT_REALM = os.environ.get('PASSWORD_PROTECT_REALM', 'Dev Site Auth')
