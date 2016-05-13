@@ -26,6 +26,7 @@ ipython
 psycopg2
 raven==5.10.2
 whitenoise
+newrelic
 
 # Non-pypi repos
 https://github.com/AASHE/django-aashe-theme/archive/master.zip
