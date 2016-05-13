@@ -25,7 +25,8 @@ class SubmitResourceForm(forms.ModelForm):
             'permission',
             'submitted_by',
             'published',
-            'notes'
+            'notes',
+            'slug',
         )
 
     def clean_topics(self):
