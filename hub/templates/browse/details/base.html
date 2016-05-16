@@ -6,6 +6,7 @@
 {% load static %}
 {% load thumbnail %}
 {% load typogrify_tags %}
+{% load cache %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -40,6 +41,8 @@
 {% endblock %}
 
 {% block page %}
+{% cache CACHE_TTL_LONG object.title user.is_staff %}
+<!-- begin cache {% now "c" %} -->
 <div class="profile">
     <div class="row">
     <!-- row -->
@@ -237,4 +240,6 @@
     <!-- end row -->
     </div>
 </div>
+<!-- end cache -->
+{% endcache %}
 {% endblock %}

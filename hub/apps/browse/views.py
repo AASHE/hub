@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from logging import getLogger
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
@@ -165,8 +166,52 @@ class BrowseView(ListView):
         # Load form into class, bring it back below in context.
         self.filterset_form = filterset.form
         return filterset.qs.distinct()
+        
+    def get_cache_key(self):
+        """
+        Generates a cache key based on:
+            - url
+            - anon/auth/member user status
+            - get params
+        
+        Note: memcached limits keys to 250 characters
+        """
+        
+        key = self.request.path
+        
+        if self.request.user.is_authenticated():
+            if hasattr(self.request.user, 'aasheuser'):
+                key = "%s[mem-%s]" % (key, self.request.user.aasheuser.is_member())
+            else:
+                # usually just during testing
+                key = "%s[mem-False]" % key
+        else:
+            key = "%s[anon]" % key
+        
+        key = "%s?" % key
+            
+        # sort the keys alphabetically for consistency
+        keys_list = self.request.GET.keys() 
+        for k in keys_list:
+            v = self.request.GET.getlist(k)
+            if v and v != [u'']:
+                v.sort()
+                key = "%s&%s=%s" % (key, k, "/".join(v))
+
+        if len(key) >= 250:
+            # memcache limit of 250 characters - hash the long ones
+            import hashlib
+            hashed_key = hashlib.sha224(key).hexdigest()
+            return hashed_key
+        return key
 
     def get_context_data(self, **kwargs):
+        """
+        The context can be cached based on three keys:
+            - url
+            - anon/auth/member user status
+            - get params
+        """
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         ctx.update({
             'object_list_form': self.filterset_form,
@@ -176,6 +221,7 @@ class BrowseView(ListView):
             'content_type_list': CONTENT_TYPES,
             'page_title': self.get_title(),
             'content_type_slug': self.kwargs.get('ct'),
+            'cache_key': self.get_cache_key(),
         })
 
         # Additional toolkit content for topic views
