@@ -21,12 +21,13 @@ requests
 # Deployment specific
 Pillow
 dj-database-url
+django-bmemcached==0.2.3
 django-password-protect
 django-sslify
 gunicorn
 ipython
 psycopg2
-python-memcached==1.57
+python-binary-memcached==0.24.6
 raven==5.10.2
 whitenoise
 newrelic

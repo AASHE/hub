@@ -80,6 +80,24 @@ if raven_dsn:
     INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
 
 # ==============================================================================
+# MEMCACHEDCLOUD Settings
+# ==============================================================================
+
+import urlparse
+import json
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_bmemcached.memcached.BMemcached',
+        'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
+        'OPTIONS': {
+                    'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+                    'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
+            }
+    }
+}
+
+# ==============================================================================
 # Enable debug logging
 # ==============================================================================
 # LOGGING['loggers']['hub']['level'] = 'DEBUG'
