@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from logging import getLogger
 
 from django.conf import settings
-from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
@@ -229,23 +228,15 @@ class BrowseView(ListView):
             featured_ids = SustainabilityTopicFavorite.objects.filter(
                 topic=self.sustainabilty_topic).order_by(
                     'order').values_list('ct', flat=True)
-            featured_content_types = []
-            for id in featured_ids:
-                try:
-                    content_type = ContentType.objects.published().get(id=id)
-                except ContentType.DoesNotExist:  # unpublished, probably
-                    pass
-                featured_content_types.append(content_type)
-            if featured_content_types:
-                featured_content_types = featured_content_types[:5]
+            featured_content_types = ContentType.objects.published()
+            featured_content_types = featured_content_types.filter(id__in=featured_ids)
             new_resources = ContentType.objects.published().filter(
                 topics=self.sustainabilty_topic).order_by('-published')
-            if new_resources:
-                new_resources = new_resources[:5]
+            
+            # @DONE - using the [:#] notation executes the query and undoes
+            # caching. This needed to happen in the template `use |slice:":#"`
 
             news_list = self.sustainabilty_topic.get_rss_items()
-            if news_list:
-                news_list = news_list[:5]
 
             ctx.update({
                 'featured_list': featured_content_types,

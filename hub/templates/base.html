@@ -3,6 +3,7 @@
 {% load static from staticfiles %}
 {% load block_content %}
 {% load add_analytics %}
+{% load cache %}
 
 {% block title %}AASHE Campus Sustainability Hub{% endblock %}
 
@@ -99,7 +100,11 @@
       <div class="container">
         <div class="row">
           <div class="col-md-8">
-            {% block_content 'footer_text' %}
+            {% cache CACHE_TTL_LONG footer_text %}
+              <!-- begin cache {% now "c" %} -->
+              {% block_content 'footer_text' %}
+              <!-- end cache -->
+            {% endcache %}
           </div>
           <div class="col-md-offset-2 col-md-2">
             <p>

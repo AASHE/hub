@@ -8,6 +8,7 @@ from django.core import management
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.core.cache import caches
+from django.db import connection, reset_queries
 from django.test import override_settings
 from django.utils.http import urlquote
 
@@ -26,7 +27,7 @@ Use the locmem
 """
 
 
-@override_settings(CACHES = {'default': django_cache_url.parse('locmem://hub_test')})
+@override_settings(CACHES={'default': django_cache_url.parse('locmem://hub_test')}, DEBUG=True)
 # @override_settings(CACHES = {'default': django_cache_url.parse('pymemcached://127.0.0.1:11211')})
 class GeneralCachingTestCase(WithUserSuperuserTestCase):
     """
@@ -109,17 +110,28 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.ct2.save()
 
         # a different cache key should be used for authenticated users
+        reset_queries()
         response = self.client.get(self.url_topic)
         self.assertContains(response, '<strong>First Academic Program', status_code=200)
         self.assertNotContains(response, '<strong>Second Academic Program', status_code=200)
+        uncached_request_query_count = len(connection.queries)
 
         # adding another resource won't change the cached value
         self.ct2.status = ContentType.STATUS_CHOICES.published
         self.ct2.save()
+        
+        # now a cached version should be rendered
+        reset_queries()
         response = self.client.get(self.url_topic)
         self.assertContains(response, '<strong>First Academic Program', status_code=200)
         self.assertNotContains(response, '<strong>Second Academic Program', status_code=200)
+        cached_request_query_count = len(connection.queries)
 
+        # print "**Toolkit Caching"
+        # print "Uncached Queries: %d" % uncached_request_query_count
+        # print "Cached Queries: %d" % cached_request_query_count
+        self.assertTrue(uncached_request_query_count > cached_request_query_count)
+        
         cache.clear()
         response = self.client.get(self.url_topic)
         self.assertContains(response, '<strong>First Academic Program', status_code=200)
@@ -159,8 +171,11 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # update the search index
         management.call_command('update_index', verbosity=0)
         
+        # get the uncached version
+        reset_queries()
         response = self.client.get(url)
         self.assertContains(response, '1 result', status_code=200)
+        uncached_request_query_count = len(connection.queries)
 
         # create a second resource; it shouldn't render
         self.ct2.status = ContentType.STATUS_CHOICES.published
@@ -169,8 +184,16 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # update the search index
         management.call_command('update_index', verbosity=0)
 
+        # get the cached version
+        reset_queries()
         response = self.client.get(url)
         self.assertContains(response, '1 result', status_code=200)
+        cached_request_query_count = len(connection.queries)
+
+        # print "**Resources List Caching"
+        # print "Uncached Queries: %d" % uncached_request_query_count
+        # print "Cached Queries: %d" % cached_request_query_count
+        self.assertTrue(uncached_request_query_count > cached_request_query_count)
 
         # now clear the cache and it should render
         cache.clear()

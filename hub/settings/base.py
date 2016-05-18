@@ -229,6 +229,11 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# Debug Toolbar
+DEBUG_TOOLBAR = os.environ.get('DEBUG_TOOLBAR', False)
+if DEBUG_TOOLBAR:
+    INSTALLED_APPS += ('debug_toolbar',)
+
 # Cache lifetime in seconds
 CACHE_TTL_SHORT = 60 * 10  # 10 minutes
 CACHE_TTL_LONG = 60 * 60 * 12  # 12 hours
