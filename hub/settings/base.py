@@ -97,6 +97,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
             'django.core.context_processors.request',
+            'hub.apps.browse.context_processors.cache_vars',
         ],
         'debug': DEBUG,
     }
@@ -228,9 +229,18 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# Debug Toolbar
+DEBUG_TOOLBAR = os.environ.get('DEBUG_TOOLBAR', False)
+if DEBUG_TOOLBAR:
+    INSTALLED_APPS += ('debug_toolbar',)
+
 # Cache lifetime in seconds
-CACHE_TTL_SHORT = 60 * 10
-CACHE_TTL_LONG = 60 * 60 * 12
+CACHE_TTL_SHORT = 60 * 10  # 10 minutes
+CACHE_TTL_LONG = 60 * 60 * 12  # 12 hours
+
+import django_cache_url
+CACHE_URL = os.environ.get('CACHE_URL', 'dummy://')
+CACHES = {'default': django_cache_url.parse(CACHE_URL)}
 
 # AASHE Auth
 AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']

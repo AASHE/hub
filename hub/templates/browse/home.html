@@ -1,5 +1,6 @@
 {% extends "browse/base.html" %}
 
+{% load cache %}
 {% load block_content %}
 
 {% block body_class %}page-index{% endblock %}
@@ -12,6 +13,8 @@
 {% endblock %}
 
 {% block browse_tab_content %}
+  {% cache CACHE_TTL_LONG home_tab_content %}
+    <!-- begin cache {% now "c" %} -->
     <!-- Topic list -->
     <div id="topics" class="tab-pane fade active in">
         <div class="row">
@@ -40,9 +43,13 @@
         </div>
     </div>
     <!-- /end -->
+    <!-- end caching -->
+    {% endcache %}
 {% endblock %}
 
 {% block browse_below_tab_content %}
+  {% cache CACHE_TTL_LONG home_below_tab_content %}
+    <!-- begin cache {% now "c" %} -->
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
         <div class="call-action-v1">
@@ -51,4 +58,6 @@
         <div class="margin-bottom-30"></div>
       </div>
     </div>
+  <!-- end caching -->
+  {% endcache %}
 {% endblock %}

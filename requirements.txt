@@ -20,11 +20,13 @@ requests
 # Deployment specific
 Pillow
 dj-database-url
+django-bmemcached==0.2.3
 django-password-protect
 django-sslify
 gunicorn
 ipython
 psycopg2
+python-binary-memcached==0.24.6
 raven==5.10.2
 whitenoise
 newrelic
@@ -34,6 +36,7 @@ https://github.com/AASHE/django-aashe-theme/archive/master.zip
 https://github.com/AASHE/aashe-auth/archive/master.zip
 https://github.com/AASHE/iss/archive/master.zip
 https://github.com/AASHE/django-block-content/archive/master.zip
+https://github.com/jamstooks/django-cache-url/archive/master.zip
 https://github.com/AASHE/django-integration-settings/archive/master.zip
 https://github.com/chrisdrackett/django-typogrify/archive/master.zip
 https://github.com/jamstooks/django-acme-challenge/archive/master.zip

@@ -1,6 +1,7 @@
 {% extends "browse/results/base.html" %}
 
 {% load markup_tags %}
+{% load cache %}
 
 {% block body_class %}page-browse-topic{% endblock %}
 
@@ -18,16 +19,24 @@
 
 {% block resource_list_body %}
     <div id="toolkit" class="tab-pane fade {% if not request.GET %}active in{% endif %}">
-       {% include "browse/results/includes/toolkit.html" %}
+      {% cache CACHE_TTL_LONG toolkit_tab topic.slug user.is_authenticated user.aasheuser.is_member %}
+        <!-- begin cache {% now "c" %} -->
+        {% include "browse/results/includes/toolkit.html" %}
+        <!-- end cache -->
+      {% endcache %}
     </div>
     <div id="resources" class="tab-pane fade {% if request.GET %}active in{% endif %}">
         <div class="margin-bottom-30"></div>
         {{ block.super }}
     </div>
     <div id="stars" class="tab-pane fade" style="padding: 20px;">
+      {% cache CACHE_TTL_LONG topic_stars_tab topic.slug %}
+        <!-- begin cache {% now "c" %} -->
         {% if topic.stars_tab_content %}
-        {{ topic.stars_tab_content|apply_markup:"markdown" }}
+          {{ topic.stars_tab_content|apply_markup:"markdown" }}
         {% endif %}
+        <!-- end cache -->
+      {% endcache %}
     </div>
 {% endblock %}
 
