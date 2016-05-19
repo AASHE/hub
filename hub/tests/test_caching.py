@@ -60,12 +60,18 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
             'browse:browse', kwargs={'topic': self.topic.slug})
         self.url_ct = reverse('browse:browse', kwargs={'ct': 'academicprogram'})
         self.url_search = '{}?search=academic'.format(reverse('browse:browse'))
-        self.url_detail = reverse(
+        self.url_detail1 = reverse(
             'browse:view',
             kwargs={
                 'ct': 'academicprogram',
                 'id': self.ct1.id,
                 'slug': self.ct1.slug})
+        self.url_detail2 = reverse(
+            'browse:view',
+            kwargs={
+                'ct': 'academicprogram',
+                'id': self.ct2.id,
+                'slug': self.ct2.slug})
 
         return super(GeneralCachingTestCase, self).setUp()
         
@@ -323,20 +329,27 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         Clear cache. New title should display. Reset the title.
         """
         cache = caches['default']
-        response = self.client.get(self.url_detail)
+        response = self.client.get(self.url_detail1)
         self.assertContains(response, '<h2>First Academic Program', status_code=200)
 
         # change the title
         self.ct1.title = 'Renamed Academic Program'
         self.ct1.save()
 
-        response = self.client.get(self.url_detail)
+        # the render shouldn't change bceause it's cached
+        response = self.client.get(self.url_detail1)
         self.assertContains(response, '<h2>First Academic Program', status_code=200)
         self.assertNotContains(response, '<h2>Renamed Academic Program', status_code=200)
+        
+        # another resources shouldn't be affected
+        self.ct2.status = ContentType.STATUS_CHOICES.published
+        self.ct2.save()
+        response = self.client.get(self.url_detail2)
+        self.assertContains(response, '<h2>Second Academic Program', status_code=200)
 
         # now clear the cache and it should render
         cache.clear()
-        response = self.client.get(self.url_detail)
+        response = self.client.get(self.url_detail1)
         self.assertContains(response, '<h2>Renamed Academic Program', status_code=200)
         
         # reset title

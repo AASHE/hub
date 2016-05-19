@@ -41,7 +41,7 @@
 {% endblock %}
 
 {% block page %}
-{% cache CACHE_TTL_LONG object.title user.is_staff %}
+{% cache CACHE_TTL_LONG resource_detail object.id user.is_staff %}
 <!-- begin cache {% now "c" %} -->
 <div class="profile">
     <div class="row">
