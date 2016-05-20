@@ -310,6 +310,7 @@ class OrderingFilter(filters.ChoiceFilter):
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
                 ('-published', 'Most Recent'),
+                ('-date_created', "Created, Published, Presented")
             ),
             'label': 'Sort',
             'widget': forms.widgets.RadioSelect,
