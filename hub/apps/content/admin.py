@@ -58,8 +58,12 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
     
     def save_model(self, request, obj, form, change):
         status_tracker_changed = obj.status_tracker.changed()  # before save
+        previous_status = obj.status_tracker.previous('status')
         obj.save()
-        if status_tracker_changed:
+        if status_tracker_changed and previous_status == 'new':
+            # Send published notice if going from new >> published
+            # Send declined notice if going from new >> declined
+            # published <> declined does not result in a notice
             if obj.status == obj.STATUS_CHOICES.published:
                 utils.send_resource_approved_email(obj, request)
             elif obj.status == obj.STATUS_CHOICES.declined:
