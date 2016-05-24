@@ -12,6 +12,7 @@ from tagulous.views import autocomplete
 
 
 urlpatterns = [
+    
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^browse/', include('hub.apps.browse.urls', namespace='browse')),
     url(r'^submit-resource/', include('hub.apps.submit.urls', namespace='submit')),
@@ -21,6 +22,10 @@ urlpatterns = [
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, name='logout'),
     url(r'^_ad/', include(admin.site.urls)),
+    
+    # Let's Encrypt (django-acme-challenge)
+    url(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
+
     url(r'^', include('django.contrib.flatpages.urls')),
 ]
 

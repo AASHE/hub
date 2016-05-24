@@ -6,6 +6,7 @@
 {% load static %}
 {% load thumbnail %}
 {% load typogrify_tags %}
+{% load cache %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -40,6 +41,8 @@
 {% endblock %}
 
 {% block page %}
+{% cache CACHE_TTL_LONG resource_detail object.id user.is_staff %}
+<!-- begin cache {% now "c" %} -->
 <div class="profile">
     <div class="row">
     <!-- row -->
@@ -65,9 +68,14 @@
                         </h4>
                     </div>
                     <div class="panel-body">
-
+                        
+                        {% if label_overrides.date_created %}
+                          {% include "browse/details/includes/meta.html" with label=label_overrides.date_created value=object.date_created|date %}
+                        {% else %}
+                          {% include "browse/details/includes/meta.html" with label="Date Created" value=object.date_created|date %}
+                        {% endif %}
                         {% include "browse/details/includes/meta.html" with label="Date Posted" value=object.published|date %}
-                        {% include "browse/details/includes/meta.html" with label="Last Updated" value=object.modified|date %}
+                        {# }{% include "browse/details/includes/meta.html" with label="Last Updated" value=object.modified|date %} #}
 
                         <div class="margin-bottom-10"></div>
 
@@ -127,7 +135,7 @@
                                 <i class="icon-bg-blue rounded-x tw icon icon-user"></i>
                                 <strong>
                                     {% if author.email %}<a href="mailto:{{ author.email }}">{% endif %}
-                                    {{ author.name }}
+                                    {{ author.name }} <!-- {{ author.id }} -->
                                     {% if author.email %}</a>{% endif %}
                                 </strong>
                                 {% if author.title %} - {{ author.title }}{% endif %}
@@ -217,7 +225,7 @@
 
             <ul class="list-unstyled">
                 <li class="notification">
-                    <i class="icon-custom icon-sm rounded-x icon-bg-green icon-line fa fa-bolt"></i>
+                    <i class="icon-custom icon-sm rounded-x icon-bg-light-green icon-line fa fa-lightbulb-o"></i>
                     <div class="overflow-h">
                         <a href="mailto:resources@aashe.org">
                             <span><strong>Request a change</strong></span>
@@ -232,4 +240,6 @@
     <!-- end row -->
     </div>
 </div>
+<!-- end cache -->
+{% endcache %}
 {% endblock %}

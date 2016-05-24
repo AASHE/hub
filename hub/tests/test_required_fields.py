@@ -35,7 +35,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             {
                 'ct': 'presentation',
                 'expected_fields': [
-                    'topics', 'organizations', 'conf_name', 'date'
+                    'topics', 'organizations', 'conf_name', 'date_created'
                 ],
                 'min_reqs': ['author', 'file']
             },

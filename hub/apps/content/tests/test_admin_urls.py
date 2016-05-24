@@ -66,12 +66,10 @@ class AdminURLTestCase(TestCase):
             'title': "test resource",
             'slug': "test_resource",
             'description': "testing this",
+            'date_created': datetime.now()
         }
 
         self.ct_specific_fields = {
-            'presentation': {
-                'date': datetime.now()
-            },
             'casestudy': {
                 'consider_for_award': False
             }
@@ -118,6 +116,7 @@ class AdminURLTestCase(TestCase):
 
         # Test Publish Action (need to retrieve queryset to operate on first)
         queryset = Video.objects.filter(pk=1)
+        self.assertEqual(queryset[0].status, 'new')
         self.assertTrue(queryset)
         content_admin.publish(request, queryset)
         queryset = Video.objects.filter(pk=1)
@@ -140,3 +139,24 @@ class AdminURLTestCase(TestCase):
         self.assertEqual(queryset[0].status, 'declined')
         self.assertEqual(2, len(mail.outbox))
         self.assertTrue("Content type: Videos" in mail.outbox[1].body)
+
+        # confirm that no emails are sent when changing status from anything
+        # other than 'new'
+        
+        # declined > published
+        queryset = Video.objects.filter(pk=1)
+        self.assertEqual(queryset[0].status, 'declined')
+        content_admin.publish(request, queryset)
+        
+        queryset = Video.objects.filter(pk=1)
+        self.assertEqual(queryset[0].status, 'published')
+        self.assertEqual(2, len(mail.outbox)) # no additional emails
+        
+        # published > declined
+        queryset = Video.objects.filter(pk=1)
+        self.assertEqual(queryset[0].status, 'published')
+        content_admin.decline(request, queryset)
+        
+        queryset = Video.objects.filter(pk=1)
+        self.assertEqual(queryset[0].status, 'declined')
+        self.assertEqual(2, len(mail.outbox)) # no additional emails

@@ -63,9 +63,13 @@ class ContentType(TimeStampedModel):
         settings.AUTH_USER_MODEL, blank=True, null=True)
 
     title = models.CharField(max_length=500)  # label set by self.title_label
-    slug = models.CharField(max_length=500, editable=False)
+    slug = models.CharField(max_length=500, blank=True)
 
-    description = models.TextField('Description', blank=True, null=True)
+    description = models.TextField(
+        'Description', blank=True, null=True,
+        help_text='''Styling with
+        <a href="https://simplemde.com/markdown-guide" target="_blank">Markdown</a>
+        is supported''')
 
     organizations = models.ManyToManyField(
         'metadata.Organization',
@@ -105,6 +109,14 @@ class ContentType(TimeStampedModel):
 
     notes = models.TextField('Notes', blank=True, null=True, default='',
                              help_text="Internal notes.")
+                             
+    # This is the date the resource was created in the real world, not when
+    # the instance was created in the db. That's stored in `created`.
+    date_created = models.DateField(blank=True, null=True, help_text='''
+        Enter the date when this resource was created, founded, published, or
+        presented. If you don't know the exact date, choose the first day of
+        the month. Use January 1 if you only know the year. You can use the
+        calendar widget or type in a date in YYYY-MM-DD format.''')
 
     status_tracker = FieldTracker(fields=['status'])
 
@@ -254,6 +266,9 @@ class Author(TimeStampedModel):
     organization = models.ForeignKey(
         'metadata.Organization', blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    
+    class Meta:
+        ordering = ['id']
 
     def __str__(self):
         return self.name

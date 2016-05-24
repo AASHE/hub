@@ -77,7 +77,7 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
         self.assertEqual(response.status_code, 403)
 
         # Logged in and member/superuser
-        self.client.login(**self.superuser_cred)
+        self.client.login(**self.member_cred)
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
@@ -138,7 +138,7 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
         """
         Members won't see any flag at all.
         """
-        self.client.login(**self.superuser_cred)
+        self.client.login(**self.member_cred)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.open
         self.ct.save()
@@ -189,7 +189,7 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.url_home)
         self.assertEqual(response.status_code, 200)
 
-        self.client.login(**self.superuser_cred)
+        self.client.login(**self.member_cred)
         response = self.client.get(self.url_home)
         self.assertEqual(response.status_code, 200)
 
@@ -205,7 +205,7 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.url_topic)
         self.assertEqual(response.status_code, 200)
 
-        self.client.login(**self.superuser_cred)
+        self.client.login(**self.member_cred)
         response = self.client.get(self.url_topic)
         self.assertEqual(response.status_code, 200)
 
@@ -253,6 +253,6 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.url_search)
         self.assertEqual(response.status_code, 200)
 
-        self.client.login(**self.superuser_cred)
+        self.client.login(**self.member_cred)
         response = self.client.get(self.url_search)
         self.assertEqual(response.status_code, 200)

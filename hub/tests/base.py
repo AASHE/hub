@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core import management
 
+from aashe.aasheauth.models import AASHEUser
+
 User = get_user_model()
 
 
@@ -26,7 +28,36 @@ class WithUserSuperuserTestCase(TestCase):
             **self.user_cred
         )
 
+        self.member_cred = {'username': 'member', 'password': 'password'}
+        self.member = User.objects.create_user(
+            first_name='Jonny',
+            last_name='Member',
+            email='member@example.com',
+            **self.member_cred
+        )
+        
+        aashe_user = AASHEUser.objects.create(
+            user=self.member,
+            drupal_id=1,
+            drupal_session_key="blah"
+        )
+        aashe_user.set_drupal_user_dict(
+            {'roles': {'Member': 'Member'}})
+        aashe_user.save()
+
         return super(WithUserSuperuserTestCase, self).setUp()
+        
+    # def login_member(self, **credentials):
+    #     """
+    #         Extends the base login functionality to ensure that member status
+    #         is set, if the user is the self.member
+    #     """
+    #     success = self.client.login(**credentials)
+    #     if success and credentials == self.member_cred:
+    #         self.member.aasheuser.set_drupal_user_dict(
+    #             {'roles': {'Member': 'Member'}})
+    #         self.member.aasheuser.save()
+    #     return success
 
 
 class BaseSearchBackendTestCase(TestCase):
@@ -43,3 +74,24 @@ class BaseSearchBackendTestCase(TestCase):
         """
         management.call_command('rebuild_index', verbosity=0,
                                 interactive=False)
+
+
+# The kwargs required for `create` for each content type
+EXTRA_REQUIRED_CT_KWARGS = {
+    'casestudy': {
+        'background': "blah",
+        'goals': "blah",
+        'implementation': "blah",
+        'timeline': "blah",
+        'financing': "blah",
+        'results': "blah",
+        'lessons_learned': "blah",
+        'consider_for_award': False,
+    },
+    'material': {
+        'material_type': "assignment",
+    },
+    'presentation': {
+        'conf_name': "aashe",
+    }
+}

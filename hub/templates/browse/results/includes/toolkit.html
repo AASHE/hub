@@ -25,7 +25,7 @@
         </div>
         <div class="panel-body">
             <ul class="list-unstyled social-contacts-v2">
-                {% for ct in featured_list %}
+                {% for ct in featured_list|slice:":5" %}
                 <li>
                     <small class="pull-right">{{ ct.instance_type_label }}</small>
                     <i class="fa fa-star-o rounded"></i>
@@ -52,7 +52,7 @@
         </div>
         <div class="panel-body">
             <ul class="list-unstyled social-contacts-v2">
-                {% for n in news_list %}
+                {% for n in news_list|slice:":5" %}
                   <li><a href="{{ n.link }}">{{ n.title|safe|titlecase }}</a></li>
                 {% endfor %}
             </ul>
@@ -71,7 +71,7 @@
             </div>
             <div class="panel-body">
             <ul class="list-unstyled">
-                {% for obj in new_resources_list %}
+                {% for obj in new_resources_list|slice:":5" %}
                 <li class="notification{% if forloop.first %} list-first{% endif %}">
                     <div class="overflow-h">
                         <a href="{{ obj.get_absolute_url }}">

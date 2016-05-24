@@ -55,7 +55,9 @@ INSTALLED_APPS = (
     'hub.apps.metadata',
     'hub.apps.browse',
     'hub.apps.submit',
+    'hub.imports',
 
+    'acme_challenge',
     'django_tables2',
     'django_markup',
 
@@ -71,6 +73,8 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django_password_protect.PasswordProtectMiddleware',
+    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -93,6 +97,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
             'django.core.context_processors.request',
+            'hub.apps.browse.context_processors.cache_vars',
         ],
         'debug': DEBUG,
     }
@@ -220,13 +225,22 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': eng,
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
+        'TIMEOUT': 30
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# Debug Toolbar
+DEBUG_TOOLBAR = os.environ.get('DEBUG_TOOLBAR', False)
+if DEBUG_TOOLBAR:
+    INSTALLED_APPS += ('debug_toolbar',)
 
 # Cache lifetime in seconds
-CACHE_TTL_SHORT = 60 * 10
-CACHE_TTL_LONG = 60 * 60 * 12
+CACHE_TTL_SHORT = 60 * 10  # 10 minutes
+CACHE_TTL_LONG = 60 * 60 * 12  # 12 hours
+
+import django_cache_url
+CACHE_URL = os.environ.get('CACHE_URL', 'dummy://')
+CACHES = {'default': django_cache_url.parse(CACHE_URL)}
 
 # AASHE Auth
 AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
@@ -243,3 +257,13 @@ PUBLIC_CONTENT_TYPES = (
 )
 
 GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', None)
+
+# django-acme-challenge for Let's Encrypt
+ACME_CHALLENGE_URL_SLUG = os.environ.get('ACME_CHALLENGE_URL_SLUG', None)
+ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get('ACME_CHALLENGE_TEMPLATE_CONTENT', None)
+
+# Optional password protection for dev sites
+PASSWORD_PROTECT = os.environ.get('PASSWORD_PROTECT', False)
+PASSWORD_PROTECT_USERNAME = os.environ.get('PASSWORD_PROTECT_USERNAME', None)
+PASSWORD_PROTECT_PASSWORD = os.environ.get('PASSWORD_PROTECT_PASSWORD', None)
+PASSWORD_PROTECT_REALM = os.environ.get('PASSWORD_PROTECT_REALM', 'Dev Site Auth')

@@ -3,7 +3,12 @@ from django.core.urlresolvers import reverse
 
 from ..apps.metadata.models import Organization, SustainabilityTopic
 from ..apps.content.types.academic import AcademicProgram
-from .base import BaseSearchBackendTestCase, WithUserSuperuserTestCase
+from ..apps.content.types.publications import Publication
+from ..apps.content.models import CONTENT_TYPES
+from .base import (
+    BaseSearchBackendTestCase,
+    WithUserSuperuserTestCase,
+    EXTRA_REQUIRED_CT_KWARGS)
 
 
 class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
@@ -23,6 +28,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         self.ct = AcademicProgram.objects.create(
             title='My Keyword resource',
+            date_created=now(),
             status=AcademicProgram.STATUS_CHOICES.published,
             published=now())
 
@@ -43,6 +49,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             'organization_type': ['Associate'],
             'size': ['lt_5000'],
             'published': self.ct.published.year,
+            'date_created': now().year,
             # FIXME: If I provide a `country` filter argument, that filter is
             #        not even called. It is when I don't provide one.
             #        Why? Becaues required=False?
@@ -97,3 +104,81 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         response = self.client.get(self.url_search, _filter_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 0)
+        
+    def test_search_handles_special_characters(self):
+        """
+        ElasticSearch has some characters that must be escaped
+        Confirm that we escape them by appending them to the query
+        to see if results are still returned.
+        """
+        self.client.login(**self.superuser_cred)
+        url = "%s%s" % (self.url_search, '+-&|!\(\){}[]^"~*?:\\\/')
+
+        response = self.client.get(url)
+        
+        # One item should still be returned
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['object_list']), 1)
+
+
+class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
+    """
+    Test some specific filters for different content types
+    """
+    
+    def test_pub_type_filter(self):
+        """
+        Test for the publication type filter
+        """
+
+        ct = Publication.objects.create(
+            title='Test Publication 1',
+            _type=Publication.TYPE_CHOICES.book,
+            published=now(),
+            status=Publication.STATUS_CHOICES.published,
+            )
+
+        ct2 = Publication.objects.create(
+            title='Test Publication 2',
+            _type=Publication.TYPE_CHOICES.news,
+            published=now(),
+            status=Publication.STATUS_CHOICES.published,
+            )
+
+        _url = reverse('browse:browse', kwargs={'ct': 'publication'})
+        _filter_data = {'publication_type': ['book']}
+        self.client.login(**self.superuser_cred)
+        
+        response = self.client.get(_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['object_list']), 2)
+
+        response = self.client.get(_url, _filter_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['object_list']), 1)
+        
+    def test_date_created_filter(self):
+        """
+        Each content type has a slightly different implementation of the
+        date_created filter (prepopulated with relevant dates)
+        """
+        
+        for k, ct_class in CONTENT_TYPES.items():
+            
+            ct_kwargs = {
+                'title': 'Date Created Resource',
+                'date_created': now(),
+                'status': ct_class.STATUS_CHOICES.published,
+                'published': now(),
+            }
+            if k in EXTRA_REQUIRED_CT_KWARGS.keys():
+                ct_kwargs.update(EXTRA_REQUIRED_CT_KWARGS[k])
+            ct = ct_class.objects.create(**ct_kwargs)
+            
+            _url = reverse('browse:browse', kwargs={'ct': k})
+            _filter_data = {'date_created': [now().year]}
+            self.client.login(**self.superuser_cred)
+            
+            response = self.client.get(_url, _filter_data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(response.context['object_list']), 1)

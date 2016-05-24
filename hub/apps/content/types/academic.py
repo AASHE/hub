@@ -2,7 +2,7 @@ from django.db import models
 from model_utils import Choices
 
 from ...metadata.models import ProgramType, SustainabilityTopic
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 
 
@@ -22,8 +22,6 @@ class AcademicProgram(ContentType):
         ProgramType, null=True, verbose_name='Program Type')
     outcomes = models.TextField('Learning Outcomes', blank=True, null=True,
         help_text="Consider completing if different from description.")
-    founded = models.PositiveIntegerField("Year Founded", blank=True, null=True,
-        help_text="Enter a four digit year (e.g., 2009)")
     completion = models.CharField('Expected completion time', max_length=128,
         blank=True, null=True, help_text='(e.g., "2.5 years" or "12 months")')
     num_students = models.PositiveIntegerField(
@@ -36,6 +34,8 @@ class AcademicProgram(ContentType):
     commitment = models.CharField('Commitment', max_length=20,
         choices=COMMITMENT_CHOICES, blank=True, null=True)
 
+    objects = ContentTypeManager()
+
     class Meta:
         verbose_name = 'Academic Program'
         verbose_name_plural = 'Academic Programs'
@@ -47,6 +47,7 @@ class AcademicProgram(ContentType):
             'description': 'Description or Abstract',
             'author': 'Presenter',
             'authors': 'Presenters',
+            'date_created': 'Year Founded',
         }
 
     @classmethod

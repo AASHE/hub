@@ -1,6 +1,6 @@
 from django.db import models
 
-from ..models import ContentType
+from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION
 
@@ -30,6 +30,8 @@ class CaseStudy(ContentType):
         help_text='''Would you like this case study to be considered for an
         AASHE Student Leadership Award? The first author must be a student.''')
 
+    objects = ContentTypeManager()
+
     class Meta:
         verbose_name = 'Case Study'
         verbose_name_plural = 'Case Studies'
@@ -39,6 +41,11 @@ class CaseStudy(ContentType):
         return {
             'description': 'Project Overview',
         }
+
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import CaseStudyBrowseFilterSet
+        return CaseStudyBrowseFilterSet
 
     @classmethod
     def required_metadata(cls):

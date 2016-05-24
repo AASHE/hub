@@ -20,6 +20,12 @@
     <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/sky-forms-pro/skyforms/css/sky-forms.css' %}">
     <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/pikaday/pikaday.css' %}">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <style>
+    .CodeMirror {
+      font-weight: normal;
+    }
+    </style>
 {% endblock %}
 
 {% block javascript %}
@@ -30,6 +36,7 @@
     <script src="{% static 'js/submit-form.js' %}"></script>
     <script src="{% static 'vendor/jquery-django-inline-form/django-inline-form.js' %}"></script>
     <script src="{% static 'js/selectize-required-options.js' %}"></script>
+    <script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 
     <script type="text/javascript">
         var preset_topics = [
@@ -39,6 +46,16 @@
         {% endfor %}
         {% endif %}
         ];
+        
+        $( "textarea" ).each(function() {
+          var simplemde = new SimpleMDE({
+            element: $( this )[0],
+            toolbar: ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "|", "preview", "guide"],
+            status: []
+          });
+        });
+        
+
     </script>
 {% endblock %}
 

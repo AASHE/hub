@@ -6,19 +6,25 @@ from operator import or_
 
 import django_filters as filters
 from django import forms
+from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Q
 from django.utils.timezone import now
 
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
-from ..content.models import CONTENT_TYPES, ContentType, Material
+from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 
 logger = getLogger(__name__)
 ALL = (('', 'All'),)
+
+"""
+    @idea - build a cache mixin and have all filters use a get_choices method
+"""
 
 
 # =============================================================================
@@ -35,7 +41,13 @@ class SearchFilter(filters.CharFilter):
         if not value:
             return qs
 
-        query = Raw(value.lower())
+        # Remove any special characters
+        # http://lucene.apache.org/core/3_4_0/queryparsersyntax.html#Escaping%20Special%20Characters
+        esc_string = '+-&|!\(\){}[]^"~*?:\\\/'
+        translation_table = dict.fromkeys(map(ord, esc_string), None)
+        query = value.translate(translation_table)
+        
+        query = Raw(query.lower())
         result_ids = (SearchQuerySet().filter(content__contains=query)
                                       .values_list('ct_pk', flat=True))
         return qs.filter(pk__in=result_ids).distinct()
@@ -45,8 +57,14 @@ class TopicFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
+        
+        topic_choices = cache.get('topic_filter_choices')
+        if not topic_choices:
+            topic_choices = SustainabilityTopic.objects.values_list('slug', 'name')
+            cache.set('topic_filter_choices', topic_choices, settings.CACHE_TTL_SHORT)
+        
         kwargs.update({
-            'choices': SustainabilityTopic.objects.values_list('slug', 'name'),
+            'choices': topic_choices,
             'label': 'Sustainability Topic',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -62,10 +80,16 @@ class ContentTypesFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
-        kwargs.update({
-            'choices': [
+        
+        ct_choices = cache.get('ct_filter_choices')
+        if not ct_choices:
+            ct_choices = [
                 (j, k.content_type_label()) for j, k in CONTENT_TYPES.items()
-            ],
+            ]
+            cache.set('ct_filter_choices', ct_choices, settings.CACHE_TTL_SHORT)
+        
+        kwargs.update({
+            'choices': ct_choices,
             'label': 'Content Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -83,7 +107,12 @@ class OrganizationFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         # @todo: do I really need to load all the organizations,
         # or can I just load the selected ones?
-        organizations = Organization.objects.values_list('pk', 'org_name')
+        
+        organizations = cache.get('org_filter_choices')
+        if not organizations:
+            organizations = Organization.objects.values_list('pk', 'org_name')
+            cache.set('org_filter_choices', organizations, settings.CACHE_TTL_SHORT)
+        
         kwargs.update({
             'choices': organizations,
             'label': 'Organization(s)',
@@ -104,13 +133,16 @@ class TagFilter(filters.ChoiceFilter):
         # @todo: how to avoid loading this every time?
         # it would be nice if the choices could only be the selected values
         # although I guess this provides some degree of validation
-        tag_choices = ContentType.keywords.tag_model.objects.distinct('name')
-        # tag_choices = tag_choices.filter(name__startswith="behav")
-        tag_choices = tag_choices.values_list('slug', 'name')
-        # import pdb; pdb.set_trace()
+        
+        tag_list = cache.get('tag_filter_choices')
+        if not tag_list:
+            tag_choices = ContentType.keywords.tag_model.objects.distinct('name')
+            tag_choices = tag_choices.values_list('slug', 'name')
+            tag_list = [(slug, name) for slug, name in tag_choices]
+            cache.set('tag_filter_choices', tag_list, settings.CACHE_TTL_SHORT)
         
         kwargs.update({
-            'choices': tag_choices,
+            'choices': tag_list,
             'label': 'Tags(s)',
             'widget': LeanSelectMultiple,
         })
@@ -162,13 +194,17 @@ class CountryFilter(filters.ChoiceFilter):
         # @WARNING: keep an eye on performance here.
         # We might want to use caching
 
-        # countries = (Organization.objects.country_list())
-        qs = ContentType.objects.published().order_by('organizations__country')
-        qs = qs.values_list(
-            'organizations__country_iso',
-            'organizations__country').distinct()
-        countries = ALL + tuple(
-            [c for c in qs if (c[0] is not None and c[0] is not '')])
+        countries = cache.get('country_filter_choices')
+        if not countries:
+            qs = ContentType.objects.published().order_by('organizations__country')
+            qs = qs.values_list(
+                'organizations__country_iso',
+                'organizations__country').distinct()
+            countries = ALL + tuple(
+                [c for c in qs if (c[0] is not None and c[0] is not '')])
+                
+            cache.set('country_filter_choices', countries, settings.CACHE_TTL_SHORT)
+
         kwargs.update({
             'choices': countries,
             'label': 'Country/ies',
@@ -220,10 +256,29 @@ class PublishedFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
-        # Find the minimum and maximum year of all topics and put them
-        # in a range for choices.
+        
+        year_choices = cache.get('publish_year_filter_choices')
+        if not year_choices:
+            year_choices = self.get_choices()
+            cache.set(
+                'publish_year_filter_choices',
+                year_choices,
+                settings.CACHE_TTL_SHORT)
+
+        kwargs.update({
+            'choices': year_choices,
+            'label': 'Year Posted',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(PublishedFilter, self).__init__(*args, **kwargs)
+        
+    def get_choices(self):
+        
         qs = ContentType.objects.published()
 
+        # Find the minimum and maximum year of all ct's and put them
+        # in a range for choices.
+        # @todo - add caching here for performance
         min_year = qs.order_by('published').first()
         max_year = qs.order_by('-published').first()
 
@@ -236,13 +291,8 @@ class PublishedFilter(filters.ChoiceFilter):
         else:
             year_choices = [(i, i) for i in range(
                 min_year.published.year, max_year.published.year + 1)]
-
-        kwargs.update({
-            'choices': year_choices,
-            'label': 'Year Posted',
-            'widget': forms.widgets.CheckboxSelectMultiple(),
-        })
-        super(PublishedFilter, self).__init__(*args, **kwargs)
+                
+        return year_choices
 
     def filter(self, qs, value):
         if not value:
@@ -260,6 +310,7 @@ class OrderingFilter(filters.ChoiceFilter):
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
                 ('-published', 'Most Recent'),
+                ('-date_created', "Created, Published, Presented")
             ),
             'label': 'Sort',
             'widget': forms.widgets.RadioSelect,
@@ -280,8 +331,17 @@ class ProgramTypeFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
+        
+        program_choices = cache.get('program_type_filter_choices')
+        if not program_choices:
+            program_choices = ProgramType.objects.values_list('pk', 'name')
+            cache.set(
+                'program_type_filter_choices',
+                program_choices,
+                settings.CACHE_TTL_SHORT)
+        
         kwargs.update({
-            'choices': ProgramType.objects.values_list('pk', 'name'),
+            'choices': program_choices,
             'label': 'Program Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -403,3 +463,81 @@ class CourseLevelFilter(filters.ChoiceFilter):
             return qs.filter(pk__in=Material.objects.filter(
                 course_level__in=value).values_list('pk', flat=True))
         return qs
+
+
+# Publication specific
+class PublicationTypeFilter(filters.ChoiceFilter):
+    """
+    Publication specific Type filter.
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': Publication.TYPE_CHOICES,
+            'label': 'Publication Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(PublicationTypeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        """
+        Filters always work against the base `ContenType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not value:
+            return qs
+        from ..content.types.publications import Publication
+        return qs.filter(pk__in=Publication.objects.filter(
+            _type__in=value).values_list('pk', flat=True))
+
+
+class CreatedFilter(filters.ChoiceFilter):
+    """
+        This filter takes an optional argument of ContentTypeClass which allows
+        us to show only the years that have values.
+    """
+    
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, ContentTypeClass=ContentType, *args, **kwargs):
+        
+        year_choices = cache.get('created_year_filter_choices')
+        if not year_choices:
+            year_choices = self.get_choices(ContentTypeClass)
+            cache.set(
+                'created_year_filter_choices',
+                year_choices,
+                settings.CACHE_TTL_SHORT)
+
+        kwargs.update({
+            'choices': year_choices,
+            'label': 'Year created, published, or presented',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(CreatedFilter, self).__init__(*args, **kwargs)
+        
+    def get_choices(self, ContentTypeClass):
+        
+        qs = ContentTypeClass.objects.published().filter(date_created__isnull=False)
+        qs = qs.order_by('-date_created')
+
+        # Find the minimum and maximum year of all ct's and put them
+        # in a range for choices.
+        # @todo - add caching here for performance
+        all_dates = qs.values_list('date_created', flat=True)
+        if all_dates:
+            # using set to remove duplicates
+            distinct_years = list(set([d.year for d in all_dates]))
+            distinct_years.sort(reverse=True)
+            year_choices = [(i,i) for i in distinct_years]
+        else:
+            year_choices = ((now().year, now().year),)
+            
+        return year_choices
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        query = reduce(or_, (Q(date_created__year=x) for x in value))
+        return qs.filter(query)
