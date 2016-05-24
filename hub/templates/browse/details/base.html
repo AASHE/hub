@@ -135,7 +135,7 @@
                                 <i class="icon-bg-blue rounded-x tw icon icon-user"></i>
                                 <strong>
                                     {% if author.email %}<a href="mailto:{{ author.email }}">{% endif %}
-                                    {{ author.name }}
+                                    {{ author.name }} <!-- {{ author.id }} -->
                                     {% if author.email %}</a>{% endif %}
                                 </strong>
                                 {% if author.title %} - {{ author.title }}{% endif %}

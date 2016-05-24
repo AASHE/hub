@@ -266,6 +266,9 @@ class Author(TimeStampedModel):
     organization = models.ForeignKey(
         'metadata.Organization', blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    
+    class Meta:
+        ordering = ['id']
 
     def __str__(self):
         return self.name
