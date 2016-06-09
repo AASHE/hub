@@ -81,6 +81,7 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
+
 class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
     """
     The `permission_flag` template tag a little HTML widget that is
@@ -159,9 +160,9 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
     (search results).
 
     - The homepage is open for all audiences
-    - Search list browse results need auth
-    - Topic list browse results need auth
-    - Content Type browse results need auth
+    - Search list browse results don't need auth
+    - Topic list browse results don't need auth
+    - Content Type browse results don't need auth
       - except certain 'PUBLIC_CONTENT_TYPES' content types
         which results are  open to unauthed users as well
     """
@@ -229,14 +230,11 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
     #     response = self.client.get(self.url_ct)
     #     self.assertEqual(response.status_code, 200)
 
-    def test_open_ct_is_visible_to_anybody(self):
+    def test_ct_is_visible_to_anybody(self):
         """
-        Certain, OPEN content types are visible to anybody.
+        Content types are visible to anybody.
         """
-        if not settings.PUBLIC_CONTENT_TYPES:
-            return
-        open_url = reverse('browse:browse', kwargs={
-            'ct': settings.PUBLIC_CONTENT_TYPES[0]})
+        open_url = reverse('browse:browse', kwargs={'ct': 'academicprogram'})
         self.client.logout()
         response = self.client.get(open_url)
         self.assertEqual(response.status_code, 200)

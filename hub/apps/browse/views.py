@@ -87,15 +87,6 @@ class BrowseView(ListView):
         ):
             return HttpResponseRedirect(reverse('home'))
 
-        # Search results do generally need LoginRequired, however there
-        # are certain ContentTypes defined in PUBLIC_CONTENT_TYPES which
-        # don't even need login, they are browseable by everyone.
-        if (
-            self.content_type_class and
-            self.content_type_class.slug in settings.PUBLIC_CONTENT_TYPES
-        ):
-            return super(BrowseView, self).dispatch(*args, **kwargs)
-
         return super(BrowseView, self).dispatch(*args, **kwargs)
 
     def get_template_names(self):
