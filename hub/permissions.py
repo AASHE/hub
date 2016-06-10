@@ -6,6 +6,9 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.db.models import ObjectDoesNotExist
 
+from hub.apps.access.models import TemporaryUser
+from datetime import date
+
 logger = getLogger(__name__)
 
 
@@ -25,6 +28,18 @@ def get_aashe_member_flag(user):
     # Superusers are super users
     if user.is_superuser:
         return True
+        
+    try:
+        temp_user_set = TemporaryUser.objects.filter(
+            email_address=user.email,
+            access_starts__lte=date.today(),
+            access_ends__gte=date.today()
+            )
+        if temp_user_set:
+            return True
+    except AttributeError:
+        # no email tied to user
+        pass
 
     # Try to determine the actual AASHE member flag. This can fail for two
     # reasons, actually just one: The user object is a standard contrib.user
