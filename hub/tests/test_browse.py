@@ -4,11 +4,13 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 
+from ..apps.access.models import TemporaryUser
 from ..apps.browse.templatetags.browse_tags import permission_flag
 from ..apps.content.models import ContentType
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.metadata.models import SustainabilityTopic
 from .base import WithUserSuperuserTestCase
+from datetime import date
 
 
 class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
@@ -78,6 +80,49 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
 
         # Logged in and member/superuser
         self.client.login(**self.member_cred)
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        
+    def test_temporary_access(self):
+        """
+        Create a temporary user who should have access
+        """
+        self.ct.status = self.ct.STATUS_CHOICES.published
+        self.ct.save()
+        
+        # Logged in but no member
+        self.client.login(**self.user_cred)
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+        
+        temp_user = TemporaryUser.objects.create(
+            email_address=self.user.email,
+            access_starts=date(year=2010, month=1, day=1),
+            access_ends=date(year=3000, month=1, day=1),
+            notes="this is a test")
+        self.client.logout()
+        
+        self.client.login(**self.user_cred)
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        
+        # in the past
+        temp_user.access_ends = date(year=2011, month=1, day=1)
+        temp_user.save()
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+        
+        # in the future
+        temp_user.access_starts = date(year=3000, month=1, day=1)
+        temp_user.access_ends = date(year=3001, month=1, day=1)
+        temp_user.save()
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+        
+        # the day of
+        # in the future
+        temp_user.access_starts = date.today()
+        temp_user.save()
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 

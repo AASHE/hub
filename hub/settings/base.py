@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'integration_settings.google_analytics',
 
     'hub',
+    'hub.apps.access',
     'hub.apps.content',
     'hub.apps.metadata',
     'hub.apps.browse',
