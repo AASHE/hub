@@ -118,6 +118,13 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
         temp_user.save()
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 403)
+        
+        # the day of
+        # in the future
+        temp_user.access_starts = date.today()
+        temp_user.save()
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
 
 
 class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
