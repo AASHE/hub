@@ -29,7 +29,7 @@ def get_aashe_member_flag(user):
     if user.is_superuser:
         return True
         
-    try:
+    if user.is_authenticated():
         temp_user_set = TemporaryUser.objects.filter(
             email_address=user.email,
             access_starts__lte=date.today(),
@@ -37,9 +37,6 @@ def get_aashe_member_flag(user):
             )
         if temp_user_set:
             return True
-    except AttributeError:
-        # no email tied to user
-        pass
 
     # Try to determine the actual AASHE member flag. This can fail for two
     # reasons, actually just one: The user object is a standard contrib.user
