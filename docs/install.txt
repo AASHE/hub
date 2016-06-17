@@ -1,0 +1,27 @@
+# Installing the Hub
+
+## Local Development
+
+Create a virtualenv and
+
+    $> pip install -r requirements.txt
+    
+### Required Environment Variables:
+
+`HUB_DB_URL`
+
+For auth...
+
+`AASHE_DRUPAL_URI`
+`AASHE_DRUPAL_KEY`
+`AASHE_DRUPAL_KEY_DOMAIN`
+`AASHE_DRUPAL_COOKIE_SESSION`
+`AASHE_DRUPAL_COOKIE_DOMAIN`
+
+For search
+
+`SEARCHBOX_SSL_URL`
+
+I run elasticsearh locally and have the following config:
+
+    SEARCHBOX_SSL_URL=http://localelastic:9200
