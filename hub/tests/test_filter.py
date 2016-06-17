@@ -22,7 +22,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         self.topic = SustainabilityTopic.objects.create(name='Curriculum')
 
         self.org = Organization.objects.create(
-            account_num=1, org_name='Washington', country_iso='AUS',
+            account_num=1, org_name='Washington', country_iso='AU',
             country='Australia', enrollment_fte=2000, exclude_from_website=0,
             carnegie_class="Associate", org_type="Business")
 
@@ -50,10 +50,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             'size': ['lt_5000'],
             'published': self.ct.published.year,
             'date_created': now().year,
-            # FIXME: If I provide a `country` filter argument, that filter is
-            #        not even called. It is when I don't provide one.
-            #        Why? Becaues required=False?
-            # 'country': 'AUS',
+            'country': 'AU',
             'order': 'title',
         }
 

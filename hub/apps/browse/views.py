@@ -12,7 +12,6 @@ from django.views.generic import DetailView, ListView, TemplateView
 from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
-from .filterset import GenericFilterSet
 
 from tagulous.views import autocomplete
 
@@ -108,6 +107,9 @@ class BrowseView(ListView):
         have their own, custom FilterSet defined in
         `model.get_custom_filterset`.
         """
+        # GenericFilterSet imported here to avoid early execution of __init__
+        # methods on filters @todo - keep an eye on performance
+        from .filterset import GenericFilterSet
         if (
             self.content_type_class and
             hasattr(self.content_type_class, 'get_custom_filterset')
