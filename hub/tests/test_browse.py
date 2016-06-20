@@ -4,11 +4,13 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 
+from ..apps.access.models import TemporaryUser
 from ..apps.browse.templatetags.browse_tags import permission_flag
 from ..apps.content.models import ContentType
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.metadata.models import SustainabilityTopic
 from .base import WithUserSuperuserTestCase
+from datetime import date
 
 
 class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
@@ -80,6 +82,50 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
         self.client.login(**self.member_cred)
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 200)
+        
+    def test_temporary_access(self):
+        """
+        Create a temporary user who should have access
+        """
+        self.ct.status = self.ct.STATUS_CHOICES.published
+        self.ct.save()
+        
+        # Logged in but no member
+        self.client.login(**self.user_cred)
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+        
+        temp_user = TemporaryUser.objects.create(
+            email_address=self.user.email,
+            access_starts=date(year=2010, month=1, day=1),
+            access_ends=date(year=3000, month=1, day=1),
+            notes="this is a test")
+        self.client.logout()
+        
+        self.client.login(**self.user_cred)
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        
+        # in the past
+        temp_user.access_ends = date(year=2011, month=1, day=1)
+        temp_user.save()
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+        
+        # in the future
+        temp_user.access_starts = date(year=3000, month=1, day=1)
+        temp_user.access_ends = date(year=3001, month=1, day=1)
+        temp_user.save()
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+        
+        # the day of
+        # in the future
+        temp_user.access_starts = date.today()
+        temp_user.save()
+        response = self.client.get(self.ct.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+
 
 class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
     """
@@ -159,9 +205,9 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
     (search results).
 
     - The homepage is open for all audiences
-    - Search list browse results need auth
-    - Topic list browse results need auth
-    - Content Type browse results need auth
+    - Search list browse results don't need auth
+    - Topic list browse results don't need auth
+    - Content Type browse results don't need auth
       - except certain 'PUBLIC_CONTENT_TYPES' content types
         which results are  open to unauthed users as well
     """
@@ -229,14 +275,11 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
     #     response = self.client.get(self.url_ct)
     #     self.assertEqual(response.status_code, 200)
 
-    def test_open_ct_is_visible_to_anybody(self):
+    def test_ct_is_visible_to_anybody(self):
         """
-        Certain, OPEN content types are visible to anybody.
+        Content types are visible to anybody.
         """
-        if not settings.PUBLIC_CONTENT_TYPES:
-            return
-        open_url = reverse('browse:browse', kwargs={
-            'ct': settings.PUBLIC_CONTENT_TYPES[0]})
+        open_url = reverse('browse:browse', kwargs={'ct': 'academicprogram'})
         self.client.logout()
         response = self.client.get(open_url)
         self.assertEqual(response.status_code, 200)

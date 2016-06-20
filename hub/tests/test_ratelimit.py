@@ -11,7 +11,7 @@ import sys
 # @override_settings(BROWSE_RATE_LIMIT='10/5m') #  couldn't get this to work
 @override_settings(
     CACHES={'default': django_cache_url.parse('locmem://hub_test')},
-    DEBUG=True)
+    RATELIMIT_ENABLE=True)
 class RateLimitTestCase(TestCase):
     """
     Test rate limiting for specific urls

@@ -1,0 +1,55 @@
+# Installing the Hub
+
+## Local Development
+
+Create a virtualenv and
+
+    $> pip install -r requirements.txt
+    
+### Required Environment Variables:
+
+`HUB_DB_URL`
+`SECRET_KEY`
+`SSLIFY_DISABLE`
+
+    SSLIFY_DISABLE=1  # you probably don't want to use SSL locally
+
+For auth...
+
+`AASHE_DRUPAL_URI`
+`AASHE_DRUPAL_KEY`
+`AASHE_DRUPAL_KEY_DOMAIN`
+`AASHE_DRUPAL_COOKIE_SESSION`
+`AASHE_DRUPAL_COOKIE_DOMAIN`
+
+For search
+
+`SEARCHBOX_SSL_URL`
+
+I run elasticsearh locally and have the following config:
+
+    SEARCHBOX_SSL_URL=http://localelastic:9200
+    
+For uploaded media:
+
+`MEDIA_ROOT`
+    
+### Recommended
+
+`DEBUG`
+
+    DEBUG=1
+
+### Required applications
+
+`elasticsearch`
+
+## Runing Tests
+
+    $> ./manage.py test
+    
+## Database configuration
+
+I recommend pulling down a copy of the production database from heroku. Refer to *heroku.md* for more info on that. You are also welcome to simply start a new postgres or sqlite3 db:
+
+    $> ./manage.py migrate

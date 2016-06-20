@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'integration_settings.google_analytics',
 
     'hub',
+    'hub.apps.access',
     'hub.apps.content',
     'hub.apps.metadata',
     'hub.apps.browse',
@@ -271,5 +272,6 @@ PASSWORD_PROTECT_REALM = os.environ.get('PASSWORD_PROTECT_REALM', 'Dev Site Auth
 
 # Rate Limiting
 # Using these so we can limit to speed up testing - change in production
+RATELIMIT_ENABLE = os.environ.get('RATELIMIT_ENABLE', False)
 LOGIN_RATE_LIMIT = os.environ.get('LOGIN_RATE_LIMIT', '5/5m')
 BROWSE_RATE_LIMIT = os.environ.get('BROWSE_RATE_LIMIT', '5/5m')

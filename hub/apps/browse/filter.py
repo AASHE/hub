@@ -191,8 +191,6 @@ class StudentFteFilter(filters.ChoiceFilter):
 
 class CountryFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
-        # @WARNING: keep an eye on performance here.
-        # We might want to use caching
 
         countries = cache.get('country_filter_choices')
         if not countries:
