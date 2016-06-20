@@ -13,6 +13,7 @@ from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
 from .filterset import GenericFilterSet
+from ratelimit.mixins import RatelimitMixin
 
 from tagulous.views import autocomplete
 
@@ -36,7 +37,7 @@ class HomeView(TemplateView):
         return ctx
 
 
-class BrowseView(ListView):
+class BrowseView(RatelimitMixin, ListView):
     """
     A very generic browse view to handle all sorts of views at once. Generally
     we have two views:
@@ -57,6 +58,12 @@ class BrowseView(ListView):
     sustainabilty_topic = None
     paginate_by = 50
     filterset_form = None
+    
+    # Rate-limiting
+    ratelimit_key = 'ip'
+    ratelimit_rate = settings.BROWSE_RATE_LIMIT
+    ratelimit_block = True
+    ratelimit_method = 'GET'
 
     def dispatch(self, *args, **kwargs):
         """

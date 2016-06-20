@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from ratelimit.decorators import ratelimit
 
 from .views import BrowseView, ResourceView#, autocomplete_tags
 
