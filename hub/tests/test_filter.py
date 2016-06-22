@@ -1,7 +1,7 @@
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 
-from ..apps.metadata.models import Organization, SustainabilityTopic
+from ..apps.metadata.models import Organization, SustainabilityTopic, AcademicDiscipline
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.publications import Publication
 from ..apps.content.models import CONTENT_TYPES
@@ -20,6 +20,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
 
         self.topic = SustainabilityTopic.objects.create(name='Curriculum')
+        self.discipline = AcademicDiscipline.objects.create(name='Agriculture')
 
         self.org = Organization.objects.create(
             account_num=1, org_name='Washington', country_iso='AU',
@@ -36,6 +37,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         self.ct.organizations.add(self.org)
         self.ct.keywords.add("tag 1")
         self.ct.keywords.add("tag2")
+        self.ct.disciplines.add(self.discipline)
 
         # Update search index
         self._rebuild_index()
@@ -50,6 +52,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             'size': ['lt_5000'],
             'published': self.ct.published.year,
             'date_created': now().year,
+            'disciplines': [self.discipline],
             'country': 'AU',
             'order': 'title',
         }
@@ -179,3 +182,8 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             response = self.client.get(_url, _filter_data)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(response.context['object_list']), 1)
+
+    def test_discipline_filter(self):
+        """
+
+        """
