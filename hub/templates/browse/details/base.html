@@ -91,7 +91,10 @@
 
                         {% if object.disciplines.all %}
                         <div><strong>Discipline{{ object.disciplines.all|length|pluralize }}:</strong>
-                            {% for t in object.disciplines.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+                            {% for t in object.disciplines.all %}
+                                <a href="{% url "browse:browse" %}?search=&discipline={{ t.pk }}">{{ t.name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
                         {% endif %}
 
                         <div>
