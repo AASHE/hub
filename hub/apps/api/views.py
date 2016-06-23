@@ -2,10 +2,12 @@ from __future__ import unicode_literals
 
 from logging import getLogger
 
+from django.conf import settings
 from django.core.cache import cache
 from django.views.generic import View
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.template.defaultfilters import slugify
+from ratelimit.mixins import RatelimitMixin
 
 from ..metadata.models import Organization
 from ..content.models import ContentType
@@ -13,9 +15,15 @@ from ..content.models import ContentType
 logger = getLogger(__name__)
 
 
-class BaseApiView(View):
+class BaseApiView(RatelimitMixin, View):
     cache = False
     cache_timeout = 60 * 60
+    
+    # Rate-limiting
+    ratelimit_key = 'ip'
+    ratelimit_rate = settings.BROWSE_RATE_LIMIT
+    ratelimit_block = True
+    ratelimit_method = 'GET'
 
     def get(self, request, *args, **kwargs):
         """

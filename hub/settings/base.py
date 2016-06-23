@@ -275,3 +275,4 @@ PASSWORD_PROTECT_REALM = os.environ.get('PASSWORD_PROTECT_REALM', 'Dev Site Auth
 RATELIMIT_ENABLE = os.environ.get('RATELIMIT_ENABLE', False)
 LOGIN_RATE_LIMIT = os.environ.get('LOGIN_RATE_LIMIT', '5/5m')
 BROWSE_RATE_LIMIT = os.environ.get('BROWSE_RATE_LIMIT', '5/5m')
+API_RATE_LIMIT = os.environ.get('API_RATE_LIMIT', '5/5m')

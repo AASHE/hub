@@ -22,7 +22,7 @@ class RateLimitTestCase(TestCase):
 
     def test_login(self):
         """
-            11th request in succession should raise Ratelimited
+            5th request in succession should raise Ratelimited
         """
         url = reverse('login')
         error_count = 0
@@ -36,7 +36,7 @@ class RateLimitTestCase(TestCase):
 
     def test_search(self):
         """
-            101st request in succession should raise Ratelimited
+            5th request in succession should raise Ratelimited
         """
         # tried reloading the view with the updated settings
         # Keeping this failed attempt in here:
@@ -44,10 +44,23 @@ class RateLimitTestCase(TestCase):
         # patch('hub.apps.browse.views.BrowseView', BrowseView)
         
         url = reverse('browse:browse', kwargs={'ct': 'video'})
+        self.run_get_request(url)
+            
+    def test_api(self):
+        """
+        All API's inherit from BaseApiView... testing one
+        """
+        url = reverse('api:tags_autocomplete')
+        self.run_get_request(url, data={'q': "key"})
+        
+    def run_get_request(self, url, data={}, max=5):
+        """
+        Broken out consistent pattern
+        """
         error_count = 0
-        for i in range(6):
-            response = self.client.get(url)
-            if i <= 4:
+        for i in range(max+1):
+            response = self.client.get(url, data=data)
+            if i <= (max-1):
                 self.assertEqual(response.status_code, 200)
             else:
                 self.assertEqual(response.status_code, 403)
