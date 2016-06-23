@@ -140,6 +140,9 @@ class ContentType(TimeStampedModel):
         # published.
         if not self.published and self.status == self.STATUS_CHOICES.published:
             self.published = timezone.now()
+            # For case studies, we want to copy the published date into date_created as well
+            if self.content_type == 'casestudy':
+                self.date_created = self.published
 
         # Update the slug value on first save. This doesn't need to be unique
         # since the actual db URL lookup is still done with the pk.
