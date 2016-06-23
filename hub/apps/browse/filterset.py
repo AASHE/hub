@@ -17,6 +17,7 @@ class GenericFilterSet(filters.FilterSet):
     size = StudentFteFilter()
     published = PublishedFilter()
     created = CreatedFilter()
+    discipline = DisciplineFilter()
     country = CountryFilter(required=False)
     state = StateFilter(required=False)
     province = ProvinceFilter(required=False)

@@ -72,7 +72,7 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
 class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     list_display = ('__unicode__', 'permission', 'published',)
-    list_filter = ('status', 'permission', 'created', 'published',)
+    list_filter = ('status', 'permission', 'created', 'published', 'disciplines')
     search_fields = ('title', 'description', 'keywords',)
     readonly_fields = ('published',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
