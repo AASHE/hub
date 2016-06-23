@@ -8,6 +8,7 @@ from .apps.browse.views import HomeView
 
 from aashe.aasheauth.views import login, logout
 
+from ratelimit.decorators import ratelimit
 from tagulous.views import autocomplete
 
 
@@ -19,7 +20,11 @@ urlpatterns = [
 
     url(r'^api/v1/', include('hub.apps.api.urls', namespace='api')),
 
-    url(r'^login/$', login, name='login'),
+    # url(r'^login/$', login, name='login'),
+    url(
+        r'^login/$',
+        ratelimit(key='post:username', rate=settings.LOGIN_RATE_LIMIT, block=True)(login),
+        name='login'),
     url(r'^logout/$', logout, name='logout'),
     url(r'^_ad/', include(admin.site.urls)),
     
