@@ -8,11 +8,11 @@ from django.db.models import ObjectDoesNotExist
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
+from ratelimit.mixins import RatelimitMixin
 
 from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
-from ratelimit.mixins import RatelimitMixin
 
 from tagulous.views import autocomplete
 
