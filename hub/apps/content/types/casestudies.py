@@ -63,6 +63,15 @@ class CaseStudy(ContentType):
         required_list.append('description')
         return required_list
 
+    def save(self, *args, **kwargs):
+        # Call default save method first so status changes take effect if applicable
+        super(CaseStudy, self).save(*args, **kwargs)
+        if self.published:
+            # If it's published, copy that field into date_created
+            self.date_created = self.published
+            # Then we need to call save again
+            super(CaseStudy, self).save(*args, **kwargs)
+
 
 class CaseStudyIndex(BaseIndex):
     def get_model(self):
