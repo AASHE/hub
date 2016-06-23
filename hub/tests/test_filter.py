@@ -10,6 +10,8 @@ from .base import (
     WithUserSuperuserTestCase,
     EXTRA_REQUIRED_CT_KWARGS)
 
+import sys
+
 
 class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
     def setUp(self):
@@ -17,6 +19,12 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         Create some sane default objects that will match almost all filter
         variants.
         """
+        
+        # clear/reload the filter modules because their __init__ methods
+        # need to be called again
+        del sys.modules["hub.apps.browse.filter"]
+        del sys.modules["hub.apps.browse.filterset"]
+        
         self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
 
         self.topic = SustainabilityTopic.objects.create(name='Curriculum')
