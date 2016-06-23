@@ -75,6 +75,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django_password_protect.PasswordProtectMiddleware',
+    'hub.middleware.HerokuRemoteAddr',
     'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -268,3 +269,9 @@ PASSWORD_PROTECT = os.environ.get('PASSWORD_PROTECT', False)
 PASSWORD_PROTECT_USERNAME = os.environ.get('PASSWORD_PROTECT_USERNAME', None)
 PASSWORD_PROTECT_PASSWORD = os.environ.get('PASSWORD_PROTECT_PASSWORD', None)
 PASSWORD_PROTECT_REALM = os.environ.get('PASSWORD_PROTECT_REALM', 'Dev Site Auth')
+
+# Rate Limiting
+# Using these so we can limit to speed up testing - change in production
+RATELIMIT_ENABLE = os.environ.get('RATELIMIT_ENABLE', False)
+LOGIN_RATE_LIMIT = os.environ.get('LOGIN_RATE_LIMIT', '5/5m')
+BROWSE_RATE_LIMIT = os.environ.get('BROWSE_RATE_LIMIT', '5/5m')
