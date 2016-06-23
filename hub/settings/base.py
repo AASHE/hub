@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'integration_settings.google_analytics',
 
     'hub',
+    'hub.apps.access',
     'hub.apps.content',
     'hub.apps.metadata',
     'hub.apps.browse',
@@ -73,6 +74,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django_password_protect.PasswordProtectMiddleware',
     'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -96,6 +98,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
             'django.core.context_processors.request',
+            'hub.apps.browse.context_processors.cache_vars',
         ],
         'debug': DEBUG,
     }
@@ -227,9 +230,18 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# Debug Toolbar
+DEBUG_TOOLBAR = os.environ.get('DEBUG_TOOLBAR', False)
+if DEBUG_TOOLBAR:
+    INSTALLED_APPS += ('debug_toolbar',)
+
 # Cache lifetime in seconds
-CACHE_TTL_SHORT = 60 * 10
-CACHE_TTL_LONG = 60 * 60 * 12
+CACHE_TTL_SHORT = 60 * 10  # 10 minutes
+CACHE_TTL_LONG = 60 * 60 * 12  # 12 hours
+
+import django_cache_url
+CACHE_URL = os.environ.get('CACHE_URL', 'dummy://')
+CACHES = {'default': django_cache_url.parse(CACHE_URL)}
 
 # AASHE Auth
 AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
@@ -250,3 +262,9 @@ GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', No
 # django-acme-challenge for Let's Encrypt
 ACME_CHALLENGE_URL_SLUG = os.environ.get('ACME_CHALLENGE_URL_SLUG', None)
 ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get('ACME_CHALLENGE_TEMPLATE_CONTENT', None)
+
+# Optional password protection for dev sites
+PASSWORD_PROTECT = os.environ.get('PASSWORD_PROTECT', False)
+PASSWORD_PROTECT_USERNAME = os.environ.get('PASSWORD_PROTECT_USERNAME', None)
+PASSWORD_PROTECT_PASSWORD = os.environ.get('PASSWORD_PROTECT_PASSWORD', None)
+PASSWORD_PROTECT_REALM = os.environ.get('PASSWORD_PROTECT_REALM', 'Dev Site Auth')

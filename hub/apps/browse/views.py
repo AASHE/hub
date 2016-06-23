@@ -12,7 +12,6 @@ from django.views.generic import DetailView, ListView, TemplateView
 from ...permissions import get_aashe_member_flag
 from ..content.models import CONTENT_TYPES, ContentType
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
-from .filterset import GenericFilterSet
 
 from tagulous.views import autocomplete
 
@@ -87,15 +86,6 @@ class BrowseView(ListView):
         ):
             return HttpResponseRedirect(reverse('home'))
 
-        # Search results do generally need LoginRequired, however there
-        # are certain ContentTypes defined in PUBLIC_CONTENT_TYPES which
-        # don't even need login, they are browseable by everyone.
-        if (
-            self.content_type_class and
-            self.content_type_class.slug in settings.PUBLIC_CONTENT_TYPES
-        ):
-            return super(BrowseView, self).dispatch(*args, **kwargs)
-
         return super(BrowseView, self).dispatch(*args, **kwargs)
 
     def get_template_names(self):
@@ -117,6 +107,9 @@ class BrowseView(ListView):
         have their own, custom FilterSet defined in
         `model.get_custom_filterset`.
         """
+        # GenericFilterSet imported here to avoid early execution of __init__
+        # methods on filters @todo - keep an eye on performance
+        from .filterset import GenericFilterSet
         if (
             self.content_type_class and
             hasattr(self.content_type_class, 'get_custom_filterset')
@@ -165,8 +158,52 @@ class BrowseView(ListView):
         # Load form into class, bring it back below in context.
         self.filterset_form = filterset.form
         return filterset.qs.distinct()
+        
+    def get_cache_key(self):
+        """
+        Generates a cache key based on:
+            - url
+            - anon/auth/member user status
+            - get params
+        
+        Note: memcached limits keys to 250 characters
+        """
+        
+        key = self.request.path
+        
+        if self.request.user.is_authenticated():
+            if hasattr(self.request.user, 'aasheuser'):
+                key = "%s[mem-%s]" % (key, self.request.user.aasheuser.is_member())
+            else:
+                # usually just during testing
+                key = "%s[mem-False]" % key
+        else:
+            key = "%s[anon]" % key
+        
+        key = "%s?" % key
+            
+        # sort the keys alphabetically for consistency
+        keys_list = self.request.GET.keys() 
+        for k in keys_list:
+            v = self.request.GET.getlist(k)
+            if v and v != [u'']:
+                v.sort()
+                key = "%s&%s=%s" % (key, k, "/".join(v))
+
+        if len(key) >= 250:
+            # memcache limit of 250 characters - hash the long ones
+            import hashlib
+            hashed_key = hashlib.sha224(key).hexdigest()
+            return hashed_key
+        return key
 
     def get_context_data(self, **kwargs):
+        """
+        The context can be cached based on three keys:
+            - url
+            - anon/auth/member user status
+            - get params
+        """
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         ctx.update({
             'object_list_form': self.filterset_form,
@@ -176,6 +213,7 @@ class BrowseView(ListView):
             'content_type_list': CONTENT_TYPES,
             'page_title': self.get_title(),
             'content_type_slug': self.kwargs.get('ct'),
+            'cache_key': self.get_cache_key(),
         })
 
         # Additional toolkit content for topic views
@@ -183,23 +221,15 @@ class BrowseView(ListView):
             featured_ids = SustainabilityTopicFavorite.objects.filter(
                 topic=self.sustainabilty_topic).order_by(
                     'order').values_list('ct', flat=True)
-            featured_content_types = []
-            for id in featured_ids:
-                try:
-                    content_type = ContentType.objects.published().get(id=id)
-                except ContentType.DoesNotExist:  # unpublished, probably
-                    pass
-                featured_content_types.append(content_type)
-            if featured_content_types:
-                featured_content_types = featured_content_types[:5]
+            featured_content_types = ContentType.objects.published()
+            featured_content_types = featured_content_types.filter(id__in=featured_ids)
             new_resources = ContentType.objects.published().filter(
                 topics=self.sustainabilty_topic).order_by('-published')
-            if new_resources:
-                new_resources = new_resources[:5]
+            
+            # @DONE - using the [:#] notation executes the query and undoes
+            # caching. This needed to happen in the template `use |slice:":#"`
 
             news_list = self.sustainabilty_topic.get_rss_items()
-            if news_list:
-                news_list = news_list[:5]
 
             ctx.update({
                 'featured_list': featured_content_types,
