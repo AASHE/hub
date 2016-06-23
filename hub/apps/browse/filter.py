@@ -548,8 +548,17 @@ class DisciplineFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
+
+        discipline_choices = cache.get('academic_discipline_filter_choices')
+        if not discipline_choices:
+            discipline_choices = AcademicDiscipline.objects.values_list('pk', 'name')
+            cache.set(
+                'academic_discipline_filter_choices',
+                discipline_choices,
+                settings.CACHE_TTL_SHORT)
+
         kwargs.update({
-            'choices': AcademicDiscipline.objects.values_list('pk', 'name'),
+            'choices': discipline_choices,
             'label': 'Academic Discipline',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })

@@ -190,8 +190,3 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             response = self.client.get(_url, _filter_data)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(response.context['object_list']), 1)
-
-    def test_discipline_filter(self):
-        """
-
-        """
