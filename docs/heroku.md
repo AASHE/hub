@@ -13,3 +13,15 @@ Then locally do:
       -h localhost -U hub -d hub latest.dump
 
 (your database must exist before can do this)
+
+
+How I do this (Ben):
+
+    heroku pg:backups capture HEROKU_POSTGRESQL_OLIVE_URL --app aashe-hub-stage
+    heroku pg:backups public-url b### --app aashe-hub-stage
+    curl -o latest.dump "<backup_url>"
+    
+    # Rename the exiting hub database and create new DB called hub
+    
+    # Restore: (For some reason I have to run this twice)
+    pg_restore --verbose --clean --no-acl --no-owner -h localhost -d hub latest.dump
