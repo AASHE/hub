@@ -95,7 +95,8 @@ class TagsApiView(AutoCompleteView):
 
     def get_data(self):
         # @todo: should we limit this to only tags on published contenttypes?
+        # I think this will be too heavy a query... :(
         qs = ContentType.keywords.tag_model.objects.values('pk', 'name', 'slug').distinct('name')
-        # data = (Organization.objects.values('pk', 'org_name')
         qs = qs.filter(name__icontains=self.q)
+        qs = qs.exclude(count=0)
         return list(qs)
