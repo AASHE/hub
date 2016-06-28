@@ -3,6 +3,7 @@ from haystack.query import SearchQuerySet
 
 from ..apps.content.types.academic import AcademicProgram
 from .base import BaseSearchBackendTestCase
+from ..apps.content.models import Author
 
 TestContentType = AcademicProgram
 
@@ -82,3 +83,14 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
 
         self.assertEqual(SearchQuerySet().filter(
             text=Raw('figure')).count(), 1)
+
+    def test_authors_are_properly_indexed(self):
+        vid = self._create_video_item(
+            'author test', True)
+        tester = Author.objects.create(name='tester', ct=vid)
+        vid.authors.add(tester)
+
+        self._rebuild_index()
+
+        self.assertEqual(SearchQuerySet().filter(
+            text=Raw('tester')).count(), 1)
