@@ -81,6 +81,8 @@ class KeywordsApiTestCase(BaseApiTestCase):
         self.ap = AcademicProgram.objects.create(
             title="Testing", status=AcademicProgram.STATUS_CHOICES.published)
         self.ap.keywords.add("pizza")
+        
+        AcademicProgram.keywords.tag_model.objects.create(name="bogustag")
 
     def test_min_length(self):
         self.min_length_test()
@@ -97,3 +99,10 @@ class KeywordsApiTestCase(BaseApiTestCase):
 
         # The respons includes pizza
         self.assertEqual(data[0]['name'], 'pizza')
+        
+        # Tags without resources shouldn't display
+        self.assertEqual(AcademicProgram.keywords.tag_model.objects.count(), 2)
+        response = self._get_response('bo')
+        self.assertEqual(response.status_code, 200)
+        data = loads(response.content)
+        self.assertEqual(len(data), 0)

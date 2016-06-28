@@ -9,6 +9,10 @@ from .types.casestudies import CaseStudy
 from .types.publications import Publication
 from django.utils import timezone
 from model_utils import Choices
+import tagulous
+
+
+tagulous.admin.register(ContentType.keywords)
 
 
 class AuthorInline(admin.TabularInline):
