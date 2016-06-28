@@ -9,18 +9,18 @@ class GenericFilterSet(filters.FilterSet):
     `CONTENT_TYPE_FILTERS` mapping.
     """
     search = SearchFilter(widget=forms.HiddenInput)
-    topics = TopicFilter()
     content_type = ContentTypesFilter()
+    topics = TopicFilter()
+    discipline = DisciplineFilter()
+    tagfilter = TagFilter('tags')
     organizations = OrganizationFilter()
     organization_type = OrgTypeFilter()
-    tagfilter = TagFilter('tags')
     size = StudentFteFilter()
-    published = PublishedFilter()
-    created = CreatedFilter()
-    discipline = DisciplineFilter()
     country = CountryFilter(required=False)
     state = StateFilter(required=False)
     province = ProvinceFilter(required=False)
+    published = PublishedFilter()
+    created = CreatedFilter()
     order = OrderingFilter()
 
     class Meta:
