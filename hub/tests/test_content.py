@@ -3,10 +3,12 @@ from django.core import mail
 from django_webtest import WebTest
 
 from ..apps.content.types.videos import Video
+from ..apps.content.types.casestudies import CaseStudy
 from ..apps.content.models import Website
 from ..apps.metadata.models import (Organization,
                                     SustainabilityTopic,
                                     InstitutionalOffice)
+from django.utils import timezone
 
 
 class AdminTestCase(WebTest):
@@ -42,6 +44,16 @@ class AdminTestCase(WebTest):
             InstitutionalOffice.objects.create(name='Lirum'))
         self.resource.save()
 
+        # Create a Case Study object to test on as well
+        self.cs = CaseStudy(content_type='casestudy',
+                            status='new',
+                            permission='open',
+                            title='Test Case Study',
+                            slug='test-case-study',
+                            submitted_by=self.superuser,
+                            consider_for_award=False)
+        self.cs.save()
+
     def _post_resource(self, status):
         response = self.app.get(self.resource.get_admin_url(),
                                 user=self.superuser.username)
@@ -57,3 +69,9 @@ class AdminTestCase(WebTest):
         self._post_resource('declined')
         self.assertEqual(1, len(mail.outbox))
         self.assertIn('declined', mail.outbox[0].subject.lower())
+
+    def test_case_study_date_fields(self):
+        self.assertEqual(self.cs.date_created, None)
+        self.cs.status = self.cs.STATUS_CHOICES.published
+        self.cs.save()
+        self.assertEqual(self.cs.published, self.cs.date_created)
