@@ -113,6 +113,11 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         for field in self.content_type_class.required_field_overrides():
             if field in DocumentForm.base_fields:
                 DocumentForm.base_fields[field].required = True
+                
+        # If the content type provides fields to be exluded, exclude them
+        for field in self.content_type_class.exclude_form_fields():
+            if field in DocumentForm.base_fields:
+                del DocumentForm.base_fields[field]
 
         # If the content type has required topics
         initial_topics = self.content_type_class.preset_topics()

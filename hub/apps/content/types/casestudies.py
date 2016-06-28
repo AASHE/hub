@@ -62,6 +62,14 @@ class CaseStudy(ContentType):
             CaseStudy, cls).required_field_overrides()
         required_list.append('description')
         return required_list
+        
+    @classmethod
+    def exclude_form_fields(cls):
+        """
+        `date_created` field is excluded because it is automatically populated
+        during save
+        """
+        return ['date_created']
 
 
 class CaseStudyIndex(BaseIndex):

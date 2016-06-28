@@ -20,6 +20,8 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.video_form_url = reverse('submit:form', kwargs={'ct': 'video'})
         self.material_form_url = reverse(
             'submit:form', kwargs={'ct': 'material'})
+        self.casestudy_form_url = reverse(
+            'submit:form', kwargs={'ct': 'casestudy'})
 
         self.video_form_valid_data = {
             # Document Form
@@ -342,3 +344,23 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             response = self._post_material(additional_data)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(Material.objects.count(), 1)
+
+    def test_exclude_form_fields(self):
+        """
+        Some content types exclude fields from their forms
+        """
+        self.client.login(**self.user_cred)
+        html = '''
+        <input
+            id="id_document-date_created"
+            name="document-date_created"
+            type="text">
+        '''
+        
+        # case studies exclude date_created
+        response = self.client.get(self.casestudy_form_url)
+        self.assertNotContains(response, html, html=True)
+        
+        # materials do not
+        response = self.client.get(self.material_form_url)
+        self.assertContains(response, html, html=True)

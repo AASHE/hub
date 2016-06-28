@@ -259,6 +259,14 @@ class ContentType(TimeStampedModel):
         return ['Curriculum']
         """
         return {}
+    
+    @classmethod
+    def exclude_form_fields(cls):
+        """
+        Some resource types may exclude fields from the creation form, for
+        example, CaseStudies exclude `date_created`
+        """
+        return []
 
 
 @python_2_unicode_compatible
