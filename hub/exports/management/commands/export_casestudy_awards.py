@@ -1,3 +1,6 @@
+# Tip:
+# PYTHONIOENCODING=UTF-8 ./manage.py export_casestudy_awards > casestudy_awards.tsv
+
 from django.core.management.base import BaseCommand, CommandError
 
 from hub.apps.content.types.casestudies import CaseStudy
@@ -26,6 +29,7 @@ class Command(BaseCommand):
             "First Author Organization",
             "First Author Org Is Member?",
             "First Author Org FTE",
+            "First Author Org Type",
             "Student Leadership Award",
             "Date Created",
         ] 
@@ -52,7 +56,9 @@ class Command(BaseCommand):
                     row.append(author.organization)
                     row.append(author.organization.is_member)
                     row.append(author.organization.enrollment_fte)
+                    row.append(author.organization.org_type)
                 else:
+                    row.append('')
                     row.append('')
                     row.append('')
                     row.append('')
