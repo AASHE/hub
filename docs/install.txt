@@ -44,6 +44,14 @@ For uploaded media:
 
 `elasticsearch`
 
+## Static Files
+
+The hub uses scss, which needs to be compiled to css...
+
+    $ npm install
+    
+You may also want to `collectstatic` depending on your staticfiles settings.
+
 ## Runing Tests
 
     $> ./manage.py test
