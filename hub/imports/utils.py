@@ -343,7 +343,7 @@ def get_base_m2m(parent, columns, column_mappings, row):
                 create_file_from_url(parent, url, image=True)
     
     # links
-    link_key = "Link1"
+    link_key = "Link%d"
     if 'links' in column_mappings.keys():
         link_key = column_mappings['links']
     if 'links_label' in column_mappings.keys():
