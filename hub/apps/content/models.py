@@ -275,7 +275,8 @@ class Author(TimeStampedModel):
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=128, blank=True, null=True)
     organization = models.ForeignKey(
-        'metadata.Organization', blank=True, null=True)
+        'metadata.Organization', blank=True, null=True,
+        on_delete=models.SET_NULL)
     email = models.EmailField(blank=True, null=True)
     
     class Meta:
