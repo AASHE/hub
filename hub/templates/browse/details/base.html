@@ -163,7 +163,7 @@
                         {% for image in object.images.all %}
                             <div class="col-md-4">
                                 <div class="thumbnails thumbnail-style">
-                                    <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image.url }}">
+                                    <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image }}">
                                         {% thumbnail image.image "300x300" crop="center" as im %}
                                             <img class="img-responsive" src="{{ im.url }}" alt="{{ image.caption }}">
                                         {% endthumbnail %}
@@ -176,7 +176,7 @@
                                         <p><em>Photographer credit: {{ image.credit }}</em></p>
                                         {% endif %}
                                         <p class="text-right">
-                                            <a href={{ image.image.url }} download="{{ image.get_filename }}">
+                                            <a href="{{ image.image }}">
                                             <i class='fa fa-download'></i> Download
                                         </a></p>
                                     </div>

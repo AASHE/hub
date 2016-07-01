@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'tagulous',
     'typogrify',
     'integration_settings.google_analytics',
+    's3direct',
 
     'hub',
     'hub.apps.access',
@@ -276,3 +277,14 @@ RATELIMIT_ENABLE = os.environ.get('RATELIMIT_ENABLE', False)
 LOGIN_RATE_LIMIT = os.environ.get('LOGIN_RATE_LIMIT', '5/5m')
 BROWSE_RATE_LIMIT = os.environ.get('BROWSE_RATE_LIMIT', '5/5m')
 API_RATE_LIMIT = os.environ.get('API_RATE_LIMIT', '5/5m')
+
+
+S3DIRECT_REGION = 'us-east-1'
+S3DIRECT_DESTINATIONS = {
+    # Limit uploads to jpeg's and png's.
+    'images': {
+        'key': 'uploads/',
+        'auth': lambda u: u.is_authenticated(),
+        'allowed': ['image/jpeg', 'image/png'],
+    },
+}

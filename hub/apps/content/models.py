@@ -14,6 +14,7 @@ from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
 from model_utils import Choices, FieldTracker
 from slugify import slugify
+from s3direct.fields import S3DirectField
 
 from .help import AFFIRMATION
 
@@ -320,9 +321,9 @@ class Image(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="images")
     caption = models.CharField(max_length=500, blank=True, null=True)
     credit = models.CharField('Photographer credit', max_length=500, blank=True, null=True)
-    image = models.ImageField(
-        help_text="The following files formats are acceptable: JPEG, PNG,"
-        " TIFF...")
+    image = S3DirectField(
+        dest='images', help_text="JPG and PNG file formats are accepted",
+        blank=True, null=True)
     affirmation = models.BooleanField(
         'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 

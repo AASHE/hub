@@ -23,6 +23,7 @@ dj-database-url
 django-bmemcached==0.2.3
 django-password-protect
 django-ratelimit==0.6.0
+# django-s3direct
 django-sslify
 gunicorn
 ipython
@@ -31,6 +32,9 @@ python-binary-memcached==0.24.6
 raven==5.10.2
 whitenoise
 newrelic
+
+# Until my pull request is accepted:
+https://github.com/jamstooks/django-s3direct/archive/master.zip
 
 # Non-pypi repos
 https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
