@@ -8,8 +8,11 @@ def copy_images(apps, schema_editor):
     Image = apps.get_model("content", "Image")
     
     for img in Image.objects.all():
-        img.image = img.image_archived.url
-        img.save()
+        try:
+            img.image = img.image_archived.url
+            img.save()
+        except ValueError: # some may not have associated files
+            pass
 
 
 class Migration(migrations.Migration):
