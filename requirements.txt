@@ -33,14 +33,11 @@ whitenoise
 newrelic
 
 # Non-pypi repos
-https://github.com/AASHE/django-aashe-theme/archive/master.zip
-https://github.com/AASHE/aashe-auth/archive/master.zip
+https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
+https://github.com/AASHE/aashe-auth/archive/0.1.12.zip
+https://github.com/AASHE/iss/archive/v1.1.zip
 
-# temp - until iss is fixed
-# https://github.com/AASHE/iss/archive/master.zip
-git+git://github.com/aashe/iss.git@4061a1856acfc02198052b61d20cd93de61f7e98#egg=iss
-
-https://github.com/AASHE/django-block-content/archive/master.zip
+https://github.com/AASHE/django-block-content/archive/v0.0.3.zip
 https://github.com/jamstooks/django-cache-url/archive/master.zip
 https://github.com/AASHE/django-integration-settings/archive/master.zip
 https://github.com/chrisdrackett/django-typogrify/archive/master.zip
