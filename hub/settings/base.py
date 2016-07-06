@@ -18,6 +18,7 @@ PYTHON_BIN = os.path.dirname(sys.executable)
 WSGI_APPLICATION = 'hub.wsgi.application'
 
 DEBUG = os.environ.get('DEBUG', False)
+THUMBNAIL_DEBUG = DEBUG
 
 SITE_ID = 1
 
@@ -283,7 +284,7 @@ S3DIRECT_REGION = 'us-east-1'
 S3DIRECT_DESTINATIONS = {
     # Limit uploads to jpeg's and png's.
     'images': {
-        'key': 'uploads/',
+        'key': 'uploads',
         'auth': lambda u: u.is_authenticated(),
         'allowed': ['image/jpeg', 'image/png'],
     },
