@@ -473,7 +473,7 @@ class PublicationTypeFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': PublicationMaterialType.objects.all().values_list(),
+            'choices': PublicationMaterialType.objects.all(),
             'label': 'Publication Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -488,7 +488,7 @@ class PublicationTypeFilter(filters.ChoiceFilter):
             return qs
         from ..content.types.publications import Publication
         return qs.filter(pk__in=Publication.objects.filter(
-            material_type__in=value).values_list('pk', flat=True))
+            _type__in=value).values_list('pk', flat=True))
 
 
 class CreatedFilter(filters.ChoiceFilter):

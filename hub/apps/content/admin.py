@@ -186,8 +186,8 @@ for _, model in CONTENT_TYPES.items():
 
 
 class PublicationAdmin(SpecificContentTypeAdmin):
-    list_display = ('__unicode__', 'permission', 'published', 'date_created', 'material_type')
-    list_filter = ('status', 'permission', 'created', 'published', 'date_created', 'material_type')
+    list_display = ('__unicode__', 'permission', 'published', 'date_created', '_type')
+    list_filter = ('status', 'permission', 'created', 'published', 'date_created', '_type')
     
 admin.site.register(Publication, PublicationAdmin)
 
