@@ -4,6 +4,8 @@ from django.core import management
 
 from aashe.aasheauth.models import AASHEUser
 
+from ..apps.metadata.models import ConferenceName, CourseMaterialType
+
 User = get_user_model()
 
 
@@ -77,6 +79,8 @@ class BaseSearchBackendTestCase(TestCase):
 
 
 # The kwargs required for `create` for each content type
+material_type, created = CourseMaterialType.objects.get_or_create(name='assignment')
+conf_name, created = ConferenceName.objects.get_or_create(name='aashe')
 EXTRA_REQUIRED_CT_KWARGS = {
     'casestudy': {
         'background': "blah",
@@ -89,9 +93,9 @@ EXTRA_REQUIRED_CT_KWARGS = {
         'consider_for_award': False,
     },
     'material': {
-        'material_type': "assignment",
+        'material_type': material_type,
     },
     'presentation': {
-        'conf_name': "aashe",
+        'conf_name': conf_name,
     }
 }
