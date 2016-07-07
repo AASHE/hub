@@ -8,14 +8,6 @@ from ...metadata.models import ConferenceName, PresentationType
 
 
 class Presentation(ContentType):
-    CONF_NAME_CHOICES = Choices(
-        ('aashe', 'AASHE'),
-        ('other', 'Other'),
-    )
-    PRESENTATION_CHOICES = Choices(
-        ('poster', 'Poster'),
-        ('presentation', 'Presentation'),
-    )
 
     conf_name = models.ForeignKey(
         ConferenceName, null=True, verbose_name='Conference Name',

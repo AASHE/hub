@@ -132,6 +132,13 @@ class PresentationType(MetadataBaseModel):
         verbose_name_plural = 'Presentation Types'
 
 
+class CourseMaterialType(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Course Material Type'
+        verbose_name_plural = 'Course Material Types'
+
+
 class OrganizationManager(models.Manager):
     def country_list(self):
         """

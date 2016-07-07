@@ -40,22 +40,12 @@ class Migration(migrations.Migration):
             old_name='presentation_type',
             new_name='presentation_type_archive',
         ),
-        migrations.AlterField(
-            model_name='contenttype',
-            name='date_created',
-            field=models.DateField(help_text="Enter the date when this resource was created, founded,\n                                    published, or presented. If you don't know the exact date, choose the\n                                    first day of the month. Use January 1 if you only know the year. You\n                                    can use the calendar widget or type in a date in YYYY-MM-DD format.", null=True, verbose_name='Date Submitted', blank=True),
-        ),
-        migrations.AlterField(
-            model_name='contenttype',
-            name='published',
-            field=models.DateTimeField(help_text='This timestamp is automatically set once the status becomes "Published".', null=True, verbose_name='Date Published', blank=True),
-        ),
 
         # Create new permanent fields that are ForeignKey relations to the metadata models
         migrations.AddField(
             model_name='presentation',
             name='conf_name',
-            field=models.ForeignKey(verbose_name=b'Conference Name', to='metadata.ConferenceName', help_text=b'If your conference is not listed, please select "other"\n        and recommend a change by emailing resources@aashe.org', null=True),
+            field=models.ForeignKey(verbose_name=b'Conference Name', to='metadata.ConferenceName', help_text=b'If your conference is not listed, please select "other" and recommend a change by emailing resources@aashe.org', null=True),
         ),
         migrations.AddField(
             model_name='presentation',

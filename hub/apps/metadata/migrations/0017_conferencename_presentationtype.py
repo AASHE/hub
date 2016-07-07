@@ -7,12 +7,12 @@ from django.db import migrations, models
 def create_initial_choices(apps, schema_editor):
 
     ConferenceName = apps.get_model('metadata', 'ConferenceName')
-    ConferenceName.objects.create(pk=1, name='AASHE')
-    ConferenceName.objects.create(pk=2, name='Other')
+    ConferenceName.objects.create(name='AASHE')
+    ConferenceName.objects.create(name='Other')
 
     PresentationType = apps.get_model('metadata', 'PresentationType')
-    PresentationType.objects.create(pk=1, name='Presentation')
-    PresentationType.objects.create(pk=2, name='Poster')
+    PresentationType.objects.create(name='Presentation')
+    PresentationType.objects.create(name='Poster')
 
 
 class Migration(migrations.Migration):
