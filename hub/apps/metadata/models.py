@@ -139,6 +139,13 @@ class CourseMaterialType(MetadataBaseModel):
         verbose_name_plural = 'Course Material Types'
 
 
+class OutreachMaterialType(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Outreach Material Type'
+        verbose_name_plural = 'Outreach Material Types'
+
+
 class OrganizationManager(models.Manager):
     def country_list(self):
         """
