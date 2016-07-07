@@ -1,7 +1,7 @@
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 
-from ..apps.metadata.models import Organization, SustainabilityTopic, AcademicDiscipline
+from ..apps.metadata.models import Organization, SustainabilityTopic, AcademicDiscipline, PublicationMaterialType
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.publications import Publication
 from ..apps.content.models import CONTENT_TYPES
@@ -138,23 +138,25 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
         """
         Test for the publication type filter
         """
+        type_1 = PublicationMaterialType.objects.create(name="Type 1")
+        type_2 = PublicationMaterialType.objects.create(name="Type 2")
 
         ct = Publication.objects.create(
             title='Test Publication 1',
-            _type=Publication.TYPE_CHOICES.book,
+            material_type=type_1,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
             )
 
         ct2 = Publication.objects.create(
             title='Test Publication 2',
-            _type=Publication.TYPE_CHOICES.news,
+            material_type=type_2,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
             )
 
         _url = reverse('browse:browse', kwargs={'ct': 'publication'})
-        _filter_data = {'publication_type': ['book']}
+        _filter_data = {'publication_type': ['Type 1']}
         self.client.login(**self.superuser_cred)
         
         response = self.client.get(_url)
