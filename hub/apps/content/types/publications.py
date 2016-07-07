@@ -4,6 +4,7 @@ from model_utils import Choices
 from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD, IMG_UPLOAD
+from ...metadata.models import PublicationMaterialType
 
 
 class Publication(ContentType):
@@ -25,6 +26,12 @@ class Publication(ContentType):
         the periodical (e.g., journal, magazine, newspaper), if applicable. For
         book chapers, enter the title of the book.''')
     _type = models.CharField(max_length=40, choices=TYPE_CHOICES, null=True,
+        verbose_name='Type of Material',
+        help_text='''"Journal Article," "Graduate Student Research" and
+        "Undergraduate Student Research" submissions will be automatically
+        considered for a Campus Sustainability Research Award as part of
+        AASHE's annual awards program.''')
+    material_type = models.ForeignKey(PublicationMaterialType, null=True,
         verbose_name='Type of Material',
         help_text='''"Journal Article," "Graduate Student Research" and
         "Undergraduate Student Research" submissions will be automatically
