@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('metadata', '0018_coursematerialtype'),
-        ('content', '0067_auto_20160706_2237'),
+        ('content', '0068_Presentation_metadata'),
     ]
 
     operations = [

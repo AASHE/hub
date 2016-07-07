@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('metadata', '0020_publicationmaterialtype'),
-        ('content', '0069_auto_20160707_1817'),
+        ('content', '0070_Outreach_Material_metadata'),
     ]
 
     operations = [
