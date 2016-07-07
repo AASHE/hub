@@ -15,7 +15,8 @@ from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
-from ..metadata.models import Organization, ProgramType, SustainabilityTopic, AcademicDiscipline
+from ..metadata.models import Organization, ProgramType, SustainabilityTopic, AcademicDiscipline,\
+    CourseMaterialType, PublicationMaterialType
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 
@@ -428,7 +429,7 @@ class MaterialTypeFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
 
         kwargs.update({
-            'choices': Material.MATERIAL_TYPE_CHOICES,
+            'choices': CourseMaterialType.objects.all(),
             'label': 'Material Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -472,7 +473,7 @@ class PublicationTypeFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': Publication.TYPE_CHOICES,
+            'choices': PublicationMaterialType.objects.all(),
             'label': 'Publication Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
