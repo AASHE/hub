@@ -317,7 +317,7 @@ class OrderingFilter(filters.ChoiceFilter):
 
     def filter(self, qs, value):
         if not value:
-            return qs
+            return qs.order_by('-published')
         return qs.order_by(value)
 
 
