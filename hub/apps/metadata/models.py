@@ -118,6 +118,20 @@ class ProgramType(MetadataBaseModel):
         verbose_name_plural = 'Program Types'
 
 
+class ConferenceName(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Conference Name'
+        verbose_name_plural = 'Conference Names'
+
+
+class PresentationType(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Presentation Type'
+        verbose_name_plural = 'Presentation Types'
+
+
 class OrganizationManager(models.Manager):
     def country_list(self):
         """

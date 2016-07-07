@@ -4,6 +4,7 @@ from model_utils import Choices
 from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD
+from ...metadata.models import ConferenceName, PresentationType
 
 
 class Presentation(ContentType):
@@ -16,12 +17,12 @@ class Presentation(ContentType):
         ('presentation', 'Presentation'),
     )
 
-    conf_name = models.CharField('Conference Name', max_length=100,
-        choices=CONF_NAME_CHOICES, help_text='''If your conference is not
-        listed, please select "other" and recommend a change by emailing
-        resources@aashe.org''')
-    presentation_type = models.CharField(max_length=100, blank=True, null=True,
-        choices=PRESENTATION_CHOICES)
+    conf_name = models.ForeignKey(
+        ConferenceName, null=True, verbose_name='Conference Name',
+        help_text='''If your conference is not listed, please select "other"
+        and recommend a change by emailing resources@aashe.org''')
+    presentation_type = models.ForeignKey(
+        PresentationType, null=True, verbose_name='Presentation Type')
 
     objects = ContentTypeManager()
 
