@@ -156,7 +156,7 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             )
 
         _url = reverse('browse:browse', kwargs={'ct': 'publication'})
-        _filter_data = {'publication_type': ['Type 1']}
+        _filter_data = {'publication_type': [type_1.pk]}
         self.client.login(**self.superuser_cred)
         
         response = self.client.get(_url)
