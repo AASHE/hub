@@ -62,8 +62,9 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
 
         self.material_form_valid_data = {}
         self.material_form_valid_data.update(self.video_form_valid_data)
+        material, created = CourseMaterialType.objects.get_or_create(name="assignment")
         self.material_form_valid_data.update({
-            'document-material_type': CourseMaterialType.objects.create(name="Assignment").pk,
+            'document-material_type': material.pk,
             'file-TOTAL_FORMS': 0,
             'file-INITIAL_FORMS': 0,
             'file-MIN_NUM_FORMS': 0,

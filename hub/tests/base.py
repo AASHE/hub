@@ -79,8 +79,6 @@ class BaseSearchBackendTestCase(TestCase):
 
 
 # The kwargs required for `create` for each content type
-conf_name, created = ConferenceName.objects.get_or_create(name='aashe')
-material_type, created = CourseMaterialType.objects.get_or_create(name='assignment')
 EXTRA_REQUIRED_CT_KWARGS = {
     'casestudy': {
         'background': "blah",
@@ -92,10 +90,4 @@ EXTRA_REQUIRED_CT_KWARGS = {
         'lessons_learned': "blah",
         'consider_for_award': False,
     },
-    'material': {
-        'material_type': material_type,
-    },
-    'presentation': {
-        'conf_name': conf_name,
-    }
 }
