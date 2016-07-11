@@ -416,3 +416,9 @@ i.icon-warning {
 .all-resources {
     float: right;
 }
+
+// Add padding to help text blocks on submit resource forms
+.submit-form-helptext {
+    padding-left: 15px;
+    padding-right: 15px;
+}
