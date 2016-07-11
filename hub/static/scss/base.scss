@@ -422,3 +422,13 @@ i.icon-warning {
     padding-left: 15px;
     padding-right: 15px;
 }
+
+// Override color inheritance of links in forms
+.submit-form-helptext a {
+    color: #6BBC49! important;
+}
+
+// Override color for links within lists
+li a {
+    color: #6BBC49;
+}
