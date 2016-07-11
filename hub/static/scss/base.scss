@@ -406,3 +406,8 @@ i.icon-warning {
     display: inline-block;
     margin-right: 5px;
 }
+
+// Remove padding from top of content
+.content {
+    padding-top: 0;
+}
