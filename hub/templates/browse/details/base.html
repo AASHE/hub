@@ -59,7 +59,7 @@
                                 Edit in Admin
                             </a>
                         {% endif %}
-                        <h2>{{ object.title|safe|titlecase }}</h2>
+                        <h2>{{ object.title|safe }}</h2>
                         <h4>
                         {% for org in object.organizations.all %}
                             <a href="{% url 'browse:browse' %}?organizations={{org.pk}}">
