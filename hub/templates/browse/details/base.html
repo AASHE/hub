@@ -202,7 +202,7 @@
                             {% for i in object.websites.all %}
                             <li>
                                 <i class="rounded-x tw icon icon-globe"></i>
-                                <strong>Website:</strong> <a href="{{ i.url }}"> {{ i.label|default:i.url }}</a>
+                                <strong>Link:</strong> <a href="{{ i.url }}"> {{ i.label|default:i.url }}</a>
                             </li>
                             {% endfor %}
 
