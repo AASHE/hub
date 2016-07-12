@@ -412,9 +412,10 @@ i.icon-warning {
     padding-top: 0;
 }
 
-// Right-align all resources button
+// Right-align all resources button and add padding
 .all-resources {
     float: right;
+    margin-left: 5px;
 }
 
 // Add padding to help text blocks on submit resource forms
