@@ -71,6 +71,11 @@ class OrganizationsApiTestCase(BaseApiTestCase):
         for match in data:
             self.assertTrue(match['pk'] in (self.org2.pk, self.org3.pk))
 
+        # Test state included in API output
+        self.assertTrue('pk' in data[0])
+        self.assertTrue('org_name' in data[0])
+        self.assertTrue('state' in data[0])
+
 
 class KeywordsApiTestCase(BaseApiTestCase):
     """
