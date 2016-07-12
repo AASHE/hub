@@ -14,7 +14,7 @@
         <a href="{% url "browse:browse" ct=object.content_type %}">{{ object.content_type_label }}</a>
     </li>
     <li>
-        <a href={{ object.get_absolute_url }}>{{ object.title|safe|titlecase }}</a>
+        <a href={{ object.get_absolute_url }}>{{ object.title|safe }}</a>
     </li>
 {% endblock %}
 
@@ -37,7 +37,7 @@
 {% block body_class %}page-detail{% endblock %}
 
 {% block title %}
-  {{ object.title|safe|titlecase }} - {{ block.super }}
+  {{ object.title|safe }} - {{ block.super }}
 {% endblock %}
 
 {% block page %}
