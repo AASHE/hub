@@ -54,11 +54,13 @@ class ContentType(TimeStampedModel):
         max_length=20,
         choices=PERMISSION_CHOICES,
         default=PERMISSION_CHOICES.member)
+    # The timestamp when this resource was marked PUBLISHED
     published = models.DateTimeField(
         blank=True,
         null=True,
         help_text='This timestamp is automatically set once the status becomes'
-        ' "Published".')
+        ' "Published".',
+        verbose_name='Date Posted')
     submitted_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True)
 
@@ -112,11 +114,14 @@ class ContentType(TimeStampedModel):
                              
     # This is the date the resource was created in the real world, not when
     # the instance was created in the db. That's stored in `created`.
-    date_created = models.DateField(blank=True, null=True, help_text='''
-        Enter the date when this resource was created, founded, published, or
-        presented. If you don't know the exact date, choose the first day of
-        the month. Use January 1 if you only know the year. You can use the
-        calendar widget or type in a date in YYYY-MM-DD format.''')
+    date_created = models.DateField(blank=True, null=True, verbose_name='Date Created, Published or Presented',
+                                    help_text='''Enter the date when this resource was created, founded,
+                                    published, or presented. If you don't know the exact date, choose the
+                                    first day of the month. Use January 1 if you only know the year. You
+                                    can use the calendar widget or type in a date in YYYY-MM-DD format.''')
+
+    # This is the date the resourece was SUBMITTED TO THE HUB
+    date_submitted = models.DateField(null=True, auto_now_add=True, verbose_name='Date Submitted')
 
     status_tracker = FieldTracker(fields=['status'])
 

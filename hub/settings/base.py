@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'tagulous',
     'typogrify',
     'integration_settings.google_analytics',
+    'bootstrap_pagination',
 
     'hub',
     'hub.apps.access',

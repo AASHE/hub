@@ -44,7 +44,7 @@ class AcademicProgram(ContentType):
     def label_overrides(cls):
         return {
             'title': 'Program Name',
-            'description': 'Description or Abstract',
+            'description': 'Description',
             'author': 'Presenter',
             'authors': 'Presenters',
             'date_created': 'Year Founded',

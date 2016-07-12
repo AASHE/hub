@@ -14,7 +14,7 @@
         <a href="{% url "browse:browse" ct=object.content_type %}">{{ object.content_type_label }}</a>
     </li>
     <li>
-        <a href={{ object.get_absolute_url }}>{{ object.title|safe|titlecase }}</a>
+        <a href={{ object.get_absolute_url }}>{{ object.title|safe }}</a>
     </li>
 {% endblock %}
 
@@ -37,7 +37,7 @@
 {% block body_class %}page-detail{% endblock %}
 
 {% block title %}
-  {{ object.title|safe|titlecase }} - {{ block.super }}
+  {{ object.title|safe }} - {{ block.super }}
 {% endblock %}
 
 {% block page %}
@@ -59,7 +59,7 @@
                                 Edit in Admin
                             </a>
                         {% endif %}
-                        <h2>{{ object.title|safe|titlecase }}</h2>
+                        <h2>{{ object.title|safe }}</h2>
                         <h4>
                         {% for org in object.organizations.all %}
                             <a href="{% url 'browse:browse' %}?organizations={{org.pk}}">
@@ -202,7 +202,7 @@
                             {% for i in object.websites.all %}
                             <li>
                                 <i class="rounded-x tw icon icon-globe"></i>
-                                <strong>Website:</strong> <a href="{{ i.url }}"> {{ i.label|default:i.url }}</a>
+                                <strong>Link:</strong> <a href="{{ i.url }}"> {{ i.label|default:i.url }}</a>
                             </li>
                             {% endfor %}
 
@@ -230,8 +230,9 @@
                 <li class="notification">
                     <a href="mailto:resources@aashe.org">
                         <div class="overflow-h">
-                            <i class="icon-custom icon-sm rounded-x icon-bg-light-green icon-line fa fa-lightbulb-o"></i>
-                            <span style="vertical-align:middle; font-size:20px;">Request a change</span>
+                            <span style="vertical-align:middle; font-size:20px;">
+                                <i class="rounded-x icon-bg-light-green fa fa-lightbulb-o"></i>Request a change
+                            </span>
                             {% block_content 'request_a_change' %}
                     </a>
                     </div>

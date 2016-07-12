@@ -399,3 +399,37 @@ i.icon-warning {
         }
     }
 }
+
+// One-off icon styling
+.icon-bg-light-green {
+    padding: 5px 8px 5px 8px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+// Remove padding from top of content
+.content {
+    padding-top: 0;
+}
+
+// Right-align all resources button and add padding
+.all-resources {
+    float: right;
+    margin-left: 5px;
+}
+
+// Add padding to help text blocks on submit resource forms
+.submit-form-helptext {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+// Override color inheritance of links in forms
+.submit-form-helptext a {
+    color: #6BBC49! important;
+}
+
+// Override color for links within lists
+li a {
+    color: #6BBC49;
+}
