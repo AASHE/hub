@@ -307,10 +307,10 @@ class OrderingFilter(filters.ChoiceFilter):
             'choices': (
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
-                ('-published', 'Recently Posted'),
-                ('-date_created', "Recently Created, Published, Presented")
+                ('-published', 'Date Posted'),
+                ('-date_created', "Date Created, Published, Presented")
             ),
-            'label': 'Sort',
+            'label': 'Sort by...',
             'widget': forms.widgets.RadioSelect,
         })
         super(OrderingFilter, self).__init__(*args, **kwargs)
