@@ -307,7 +307,7 @@ class OrderingFilter(filters.ChoiceFilter):
             'choices': (
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
-                ('-published', 'Most Recent'),
+                ('-published', 'Recently Posted'),
                 ('-date_created', "Created, Published, Presented")
             ),
             'label': 'Sort',
