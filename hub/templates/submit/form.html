@@ -75,7 +75,9 @@
                     Submit a new {{ content_type_label }}
                 </header>
                 {% with content_type_slug|add:"_submit_form" as key %}
-                {% block_content key %}
+                <div class="submit-form-helptext">
+                    {% block_content key %}
+                </div>
                 {% endwith %}
                 {% if errors %}
                   <div class="alert alert-warning fade in">

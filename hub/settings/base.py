@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'typogrify',
     'integration_settings.google_analytics',
     's3direct',
+    'bootstrap_pagination',
 
     'hub',
     'hub.apps.access',

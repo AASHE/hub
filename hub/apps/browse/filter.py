@@ -307,17 +307,17 @@ class OrderingFilter(filters.ChoiceFilter):
             'choices': (
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
-                ('-published', 'Most Recent'),
-                ('-date_created', "Created, Published, Presented")
+                ('-published', 'Date Posted'),
+                ('-date_created', "Date Created, Published, Presented")
             ),
-            'label': 'Sort',
+            'label': 'Sort by:',
             'widget': forms.widgets.RadioSelect,
         })
         super(OrderingFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if not value:
-            return qs
+            return qs.order_by('-published')
         return qs.order_by(value)
 
 

@@ -7,6 +7,21 @@
 
 {% block title %}{{ block.super }}{% endblock %}
 
+{% block browse_above_tabs %}
+  {% cache CACHE_TTL_LONG home_below_tab_content %}
+    <!-- begin cache {% now "c" %} -->
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="call-action-v1">
+            {% block_content 'home_page_intro' %}
+        </div>
+        <div class="margin-bottom-30"></div>
+      </div>
+    </div>
+  <!-- end caching -->
+  {% endcache %}
+{% endblock %}
+
 {% block browse_additional_tabs %}
     <li class="active"><a data-toggle="tab" href="#topics" aria-expanded="true">Browse Topic List</a></li>
     <li class=""><a data-toggle="tab" href="#contenttypes" aria-expanded="false">Browse Content Types</a></li>
@@ -47,17 +62,3 @@
     {% endcache %}
 {% endblock %}
 
-{% block browse_below_tab_content %}
-  {% cache CACHE_TTL_LONG home_below_tab_content %}
-    <!-- begin cache {% now "c" %} -->
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <div class="call-action-v1">
-            {% block_content 'home_page_footer' %}
-        </div>
-        <div class="margin-bottom-30"></div>
-      </div>
-    </div>
-  <!-- end caching -->
-  {% endcache %}
-{% endblock %}
