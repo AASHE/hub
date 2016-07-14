@@ -289,4 +289,15 @@ S3DIRECT_DESTINATIONS = {
         'auth': lambda u: u.is_authenticated(),
         'allowed': ['image/jpeg', 'image/png'],
     },
+    # Limit uploads to PDF, Excel, Word, PPT
+    # we could consider adding more: http://bit.ly/29HjwO2
+    'files': {
+        'key': 'uploads',
+        'auth': lambda u: u.is_authenticated(),
+        'allowed': [
+            'application/vnd.ms-excel',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.ms-powerpoint', ],
+    },
 }

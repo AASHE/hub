@@ -68,7 +68,7 @@
                         </h4>
                     </div>
                     <div class="panel-body">
-                        
+
                         {% if label_overrides.date_created %}
                           {% include "browse/details/includes/meta.html" with label=label_overrides.date_created value=object.date_created|date %}
                         {% else %}
@@ -210,7 +210,7 @@
                             {% for i in object.files.all %}
                             <li>
                                 <i class="rounded-x tw icon icon-doc"></i>
-                                <strong>File:</strong> <a href="{{ i.item.url }}"> {{ i.label|default:i.item.name }}</a>
+                                <strong>File:</strong> <a href="{{ i.item }}"> {{ i.label|default:i.get_filename }}</a>
                             </li>
                             {% endfor %}
                         </ul>

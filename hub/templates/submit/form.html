@@ -46,7 +46,7 @@
         {% endfor %}
         {% endif %}
         ];
-        
+
         $( "textarea" ).each(function() {
           var simplemde = new SimpleMDE({
             element: $( this )[0],
@@ -54,11 +54,12 @@
             status: []
           });
         });
-        
+
 
     </script>
     <!-- s3direct -->
     {{ image_formset.media }}
+    {{ file_formset.media }}
     <!-- end s3direct -->
 {% endblock %}
 

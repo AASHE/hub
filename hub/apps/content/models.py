@@ -5,6 +5,7 @@ import os
 from logging import getLogger
 from collections import OrderedDict
 import tagulous
+from urlparse import urlparse
 
 from django.db import models
 from django.conf import settings
@@ -85,7 +86,7 @@ class ContentType(TimeStampedModel):
     topics = models.ManyToManyField(
         'metadata.SustainabilityTopic',
         verbose_name='Sustainability Topic(s)',
-        help_text="""Select up to three topics that relate most closely to 
+        help_text="""Select up to three topics that relate most closely to
         this resource.""")
 
     disciplines = models.ManyToManyField(
@@ -112,7 +113,7 @@ class ContentType(TimeStampedModel):
 
     notes = models.TextField('Notes', blank=True, null=True, default='',
                              help_text="Internal notes.")
-                             
+
     # This is the date the resource was created in the real world, not when
     # the instance was created in the db. That's stored in `created`.
     date_created = models.DateField(blank=True, null=True, verbose_name='Date Created, Published or Presented',
@@ -265,7 +266,7 @@ class ContentType(TimeStampedModel):
         return ['Curriculum']
         """
         return {}
-    
+
     @classmethod
     def exclude_form_fields(cls):
         """
@@ -284,7 +285,7 @@ class Author(TimeStampedModel):
         'metadata.Organization', blank=True, null=True,
         on_delete=models.SET_NULL)
     email = models.EmailField(blank=True, null=True)
-    
+
     class Meta:
         ordering = ['id']
 
@@ -308,8 +309,10 @@ class File(TimeStampedModel):
     label = models.CharField(
         max_length=100, blank=True, null=True,
         help_text="The title of the document")
-    item = models.FileField(
-        help_text="Valid formats are aceptable: PDF, Excel, Word, PPT...")
+    item = S3DirectField(
+        dest='files',
+        help_text="Valid formats are aceptable: PDF, Excel, Word, PPT",
+        blank=True, null=True)
     affirmation = models.BooleanField(
         'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
@@ -319,6 +322,15 @@ class File(TimeStampedModel):
 
     def __str__(self):
         return self.label or 'File object'
+
+    def get_filename(self):
+        if self.item:
+            p = urlparse(self.item)
+            try:
+                return p.path.split("/")[-1]
+            except:
+                pass
+        return "No Name"
 
 
 @python_2_unicode_compatible
