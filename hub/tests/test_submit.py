@@ -181,8 +181,12 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.websites.count(), 1)
 
         names = video.authors.values_list('name', flat=True)
-        self.assertTrue('Martin' in names)
-        self.assertTrue('Donald Duck' in names)
+        self.assertIn('Martin', names)
+        self.assertIn('Donald Duck', names)
+
+        # test the string method
+        self.assertIn(str(video.authors[0]), ['Martin', 'Donald Duck'])
+
 
     def test_user_is_author_feature(self):
         """
@@ -277,6 +281,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         f = material.files.all()[0]
         self.assertEqual('test file', f.label)
         self.assertRegexpMatches(f.item, '.*test.csv')
+        self.assertEqual(f.get_filename(), 'test.csv')
 
     def test_required_metadata(self):
         """

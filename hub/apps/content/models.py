@@ -351,9 +351,6 @@ class Image(TimeStampedModel):
     def __str__(self):
         return self.caption or 'Image object'
 
-    def get_filename(self):
-        return os.path.basename(self.image.name)
-
 # =============================================================================
 # Mapping of all available content types.
 #
