@@ -34,8 +34,7 @@ raven==5.10.2
 whitenoise
 newrelic
 
-# Until my pull request is accepted:
-https://github.com/jamstooks/django-s3direct/archive/master.zip
+https://github.com/bradleyg/django-s3direct/archive/master.zip
 
 # Non-pypi repos
 https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
