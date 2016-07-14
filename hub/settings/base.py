@@ -280,6 +280,20 @@ LOGIN_RATE_LIMIT = os.environ.get('LOGIN_RATE_LIMIT', '5/5m')
 BROWSE_RATE_LIMIT = os.environ.get('BROWSE_RATE_LIMIT', '5/5m')
 API_RATE_LIMIT = os.environ.get('API_RATE_LIMIT', '5/5m')
 
+ALLOWED_FILE_TYPES = [
+    'text/csv',
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/vnd.openxmlformats-officedocument.presentationml.template',
+    'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+]
 
 S3DIRECT_REGION = 'us-east-1'
 S3DIRECT_DESTINATIONS = {
@@ -294,19 +308,6 @@ S3DIRECT_DESTINATIONS = {
     'files': {
         'key': 'uploads',
         'auth': lambda u: u.is_authenticated(),
-        'allowed': [
-            'text/csv',
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'application/vnd.openxmlformats-officedocument.presentationml.template',
-            'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
-            ],
+        'allowed': ALLOWED_FILE_TYPES,
     },
 }
