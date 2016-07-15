@@ -184,8 +184,8 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertIn('Martin', names)
         self.assertIn('Donald Duck', names)
 
-        # test the string method
-        self.assertIn(str(video.authors[0]), ['Martin', 'Donald Duck'])
+        # test the __str__ method
+        self.assertIn(str(video.authors.all()[0]), ['Martin', 'Donald Duck'])
 
 
     def test_user_is_author_feature(self):
