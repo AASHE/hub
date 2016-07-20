@@ -20,7 +20,7 @@ class Command(BaseCommand):
         file_qs = File.objects.filter(item__isnull=False)
         fish = ProgressFish(total=file_qs.count())
         count = 0
-        for f in file_qs[:3]:
+        for f in file_qs:
             count += 1
             fish.animate(amount=count)
             key = urlparse(f.item).path[1:]
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         image_qs = Image.objects.filter(image__isnull=False)
         fish2 = ProgressFish(total=image_qs.count())
         count = 0
-        for i in image_qs[:3]:
+        for i in image_qs:
             count += 1
             fish.animate(amount=count)
             key = urlparse(i.image).path[1:]
