@@ -12,7 +12,8 @@ class Command(BaseCommand):
     Generally you would copy the production DB into the instance and then run
     this...
 
-    heroku pg:copy aashe-hub-prod::HUB_DB_URL HUB_DB_URL -a your-dev-fork
+    heroku pg:copy aashe-hub-prod::HEROKU_POSTGRESQL_OLIVE_URL DATABASE_URL \
+      --app your-dev-fork
 
     ***DO NOT RUN ON PRODUCTION***
     """
@@ -28,7 +29,8 @@ class Command(BaseCommand):
                 to_delete = ctKlass.objects.all()[20:]
                 print "Deleting %d of %d %s objects." % (
                     to_delete.count(), ctKlass.objects.count(), k)
-                to_delete.delete()
+                for obj in to_delete:
+                    obj.delete()
             print
         else:
             print "Action Cancelled."
