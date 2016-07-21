@@ -4,6 +4,8 @@ from django.core import management
 
 from aashe.aasheauth.models import AASHEUser
 
+from ..apps.metadata.models import ConferenceName, CourseMaterialType
+
 User = get_user_model()
 
 
@@ -88,10 +90,4 @@ EXTRA_REQUIRED_CT_KWARGS = {
         'lessons_learned': "blah",
         'consider_for_award': False,
     },
-    'material': {
-        'material_type': "assignment",
-    },
-    'presentation': {
-        'conf_name': "aashe",
-    }
 }

@@ -33,6 +33,7 @@ class GenericFilterSet(filters.FilterSet):
 # All Content Types get their own filterset
 ##############################################################################
 
+
 class AcademicBrowseFilterSet(GenericFilterSet):
     program_type = ProgramTypeFilter()
     from ..content.types.academic import AcademicProgram

@@ -1,7 +1,8 @@
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 
-from ..apps.metadata.models import Organization, SustainabilityTopic, AcademicDiscipline
+from ..apps.metadata.models import Organization, SustainabilityTopic, \
+    AcademicDiscipline, PublicationMaterialType
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.publications import Publication
 from ..apps.content.models import CONTENT_TYPES
@@ -19,12 +20,12 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         Create some sane default objects that will match almost all filter
         variants.
         """
-        
+
         # clear/reload the filter modules because their __init__ methods
         # need to be called again
         del sys.modules["hub.apps.browse.filter"]
         del sys.modules["hub.apps.browse.filterset"]
-        
+
         self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
 
         self.topic = SustainabilityTopic.objects.create(name='Curriculum')
@@ -112,7 +113,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         response = self.client.get(self.url_search, _filter_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 0)
-        
+
     def test_search_handles_special_characters(self):
         """
         ElasticSearch has some characters that must be escaped
@@ -123,7 +124,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         url = "%s%s" % (self.url_search, '+-&|!\(\){}[]^"~*?:\\\/')
 
         response = self.client.get(url)
-        
+
         # One item should still be returned
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 1)
@@ -133,30 +134,32 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
     """
     Test some specific filters for different content types
     """
-    
+
     def test_pub_type_filter(self):
         """
         Test for the publication type filter
         """
+        type_1 = PublicationMaterialType.objects.create(name="Type 1")
+        type_2 = PublicationMaterialType.objects.create(name="Type 2")
 
         ct = Publication.objects.create(
             title='Test Publication 1',
-            _type=Publication.TYPE_CHOICES.book,
+            material_type=type_1,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
             )
 
         ct2 = Publication.objects.create(
             title='Test Publication 2',
-            _type=Publication.TYPE_CHOICES.news,
+            material_type=type_2,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
             )
 
         _url = reverse('browse:browse', kwargs={'ct': 'publication'})
-        _filter_data = {'publication_type': ['book']}
+        _filter_data = {'publication_type': [type_1.pk]}
         self.client.login(**self.superuser_cred)
-        
+
         response = self.client.get(_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 2)
@@ -164,15 +167,15 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
         response = self.client.get(_url, _filter_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 1)
-        
+
     def test_date_created_filter(self):
         """
         Each content type has a slightly different implementation of the
         date_created filter (prepopulated with relevant dates)
         """
-        
+
         for k, ct_class in CONTENT_TYPES.items():
-            
+
             ct_kwargs = {
                 'title': 'Date Created Resource',
                 'date_created': now(),
@@ -182,11 +185,11 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             if k in EXTRA_REQUIRED_CT_KWARGS.keys():
                 ct_kwargs.update(EXTRA_REQUIRED_CT_KWARGS[k])
             ct = ct_class.objects.create(**ct_kwargs)
-            
+
             _url = reverse('browse:browse', kwargs={'ct': k})
             _filter_data = {'date_created': [now().year]}
             self.client.login(**self.superuser_cred)
-            
+
             response = self.client.get(_url, _filter_data)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(response.context['object_list']), 1)

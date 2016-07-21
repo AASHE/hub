@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from ..apps.metadata.models import AcademicDiscipline, Organization, \
-    SustainabilityTopic, InstitutionalOffice
+    SustainabilityTopic, InstitutionalOffice, CourseMaterialType
 from ..apps.content.types.videos import Video
 from ..apps.content.types.courses import Material
 from .base import WithUserSuperuserTestCase
@@ -67,8 +67,14 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
 
         self.material_form_valid_data = {}
         self.material_form_valid_data.update(self.video_form_valid_data)
+        material, created = CourseMaterialType.objects.get_or_create(
+            name="assignment")
         self.material_form_valid_data.update({
-            'document-material_type': 'assignment',
+            'document-material_type': material.pk,
+            'file-TOTAL_FORMS': 0,
+            'file-INITIAL_FORMS': 0,
+            'file-MIN_NUM_FORMS': 0,
+            'file-MAX_NUM_FORMS': 5
         })
 
         self.video_form_valid_data.update({
@@ -186,7 +192,6 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
 
         # test the __str__ method
         self.assertIn(str(video.authors.all()[0]), ['Martin', 'Donald Duck'])
-
 
     def test_user_is_author_feature(self):
         """
