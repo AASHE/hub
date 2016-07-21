@@ -14,6 +14,7 @@ class Command(BaseCommand):
         conn = boto.connect_s3()
         src = conn.get_bucket('aashe-hub-dev')
         dst = conn.get_bucket('aashe-hub-production')
+        dst_keys = [k.key for k in dst.list()]
 
         print "Copying all Files..."
 
@@ -24,7 +25,9 @@ class Command(BaseCommand):
             count += 1
             fish.animate(amount=count)
             key = urlparse(f.item).path[1:]
-            dst.copy_key(key, src.name, key)
+            # if it doesn't already exist:
+            if key not in dst_keys:
+                dst.copy_key(key, src.name, key)
 
         print "Copying all Images..."
 
@@ -35,6 +38,11 @@ class Command(BaseCommand):
             count += 1
             fish.animate(amount=count)
             key = urlparse(i.image).path[1:]
-            dst.copy_key(key, src.name, key)
+            # if it doesn't already exist:
+            if key not in dst_keys:
+                try:
+                    dst.copy_key(key, src.name, key)
+                except boto.exception.S3ResponseError:
+                    print "**** failed to copy: %s" % key
 
         print
