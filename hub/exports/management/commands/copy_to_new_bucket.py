@@ -36,7 +36,7 @@ class Command(BaseCommand):
         count = 0
         for i in image_qs:
             count += 1
-            fish.animate(amount=count)
+            fish2.animate(amount=count)
             key = urlparse(i.image).path[1:]
             # if it doesn't already exist:
             if key not in dst_keys:
