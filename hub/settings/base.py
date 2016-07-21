@@ -295,7 +295,7 @@ ALLOWED_FILE_TYPES = [
     'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
 ]
 
-S3DIRECT_REGION = 'us-east-1'
+S3DIRECT_REGION = os.environ.get('S3DIRECT_REGION', 'us-east-1')
 S3DIRECT_DESTINATIONS = {
     # Limit uploads to jpeg's and png's.
     'images': {
