@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('metadata', '0019_outreachmaterialtype'),
-        ('content', '0069_Course_Material_metadata'),
+        ('content', '0076_Course_Material_metadata'),
     ]
 
     operations = [

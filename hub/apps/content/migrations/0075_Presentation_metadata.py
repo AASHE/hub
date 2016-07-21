@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('metadata', '0017_conferencename_presentationtype'),
-        ('content', '0066_auto_20160701_2047'),
+        ('content', '0074_remove_file_item_archived'),
     ]
 
     operations = [
