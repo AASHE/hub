@@ -46,7 +46,7 @@
         {% endfor %}
         {% endif %}
         ];
-        
+
         $( "textarea" ).each(function() {
           var simplemde = new SimpleMDE({
             element: $( this )[0],
@@ -54,9 +54,13 @@
             status: []
           });
         });
-        
+
 
     </script>
+    <!-- s3direct -->
+    {{ image_formset.media }}
+    {{ file_formset.media }}
+    <!-- end s3direct -->
 {% endblock %}
 
 {% block page %}
@@ -138,7 +142,7 @@
                 </div>
             </div>
 
-            <div class="sky-form">
+            <div class="sky-form submit-row">
                 <footer>
                     <button type="submit" class="btn btn-success pull-right">
                         <i class="fa fa-check-circle-o"></i>

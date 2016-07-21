@@ -68,7 +68,7 @@
                         </h4>
                     </div>
                     <div class="panel-body">
-                        
+
                         {% if label_overrides.date_created %}
                           {% include "browse/details/includes/meta.html" with label=label_overrides.date_created value=object.date_created|date %}
                         {% else %}
@@ -163,7 +163,7 @@
                         {% for image in object.images.all %}
                             <div class="col-md-4">
                                 <div class="thumbnails thumbnail-style">
-                                    <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image.url }}">
+                                    <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image }}">
                                         {% thumbnail image.image "300x300" crop="center" as im %}
                                             <img class="img-responsive" src="{{ im.url }}" alt="{{ image.caption }}">
                                         {% endthumbnail %}
@@ -176,7 +176,7 @@
                                         <p><em>Photographer credit: {{ image.credit }}</em></p>
                                         {% endif %}
                                         <p class="text-right">
-                                            <a href={{ image.image.url }} download="{{ image.get_filename }}">
+                                            <a href="{{ image.image }}">
                                             <i class='fa fa-download'></i> Download
                                         </a></p>
                                     </div>
@@ -210,7 +210,7 @@
                             {% for i in object.files.all %}
                             <li>
                                 <i class="rounded-x tw icon icon-doc"></i>
-                                <strong>File:</strong> <a href="{{ i.item.url }}"> {{ i.label|default:i.item.name }}</a>
+                                <strong>File:</strong> <a href="{{ i.item }}"> {{ i.label|default:i.get_filename }}</a>
                             </li>
                             {% endfor %}
                         </ul>

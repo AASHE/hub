@@ -9,8 +9,8 @@ class Video(ContentType):
     objects = ContentTypeManager()
 
     class Meta:
-        verbose_name = 'Video'
-        verbose_name_plural = 'Videos'
+        verbose_name = 'Video / Webinar'
+        verbose_name_plural = 'Videos & Webinars'
 
     @classmethod
     def label_overrides(cls):
@@ -28,6 +28,7 @@ class Video(ContentType):
         return {
             'website': {'max': 5, 'min': 1},  # optional, up to 5
             'author': {'max': 5, 'min': 0},  # optional, up to 5
+            'file': {'max': 5, 'min': 0},  # optional, up to 5
         }
 
 

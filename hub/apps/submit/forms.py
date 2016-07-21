@@ -98,6 +98,11 @@ class FileForm(AffirmationMixin, forms.ModelForm):
         model = File
         exclude = ('id', 'ct')
 
+    def __init__(self, *args, **kwargs):
+        super(FileForm, self).__init__(*args, **kwargs)
+        self.fields['item'].required = True
+        self.fields['affirmation'].required = True
+
     def save(self, instance):
         self.instance.ct = instance
         return super(FileForm, self).save()
@@ -107,6 +112,11 @@ class ImageForm(AffirmationMixin, forms.ModelForm):
     class Meta:
         model = Image
         exclude = ('id', 'ct')
+
+    def __init__(self, *args, **kwargs):
+        super(ImageForm, self).__init__(*args, **kwargs)
+        self.fields['image'].required = True
+        self.fields['affirmation'].required = True
 
     def save(self, instance):
         self.instance.ct = instance
