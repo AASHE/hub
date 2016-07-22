@@ -8,6 +8,7 @@ from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
 from .types.casestudies import CaseStudy
 from .types.publications import Publication
 from django.utils import timezone
+from import_export.admin import ExportMixin
 from model_utils import Choices
 import tagulous
 
@@ -39,6 +40,8 @@ class ImageInline(admin.TabularInline):
 # Custom model form for the admin
 from django import forms
 from ..browse.forms import LeanSelectMultiple
+
+
 class ContentTypeAdminForm(forms.ModelForm):
     class Meta:
         model = ContentType
@@ -51,15 +54,11 @@ class ContentTypeAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ContentTypeAdminForm, self).__init__(*args, **kwargs)
-        # import pdb; pdb.set_trace()
-        # tag_choices = ContentType.keywords.tag_model.objects.distinct('name').order_by('name')
-        # tag_choices = tag_choices.values_list('pk', 'name')
-        # self.fields['keywords'].widget.choices = tag_choices
 
 
-class BaseContentTypeAdmin(admin.ModelAdmin):
+class BaseContentTypeAdmin(ExportMixin, admin.ModelAdmin):
     form = ContentTypeAdminForm
-    
+
     def save_model(self, request, obj, form, change):
         status_tracker_changed = obj.status_tracker.changed()  # before save
         previous_status = obj.status_tracker.previous('status')
@@ -76,7 +75,8 @@ class BaseContentTypeAdmin(admin.ModelAdmin):
 
 class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     list_display = ('__unicode__', 'permission', 'published',)
-    list_filter = ('status', 'permission', 'created', 'published', 'disciplines')
+    list_filter = (
+        'status', 'permission', 'created', 'published', 'disciplines')
     search_fields = ('title', 'description', 'keywords',)
     readonly_fields = ('published',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
@@ -186,14 +186,19 @@ for _, model in CONTENT_TYPES.items():
 
 
 class PublicationAdmin(SpecificContentTypeAdmin):
-    list_display = ('__unicode__', 'permission', 'published', 'date_created', 'material_type')
-    list_filter = ('status', 'permission', 'created', 'published', 'date_created', 'material_type')
-    
+    list_display = (
+        '__unicode__', 'permission', 'published',
+        'date_created', 'material_type')
+    list_filter = (
+        'status', 'permission', 'created',
+        'published', 'date_created', 'material_type')
+
 admin.site.register(Publication, PublicationAdmin)
 
 
 class CaseStudyAdmin(SpecificContentTypeAdmin):
-    list_display = ('__unicode__', 'permission', 'created', 'consider_for_award')
+    list_display = (
+        '__unicode__', 'permission', 'created', 'consider_for_award')
     list_filter = ('status', 'permission', 'created', 'consider_for_award')
-    
+
 admin.site.register(CaseStudy, CaseStudyAdmin)

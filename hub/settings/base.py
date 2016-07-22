@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'block_content',
     'haystack',
     'iss',
+    'import_export',
     'sorl.thumbnail',
     'tagulous',
     'typogrify',
