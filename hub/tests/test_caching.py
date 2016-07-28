@@ -253,6 +253,30 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.url_topic)
         self.assertContains(response, "This is [not] the STARS tab!!", status_code=200)
 
+    def test_topic_partners_tab(self):
+        """
+            Partners tab: Template caching - varies on: none
+        """
+        cache = caches['default']
+        cache.clear()
+
+        self.topic.name = "First Topic"
+        self.topic.save()
+        print "TOPIC!!!!!!!!!!!!!!!!!!!!!!!! -------- "
+        print self.topic
+
+        response = self.client.get(self.url_topic)
+        self.assertContains(response, "First Topic Partners", status_code=200)
+
+        self.topic.name = "New Topic"
+        self.topic.save()
+        response = self.client.get(self.url_topic)
+        self.assertContains(response, "First Topic Partners", status_code=200)
+
+        cache.clear()
+        response = self.client.get(self.url_topic)
+        self.assertContains(response, "New Topic Partners", status_code=200)
+
     def test_content_type_view(self):
         """
             The content-type view should vary on auth and get params
@@ -355,4 +379,3 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # reset title
         self.ct1.title = '<h2>First Academic Program'
         self.ct1.save()
-        
