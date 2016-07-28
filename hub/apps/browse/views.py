@@ -254,7 +254,6 @@ class BrowseView(RatelimitMixin, ListView):
             rss_topic_feed = feedparser.parse(feed_address)
             ctx.update({
                 'feed': rss_topic_feed,
-                'var_root': settings.BASE_DIR,
             })
         return ctx
 
