@@ -1,0 +1,49 @@
+{% load thumbnail %}
+{% load block_content %}
+<div class="container profile">
+    <div class="row">
+        <div class="profile-body">
+            <div class="panel">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        {% if topic.icon %}<i class="{{ topic.icon }}"></i>{% endif %} Partners
+                    </h2>
+                </div>
+                <div class="panel-body">
+                    {% with topic_name|add:"_partners_tab_intro" as key %}
+                        <span>{% block_content key %}</span>
+                    {% endwith %}
+                </div>
+            </div>
+            {% for member in feed.entries %}
+                <div class="panel">
+                    <div class="panel-heading overflow-h">
+                        <div class="row partners-logo">
+                            {% if member.logo %}
+                                {% thumbnail member.logo "100x100" padding=False as im %}
+                                    <div>
+                                        <a href="{{ member.links.0.href }}">
+                                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" />
+                                        </a>
+                                    </div>
+                                {% endthumbnail %}
+                            {% else %}
+                                <h3><a href="{{ member.links.0.href }}">{{ member.title }}</a></h3>
+                            {% endif %}
+                        </div>
+                        <div class="row partners-text">
+                            <p><i>{{ member.level }}</i></p>
+                        </div>
+                    </div>
+                    {% if member.summary %}
+                        <div class="panel-body">
+                            <div class="row partners-text">
+                                <p>{{ member.summary }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

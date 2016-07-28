@@ -16,6 +16,9 @@ from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
 
 from tagulous.views import autocomplete
 
+import feedparser
+import urllib2
+
 logger = getLogger(__name__)
 
 
@@ -215,6 +218,7 @@ class BrowseView(RatelimitMixin, ListView):
         ctx.update({
             'object_list_form': self.filterset_form,
             'topic': self.sustainabilty_topic,
+            'topic_name': self.sustainabilty_topic.name,
             'topic_list': SustainabilityTopic.objects.all(),
             'content_type': self.content_type_class,
             'content_type_list': CONTENT_TYPES,
@@ -244,6 +248,14 @@ class BrowseView(RatelimitMixin, ListView):
                 'new_resources_list': new_resources,
             })
 
+            # Additional Partners Tab content for topic views
+            feed_address = "http://www.aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/"\
+                            + self.sustainabilty_topic.slug
+            rss_topic_feed = feedparser.parse(feed_address)
+            ctx.update({
+                'feed': rss_topic_feed,
+                'var_root': settings.BASE_DIR,
+            })
         return ctx
 
 
