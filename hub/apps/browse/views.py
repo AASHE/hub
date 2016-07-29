@@ -218,7 +218,7 @@ class BrowseView(RatelimitMixin, ListView):
         ctx.update({
             'object_list_form': self.filterset_form,
             'topic': self.sustainabilty_topic,
-            'topic_name': self.sustainabilty_topic.name,
+            'topic_name': self.sustainabilty_topic.__str__(),
             'topic_list': SustainabilityTopic.objects.all(),
             'content_type': self.content_type_class,
             'content_type_list': CONTENT_TYPES,

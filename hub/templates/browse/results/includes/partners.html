@@ -1,23 +1,23 @@
 {% load thumbnail %}
 {% load block_content %}
-<div class="container profile">
+<div class="container profile col-md-8 col-md-offset-2">
     <div class="row">
         <div class="profile-body">
             <div class="panel">
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left">
-                        {% if topic.icon %}<i class="{{ topic.icon }}"></i>{% endif %} Partners
+                        {% if topic.icon %}<i class="{{ topic.icon }}"></i>{% endif %} {{ topic_name }} Partners
                     </h2>
                 </div>
                 <div class="panel-body">
-                    {% with topic_name|add:"_partners_tab_intro" as key %}
+                    {% with topic_name|add:" partners tab intro" as key %}
                         <span>{% block_content key %}</span>
                     {% endwith %}
                 </div>
             </div>
             {% for member in feed.entries %}
                 <div class="panel">
-                    <div class="panel-heading overflow-h">
+                    <div class="panel-heading overflow-h partners-header">
                         <div class="row partners-logo">
                             {% if member.logo %}
                                 {% thumbnail member.logo "100x100" padding=False as im %}
