@@ -251,10 +251,15 @@ class BrowseView(RatelimitMixin, ListView):
             # Additional Partners Tab content for topic views
             feed_address = "http://www.aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/"\
                             + self.sustainabilty_topic.slug
-            rss_topic_feed = feedparser.parse(feed_address)
-            ctx.update({
-                'feed': rss_topic_feed,
-            })
+            try:
+                rss_topic_feed = feedparser.parse(feed_address)
+                if 'entries' in rss_topic_feed:
+                    ctx.update({
+                        'feed': rss_topic_feed,
+                    })
+            except Exception as e:  # Any error is bad here, catch all.
+                logger.error('Feed parse failed; {}'.format(feed_address))
+                logger.exception(e)
         return ctx
 
 
