@@ -249,10 +249,8 @@ class BrowseView(RatelimitMixin, ListView):
             })
 
             # Additional Partners Tab content for topic views
-            feed_address = "http://www.aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/"\
-                            + self.sustainabilty_topic.slug
             try:
-                rss_topic_feed = feedparser.parse(feed_address)
+                rss_topic_feed = feedparser.parse(self.sustainabilty_topic.scpd_rss_feed)
                 if 'entries' in rss_topic_feed:
                     ctx.update({
                         'feed': rss_topic_feed,
