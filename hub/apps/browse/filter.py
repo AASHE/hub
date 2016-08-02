@@ -15,8 +15,8 @@ from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
-from ..metadata.models import Organization, ProgramType, SustainabilityTopic, AcademicDiscipline,\
-    CourseMaterialType, PublicationMaterialType
+from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
+    AcademicDiscipline, CourseMaterialType, PublicationMaterialType
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 
@@ -61,8 +61,12 @@ class TopicFilter(filters.ChoiceFilter):
 
         topic_choices = cache.get('topic_filter_choices')
         if not topic_choices:
-            topic_choices = SustainabilityTopic.objects.values_list('slug', 'name')
-            cache.set('topic_filter_choices', topic_choices, settings.CACHE_TTL_SHORT)
+            topic_choices = SustainabilityTopic.objects.values_list(
+                'slug', 'name')
+            cache.set(
+                'topic_filter_choices',
+                topic_choices,
+                settings.CACHE_TTL_SHORT)
 
         kwargs.update({
             'choices': topic_choices,
@@ -87,7 +91,8 @@ class ContentTypesFilter(filters.ChoiceFilter):
             ct_choices = [
                 (j, k.content_type_label()) for j, k in CONTENT_TYPES.items()
             ]
-            cache.set('ct_filter_choices', ct_choices, settings.CACHE_TTL_SHORT)
+            cache.set(
+                'ct_filter_choices', ct_choices, settings.CACHE_TTL_SHORT)
 
         kwargs.update({
             'choices': ct_choices,
@@ -112,7 +117,8 @@ class OrganizationFilter(filters.ChoiceFilter):
         organizations = cache.get('org_filter_choices')
         if not organizations:
             organizations = Organization.objects.values_list('pk', 'org_name')
-            cache.set('org_filter_choices', organizations, settings.CACHE_TTL_SHORT)
+            cache.set(
+                'org_filter_choices', organizations, settings.CACHE_TTL_SHORT)
 
         kwargs.update({
             'choices': organizations,
@@ -137,7 +143,8 @@ class TagFilter(filters.ChoiceFilter):
 
         tag_list = cache.get('tag_filter_choices')
         if not tag_list:
-            tag_choices = ContentType.keywords.tag_model.objects.distinct('name')
+            tag_choices = ContentType.keywords.tag_model.objects.distinct(
+                'name')
             tag_choices = tag_choices.values_list('slug', 'name')
             tag_list = [(slug, name) for slug, name in tag_choices]
             cache.set('tag_filter_choices', tag_list, settings.CACHE_TTL_SHORT)
@@ -195,14 +202,16 @@ class CountryFilter(filters.ChoiceFilter):
 
         countries = cache.get('country_filter_choices')
         if not countries:
-            qs = ContentType.objects.published().order_by('organizations__country')
+            qs = ContentType.objects.published().order_by(
+                'organizations__country')
             qs = qs.values_list(
                 'organizations__country_iso',
                 'organizations__country').distinct()
             countries = ALL + tuple(
                 [c for c in qs if (c[0] is not None and c[0] is not '')])
 
-            cache.set('country_filter_choices', countries, settings.CACHE_TTL_SHORT)
+            cache.set(
+                'country_filter_choices', countries, settings.CACHE_TTL_SHORT)
 
         kwargs.update({
             'choices': countries,
@@ -518,7 +527,8 @@ class CreatedFilter(filters.ChoiceFilter):
 
     def get_choices(self, ContentTypeClass):
 
-        qs = ContentTypeClass.objects.published().filter(date_created__isnull=False)
+        qs = ContentTypeClass.objects.published().filter(
+            date_created__isnull=False)
         qs = qs.order_by('-date_created')
 
         # Find the minimum and maximum year of all ct's and put them
@@ -529,7 +539,7 @@ class CreatedFilter(filters.ChoiceFilter):
             # using set to remove duplicates
             distinct_years = list(set([d.year for d in all_dates]))
             distinct_years.sort(reverse=True)
-            year_choices = [(i,i) for i in distinct_years]
+            year_choices = [(i, i) for i in distinct_years]
         else:
             year_choices = ((now().year, now().year),)
 
@@ -552,7 +562,8 @@ class DisciplineFilter(filters.ChoiceFilter):
 
         discipline_choices = cache.get('academic_discipline_filter_choices')
         if not discipline_choices:
-            discipline_choices = AcademicDiscipline.objects.values_list('pk', 'name')
+            discipline_choices = AcademicDiscipline.objects.values_list(
+                'pk', 'name')
             cache.set(
                 'academic_discipline_filter_choices',
                 discipline_choices,
