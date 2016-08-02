@@ -3,6 +3,7 @@ HEROKU specific settings
 """
 from .base import *   # pylint: disable=W0614,W0401
 import os
+import dj_database_url
 
 ALLOWED_HOSTS = ('*',)
 
@@ -19,7 +20,6 @@ ADMINS = (
 MANAGERS = ADMINS
 
 # Database
-import dj_database_url
 DATABASES = {
     'default': dj_database_url.parse(os.environ.get('HUB_DB_URL')),
 }

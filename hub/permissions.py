@@ -15,7 +15,8 @@ logger = getLogger(__name__)
 class LoginRequiredMixin(object):
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_authenticated():
-            return render(self.request, 'registration/login_required.html',
+            return render(
+                self.request, 'registration/login_required.html',
                 status=HttpResponseForbidden.status_code)
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
@@ -28,7 +29,7 @@ def get_aashe_member_flag(user):
     # Superusers are super users
     if user.is_superuser:
         return True
-        
+
     if user.is_authenticated():
         temp_user_set = TemporaryUser.objects.filter(
             email_address=user.email,
