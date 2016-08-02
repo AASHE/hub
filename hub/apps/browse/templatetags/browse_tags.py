@@ -27,7 +27,7 @@ def permission_flag(obj, user, icon_only=False):
             title="{label}"></i>'''
     else:
         label = '''<span class="label label-warning">
-        <i class="fa fa-lock"></i> {label}</span>''''
+        <i class="fa fa-lock"></i> {label}</span>'''
 
     # Open Document has no flag
     if obj.permission == obj.PERMISSION_CHOICES.open:
