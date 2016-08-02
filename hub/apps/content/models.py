@@ -19,6 +19,35 @@ from s3direct.fields import S3DirectField
 
 from .help import AFFIRMATION
 
+# =============================================================================
+# Mapping of all available content types.
+#
+# We also load the content types here into the models namespace, so they are
+# registered in the system, and the migration.
+# =============================================================================
+from .types.academic import AcademicProgram
+from .types.casestudies import CaseStudy
+from .types.centers import CenterAndInstitute
+from .types.courses import Material
+from .types.outreach import OutreachMaterial
+from .types.photographs import Photograph
+from .types.presentations import Presentation
+from .types.publications import Publication
+from .types.tools import Tool
+from .types.videos import Video
+
+CONTENT_TYPES = OrderedDict()
+CONTENT_TYPES['academicprogram'] = AcademicProgram
+CONTENT_TYPES['casestudy'] = CaseStudy
+CONTENT_TYPES['presentation'] = Presentation
+CONTENT_TYPES['material'] = Material
+CONTENT_TYPES['outreachmaterial'] = OutreachMaterial
+CONTENT_TYPES['photograph'] = Photograph
+CONTENT_TYPES['publication'] = Publication
+CONTENT_TYPES['centerandinstitute'] = CenterAndInstitute
+CONTENT_TYPES['tool'] = Tool
+CONTENT_TYPES['video'] = Video
+
 logger = getLogger(__name__)
 
 
@@ -356,32 +385,3 @@ class Image(TimeStampedModel):
 
     def __str__(self):
         return self.caption or 'Image object'
-
-# =============================================================================
-# Mapping of all available content types.
-#
-# We also load the content types here into the models namespace, so they are
-# registered in the system, and the migration.
-# =============================================================================
-from .types.academic import AcademicProgram
-from .types.casestudies import CaseStudy
-from .types.centers import CenterAndInstitute
-from .types.courses import Material
-from .types.outreach import OutreachMaterial
-from .types.photographs import Photograph
-from .types.presentations import Presentation
-from .types.publications import Publication
-from .types.tools import Tool
-from .types.videos import Video
-
-CONTENT_TYPES = OrderedDict()
-CONTENT_TYPES['academicprogram'] = AcademicProgram
-CONTENT_TYPES['casestudy'] = CaseStudy
-CONTENT_TYPES['presentation'] = Presentation
-CONTENT_TYPES['material'] = Material
-CONTENT_TYPES['outreachmaterial'] = OutreachMaterial
-CONTENT_TYPES['photograph'] = Photograph
-CONTENT_TYPES['publication'] = Publication
-CONTENT_TYPES['centerandinstitute'] = CenterAndInstitute
-CONTENT_TYPES['tool'] = Tool
-CONTENT_TYPES['video'] = Video

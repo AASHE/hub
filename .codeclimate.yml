@@ -15,4 +15,6 @@ ratings:
 exclude_paths:
   - hub/static/vendor/**/*
   - hub/tests/**/*
+  - hub/imports/**/*
+  - hub/exports/**/*
   - "**/migrations/*"
