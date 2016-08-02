@@ -260,22 +260,33 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         cache = caches['default']
         cache.clear()
 
-        self.topic.name = "First Topic"
+        self.topic.name = "Curriculum"
+        self.topic.scpd_rss_feed = \
+            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/curriculum/"
         self.topic.save()
-        print "TOPIC!!!!!!!!!!!!!!!!!!!!!!!! -------- "
-        print self.topic
 
         response = self.client.get(self.url_topic)
-        self.assertContains(response, "First Topic Partners", status_code=200)
+        self.assertContains(response, "Curriculum Partners", status_code=200)
 
-        self.topic.name = "New Topic"
+        self.topic.name = "Energy"
         self.topic.save()
         response = self.client.get(self.url_topic)
-        self.assertContains(response, "First Topic Partners", status_code=200)
+        self.assertContains(response, "Curriculum Partners", status_code=200)
 
         cache.clear()
         response = self.client.get(self.url_topic)
-        self.assertContains(response, "New Topic Partners", status_code=200)
+        self.assertContains(response, "Energy Partners", status_code=200)
+
+        # Confirm that a broken RSS Feed link will not break the page
+        cache.clear()
+        self.topic.scpd_rss_feed = \
+            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/topic-does-not-exist/"
+        self.topic.save()
+        response = self.client.get(self.url_topic)
+        self.assertEqual(response.status_code, 200)
+
+        self.topic.name = "First Topic"
+        self.topic.save()
 
     def test_content_type_view(self):
         """
