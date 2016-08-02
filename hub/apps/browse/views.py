@@ -16,6 +16,9 @@ from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
 
 from tagulous.views import autocomplete
 
+import feedparser
+import urllib2
+
 logger = getLogger(__name__)
 
 
@@ -216,6 +219,7 @@ class BrowseView(RatelimitMixin, ListView):
         ctx.update({
             'object_list_form': self.filterset_form,
             'topic': self.sustainabilty_topic,
+            'topic_name': self.sustainabilty_topic.__str__(),
             'topic_list': SustainabilityTopic.objects.all(),
             'content_type': self.content_type_class,
             'content_type_list': CONTENT_TYPES,
@@ -246,6 +250,16 @@ class BrowseView(RatelimitMixin, ListView):
                 'new_resources_list': new_resources,
             })
 
+            # Additional Partners Tab content for topic views
+            try:
+                rss_topic_feed = feedparser.parse(self.sustainabilty_topic.scpd_rss_feed)
+                if 'entries' in rss_topic_feed:
+                    ctx.update({
+                        'feed': rss_topic_feed,
+                    })
+            except Exception as e:  # Any error is bad here, catch all.
+                logger.error('Feed parse failed; {}'.format(feed_address))
+                logger.exception(e)
         return ctx
 
 
