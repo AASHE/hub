@@ -9,25 +9,29 @@ from ...metadata.models import PublicationMaterialType
 
 class Publication(ContentType):
 
-    publisher = models.CharField('Publisher', max_length=200,
-        blank=True, null=True, help_text='Enter the name of the publisher, if applicable.')
-    periodical_name = models.CharField('Periodical/publication name',
+    publisher = models.CharField(
+        'Publisher', max_length=200,
+        blank=True, null=True,
+        help_text='Enter the name of the publisher, if applicable.')
+    periodical_name = models.CharField(
+        'Periodical/publication name',
         max_length=200, blank=True, null=True, help_text='''Enter the name of
         the periodical (e.g., journal, magazine, newspaper), if applicable. For
         book chapers, enter the title of the book.''')
-    material_type = models.ForeignKey(PublicationMaterialType, null=True,
+    material_type = models.ForeignKey(
+        PublicationMaterialType, null=True,
         verbose_name='Type of Material',
         help_text='''"Journal Article," "Graduate Student Research" and
         "Undergraduate Student Research" submissions will be automatically
         considered for a Campus Sustainability Research Award as part of
         AASHE's annual awards program.''')
-        
+
     objects = ContentTypeManager()
 
     class Meta:
         verbose_name = 'Publication'
         verbose_name_plural = 'Publications'
-        
+
     @classmethod
     def label_overrides(cls):
         return {

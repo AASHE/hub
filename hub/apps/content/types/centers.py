@@ -6,9 +6,12 @@ from ..search import BaseIndex
 
 
 class CenterAndInstitute(ContentType):
-    num_paid = models.PositiveIntegerField('Number of paid staff employed at the center (FTE)',
+    num_paid = models.PositiveIntegerField(
+        'Number of paid staff employed at the center (FTE)',
         blank=True, null=True)
-    budget = models.PositiveIntegerField('Total operating budget for the center or institute (excluding salaries)?',
+    budget = models.PositiveIntegerField(
+        '''Total operating budget for the center or institute
+        (excluding salaries)?''',
         blank=True, null=True, help_text='in U.S. dollars')
 
     objects = ContentTypeManager()

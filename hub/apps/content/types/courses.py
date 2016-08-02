@@ -14,13 +14,17 @@ class Material(ContentType):
         ('advanced', 'Advanced'),
     )
 
-    material_type = models.ForeignKey(CourseMaterialType, null=True, verbose_name='Type of Material',
-                                      help_text='Select the best option.',)
-    course_name = models.CharField('Course Name', max_length=500, blank=True, null=True)
-    course_level = models.CharField('Course Level', max_length=50, blank=True, null=True,
-                                    choices=LEVEL_CHOICES, help_text='''100-level courses (or equivalents) may be
-                                    designated as introductory, 200- or 300-level as intermediate, and 400-level or
-                                    graduate courses as advanced.''')
+    material_type = models.ForeignKey(
+        CourseMaterialType, null=True, verbose_name='Type of Material',
+        help_text='Select the best option.',)
+    course_name = models.CharField(
+        'Course Name', max_length=500, blank=True, null=True)
+    course_level = models.CharField(
+        'Course Level', max_length=50, blank=True, null=True,
+        choices=LEVEL_CHOICES,
+        help_text='''100-level courses (or equivalents) may be designated as
+        introductory, 200- or 300-level as intermediate, and 400-level or
+        graduate courses as advanced.''')
 
     objects = ContentTypeManager()
 

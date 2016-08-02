@@ -2,14 +2,15 @@ from hub.apps.content.models import ContentType
 
 from django.core.management.base import BaseCommand, CommandError
 
+
 class Command(BaseCommand):
     help = 'Merge any duplicate tags'
-    
+
     def handle(self, *args, **options):
         print "merging tags!"
 
         tag_model = ContentType.keywords.tag_model
-        
+
         # merge tags with leading spaces where possible
         for tag in tag_model.objects.order_by('name'):
             # fix empty tags
@@ -27,19 +28,20 @@ class Command(BaseCommand):
                         if not bad_tag.get_related_objects():
                             bad_tag.delete()
                         else:
-                            print "Bad Tag (%s) still has objects!!!" % bad_tag.name()
+                            err_msg = "Bad Tag (%s) still has objects!!!"
+                            print err_msg % bad_tag.name()
                     except:
-                        pass # expected
+                        pass  # expected
                 except tag_model.DoesNotExist:
                     print "good tag not found for: '%s'" % tag.name
-        
+
         # remove leading spaces from all other tags
         for tag in tag_model.objects.order_by('name'):
             if tag.name[0] == " ":
                 print "fixing '%s'" % tag.name
                 tag.name = tag.name[1:]
                 tag.save()
-                
+
         # do any slugs have a "1" in thems?
         for tag in tag_model.objects.order_by('name'):
             if tag.slug[-1] == "1":
@@ -52,4 +54,3 @@ class Command(BaseCommand):
                     print "fixing '%s'" % tag.slug
                     tag.slug = tag.slug[0:-2]
                     tag.save()
-    

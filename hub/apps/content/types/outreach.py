@@ -9,8 +9,12 @@ from ...metadata.models import OutreachMaterialType
 
 class OutreachMaterial(ContentType):
 
-    material_type = models.ForeignKey(OutreachMaterialType, blank=True, null=True, verbose_name='Type of Material')
-    design_credit = models.CharField('Design credit (name and/or organization)', max_length=500, blank=True, null=True)
+    material_type = models.ForeignKey(
+        OutreachMaterialType, blank=True, null=True,
+        verbose_name='Type of Material')
+    design_credit = models.CharField(
+        'Design credit (name and/or organization)',
+        max_length=500, blank=True, null=True)
 
     objects = ContentTypeManager()
 

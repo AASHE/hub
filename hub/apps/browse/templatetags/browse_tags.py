@@ -26,8 +26,8 @@ def permission_flag(obj, user, icon_only=False):
             data-placement="top"
             title="{label}"></i>'''
     else:
-        label = '<span class="label label-warning"><i class="fa fa-lock"></i> {label}</span>'
-    
+        label = '''<span class="label label-warning">
+        <i class="fa fa-lock"></i> {label}</span>''''
 
     # Open Document has no flag
     if obj.permission == obj.PERMISSION_CHOICES.open:
@@ -36,9 +36,8 @@ def permission_flag(obj, user, icon_only=False):
     # If the user is logged in, and the member permission is met,
     # all fine, no label.
     if user.is_authenticated():
-        is_aashe_member = get_aashe_member_flag(user)
-        if (obj.permission == obj.PERMISSION_CHOICES.member and
-        not is_aashe_member):
+        is_member = get_aashe_member_flag(user)
+        if (obj.permission == obj.PERMISSION_CHOICES.member and not is_member):
             return mark_safe(label.format(label='Membership Required'))
         else:
             return ''

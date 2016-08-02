@@ -113,7 +113,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         for field in self.content_type_class.required_field_overrides():
             if field in DocumentForm.base_fields:
                 DocumentForm.base_fields[field].required = True
-                
+
         # If the content type provides fields to be exluded, exclude them
         for field in self.content_type_class.exclude_form_fields():
             if field in DocumentForm.base_fields:
@@ -175,9 +175,9 @@ class SubmitFormView(LoginRequiredMixin, FormView):
                     extra=0)
                 formset = formsetKlass(prefix=key, **self.get_form_kwargs())
                 if(
-                    key is "author"
-                    and len(formset.forms) == 1
-                    and not formset.forms[0].is_bound
+                    key is "author" and
+                    len(formset.forms) == 1 and
+                    not formset.forms[0].is_bound
                 ):
                     # remove any unbound author forms,
                     # even though a min is required
