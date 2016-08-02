@@ -1,24 +1,16 @@
 ---
 engines:
-  csslint:
-    enabled: true
   duplication:
     enabled: true
     config:
       languages:
-      - javascript
       - python
-  eslint:
-    enabled: true
-  fixme:
-    enabled: true
   pep8:
     enabled: true
   radon:
     enabled: true
 ratings:
   paths:
-  - "**.js"
   - "**.py"
 exclude_paths:
   - hub/static/vendor/**/*
