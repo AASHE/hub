@@ -15,6 +15,11 @@
     <li>
         <a data-toggle="tab" href="#stars">STARS Data</a>
     </li>
+    {% if feed %}
+        <li>
+            <a data-toggle="tab" href="#partners">Partners</a>
+        </li>
+    {% endif %}
 {% endblock %}
 
 {% block resource_list_body %}
@@ -38,6 +43,15 @@
         <!-- end cache -->
       {% endcache %}
     </div>
+    {% if feed %}
+        <div id="partners" class="tab-pane fade">
+            {% cache CACHE_TTL_LONG topic_partners_tab topic.slug %}
+                <!-- begin cache {% now "c" %} -->
+                {% include 'browse/results/includes/partners.html' %}
+                <!-- end cache -->
+            {% endcache %}
+        </div>
+    {% endif %}
 {% endblock %}
 
 

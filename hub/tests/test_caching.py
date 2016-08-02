@@ -253,6 +253,41 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.url_topic)
         self.assertContains(response, "This is [not] the STARS tab!!", status_code=200)
 
+    def test_topic_partners_tab(self):
+        """
+            Partners tab: Template caching - varies on: none
+        """
+        cache = caches['default']
+        cache.clear()
+
+        self.topic.name = "Curriculum"
+        self.topic.scpd_rss_feed = \
+            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/curriculum/"
+        self.topic.save()
+
+        response = self.client.get(self.url_topic)
+        self.assertContains(response, "Curriculum Partners", status_code=200)
+
+        self.topic.name = "Energy"
+        self.topic.save()
+        response = self.client.get(self.url_topic)
+        self.assertContains(response, "Curriculum Partners", status_code=200)
+
+        cache.clear()
+        response = self.client.get(self.url_topic)
+        self.assertContains(response, "Energy Partners", status_code=200)
+
+        # Confirm that a broken RSS Feed link will not break the page
+        cache.clear()
+        self.topic.scpd_rss_feed = \
+            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/topic-does-not-exist/"
+        self.topic.save()
+        response = self.client.get(self.url_topic)
+        self.assertEqual(response.status_code, 200)
+
+        self.topic.name = "First Topic"
+        self.topic.save()
+
     def test_content_type_view(self):
         """
             The content-type view should vary on auth and get params
@@ -355,4 +390,3 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # reset title
         self.ct1.title = '<h2>First Academic Program'
         self.ct1.save()
-        
