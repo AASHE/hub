@@ -10,13 +10,14 @@ import tempfile
 
 class Command(BaseCommand):
     help = 'Fix 2008 conference presentation imports'
-    
+
     def handle(self, *args, **options):
         print "fixing files!"
-        
+
         url_pattern = r'dl.php\?f=(\d+) Download.*'
         filename_pattern = r'.*filename=\"(.+)\"'
-        
+        url_prefix = "http://www2.aashe.org/conf2008/uploads/dl.php?f=%s"
+
         for p in Presentation.objects.filter(date__year=2008):
             for f in p.files.all():
                 print f.label
@@ -24,9 +25,11 @@ class Command(BaseCommand):
                 if m:
                     print 'Match found: ', m.group(1)
                     print p.get_absolute_url()
-                    url = "http://www2.aashe.org/conf2008/uploads/dl.php?f=%s" % m.group(1)
+                    url = url_prefix % m.group(1)
                     request = requests.get(url, stream=True)
-                    match = re.match(filename_pattern, request.headers['Content-disposition'])
+                    match = re.match(
+                        filename_pattern,
+                        request.headers['Content-disposition'])
                     file_name = match.group(1)
                     print "File Name: %s" % file_name
                     lf = tempfile.NamedTemporaryFile()
@@ -40,4 +43,3 @@ class Command(BaseCommand):
                     f.save()
                 else:
                     print 'No match'
-                

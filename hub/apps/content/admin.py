@@ -10,9 +10,12 @@ from .types.publications import Publication
 from django.utils import timezone
 from import_export.admin import ExportMixin
 from model_utils import Choices
+
+# Custom model form for the admin
+from django import forms
+from ..browse.forms import LeanSelectMultiple
+
 import tagulous
-
-
 tagulous.admin.register(ContentType.keywords)
 
 
@@ -35,11 +38,6 @@ class FileInline(admin.TabularInline):
 class ImageInline(admin.TabularInline):
     model = Image
     extra = 0
-
-
-# Custom model form for the admin
-from django import forms
-from ..browse.forms import LeanSelectMultiple
 
 
 class ContentTypeAdminForm(forms.ModelForm):

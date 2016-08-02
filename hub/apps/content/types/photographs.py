@@ -4,6 +4,7 @@ from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, IMG_UPLOAD
 
+
 class Photograph(ContentType):
 
     objects = ContentTypeManager()
