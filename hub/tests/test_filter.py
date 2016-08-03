@@ -30,7 +30,8 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
 
-        self.topic = SustainabilityTopic.objects.create(name='Curriculum')
+        self.topic = SustainabilityTopic.objects.create(
+            name='Curriculum', slug='curriculum')
         self.discipline = AcademicDiscipline.objects.create(name='Agriculture')
 
         self.org = Organization.objects.create(

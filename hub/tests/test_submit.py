@@ -38,8 +38,10 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
                 AcademicDiscipline.objects.create(name='Jumping').pk
             ],
             'document-topics': [
-                SustainabilityTopic.objects.create(name='Science').pk,
-                SustainabilityTopic.objects.create(name="Curriculum").pk
+                SustainabilityTopic.objects.create(
+                    name='Science', slug='science').pk,
+                SustainabilityTopic.objects.create(
+                    name="Curriculum", slug='curriculum').pk
             ],
             'document-institutions': [
                 InstitutionalOffice.objects.create(name='Lirum').pk
@@ -83,7 +85,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             'website-0-url': 'http://example.com/video.mp4',
         })
 
-        SustainabilityTopic.objects.create(name="Research")
+        SustainabilityTopic.objects.create(name="Research", slug='research')
 
         return super(SubmitResourceTestCase, self).setUp()
 
@@ -236,10 +238,10 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
                 AcademicDiscipline.objects.create(name='Item 4').pk,
             ],
             'document-topics': [
-                SustainabilityTopic.objects.create(name='Item 1').pk,
-                SustainabilityTopic.objects.create(name='Item 2').pk,
-                SustainabilityTopic.objects.create(name='Item 3').pk,
-                SustainabilityTopic.objects.create(name='Item 4').pk,
+                SustainabilityTopic.objects.create(name='Item 1', slug='1').pk,
+                SustainabilityTopic.objects.create(name='Item 2', slug='2').pk,
+                SustainabilityTopic.objects.create(name='Item 3', slug='3').pk,
+                SustainabilityTopic.objects.create(name='Item 4', slug='4').pk,
             ],
             'document-institutions': [
                 InstitutionalOffice.objects.create(name='Item 1').pk,
