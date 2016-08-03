@@ -45,11 +45,15 @@
     </div>
     {% if feed %}
         <div id="partners" class="tab-pane fade">
-            {% cache CACHE_TTL_LONG topic_partners_tab topic.slug %}
-                <!-- begin cache {% now "c" %} -->
+            {% if user and user.is_staff %}
                 {% include 'browse/results/includes/partners.html' %}
-                <!-- end cache -->
-            {% endcache %}
+            {% else %}
+                {% cache CACHE_TTL_LONG topic_partners_tab topic.slug %}
+                    <!-- begin cache {% now "c" %} -->
+                    {% include 'browse/results/includes/partners.html' %}
+                    <!-- end cache -->
+                {% endcache %}
+            {% endif %}
         </div>
     {% endif %}
 {% endblock %}

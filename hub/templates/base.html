@@ -101,11 +101,15 @@
       <div class="container">
         <div class="row">
           <div class="col-md-8">
-            {% cache CACHE_TTL_LONG footer_text %}
-              <!-- begin cache {% now "c" %} -->
-              {% block_content 'footer_text' %}
-              <!-- end cache -->
-            {% endcache %}
+            {% if user and user.is_staff %}
+                {% block_content 'home_page_intro' %}
+            {% else %}
+                {% cache CACHE_TTL_LONG home_below_tab_content %}
+                  <!-- begin cache {% now "c" %} -->
+                  {% block_content 'home_page_intro' %}
+                  <!-- end caching -->
+                {% endcache %}
+            {% endif %}
           </div>
           <div class="col-md-offset-2 col-md-2">
             <p>
