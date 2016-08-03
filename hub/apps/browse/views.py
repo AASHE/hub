@@ -17,7 +17,7 @@ from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
 from tagulous.views import autocomplete
 
 import feedparser
-import urllib2
+from django.utils.text import slugify
 
 logger = getLogger(__name__)
 
@@ -216,10 +216,12 @@ class BrowseView(RatelimitMixin, ListView):
             - get params
         """
         ctx = super(BrowseView, self).get_context_data(**kwargs)
+        topic_name = self.sustainabilty_topic.__str__()
         ctx.update({
             'object_list_form': self.filterset_form,
             'topic': self.sustainabilty_topic,
-            'topic_name': self.sustainabilty_topic.__str__(),
+            'topic_name': topic_name,
+            'topic_slug': slugify(topic_name),
             'topic_list': SustainabilityTopic.objects.all(),
             'content_type': self.content_type_class,
             'content_type_list': CONTENT_TYPES,

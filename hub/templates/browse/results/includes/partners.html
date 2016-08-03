@@ -10,7 +10,7 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    {% with topic_name|add:" partners tab intro" as key %}
+                    {% with topic_slug|add:"_partners_tab_intro" as key %}
                         <span>{% block_content key %}</span>
                     {% endwith %}
                 </div>
