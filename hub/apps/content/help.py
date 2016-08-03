@@ -8,5 +8,6 @@ will not infringe the rights of any third party, including but not limited to
 intellectual property rights, or any other rights protected by law (such as the
 right to privacy or right of publicity).""".replace('\n', ' ')
 
-FILE_UPLOAD = "The following files formats are acceptable: PDF, Excel, Word, PPT..."
+FILE_UPLOAD = """The following files formats are acceptable: PDF, Excel, Word,
+    PPT..."""
 IMG_UPLOAD = "The following files formats are acceptable: JPEG, GIF, PNG..."

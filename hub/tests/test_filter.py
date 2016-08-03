@@ -23,8 +23,10 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         # clear/reload the filter modules because their __init__ methods
         # need to be called again
-        del sys.modules["hub.apps.browse.filter"]
-        del sys.modules["hub.apps.browse.filterset"]
+        modules = ["hub.apps.browse.filter", "hub.apps.browse.filterset"]
+        for module in modules:
+            if module in sys.modules.keys():
+                del sys.modules[module]
 
         self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
 

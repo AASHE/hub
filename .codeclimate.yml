@@ -1,18 +1,19 @@
 ---
 engines:
-  duplication:
-    enabled: true
-    config:
-      languages:
-      - python
+  # duplication:
+  #   enabled: true
+  #   config:
+  #     languages:
+  #     - python
   pep8:
     enabled: true
-  radon:
-    enabled: true
+  # radon:
+  #   enabled: true
 ratings:
   paths:
   - "**.py"
 exclude_paths:
   - hub/static/vendor/**/*
-  - hub/tests/**/*
+  - hub/imports/**/*
+  - hub/exports/**/*
   - "**/migrations/*"
