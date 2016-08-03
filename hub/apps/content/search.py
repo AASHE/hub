@@ -8,6 +8,7 @@ class BaseIndex(indexes.SearchIndex, indexes.Indexable):
     down a queryset of content types.
     """
     text = indexes.CharField(document=True, use_template=True)
+    title = indexes.CharField(model_attr='title', boost=1.125)
     ct_pk = indexes.IntegerField()
 
     def prepare_ct_pk(self, obj):
