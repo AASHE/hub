@@ -252,7 +252,8 @@ class BrowseView(RatelimitMixin, ListView):
 
             # Additional Partners Tab content for topic views
             try:
-                rss_topic_feed = feedparser.parse(self.sustainabilty_topic.scpd_rss_feed)
+                rss_topic_feed = feedparser.parse(
+                    self.sustainabilty_topic.scpd_rss_feed)
                 if 'entries' in rss_topic_feed:
                     ctx.update({
                         'feed': rss_topic_feed,

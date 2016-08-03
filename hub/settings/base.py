@@ -94,7 +94,7 @@ MIDDLEWARE_CLASSES = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [os.path.join(PROJECT_DIR, 'templates'),],
+    'DIRS': [os.path.join(PROJECT_DIR, 'templates'), ],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -262,17 +262,20 @@ PUBLIC_CONTENT_TYPES = (
     'academicprogram',
 )
 
-GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID', None)
+GOOGLE_ANALYTICS_PROPERTY_ID = os.environ.get(
+    'GOOGLE_ANALYTICS_PROPERTY_ID', None)
 
 # django-acme-challenge for Let's Encrypt
 ACME_CHALLENGE_URL_SLUG = os.environ.get('ACME_CHALLENGE_URL_SLUG', None)
-ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get('ACME_CHALLENGE_TEMPLATE_CONTENT', None)
+ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get(
+    'ACME_CHALLENGE_TEMPLATE_CONTENT', None)
 
 # Optional password protection for dev sites
 PASSWORD_PROTECT = os.environ.get('PASSWORD_PROTECT', False)
 PASSWORD_PROTECT_USERNAME = os.environ.get('PASSWORD_PROTECT_USERNAME', None)
 PASSWORD_PROTECT_PASSWORD = os.environ.get('PASSWORD_PROTECT_PASSWORD', None)
-PASSWORD_PROTECT_REALM = os.environ.get('PASSWORD_PROTECT_REALM', 'Dev Site Auth')
+PASSWORD_PROTECT_REALM = os.environ.get(
+    'PASSWORD_PROTECT_REALM', 'Dev Site Auth')
 
 # Rate Limiting
 # Using these so we can limit to speed up testing - change in production

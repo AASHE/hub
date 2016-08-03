@@ -16,7 +16,8 @@ class LeanSelect(forms.Select):
         for option_value, option_label in chain(self.choices, choices):
             if not force_text(option_value) in selected_choices:
                 continue
-            output.append(self.render_option(selected_choices, option_value, option_label))
+            output.append(self.render_option(
+                selected_choices, option_value, option_label))
         return '\n'.join(output)
 
 

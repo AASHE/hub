@@ -7,11 +7,14 @@ class OrganizationProxyTestCase(TestCase):
     def setUp(self):
         defaults = {'exclude_from_website': '0'}
         self.org1 = Organization.objects.create(
-            account_num=1, org_name='Washington', enrollment_fte=2000, **defaults)
+            account_num=1, org_name='Washington',
+            enrollment_fte=2000, **defaults)
         self.org2 = Organization.objects.create(
-            account_num=2, org_name='New York', enrollment_fte=4000, **defaults)
+            account_num=2, org_name='New York',
+            enrollment_fte=4000, **defaults)
         self.org3 = Organization.objects.create(
-            account_num=3, org_name='Los Angeles', enrollment_fte=12000, **defaults)
+            account_num=3, org_name='Los Angeles',
+            enrollment_fte=12000, **defaults)
 
     def tearDown(self):
         Organization.objects.all().delete()

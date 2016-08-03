@@ -37,7 +37,7 @@ class WithUserSuperuserTestCase(TestCase):
             email='member@example.com',
             **self.member_cred
         )
-        
+
         aashe_user = AASHEUser.objects.create(
             user=self.member,
             drupal_id=1,
@@ -48,7 +48,7 @@ class WithUserSuperuserTestCase(TestCase):
         aashe_user.save()
 
         return super(WithUserSuperuserTestCase, self).setUp()
-        
+
     # def login_member(self, **credentials):
     #     """
     #         Extends the base login functionality to ensure that member status

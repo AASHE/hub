@@ -32,16 +32,17 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
 
     def test_default_content_type_is_secure(self):
         """
-        Check that the default values of a content types just created are secure
-        by default.
+        Check that the default values of a content types just created are
+        secure by default.
         """
         self.assertEqual(self.ct.status, ContentType.STATUS_CHOICES.new)
-        self.assertEqual(self.ct.permission, ContentType.PERMISSION_CHOICES.member)
+        self.assertEqual(
+            self.ct.permission, ContentType.PERMISSION_CHOICES.member)
 
     def test_default_content_type_is_not_listed(self):
         """
-        A non-logged in user can't access the content type page even if he knows
-        the url, since it's not published yet.
+        A non-logged in user can't access the content type page even if he
+        knows the url, since it's not published yet.
         """
         self.client.logout()
         response = self.client.get(self.ct.get_absolute_url())
@@ -82,43 +83,43 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
         self.client.login(**self.member_cred)
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        
+
     def test_temporary_access(self):
         """
         Create a temporary user who should have access
         """
         self.ct.status = self.ct.STATUS_CHOICES.published
         self.ct.save()
-        
+
         # Logged in but no member
         self.client.login(**self.user_cred)
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 403)
-        
+
         temp_user = TemporaryUser.objects.create(
             email_address=self.user.email,
             access_starts=date(year=2010, month=1, day=1),
             access_ends=date(year=3000, month=1, day=1),
             notes="this is a test")
         self.client.logout()
-        
+
         self.client.login(**self.user_cred)
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        
+
         # in the past
         temp_user.access_ends = date(year=2011, month=1, day=1)
         temp_user.save()
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 403)
-        
+
         # in the future
         temp_user.access_starts = date(year=3000, month=1, day=1)
         temp_user.access_ends = date(year=3001, month=1, day=1)
         temp_user.save()
         response = self.client.get(self.ct.get_absolute_url())
         self.assertEqual(response.status_code, 403)
-        
+
         # the day of
         # in the future
         temp_user.access_starts = date.today()
@@ -149,17 +150,22 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
         # by anybody.
         self.ct.permission = self.ct.PERMISSION_CHOICES.open
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, AnonymousUser()), self.MATCH_EMPTY_LABEL)
+        self.assertEqual(
+            permission_flag(self.ct, AnonymousUser()), self.MATCH_EMPTY_LABEL)
 
         # 'login required' resource has 'Login Required' in it's label
         self.ct.permission = self.ct.PERMISSION_CHOICES.login
         self.ct.save()
-        self.assertTrue(self.MATCH_LOGIN_REQUIRED in permission_flag(self.ct, AnonymousUser()))
+        self.assertTrue(
+            self.MATCH_LOGIN_REQUIRED in permission_flag(
+                self.ct, AnonymousUser()))
 
         # 'member required' resource has 'Membership Required' in it's label
         self.ct.permission = self.ct.PERMISSION_CHOICES.member
         self.ct.save()
-        self.assertTrue(self.MATCH_MEMBER_REQUIRED in permission_flag(self.ct, AnonymousUser()))
+        self.assertTrue(
+            self.MATCH_MEMBER_REQUIRED in permission_flag(
+                self.ct, AnonymousUser()))
 
     def test_permission_flag_for_logged_in_user(self):
         """
@@ -170,15 +176,18 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.open
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.user), self.MATCH_EMPTY_LABEL)
+        self.assertEqual(
+            permission_flag(self.ct, self.user), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.login
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.user), self.MATCH_EMPTY_LABEL)
+        self.assertEqual(
+            permission_flag(self.ct, self.user), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.member
         self.ct.save()
-        self.assertTrue(self.MATCH_MEMBER_REQUIRED in permission_flag(self.ct, self.user))
+        self.assertTrue(
+            self.MATCH_MEMBER_REQUIRED in permission_flag(self.ct, self.user))
 
     def test_permission_flag_for_membership_user(self):
         """
@@ -188,15 +197,18 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.open
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
+        self.assertEqual(
+            permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.login
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
+        self.assertEqual(
+            permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.member
         self.ct.save()
-        self.assertEqual(permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
+        self.assertEqual(
+            permission_flag(self.ct, self.superuser), self.MATCH_EMPTY_LABEL)
 
 
 class BrowsePermissionTestCase(WithUserSuperuserTestCase):
@@ -213,12 +225,14 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
     """
     def setUp(self):
         # Setup some content
-        self.sus = SustainabilityTopic.objects.create(name='Research', slug='research')
+        self.sus = SustainabilityTopic.objects.create(
+            name='Research', slug='research')
 
         # URLs
         self.url_home = reverse('home')
         self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
-        self.url_topic = reverse('browse:browse', kwargs={'topic': self.sus.slug})
+        self.url_topic = reverse(
+            'browse:browse', kwargs={'topic': self.sus.slug})
         self.url_ct = reverse('browse:browse', kwargs={'ct': 'video'})
 
         return super(BrowsePermissionTestCase, self).setUp()
