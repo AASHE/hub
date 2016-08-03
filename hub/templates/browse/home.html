@@ -8,18 +8,29 @@
 {% block title %}{{ block.super }}{% endblock %}
 
 {% block browse_above_tabs %}
-  {% cache CACHE_TTL_LONG home_below_tab_content %}
-    <!-- begin cache {% now "c" %} -->
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <div class="call-action-v1">
-            {% block_content 'home_page_intro' %}
-        </div>
-        <div class="margin-bottom-30"></div>
+  {% if user and user.is_staff %}
+      <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="call-action-v1">
+                {% block_content 'home_page_intro' %}
+            </div>
+            <div class="margin-bottom-30"></div>
+          </div>
       </div>
-    </div>
-  <!-- end caching -->
-  {% endcache %}
+  {% else %}
+    {% cache CACHE_TTL_LONG home_below_tab_content %}
+        <!-- begin cache {% now "c" %} -->
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="call-action-v1">
+                {% block_content 'home_page_intro' %}
+            </div>
+            <div class="margin-bottom-30"></div>
+          </div>
+        </div>
+      <!-- end caching -->
+    {% endcache %}
+  {% endif %}
 {% endblock %}
 
 {% block browse_additional_tabs %}

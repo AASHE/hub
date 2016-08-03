@@ -9,8 +9,9 @@ class HerokuRemoteAddr(object):
         """
         if (
             'HTTP_X_FORWARDED_FOR' in request.META and
-            len(request.META['HTTP_X_FORWARDED_FOR']) > 0):
-            
-            request.META['REMOTE_ADDR'] = request.META['HTTP_X_FORWARDED_FOR'][-1]
+                len(request.META['HTTP_X_FORWARDED_FOR']) > 0):
+
+            request.META['REMOTE_ADDR'] = request.META[
+                'HTTP_X_FORWARDED_FOR'][-1]
         pass
         # request.META['REMOTE_ADDR'] = # [...]

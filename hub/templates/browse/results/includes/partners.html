@@ -1,0 +1,60 @@
+{% load thumbnail %}
+{% load block_content %}
+<div class="container profile col-md-8 col-md-offset-2">
+    <div class="row">
+        <div class="profile-body">
+            <div class="panel">
+                <div class="panel-heading overflow-h">
+                    <h3>
+                        {% if topic.icon %}<i class="{{ topic.icon }}"></i>{% endif %} {{ topic_name }} Partners
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    {% with topic_slug|add:"_partners_tab_intro" as key %}
+                        <span>{% block_content key %}</span>
+                    {% endwith %}
+                </div>
+            </div>
+            {% for member in feed.entries %}
+                <div class="panel">
+                    <div class="panel-body">
+                        {% if member.logo %}
+                            <div class="col-md-2">
+                                {% thumbnail member.logo "85x85" padding=True as im %}
+                                    <div>
+                                        <a href="{{ member.links.0.href }}">
+                                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" />
+                                        </a>
+                                    </div>
+                                {% endthumbnail %}
+                            </div>
+                            <div class="col-md-3">
+                                <h3><a href="{{ member.links.0.href }}">{{ member.title }}</a></h3>
+                                <span>
+                                    {{ member.location }}<br><i>{{ member.level }}</i>
+                                </span>
+                            </div>
+                            <div class="col-md-7 member-description">
+                                <span>
+                                    {{ member.description }}
+                                </span>
+                            </div>
+                        {% else %}
+                            <div class="col-md-4">
+                                <h3><a href="{{ member.links.0.href }}">{{ member.title }}</a></h3>
+                                <span>
+                                    {{ member.location }}<br><i>{{ member.level }}</i>
+                                </span>
+                            </div>
+                            <div class="col-md-8 member-description">
+                                <span>
+                                    {{ member.description }}
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

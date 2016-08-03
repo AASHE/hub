@@ -1,8 +1,9 @@
 """
     fix_newlines.py
 
-    When importing from the old IRC, I didn't parse all the newlines to double them
-    up so that they would appear as new paragraphs with markdown. Doing that here.
+    When importing from the old IRC, I didn't parse all the newlines to double
+    them up so that they would appear as new paragraphs with markdown. Doing
+    that here.
 """
 
 from hub.apps.content.models import CONTENT_TYPES
@@ -11,7 +12,7 @@ import pdb
 
 
 for k, ct_class in CONTENT_TYPES.items():
-    
+
     # Get the TextFields
     text_fields = []
     for f in ct_class._meta.fields:

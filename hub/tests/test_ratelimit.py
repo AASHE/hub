@@ -16,7 +16,7 @@ class RateLimitTestCase(TestCase):
     """
     Test rate limiting for specific urls
     """
-    
+
     def setUp(self):
         pass
 
@@ -42,17 +42,17 @@ class RateLimitTestCase(TestCase):
         # Keeping this failed attempt in here:
         # from hub.apps.browse.views import BrowseView
         # patch('hub.apps.browse.views.BrowseView', BrowseView)
-        
+
         url = reverse('browse:browse', kwargs={'ct': 'video'})
         self.run_get_request(url)
-            
+
     def test_api(self):
         """
         All API's inherit from BaseApiView... testing one
         """
         url = reverse('api:tags_autocomplete')
         self.run_get_request(url, data={'q': "key"})
-        
+
     def run_get_request(self, url, data={}, max=5):
         """
         Broken out consistent pattern

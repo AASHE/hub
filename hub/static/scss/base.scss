@@ -433,3 +433,16 @@ i.icon-warning {
 li a {
     color: #6BBC49;
 }
+
+// Centering member description blocks
+.panel-body {
+    position: relative;
+}
+
+.member-description {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%) translateX(-100%);
+    float: right;
+}

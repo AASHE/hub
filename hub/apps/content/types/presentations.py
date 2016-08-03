@@ -31,7 +31,7 @@ class Presentation(ContentType):
             'authors': 'Presenters',
             'date_created': 'Presentation Date',
         }
-        
+
     @classmethod
     def required_field_overrides(cls):
         required_list = super(
