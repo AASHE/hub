@@ -15,7 +15,8 @@ from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
-from ..metadata.models import Organization, ProgramType, SustainabilityTopic, AcademicDiscipline
+from ..metadata.models import Organization, ProgramType, SustainabilityTopic, AcademicDiscipline,\
+    CourseMaterialType, PublicationMaterialType
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 
@@ -307,17 +308,17 @@ class OrderingFilter(filters.ChoiceFilter):
             'choices': (
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
-                ('-published', 'Most Recent'),
-                ('-date_created', "Created, Published, Presented")
+                ('-published', 'Date Posted'),
+                ('-date_created', "Date Created, Published, Presented")
             ),
-            'label': 'Sort',
+            'label': 'Sort by:',
             'widget': forms.widgets.RadioSelect,
         })
         super(OrderingFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if not value:
-            return qs
+            return qs.order_by('-published')
         return qs.order_by(value)
 
 
@@ -428,7 +429,7 @@ class MaterialTypeFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
 
         kwargs.update({
-            'choices': Material.MATERIAL_TYPE_CHOICES,
+            'choices': CourseMaterialType.objects.values_list('pk', 'name'),
             'label': 'Material Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -472,7 +473,7 @@ class PublicationTypeFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': Publication.TYPE_CHOICES,
+            'choices': PublicationMaterialType.objects.all().values_list(),
             'label': 'Publication Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -487,7 +488,7 @@ class PublicationTypeFilter(filters.ChoiceFilter):
             return qs
         from ..content.types.publications import Publication
         return qs.filter(pk__in=Publication.objects.filter(
-            _type__in=value).values_list('pk', flat=True))
+            material_type__in=value).values_list('pk', flat=True))
 
 
 class CreatedFilter(filters.ChoiceFilter):

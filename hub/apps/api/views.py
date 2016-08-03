@@ -18,7 +18,7 @@ logger = getLogger(__name__)
 class BaseApiView(RatelimitMixin, View):
     cache = False
     cache_timeout = 60 * 60
-    
+
     # Rate-limiting
     ratelimit_key = 'ip'
     ratelimit_rate = settings.BROWSE_RATE_LIMIT
@@ -56,8 +56,9 @@ class AutoCompleteView(BaseApiView):
             return HttpResponseBadRequest('No search term given')
         self.q = self.request.GET['q']
         if len(self.q) < self.min_keyword_length:
-            return HttpResponseBadRequest('Search term must be at least {} '
-                'characters long.'.format(self.min_keyword_length))
+            error_str = 'Search term must be at least {} characters long.'
+            return HttpResponseBadRequest(
+                error_str.format(self.min_keyword_length))
         return super(AutoCompleteView, self).get(request, *args, **kwargs)
 
 
@@ -75,9 +76,12 @@ class OrganizationsApiView(AutoCompleteView):
         return 'api_organizations_{}'.format(slugify(self.q))
 
     def get_data(self):
-        data = (Organization.objects.values('pk', 'org_name')
-            .filter(org_name__icontains=self.q))
-        return list(data)
+        data = Organization.objects.values(
+            'pk', 'org_name', 'state').filter(org_name__icontains=self.q)
+        data = list(data)
+        for x in data:
+            x['org_name'] = '{}, {}'.format(x['org_name'], x['state'])
+        return data
 
 
 class TagsApiView(AutoCompleteView):
@@ -96,7 +100,8 @@ class TagsApiView(AutoCompleteView):
     def get_data(self):
         # @todo: should we limit this to only tags on published contenttypes?
         # I think this will be too heavy a query... :(
-        qs = ContentType.keywords.tag_model.objects.values('pk', 'name', 'slug').distinct('name')
+        qs = ContentType.keywords.tag_model.objects.values(
+            'pk', 'name', 'slug').distinct('name')
         qs = qs.filter(name__icontains=self.q)
         qs = qs.exclude(count=0)
         return list(qs)

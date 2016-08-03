@@ -44,6 +44,7 @@ class SustainabilityTopic(MetadataBaseModel):
     slug = models.SlugField()
     introduction = models.TextField(blank=True, null=True)
     rss_feed = models.URLField(blank=True, null=True)
+    scpd_rss_feed = models.URLField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
     icon = models.CharField(max_length=64, blank=True, null=True)
     stars_tab_content = models.TextField(
@@ -116,6 +117,41 @@ class ProgramType(MetadataBaseModel):
         ordering = ('name',)
         verbose_name = 'Program Type'
         verbose_name_plural = 'Program Types'
+
+
+class ConferenceName(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Conference Name'
+        verbose_name_plural = 'Conference Names'
+
+
+class PresentationType(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Presentation Type'
+        verbose_name_plural = 'Presentation Types'
+
+
+class CourseMaterialType(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Course Material Type'
+        verbose_name_plural = 'Course Material Types'
+
+
+class OutreachMaterialType(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Outreach Material Type'
+        verbose_name_plural = 'Outreach Material Types'
+
+
+class PublicationMaterialType(MetadataBaseModel):
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Publication Material Type'
+        verbose_name_plural = 'Publication Material Types'
 
 
 class OrganizationManager(models.Manager):

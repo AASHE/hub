@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^logout/$', logout, name='logout'),
     url(r'^_ad/', include(admin.site.urls)),
     
+    url(r'^s3direct/', include('s3direct.urls')),
+    
     # Let's Encrypt (django-acme-challenge)
     url(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
 

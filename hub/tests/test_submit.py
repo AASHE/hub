@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from ..apps.metadata.models import AcademicDiscipline, Organization, \
-    SustainabilityTopic, InstitutionalOffice
+    SustainabilityTopic, InstitutionalOffice, CourseMaterialType
 from ..apps.content.types.videos import Video
 from ..apps.content.types.courses import Material
 from .base import WithUserSuperuserTestCase
@@ -58,16 +58,23 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             'website-INITIAL_FORMS': 0,
             'website-MIN_NUM_FORMS': 0,
             'website-MAX_NUM_FORMS': 5,
-        }
 
-        self.material_form_valid_data = {}
-        self.material_form_valid_data.update(self.video_form_valid_data)
-        self.material_form_valid_data.update({
-            'document-material_type': 'assignment',
             'file-TOTAL_FORMS': 0,
             'file-INITIAL_FORMS': 0,
             'file-MIN_NUM_FORMS': 0,
             'file-MAX_NUM_FORMS': 5,
+        }
+
+        self.material_form_valid_data = {}
+        self.material_form_valid_data.update(self.video_form_valid_data)
+        material, created = CourseMaterialType.objects.get_or_create(
+            name="assignment")
+        self.material_form_valid_data.update({
+            'document-material_type': material.pk,
+            'file-TOTAL_FORMS': 0,
+            'file-INITIAL_FORMS': 0,
+            'file-MIN_NUM_FORMS': 0,
+            'file-MAX_NUM_FORMS': 5
         })
 
         self.video_form_valid_data.update({
@@ -180,8 +187,11 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertEqual(video.websites.count(), 1)
 
         names = video.authors.values_list('name', flat=True)
-        self.assertTrue('Martin' in names)
-        self.assertTrue('Donald Duck' in names)
+        self.assertIn('Martin', names)
+        self.assertIn('Donald Duck', names)
+
+        # test the __str__ method
+        self.assertIn(str(video.authors.all()[0]), ['Martin', 'Donald Duck'])
 
     def test_user_is_author_feature(self):
         """
@@ -255,15 +265,15 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         """
         additional_data = {
             'file-0-label': 'test file',
+            'file-0-item':
+                "http://testserver%stest/test.csv" % settings.STATIC_URL,
             'file-0-affirmation': 'on',
             'file-TOTAL_FORMS': '1',
         }
-        filepath = os.path.join(os.path.dirname(__file__), 'media/test.txt')
+        # filepath = os.path.join(os.path.dirname(__file__), 'media/test.txt')
 
         self.client.login(**self.user_cred)
-        with open(filepath) as upload:
-            additional_data['file-0-item'] = upload
-            response = self._post_material(additional_data)
+        response = self._post_material(additional_data)
 
         # Material was created
         self.assertEqual(response.status_code, 200)
@@ -275,10 +285,8 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
 
         f = material.files.all()[0]
         self.assertEqual('test file', f.label)
-        if hasattr(settings, 'USE_S3') and settings.USE_S3:
-            self.assertRegexpMatches(f.item.url, '.*s3.amazonaws.com.*')
-        else:
-            self.assertIsNotNone(f.item.url)
+        self.assertRegexpMatches(f.item, '.*test.csv')
+        self.assertEqual(f.get_filename(), 'test.csv')
 
     def test_required_metadata(self):
         """
@@ -321,29 +329,29 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
                 SustainabilityTopic.objects.get(name='Science').pk,
             ],
             'file-0-label': 'test file',
+            'file-0-item':
+                "http://testserver%stest/test.csv" % settings.STATIC_URL,
             'file-0-affirmation': 'on',
             'file-TOTAL_FORMS': '1',
         }
-        filepath = os.path.join(os.path.dirname(__file__), 'media/test.txt')
 
         self.client.login(**self.user_cred)
-        with open(filepath) as upload:
-            additional_data['file-0-item'] = upload
-            response = self._post_material(additional_data)
-            self.assertEqual(
-                response.context['document_form']._errors['topics'],
-                [u'The following topics are required: Curriculum'])
+
+        response = self._post_material(additional_data)
+        self.assertEqual(
+            response.context['document_form']._errors['topics'],
+            [u'The following topics are required: Curriculum'])
 
         additional_data.update({
             'document-topics': [
                 SustainabilityTopic.objects.get(name="Curriculum").pk,
             ]
         })
-        with open(filepath) as upload:
-            additional_data['file-0-item'] = upload
-            response = self._post_material(additional_data)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(Material.objects.count(), 1)
+        # with open(filepath) as upload:
+        #     additional_data['file-0-item'] = upload
+        response = self._post_material(additional_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Material.objects.count(), 1)
 
     def test_exclude_form_fields(self):
         """
@@ -356,11 +364,11 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             name="document-date_created"
             type="text">
         '''
-        
+
         # case studies exclude date_created
         response = self.client.get(self.casestudy_form_url)
         self.assertNotContains(response, html, html=True)
-        
+
         # materials do not
         response = self.client.get(self.material_form_url)
         self.assertContains(response, html, html=True)

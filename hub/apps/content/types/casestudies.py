@@ -6,27 +6,36 @@ from ..help import AFFIRMATION
 
 
 class CaseStudy(ContentType):
-    background = models.TextField('Background',
+    background = models.TextField(
+        'Background',
         help_text='''Describe the circumstances that led to start-up of this
         project.''')
-    goals = models.TextField('Project Goals',
+    goals = models.TextField(
+        'Project Goals',
         help_text='Describe the goals of this project.')
-    implementation = models.TextField('Project Implementation',
+    implementation = models.TextField(
+        'Project Implementation',
         help_text='''Describe how the project was implemented, including who
         was involved.''')
-    timeline = models.TextField('Project Timeline',
+    timeline = models.TextField(
+        'Project Timeline',
         help_text='''Describe how long this project took from start to finish
-        and provide a list of key project milestones in chronological order.''')
-    financing = models.TextField('Financing',
+        and provide a list of key project milestones in chronological
+        order.''')
+    financing = models.TextField(
+        'Financing',
         help_text='''Describe the costs (both upfront and recurring) for each
         component of the project and explain how the project was financed.''')
-    results = models.TextField('Project Results (or results to date)',
+    results = models.TextField(
+        'Project Results (or results to date)',
         help_text='''Describe the outcomes that resulted
         from the project implementation.''')
-    lessons_learned = models.TextField('Lessons learned',
+    lessons_learned = models.TextField(
+        'Lessons learned',
         help_text='''Describe what you learned though this project that would
         be helpful to others wishing to undertake a similar project.''')
-    consider_for_award = models.BooleanField('Student Leadership Award',
+    consider_for_award = models.BooleanField(
+        'Student Leadership Award',
         help_text='''Would you like this case study to be considered for an
         AASHE Student Leadership Award? The first author must be a student.''')
 
@@ -62,7 +71,7 @@ class CaseStudy(ContentType):
             CaseStudy, cls).required_field_overrides()
         required_list.append('description')
         return required_list
-        
+
     @classmethod
     def exclude_form_fields(cls):
         """

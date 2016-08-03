@@ -20,18 +20,22 @@ class AcademicProgram(ContentType):
 
     program_type = models.ForeignKey(
         ProgramType, null=True, verbose_name='Program Type')
-    outcomes = models.TextField('Learning Outcomes', blank=True, null=True,
+    outcomes = models.TextField(
+        'Learning Outcomes', blank=True, null=True,
         help_text="Consider completing if different from description.")
-    completion = models.CharField('Expected completion time', max_length=128,
+    completion = models.CharField(
+        'Expected completion time', max_length=128,
         blank=True, null=True, help_text='(e.g., "2.5 years" or "12 months")')
     num_students = models.PositiveIntegerField(
         'Approximate number of students completing program annually',
         blank=True, null=True, help_text="""Enter student headcounts instead of
         FTE. We recommend referring to Integrated Postsecondary Education Data
         System (IPEDS) data and including an average over five years.""")
-    distance = models.CharField('Distance Education', max_length=20,
+    distance = models.CharField(
+        'Distance Education', max_length=20,
         choices=DISTANCE_CHOICES, blank=True, null=True)
-    commitment = models.CharField('Commitment', max_length=20,
+    commitment = models.CharField(
+        'Commitment', max_length=20,
         choices=COMMITMENT_CHOICES, blank=True, null=True)
 
     objects = ContentTypeManager()
@@ -44,7 +48,7 @@ class AcademicProgram(ContentType):
     def label_overrides(cls):
         return {
             'title': 'Program Name',
-            'description': 'Description or Abstract',
+            'description': 'Description',
             'author': 'Presenter',
             'authors': 'Presenters',
             'date_created': 'Year Founded',

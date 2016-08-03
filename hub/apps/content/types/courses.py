@@ -1,32 +1,30 @@
 from django.db import models
 from model_utils import Choices
 
-from ...metadata.models import SustainabilityTopic
+from ...metadata.models import SustainabilityTopic, CourseMaterialType
 from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 from ..help import AFFIRMATION, FILE_UPLOAD
 
 
 class Material(ContentType):
-    MATERIAL_TYPE_CHOICES = Choices(
-        ('assignment', 'Assignment or Exercise'),
-        ('syllabus', 'Syllabus'),
-        ('course', 'Course Presentation'),
-    )
     LEVEL_CHOICES = Choices(
         ('introductory', 'Introductory'),
         ('intermediate', 'Intermediate'),
         ('advanced', 'Advanced'),
     )
 
-    material_type = models.CharField('Type of Material', max_length=50,
-        help_text='Select the best option.',
-        choices=MATERIAL_TYPE_CHOICES)
-    course_name = models.CharField('Course Name', max_length=500, blank=True, null=True)
-    course_level = models.CharField('Course Level', max_length=50, blank=True, null=True,
-        choices=LEVEL_CHOICES, help_text='''100-level courses (or equivalents)
-        may be designated as introductory, 200- or 300-level as intermediate,
-        and 400-level or graduate courses as advanced.''')
+    material_type = models.ForeignKey(
+        CourseMaterialType, null=True, verbose_name='Type of Material',
+        help_text='Select the best option.',)
+    course_name = models.CharField(
+        'Course Name', max_length=500, blank=True, null=True)
+    course_level = models.CharField(
+        'Course Level', max_length=50, blank=True, null=True,
+        choices=LEVEL_CHOICES,
+        help_text='''100-level courses (or equivalents) may be designated as
+        introductory, 200- or 300-level as intermediate, and 400-level or
+        graduate courses as advanced.''')
 
     objects = ContentTypeManager()
 
