@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     's3direct',
     'bootstrap_pagination',
     'linkcheck',
+    'django_admin_blocks',
 
     'hub',
     'hub.apps.access',

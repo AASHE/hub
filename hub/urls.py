@@ -11,7 +11,9 @@ from aashe.aasheauth.views import login, logout
 from ratelimit.decorators import ratelimit
 from tagulous.views import autocomplete
 import linkcheck
+import django_admin_blocks
 
+django_admin_blocks.autodiscover()
 
 urlpatterns = [
 
