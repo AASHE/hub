@@ -1,6 +1,7 @@
 {% extends "admin/base.html" %}
 
 {% load static from staticfiles %}
+{% load admin_blocks_tags %}
 
 {% block title %}{{ title }} | AASHE Hub Administration{% endblock %}
 
@@ -23,4 +24,13 @@
     updateTagSubmitDropdowns();
   });
   </script>
+{% endblock %}
+
+{% script_block %}
+
+{% block messages %}
+    {{ block.super }}
+    {% if not 'login' in request.path %}
+        {% error_blocks %}
+    {% endif %}
 {% endblock %}

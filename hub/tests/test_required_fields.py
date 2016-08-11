@@ -114,8 +114,9 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             'image-MAX_NUM_FORMS': 5,
         }
 
-        SustainabilityTopic.objects.create(name="Curriculum")
-        SustainabilityTopic.objects.create(name="Research")
+        SustainabilityTopic.objects.create(
+            name="Curriculum", slug='curriculum')
+        SustainabilityTopic.objects.create(name="Research", slug='research')
 
         return super(RequiredFieldsTestCase, self).setUp()
 

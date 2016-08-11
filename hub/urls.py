@@ -10,7 +10,10 @@ from aashe.aasheauth.views import login, logout
 
 from ratelimit.decorators import ratelimit
 from tagulous.views import autocomplete
+import linkcheck
+import django_admin_blocks
 
+django_admin_blocks.autodiscover()
 
 urlpatterns = [
 
@@ -32,13 +35,16 @@ urlpatterns = [
         name='login'),
     url(r'^logout/$', logout, name='logout'),
     url(r'^_ad/', include(admin.site.urls)),
-
+    # Link checking url pattern
+    url(r'^_ad/linkcheck/', include('linkcheck.urls')),
     url(r'^s3direct/', include('s3direct.urls')),
 
     # Let's Encrypt (django-acme-challenge)
     url(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
 
     url(r'^', include('django.contrib.flatpages.urls')),
+
+
 ]
 
 

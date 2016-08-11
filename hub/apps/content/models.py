@@ -307,6 +307,9 @@ class Website(TimeStampedModel):
     def __str__(self):
         return self.label or 'Website object'
 
+    def get_absolute_url(self):
+        return self.ct.get_admin_url()
+
 
 @python_2_unicode_compatible
 class File(TimeStampedModel):
@@ -356,6 +359,9 @@ class Image(TimeStampedModel):
 
     def __str__(self):
         return self.caption or 'Image object'
+
+    def get_absolute_url(self):
+        return self.ct.get_admin_url()
 
 # =============================================================================
 # Mapping of all available content types.

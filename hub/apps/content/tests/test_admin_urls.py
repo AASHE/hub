@@ -55,7 +55,8 @@ class AdminURLTestCase(TestCase):
         )
         self.org = Organization.objects.create(
             account_num=1, org_name='Hipster U', exclude_from_website=0)
-        self.topic = SustainabilityTopic.objects.create(name='Science')
+        self.topic = SustainabilityTopic.objects.create(
+            name='Science', slug='science')
         self.office = InstitutionalOffice.objects.create(name='Lirum')
 
         self.generic_properties = {
@@ -142,21 +143,21 @@ class AdminURLTestCase(TestCase):
 
         # confirm that no emails are sent when changing status from anything
         # other than 'new'
-        
+
         # declined > published
         queryset = Video.objects.filter(pk=1)
         self.assertEqual(queryset[0].status, 'declined')
         content_admin.publish(request, queryset)
-        
+
         queryset = Video.objects.filter(pk=1)
         self.assertEqual(queryset[0].status, 'published')
-        self.assertEqual(2, len(mail.outbox)) # no additional emails
-        
+        self.assertEqual(2, len(mail.outbox))  # no additional emails
+
         # published > declined
         queryset = Video.objects.filter(pk=1)
         self.assertEqual(queryset[0].status, 'published')
         content_admin.decline(request, queryset)
-        
+
         queryset = Video.objects.filter(pk=1)
         self.assertEqual(queryset[0].status, 'declined')
-        self.assertEqual(2, len(mail.outbox)) # no additional emails
+        self.assertEqual(2, len(mail.outbox))  # no additional emails

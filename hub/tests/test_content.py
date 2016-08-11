@@ -39,7 +39,7 @@ class AdminTestCase(WebTest):
                                         org_name='Hipster University',
                                         exclude_from_website=0))
         self.resource.topics.add(
-            SustainabilityTopic.objects.create(name='Science'))
+            SustainabilityTopic.objects.create(name='Science', slug='science'))
         self.resource.institutions.add(
             InstitutionalOffice.objects.create(name='Lirum'))
         self.resource.save()
