@@ -30,5 +30,7 @@
 
 {% block messages %}
     {{ block.super }}
-    {% error_blocks %}
+    {% if not 'login' in request.path %}
+        {% error_blocks %}
+    {% endif %}
 {% endblock %}
