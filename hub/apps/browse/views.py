@@ -19,6 +19,8 @@ from tagulous.views import autocomplete
 import feedparser
 from django.utils.text import slugify
 
+from django.db.models import Count
+
 logger = getLogger(__name__)
 
 
@@ -130,7 +132,7 @@ class BrowseView(RatelimitMixin, ListView):
 
     def get_filterset_data(self):
         """
-        Wether we're in a content type or topic view, we want to have the list
+        Whether we're in a content type or topic view, we want to have the list
         of content types already filtered by these.
         """
         data = self.request.GET.copy()
@@ -263,6 +265,38 @@ class BrowseView(RatelimitMixin, ListView):
             except Exception as e:  # Any error is bad here, catch all.
                 logger.error('Feed parse failed; {}'.format(feed_address))
                 logger.exception(e)
+
+        # Additional Summary content for content type views
+        if self.content_type_class:
+            new_resources = ContentType.objects.published().filter(
+                content_type=self.content_type_class.slug).order_by('-published')
+            resource_count = len(new_resources)
+            orgs = []
+            countries = []
+            states = []
+            provinces = []
+            # Must parse each resource's list of organizations individually to capture each org and its country/state
+            for resource in new_resources:
+                for org in resource.organizations.all():
+                    orgs.append(org)
+                    countries.append(org.country)
+                    if org.country_iso == 'US':
+                        states.append(org.state)
+                    if org.country_iso == 'CA':
+                        provinces.append(org.state)
+            # Turn into sets of unique values to get counts for context variables
+            unique_orgs = set(orgs)
+            unique_countries = set(countries)
+            unique_states = set(states)
+            unique_provinces = set(provinces)
+            ctx.update({
+                'new_resources_list': new_resources,
+                'total_resources': resource_count,
+                'campuses_represented': len(unique_orgs),
+                'countries_represented': len(unique_countries),
+                'us_states_represented': len(unique_states),
+                'ca_provinces_represented': len(unique_provinces),
+            })
         return ctx
 
 
