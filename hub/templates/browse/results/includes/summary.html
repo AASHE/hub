@@ -54,18 +54,12 @@
                         </li>
                     </ul>
                 </div>
+                {% include 'browse/results/includes/bar_charts.html' %}
+                <div id="by_topic" class="tab-pane fade {% if not request.GET %}active in{% endif %}"></div>
 
-                <div id="by_topic" class="panel-body tab-pane fade {% if not request.GET %}active in{% endif %}">
-                    summary by topic
-                </div>
+                <div id="by_discipline" class="tab-pane fade {% if request.GET %}active in{% endif %}"></div>
 
-                <div id="by_discipline" class="panel-body tab-pane fade {% if request.GET %}active in{% endif %}">
-                    summary by discipline
-                </div>
-
-                <div id="map" class="panel-body tab-pane fade {% if request.GET %}active in{% endif %}">
-                    map
-                </div>
+                <div id="map" class="tab-pane fade {% if request.GET %}active in{% endif %}"></div>
 
             </div>
 

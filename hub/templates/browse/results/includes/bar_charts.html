@@ -1,0 +1,64 @@
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("visualization", "1", {packages: ['corechart', 'bar']});
+    google.setOnLoadCallback(drawTopicsChart);
+    function drawTopicsChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topic');
+        data.addColumn('number', 'Count');
+
+        data.addRows([
+            {% for row in topic_counts %}
+                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]);
+        data.sort([{column: 1, desc: true}]);
+
+        var options = {
+            hAxis: {
+              minValue: 0
+            },
+            legend: {
+                position: 'none'
+            },
+            chartArea: {
+                left: 150,
+                width: 558
+            }
+        };
+        var chart = new google.visualization.BarChart(document.getElementById('by_topic'));
+        chart.draw(data, options);
+    }
+</script>
+
+<script type="text/javascript">
+    google.load("visualization", "1", {packages: ['corechart', 'bar']});
+    google.setOnLoadCallback(drawDisciplinesChart);
+    function drawDisciplinesChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Discipline');
+        data.addColumn('number', 'Count');
+
+        data.addRows([
+            {% for row in discipline_counts %}
+                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]);
+        data.sort([{column: 1, desc: true}]);
+
+        var options = {
+            hAxis: {
+              minValue: 0
+            },
+            legend: {
+                position: 'none'
+            },
+            chartArea: {
+                left: 150,
+                width: 558
+            }
+        };
+        var chart = new google.visualization.BarChart(document.getElementById('by_discipline'));
+        chart.draw(data, options);
+    }
+</script>

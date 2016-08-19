@@ -275,8 +275,14 @@ class BrowseView(RatelimitMixin, ListView):
             countries = []
             states = []
             provinces = []
+            topics = []
+            disciplines = []
             # Must parse each resource's list of organizations individually to capture each org and its country/state
             for resource in new_resources:
+                for topic in resource.topics.all():
+                    topics.append(topic)
+                for discipline in resource.disciplines.all():
+                    disciplines.append(discipline)
                 for org in resource.organizations.all():
                     orgs.append(org)
                     countries.append(org.country)
@@ -286,9 +292,31 @@ class BrowseView(RatelimitMixin, ListView):
                         provinces.append(org.state)
             # Turn into sets of unique values to get counts for context variables
             unique_orgs = set(orgs)
-            unique_countries = set(countries)
-            unique_states = set(states)
-            unique_provinces = set(provinces)
+            unique_countries = sorted(set(countries))
+            unique_states = sorted(set(states))
+            unique_provinces = sorted(set(provinces))
+            unique_topics = sorted(set(topics))
+            unique_disciplines = sorted(set(disciplines))
+
+            # Process topics to get counts for each for bar chart
+            topic_counts = []
+            for topic in unique_topics:
+                count = topics.count(topic)
+                topic_counts.append({
+                    'name': topic.name,
+                    'count': count,
+                })
+
+            # Process disciplines to get counts for each for bar chart
+            discipline_counts = []
+            for discipline in unique_disciplines:
+                count = disciplines.count(discipline)
+                discipline_counts.append({
+                    'name': discipline.name,
+                    'count': count,
+                })
+
+
             ctx.update({
                 'new_resources_list': new_resources,
                 'total_resources': resource_count,
@@ -296,6 +324,9 @@ class BrowseView(RatelimitMixin, ListView):
                 'countries_represented': len(unique_countries),
                 'us_states_represented': len(unique_states),
                 'ca_provinces_represented': len(unique_provinces),
+                'unique_topics_represented': len(unique_topics),
+                'topic_counts': topic_counts,
+                'discipline_counts': discipline_counts,
             })
         return ctx
 
