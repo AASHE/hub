@@ -3,6 +3,8 @@
 {% load typogrify_tags %}
 {% load block_content %}
 
+{% include 'browse/results/includes/bar_charts.html' %}
+
 <div class="container profile">
     <div class="row">
         <div class="col-md-8 profile-body">
@@ -54,13 +56,13 @@
                         </li>
                     </ul>
                 </div>
-                {% include 'browse/results/includes/bar_charts.html' %}
-                <div id="by_topic" class="tab-pane fade {% if not request.GET %}active in{% endif %}"></div>
+                <div class="tab-content">
+                    <div id="by_topic" class="tab-pane fade active in"></div>
 
-                <div id="by_discipline" class="tab-pane fade {% if request.GET %}active in{% endif %}"></div>
+                    <div id="by_discipline" class="tab-pane fade"></div>
 
-                <div id="map" class="tab-pane fade {% if request.GET %}active in{% endif %}"></div>
-
+                    <div id="map" class="tab-pane fade"></div>
+                </div>
             </div>
 
         </div>
