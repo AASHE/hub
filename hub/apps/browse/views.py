@@ -339,6 +339,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
                 'map_orgs': mark_safe(map_orgs),
+                'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
             })
         return ctx
 
