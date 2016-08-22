@@ -25,19 +25,14 @@
                     <h2 class="panel-title heading-sm pull-left">At a Glance</h2>
                 </div>
                 <div class="panel-body">
-                    <div class="col-md-4">
-                        Total Resources:<br>
-                        Campuses Represented:<br>
-                        Countries Represented:<br>
-                        U.S. States Represented:<br>
-                        {% if ca_provinces_represented %}Canadian Provinces Represented:{% endif %}
-                    </div>
-                    <div class="col-md-8">
-                        <strong>{{ total_resources }}</strong><br>
-                        <strong>{{ campuses_represented }}</strong><br>
-                        <strong>{{ countries_represented }}</strong><br>
-                        <strong>{{ us_states_represented }}</strong><br>
-                        {% if ca_provinces_represented %}<strong>{{ ca_provinces_represented }}</strong>{% endif %}
+                    <div class="col-md-12">
+                        Total Resources: <strong>{{ total_resources }}</strong><br>
+                        Campuses Represented: <strong>{{ campuses_represented }}</strong><br>
+                        Countries Represented: <strong>{{ countries_represented }}</strong><br>
+                        U.S. States Represented: <strong>{{ us_states_represented }}</strong><br>
+                        {% if ca_provinces_represented %}
+                            Canadian Provinces Represented: <strong>{{ ca_provinces_represented }}</strong>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -46,10 +41,7 @@
                 <div class="panel-heading overflow-h">
                     <ul class="nav nav-tabs">
                         <li class="{% if not request.GET %}active{% endif %}">
-                            <a data-toggle="tab" href="#by_topic" onclick="hideMap()" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary by Topic</a>
-                        </li>
-                        <li class="{% if request.GET %}active{% endif %}">
-                            <a data-toggle="tab" href="#by_discipline" onclick="hideMap()" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Summary by Discipline</a>
+                            <a data-toggle="tab" href="#charts" onclick="hideMap();" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary Charts</a>
                         </li>
                         <li class="{% if request.GET %}active{% endif %}">
                             <a data-toggle="tab" href="#map" onclick="displayMap()" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Summary Map</a>
@@ -57,14 +49,14 @@
                     </ul>
                 </div>
                 <div class="tab-content">
-                    <div id="by_topic" class="tab-pane fade active in"></div>
-
-                    <div id="by_discipline" class="tab-pane fade"></div>
+                    <div id="charts" class="tab-pane fade active in">
+                        <div id="by_topic"></div>
+                        <div id="by_discipline"></div>
+                    </div>
 
                     <div id="map" class="tab-pane fade"></div>
                 </div>
             </div>
-
         </div>
 
         <div class="col-md-4">
