@@ -20,6 +20,7 @@ import feedparser
 from django.utils.text import slugify
 
 from django.db.models import Count
+from django.utils.safestring import mark_safe
 
 logger = getLogger(__name__)
 
@@ -316,6 +317,16 @@ class BrowseView(RatelimitMixin, ListView):
                     'count': count,
                 })
 
+            # Process unique orgs for map
+            map_orgs = []
+            i = 1
+            for org in unique_orgs:
+                if org.latitude and org.longitude:
+                    map_orgs.append(
+                        [org.org_name.encode("utf-8"), float(org.latitude), float(org.longitude), i]
+                    )
+                    i += 1
+
 
             ctx.update({
                 'new_resources_list': new_resources,
@@ -327,6 +338,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'unique_topics_represented': len(unique_topics),
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
+                'map_orgs': mark_safe(map_orgs),
             })
         return ctx
 
