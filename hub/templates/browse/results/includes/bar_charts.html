@@ -15,11 +15,17 @@
             {% endfor %}
         ]);
         data.sort([{column: 1, desc: true}]);
+        var max_value = data.getColumnRange(1).max;
 
         var options = {
             width: "100%",
             hAxis: {
-              minValue: 0
+                viewWindowMode: 'explicit',
+                viewWindow: {
+                    min: 0,
+                    max: max_value
+                },
+                ticks: [0, max_value]
             },
             legend: {
                 position: 'none'
@@ -44,11 +50,17 @@
             {% endfor %}
         ]);
         data.sort([{column: 1, desc: true}]);
+        var max_value = data.getColumnRange(1).max;
 
         var options = {
             width: "100%",
             hAxis: {
-              minValue: 0
+                viewWindowMode: 'explicit',
+                viewWindow: {
+                    min: 0,
+                    max: max_value
+                },
+                ticks: [0, max_value]
             },
             legend: {
                 position: 'none'
