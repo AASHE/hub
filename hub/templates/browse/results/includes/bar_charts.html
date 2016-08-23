@@ -20,7 +20,7 @@
         var chartHeight = data.getNumberOfRows() * 25 + 80;
 
         var tick_count;
-        if (max_value <= 4) {
+        if (max_value <= 10) {
             tick_count = max_value + 1;
         }
         else {
@@ -44,7 +44,8 @@
                 position: 'none'
             },
             chartArea: {
-                left: '20%'
+                left: '20%',
+                right: '5%'
             },
             series: {
                 0:{color: '#6BBC49'}
@@ -71,11 +72,11 @@
         var chartHeight = data.getNumberOfRows() * 25 + 80;
 
         var tick_count;
-        if (max_value <= 4) {
+        if (max_value <= 10) {
             tick_count = max_value + 1;
         }
         else {
-            tick_count = 7
+            tick_count = 6
         }
 
         var options = {
@@ -95,7 +96,8 @@
                 position: 'none'
             },
             chartArea: {
-                left: '20%'
+                left: '20%',
+                right: '5%'
             },
             series: {
                 0:{color: '#6BBC49'}
