@@ -17,21 +17,37 @@
         data.sort([{column: 1, desc: true}]);
         var max_value = data.getColumnRange(1).max;
 
+        var chartHeight = data.getNumberOfRows() * 25 + 80;
+
+        var tick_count;
+        if (max_value <= 4) {
+            tick_count = max_value + 1;
+        }
+        else {
+            tick_count = 6
+        }
+
         var options = {
-            width: "100%",
+            title: "Summary by Topic",
+            height: chartHeight,
             hAxis: {
-                viewWindowMode: 'explicit',
                 viewWindow: {
                     min: 0,
                     max: max_value
                 },
-                ticks: [0, max_value]
+                format: '0',
+                gridlines: {
+                    count: tick_count
+                }
             },
             legend: {
                 position: 'none'
             },
             chartArea: {
-                left: '20%'
+                left: '25%'
+            },
+            series: {
+                0:{color: '#6BBC49'}
             }
         };
         var chart = new google.visualization.BarChart(document.getElementById('by_topic'));
@@ -52,21 +68,37 @@
         data.sort([{column: 1, desc: true}]);
         var max_value = data.getColumnRange(1).max;
 
+        var chartHeight = data.getNumberOfRows() * 25 + 80;
+
+        var tick_count;
+        if (max_value <= 4) {
+            tick_count = max_value + 1;
+        }
+        else {
+            tick_count = 6
+        }
+
         var options = {
-            width: "100%",
+            title: "Summary by Discipline",
+            height: chartHeight,
             hAxis: {
-                viewWindowMode: 'explicit',
                 viewWindow: {
                     min: 0,
                     max: max_value
                 },
-                ticks: [0, max_value]
+                format: '0',
+                gridlines: {
+                    count: tick_count
+                }
             },
             legend: {
                 position: 'none'
             },
             chartArea: {
-                left: '20%'
+                left: '25%'
+            },
+            series: {
+                0:{color: '#6BBC49'}
             }
         };
         var chart = new google.visualization.BarChart(document.getElementById('by_discipline'));
