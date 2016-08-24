@@ -266,25 +266,32 @@ class BrowseView(RatelimitMixin, ListView):
         if self.content_type_class:
             # Query all resources in this content type
             # and sort by date of publication
-            new_resources = ContentType.objects.published().filter(
-                content_type=self.content_type_class.slug).order_by('-published')
+            new_resources = ContentType.objects.published()\
+                .filter(content_type=self.content_type_class.slug)\
+                .order_by('-published')
 
             # Count unique organizations in this data set
-            orgs = new_resources.values('organizations__account_num').distinct()
+            orgs = new_resources\
+                .values('organizations__account_num')\
+                .distinct()
 
             # Count unique countries appearing within these organizations
-            country_counts = new_resources.values('organizations__country')\
-                .annotate(count=Count('organizations__account_num')).order_by()
+            country_counts = new_resources\
+                .values('organizations__country')\
+                .annotate(count=Count('organizations__account_num'))\
+                .order_by()
 
             # Count unique states appearing within these organizations that
             # have country=USA
-            state_counts = new_resources.filter(organizations__country_iso='US')\
+            state_counts = new_resources\
+                .filter(organizations__country_iso='US')\
                 .values('organizations__state')\
                 .annotate(count=Count('organizations__account_num')).order_by()
 
             # Count unique states appearing within these organizations
             # that have country=Canada
-            province_counts = new_resources.filter(organizations__country_iso='CA')\
+            province_counts = new_resources\
+                .filter(organizations__country_iso='CA')\
                 .values('organizations__state')\
                 .annotate(count=Count('organizations__account_num')).order_by()
 
@@ -298,6 +305,16 @@ class BrowseView(RatelimitMixin, ListView):
             discipline_counts = new_resources.values('disciplines__name')\
                 .annotate(count=Count('id')).order_by('-count')
 
+            # Get data for the map
+            map_data = [
+                (t[0].encode("utf8"), t[1].encode("utf8"),
+                 t[2].encode("utf8")) for t in
+                new_resources.values_list('organizations__org_name',
+                                          'organizations__latitude',
+                                          'organizations__longitude',
+                                          ).distinct()
+                        ]
+
             # Add all of this to the context data
             ctx.update({
                 'new_resources_list': new_resources,
@@ -307,6 +324,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'province_counts': province_counts,
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
+                'map_data': mark_safe(map_data),
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
             })
         return ctx
