@@ -21,7 +21,7 @@ from django.utils.text import slugify
 
 from django.db.models import Count
 from django.utils.safestring import mark_safe
-from iss.models import Organization
+from django.db.models import Q
 
 logger = getLogger(__name__)
 
@@ -308,10 +308,13 @@ class BrowseView(RatelimitMixin, ListView):
             # Get data for the map
             map_data = [
                 [t[0].encode("utf8"), float(t[1]), float(t[2])] for t in
-                new_resources.values_list('organizations__org_name',
+                new_resources.exclude(Q(organizations__org_name=None))
+                             .exclude(Q(organizations__latitude=''))
+                             .values_list('organizations__org_name',
                                           'organizations__latitude',
                                           'organizations__longitude',
-                                          ).distinct()
+                                          )
+                             .distinct()
                         ]
 
             # Add all of this to the context data
