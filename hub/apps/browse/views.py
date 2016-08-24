@@ -307,7 +307,7 @@ class BrowseView(RatelimitMixin, ListView):
 
             # Get data for the map
             map_data = [
-                (t[0].encode("utf8"), float(t[1]), float(t[2])) for t in
+                [t[0].encode("utf8"), float(t[1]), float(t[2])] for t in
                 new_resources.values_list('organizations__org_name',
                                           'organizations__latitude',
                                           'organizations__longitude',
