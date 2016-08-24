@@ -15,7 +15,8 @@
 
 {% block resource_list_body %}
     <div id="summary" class="tab-pane fade {% if not request.GET %}active in{% endif %}">
-      {% cache CACHE_TTL_LONG summary_tab topic.slug user.is_authenticated user.aasheuser.is_member %}
+        {{ test_country_count }}
+      {% cache CACHE_TTL_LONG summary_tab content_type.content_type_label user.is_authenticated user.aasheuser.is_member %}
         <!-- begin cache {% now "c" %} -->
         {% include "browse/results/includes/summary.html" %}
         <!-- end cache -->

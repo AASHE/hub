@@ -11,7 +11,7 @@
 
         data.addRows([
             {% for row in topic_counts %}
-                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                ['{{ row.topics__name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
             {% endfor %}
         ]);
         data.sort([{column: 1, desc: true}]);
@@ -63,7 +63,7 @@
 
         data.addRows([
             {% for row in discipline_counts %}
-                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                ['{{ row.disciplines__name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
             {% endfor %}
         ]);
         data.sort([{column: 1, desc: true}]);

@@ -21,17 +21,18 @@
             </div>
 
             <div class="panel">
+                {{ orgs.values }}
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left">At a Glance</h2>
                 </div>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        Total Resources: <strong>{{ total_resources }}</strong><br>
-                        Campuses Represented: <strong>{{ campuses_represented }}</strong><br>
-                        Countries Represented: <strong>{{ countries_represented }}</strong><br>
-                        U.S. States Represented: <strong>{{ us_states_represented }}</strong><br>
+                        Total Resources: <strong>{{ new_resources_list|length }}</strong><br>
+                        Campuses Represented: <strong>{{ orgs|length }}</strong><br>
+                        Countries Represented: <strong>{{ country_counts|length }}</strong><br>
+                        U.S. States Represented: <strong>{{ state_counts|length }}</strong><br>
                         {% if ca_provinces_represented %}
-                            Canadian Provinces Represented: <strong>{{ ca_provinces_represented }}</strong>
+                            Canadian Provinces Represented: <strong>{{ province_counts|length }}</strong>
                         {% endif %}
                     </div>
                 </div>

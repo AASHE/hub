@@ -21,6 +21,7 @@ from django.utils.text import slugify
 
 from django.db.models import Count
 from django.utils.safestring import mark_safe
+from iss.models import Organization
 
 logger = getLogger(__name__)
 
@@ -212,12 +213,6 @@ class BrowseView(RatelimitMixin, ListView):
         return key
 
     def get_context_data(self, **kwargs):
-        """
-        The context can be cached based on three keys:
-            - url
-            - anon/auth/member user status
-            - get params
-        """
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         topic_name = self.sustainabilty_topic.__str__()
         ctx.update({
@@ -269,76 +264,49 @@ class BrowseView(RatelimitMixin, ListView):
 
         # Additional Summary content for content type views
         if self.content_type_class:
+            # Query all resources in this content type
+            # and sort by date of publication
             new_resources = ContentType.objects.published().filter(
                 content_type=self.content_type_class.slug).order_by('-published')
-            resource_count = len(new_resources)
-            orgs = []
-            countries = []
-            states = []
-            provinces = []
-            topics = []
-            disciplines = []
-            # Must parse each resource's list of organizations individually to capture each org and its country/state
-            for resource in new_resources:
-                for topic in resource.topics.all():
-                    topics.append(topic)
-                for discipline in resource.disciplines.all():
-                    disciplines.append(discipline)
-                for org in resource.organizations.all():
-                    orgs.append(org)
-                    countries.append(org.country)
-                    if org.country_iso == 'US':
-                        states.append(org.state)
-                    if org.country_iso == 'CA':
-                        provinces.append(org.state)
-            # Turn into sets of unique values to get counts for context variables
-            unique_orgs = set(orgs)
-            unique_countries = sorted(set(countries))
-            unique_states = sorted(set(states))
-            unique_provinces = sorted(set(provinces))
-            unique_topics = sorted(set(topics))
-            unique_disciplines = sorted(set(disciplines))
 
-            # Process topics to get counts for each for bar chart
-            topic_counts = []
-            for topic in unique_topics:
-                count = topics.count(topic)
-                topic_counts.append({
-                    'name': topic.name,
-                    'count': count,
-                })
+            # Count unique organizations in this data set
+            orgs = new_resources.values('organizations__account_num').distinct()
 
-            # Process disciplines to get counts for each for bar chart
-            discipline_counts = []
-            for discipline in unique_disciplines:
-                count = disciplines.count(discipline)
-                discipline_counts.append({
-                    'name': discipline.name,
-                    'count': count,
-                })
+            # Count unique countries appearing within these organizations
+            country_counts = new_resources.values('organizations__country')\
+                .annotate(count=Count('organizations__account_num')).order_by()
 
-            # Process unique orgs for map
-            map_orgs = []
-            i = 1
-            for org in unique_orgs:
-                if org.latitude and org.longitude:
-                    map_orgs.append(
-                        [org.org_name.encode("utf-8"), float(org.latitude), float(org.longitude), i]
-                    )
-                    i += 1
+            # Count unique states appearing within these organizations that
+            # have country=USA
+            state_counts = new_resources.filter(organizations__country_iso='US')\
+                .values('organizations__state')\
+                .annotate(count=Count('organizations__account_num')).order_by()
 
+            # Count unique states appearing within these organizations
+            # that have country=Canada
+            province_counts = new_resources.filter(organizations__country_iso='CA')\
+                .values('organizations__state')\
+                .annotate(count=Count('organizations__account_num')).order_by()
 
+            # Count unique topics associated with these pieces of content
+            # output a dict of pairs of names and counts
+            topic_counts = new_resources.values('topics__name')\
+                .annotate(count=Count('id')).order_by('-count')
+
+            # Count unique academic disciplines associated with these pieces
+            # of content and output a dict of pairs of names and counts
+            discipline_counts = new_resources.values('disciplines__name')\
+                .annotate(count=Count('id')).order_by('-count')
+
+            # Add all of this to the context data
             ctx.update({
                 'new_resources_list': new_resources,
-                'total_resources': resource_count,
-                'campuses_represented': len(unique_orgs),
-                'countries_represented': len(unique_countries),
-                'us_states_represented': len(unique_states),
-                'ca_provinces_represented': len(unique_provinces),
-                'unique_topics_represented': len(unique_topics),
+                'orgs': orgs,
+                'country_counts': country_counts,
+                'state_counts': state_counts,
+                'province_counts': province_counts,
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
-                'map_orgs': mark_safe(map_orgs),
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
             })
         return ctx
