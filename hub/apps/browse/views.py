@@ -306,6 +306,7 @@ class BrowseView(RatelimitMixin, ListView):
                 }
                 for t in
                 new_resources.values('topics__name')
+                .exclude(Q(topics__name=None))
                 .annotate(count=Count('id')).order_by('-count')
                 .annotate(
                     link=Concat(
@@ -331,7 +332,8 @@ class BrowseView(RatelimitMixin, ListView):
                     'link'.encode("utf8"): t['link'].encode("utf8")
                 }
                 for t in
-                new_resources.values('disciplines__name')\
+                new_resources.values('disciplines__name')
+                .exclude(Q(disciplines__name=None))
                 .annotate(count=Count('id')).order_by('-count')
                 .annotate(
                     link=Concat(
@@ -375,6 +377,24 @@ class BrowseView(RatelimitMixin, ListView):
                              ).order_by()
                         ]
 
+            # Construct lists of which types get which graphs
+            topic_graph_allowed = [
+                'Case Studies',
+                'Conference Presentations',
+                'Outreach Materials',
+                'Photographs',
+                'Publications',
+                'Tools',
+                'Videos & Webinars',
+            ]
+            discipline_graph_allowed = [
+                'Academic Programs',
+                'Case Studies',
+                'Course Materials',
+                'Publications',
+                'Research Centers',
+            ]
+
             # Add all of this to the context data
             ctx.update({
                 'new_resources_list': new_resources,
@@ -388,6 +408,8 @@ class BrowseView(RatelimitMixin, ListView):
                 'discipline_counts_safe': mark_safe(discipline_counts),
                 'map_data': mark_safe(map_data),
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
+                'topic_graph_allowed': topic_graph_allowed,
+                'discipline_graph_allowed': discipline_graph_allowed,
             })
         return ctx
 

@@ -50,10 +50,10 @@
                 </div>
                 <div class="tab-content">
                     <div id="charts" class="tab-pane fade active in">
-                        {% if topic_counts|length > 0 %}
+                        {% if topic_counts|length > 0 and content_type.content_type_label in topic_graph_allowed %}
                             <div id="by_topic" class="summary-chart"></div>
                         {% endif %}
-                        {% if discipline_counts|length > 0 %}
+                        {% if discipline_counts|length > 0 and content_type.content_type_label in discipline_graph_allowed %}
                             <div id="by_discipline" class="summary-chart"></div>
                         {% endif %}
                     </div>
