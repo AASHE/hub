@@ -19,7 +19,8 @@ from tagulous.views import autocomplete
 import feedparser
 from django.utils.text import slugify
 
-from django.db.models import Count
+from django.db.models import Count, F, CharField, Value as V
+from django.db.models.functions import Concat
 from django.utils.safestring import mark_safe
 from django.db.models import Q
 
@@ -307,14 +308,30 @@ class BrowseView(RatelimitMixin, ListView):
 
             # Get data for the map
             map_data = [
-                [t[0].encode("utf8"), float(t[1]), float(t[2])] for t in
+                [t[0].encode("utf8"), float(t[1]), float(t[2]), t[3],
+                 t[4], t[5].encode("utf8")]
+                for t in
                 new_resources.exclude(Q(organizations__org_name=None))
                              .exclude(Q(organizations__latitude=''))
                              .values_list('organizations__org_name',
                                           'organizations__latitude',
                                           'organizations__longitude',
+                                          'organizations__account_num',
                                           )
-                             .distinct()
+                             .annotate(
+                                    count=Count('organizations__account_num')
+                             ).annotate(
+                                    link=Concat(
+                                        V("/browse/types/"),
+                                        V(self.content_type_class.slug),
+                                        V("/?search=&content_type="),
+                                        V(self.content_type_class.slug),
+                                        V("&organizations="),
+                                        str('organizations__account_num'),
+                                        V("&country=#resources-panel"),
+                                        output_field=CharField()
+                                    )
+                             ).order_by()
                         ]
 
             # Add all of this to the context data
