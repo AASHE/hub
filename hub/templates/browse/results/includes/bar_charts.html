@@ -5,13 +5,14 @@
     google.setOnLoadCallback(drawDisciplinesChart);
 
     function drawTopicsChart() {
+        var raw_data = {{ topic_counts_safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Topic');
         data.addColumn('number', 'Count');
 
         data.addRows([
             {% for row in topic_counts %}
-                ['{{ row.topics__name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
             {% endfor %}
         ]);
         data.sort([{column: 1, desc: true}]);
@@ -53,6 +54,14 @@
         };
         var chart = new google.visualization.BarChart(document.getElementById('by_topic'));
         chart.draw(data, options);
+
+        var rowNum;
+        function selectHandler(e) {
+            rowNum = chart.getSelection()[0]['row'];
+            window.location = raw_data[rowNum]['link'];
+        }
+
+        google.visualization.events.addListener(chart, 'select', selectHandler);
     }
 
 
