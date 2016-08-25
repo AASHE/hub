@@ -17,7 +17,7 @@
     }
     function initialize() {
         var locations = {{ map_data }};
-        var contentTypeLabel = '{{ content_type.content_type }}(s)';
+        var contentTypeLabel = '{{ content_type.content_type_label }}';
         var mapCanvas = document.getElementById('map');
         var mapOptions = {
                 mapTypeId: google.maps.MapTypeId.HYBRID
