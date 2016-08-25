@@ -323,8 +323,29 @@ class BrowseView(RatelimitMixin, ListView):
 
             # Count unique academic disciplines associated with these pieces
             # of content and output a dict of pairs of names and counts
-            discipline_counts = new_resources.values('disciplines__name')\
+            discipline_counts = [
+                {
+                    'name'.encode("utf8"): t['disciplines__name']
+                          .encode("utf8"),
+                    'count'.encode("utf8"): t['count'],
+                    'link'.encode("utf8"): t['link'].encode("utf8")
+                }
+                for t in
+                new_resources.values('disciplines__name')\
                 .annotate(count=Count('id')).order_by('-count')
+                .annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&discipline="),
+                        'disciplines__pk',
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                )
+            ]
 
             # Get data for the map
             map_data = [
@@ -364,6 +385,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'topic_counts': topic_counts,
                 'topic_counts_safe': mark_safe(topic_counts),
                 'discipline_counts': discipline_counts,
+                'discipline_counts_safe': mark_safe(discipline_counts),
                 'map_data': mark_safe(map_data),
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
             })

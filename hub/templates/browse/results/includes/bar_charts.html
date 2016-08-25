@@ -66,13 +66,14 @@
 
 
     function drawDisciplinesChart() {
+        var raw_data = {{ discipline_counts_safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Discipline');
         data.addColumn('number', 'Count');
 
         data.addRows([
             {% for row in discipline_counts %}
-                ['{{ row.disciplines__name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
             {% endfor %}
         ]);
         data.sort([{column: 1, desc: true}]);
@@ -114,5 +115,13 @@
         };
         var chart = new google.visualization.BarChart(document.getElementById('by_discipline'));
         chart.draw(data, options);
+
+        var rowNum;
+        function selectHandler(e) {
+            rowNum = chart.getSelection()[0]['row'];
+            window.location = raw_data[rowNum]['link'];
+        }
+
+        google.visualization.events.addListener(chart, 'select', selectHandler);
     }
 </script>
