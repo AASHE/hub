@@ -1,4 +1,4 @@
-Django>=1.9,<1.10
+Django==1.10
 awesome-slugify==1.6.5
 django-bootstrap-pagination
 django-filter==0.12.0
