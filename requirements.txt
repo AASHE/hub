@@ -1,4 +1,4 @@
-Django>=1.9,<1.10
+Django>=1.8,<1.9
 awesome-slugify==1.6.5
 django-bootstrap-pagination
 django-filter==0.12.0
@@ -33,8 +33,8 @@ gunicorn
 ipython
 psycopg2
 python-binary-memcached==0.24.6
-raven==5.25
-whitenoise==3.2.1
+raven==5.10.2
+whitenoise
 newrelic
 
 https://github.com/bradleyg/django-s3direct/archive/master.zip
