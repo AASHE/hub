@@ -1,4 +1,3 @@
-import django.views.defaults
 import django_admin_blocks
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -45,6 +44,6 @@ if settings.DEBUG:  # pragma: no cover
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += [
-        url(r'^404$', django.views.defaults.page_not_found),
-        url(r'^500$', django.views.defaults.server_error),
+        url(r'^404$', 'django.views.defaults.page_not_found'),
+        url(r'^500$', 'django.views.defaults.server_error'),
     ]
