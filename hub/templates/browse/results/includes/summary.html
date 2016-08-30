@@ -50,6 +50,9 @@
                 </div>
                 <div class="tab-content">
                     <div id="charts" class="tab-pane fade active in">
+                        <div id="chart-intro" class="summary-chart">
+                            {% block_content 'chart-intro' %}
+                        </div>
                         {% if topic_counts|length > 0 and content_type.content_type_label in topic_graph_allowed %}
                             <div id="by_topic" class="summary-chart"></div>
                         {% endif %}
