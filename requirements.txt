@@ -26,7 +26,7 @@ Pillow
 dj-database-url
 django-bmemcached==0.2.3
 django-password-protect
-django-ratelimit==0.6.0
+django-ratelimit==1.0.0
 # django-s3direct
 django-sslify
 gunicorn
