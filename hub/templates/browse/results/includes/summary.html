@@ -28,46 +28,42 @@
                 <div class="panel-body">
                     <div class="main-counters">
                         {% if province_counts.count %}
-                            <div class="row margin-bottom-40">
-                                <div class="counters col-md-4 col-sm-4">
-                                    <span class="counter">{{ new_resources_list.count }}</span>
-                                    <h4>Total Resources</h4>
-                                </div>
-                                <div class="counters col-md-4 col-sm-4">
-                                    <span class="counter">{{ orgs.count }}</span>
-                                    <h4>Campuses</h4>
-                                </div>
-                                <div class="counters col-md-4 col-sm-4">
-                                    <span class="counter">{{ country_counts.count }}</span>
-                                    <h4>Countries</h4>
-                                </div>
+                            <div class="counters col-md-2 col-sm-2 col-md-offset-1">
+                                <span class="counter">{{ new_resources_list.count }}</span>
+                                <h5>Total Resources</h5>
                             </div>
-                            <div class="row">
-                                <div class="counters col-md-4 col-sm-4 col-md-offset-2">
-                                    <span class="counter">{{ state_counts.count }}</span>
-                                    <h4>U.S. States</h4>
-                                </div>
-                                <div class="counters col-md-4 col-sm-4">
-                                    <span class="counter">{{ province_counts.count }}</span>
-                                    <h4>Canadian Provinces</h4>
-                                </div>
+                            <div class="counters col-md-2 col-sm-2">
+                                <span class="counter">{{ orgs.count }}</span>
+                                <h5>Campuses</h5>
+                            </div>
+                            <div class="counters col-md-2 col-sm-2">
+                                <span class="counter">{{ country_counts.count }}</span>
+                                <h5>Countries</h5>
+                            </div>
+                            <div class="counters col-md-2 col-sm-2">
+                                <span class="counter">{{ state_counts.count }}</span>
+                                <h5>U.S. States</h5>
+                            </div>
+                            <div class="counters col-md-2 col-sm-2">
+                                <span class="counter">{{ province_counts.count }}</span>
+                                <h5>Canadian Provinces</h5>
                             </div>
                         {% else %}
                             <div class="counters col-md-3 col-sm-3">
                                 <span class="counter">{{ new_resources_list.count }}</span>
-                                <h4>Total Resources</h4>
+                                <h5>Total Resources</h5>
                             </div>
                             <div class="counters col-md-3 col-sm-3">
                                 <span class="counter">{{ orgs.count }}</span>
-                                <h4>Campuses</h4>
+                                <h5>Campuses</h5>
                             </div>
                             <div class="counters col-md-3 col-sm-3">
                                 <span class="counter">{{ country_counts.count }}</span>
-                                <h4>Countries</h4>
+                                <h5>Countries</h5>
                             </div>
                             <div class="counters col-md-3 col-sm-3">
                                 <span class="counter">{{ state_counts.count }}</span>
-                                <h4>U.S. States</h4>
+                                <h5>U.S. States</h5>
                             </div>
                         {% endif %}
                     </div>
