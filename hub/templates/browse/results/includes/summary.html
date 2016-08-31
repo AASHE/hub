@@ -5,6 +5,7 @@
 
 {% include 'browse/results/includes/bar_charts.html' %}
 {% include 'browse/results/includes/map.html' %}
+
 <div class="container profile">
     <div class="row">
         <div class="col-md-8 profile-body">
@@ -25,13 +26,49 @@
                     <h2 class="panel-title heading-sm pull-left">At a Glance</h2>
                 </div>
                 <div class="panel-body">
-                    <div class="col-md-12">
-                        Total Resources: <strong>{{ new_resources_list.count }}</strong><br>
-                        Campuses Represented: <strong>{{ orgs.count }}</strong><br>
-                        Countries Represented: <strong>{{ country_counts.count }}</strong><br>
-                        U.S. States Represented: <strong>{{ state_counts.count }}</strong><br>
-                        {% if ca_provinces_represented %}
-                            Canadian Provinces Represented: <strong>{{ province_counts.count }}</strong>
+                    <div class="main-counters">
+                        {% if province_counts.count %}
+                            <div class="row margin-bottom-40">
+                                <div class="counters col-md-4 col-sm-4">
+                                    <span class="counter">{{ new_resources_list.count }}</span>
+                                    <h4>Total Resources</h4>
+                                </div>
+                                <div class="counters col-md-4 col-sm-4">
+                                    <span class="counter">{{ orgs.count }}</span>
+                                    <h4>Campuses</h4>
+                                </div>
+                                <div class="counters col-md-4 col-sm-4">
+                                    <span class="counter">{{ country_counts.count }}</span>
+                                    <h4>Countries</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="counters col-md-4 col-sm-4 col-md-offset-2">
+                                    <span class="counter">{{ state_counts.count }}</span>
+                                    <h4>U.S. States</h4>
+                                </div>
+                                <div class="counters col-md-4 col-sm-4">
+                                    <span class="counter">{{ province_counts.count }}</span>
+                                    <h4>Canadian Provinces</h4>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="counters col-md-3 col-sm-3">
+                                <span class="counter">{{ new_resources_list.count }}</span>
+                                <h4>Total Resources</h4>
+                            </div>
+                            <div class="counters col-md-3 col-sm-3">
+                                <span class="counter">{{ orgs.count }}</span>
+                                <h4>Campuses</h4>
+                            </div>
+                            <div class="counters col-md-3 col-sm-3">
+                                <span class="counter">{{ country_counts.count }}</span>
+                                <h4>Countries</h4>
+                            </div>
+                            <div class="counters col-md-3 col-sm-3">
+                                <span class="counter">{{ state_counts.count }}</span>
+                                <h4>U.S. States</h4>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
