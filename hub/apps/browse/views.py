@@ -19,9 +19,8 @@ from tagulous.views import autocomplete
 import feedparser
 from django.utils.text import slugify
 
-from django.db.models import Count, F, CharField, Value as V
+from django.db.models import Count, CharField, Value as V
 from django.db.models.functions import Concat
-from django.utils.safestring import mark_safe
 from django.db.models import Q
 
 logger = getLogger(__name__)
@@ -403,10 +402,8 @@ class BrowseView(RatelimitMixin, ListView):
                 'state_counts': state_counts,
                 'province_counts': province_counts,
                 'topic_counts': topic_counts,
-                'topic_counts_safe': mark_safe(topic_counts),
                 'discipline_counts': discipline_counts,
-                'discipline_counts_safe': mark_safe(discipline_counts),
-                'map_data': mark_safe(map_data),
+                'map_data': map_data,
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
                 'topic_graph_allowed': topic_graph_allowed,
                 'discipline_graph_allowed': discipline_graph_allowed,

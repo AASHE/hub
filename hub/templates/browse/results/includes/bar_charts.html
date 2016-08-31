@@ -5,7 +5,7 @@
     google.setOnLoadCallback(drawDisciplinesChart);
 
     function drawTopicsChart() {
-        var raw_data = {{ topic_counts_safe }};
+        var raw_data = {{ topic_counts|safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Topic');
         data.addColumn('number', 'Count');
@@ -66,7 +66,7 @@
 
 
     function drawDisciplinesChart() {
-        var raw_data = {{ discipline_counts_safe }};
+        var raw_data = {{ discipline_counts|safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Discipline');
         data.addColumn('number', 'Count');

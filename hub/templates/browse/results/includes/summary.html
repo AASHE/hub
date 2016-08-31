@@ -26,12 +26,12 @@
                 </div>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        Total Resources: <strong>{{ new_resources_list|length }}</strong><br>
-                        Campuses Represented: <strong>{{ orgs|length }}</strong><br>
-                        Countries Represented: <strong>{{ country_counts|length }}</strong><br>
-                        U.S. States Represented: <strong>{{ state_counts|length }}</strong><br>
+                        Total Resources: <strong>{{ new_resources_list.count }}</strong><br>
+                        Campuses Represented: <strong>{{ orgs.count }}</strong><br>
+                        Countries Represented: <strong>{{ country_counts.count }}</strong><br>
+                        U.S. States Represented: <strong>{{ state_counts.count }}</strong><br>
                         {% if ca_provinces_represented %}
-                            Canadian Provinces Represented: <strong>{{ province_counts|length }}</strong>
+                            Canadian Provinces Represented: <strong>{{ province_counts.count }}</strong>
                         {% endif %}
                     </div>
                 </div>
@@ -53,10 +53,10 @@
                         <div id="chart-intro" class="summary-chart">
                             {% block_content 'chart-intro' %}
                         </div>
-                        {% if topic_counts|length > 0 and content_type.content_type_label in topic_graph_allowed %}
+                        {% if topic_counts.count > 0 and content_type.content_type_label in topic_graph_allowed %}
                             <div id="by_topic" class="summary-chart"></div>
                         {% endif %}
-                        {% if discipline_counts|length > 0 and content_type.content_type_label in discipline_graph_allowed %}
+                        {% if discipline_counts.count > 0 and content_type.content_type_label in discipline_graph_allowed %}
                             <div id="by_discipline" class="summary-chart"></div>
                         {% endif %}
                     </div>

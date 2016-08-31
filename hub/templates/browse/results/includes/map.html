@@ -16,7 +16,7 @@
         document.getElementById('map').style.display="None";
     }
     function initialize() {
-        var locations = {{ map_data }};
+        var locations = {{ map_data|safe }};
         var contentTypeLabel = '{{ content_type.content_type_label }}';
         var mapCanvas = document.getElementById('map');
         var mapOptions = {
