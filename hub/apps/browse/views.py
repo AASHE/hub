@@ -391,7 +391,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'Case Studies',
                 'Course Materials',
                 'Publications',
-                'Research Centers',
+                'Research Centers & Institutes',
             ]
 
             # Add all of this to the context data
