@@ -6,4 +6,4 @@ omit =
     hub/settings/*
     hub/imports/*
     hub/wsgi.py
-    hub/exports/management/commands/copy_to_new_bucket.py
+    hub/exports/management/commands/*
