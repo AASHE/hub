@@ -1,3 +1,28 @@
 {% extends "browse/results/base.html" %}
 
+{% load cache %}
+
 {% block body_class %}page-browse-content-type{% endblock %}
+
+{% block browse_additional_tabs %}
+    <li class="{% if not request.GET %}active{% endif %}">
+        <a data-toggle="tab" href="#summary" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary</a>
+    </li>
+    <li class="{% if request.GET %}active{% endif %}">
+        <a data-toggle="tab" href="#resources" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Resources</a>
+    </li>
+{% endblock %}
+
+{% block resource_list_body %}
+    <div id="summary" class="tab-pane fade {% if not request.GET %}active in{% endif %}">
+      {% cache CACHE_TTL_LONG summary_tab content_type.content_type_label user.is_authenticated user.aasheuser.is_member %}
+        <!-- begin cache {% now "c" %} -->
+        {% include "browse/results/includes/summary.html" %}
+        <!-- end cache -->
+      {% endcache %}
+    </div>
+    <div id="resources" class="tab-pane fade {% if request.GET %}active in{% endif %}">
+        <div class="margin-bottom-30"></div>
+        {{ block.super }}
+    </div>
+{% endblock %}
