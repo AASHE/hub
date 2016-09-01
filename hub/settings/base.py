@@ -80,6 +80,8 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django_password_protect.PasswordProtectMiddleware',
     'hub.middleware.HerokuRemoteAddr',
     'sslify.middleware.SSLifyMiddleware',
@@ -90,7 +92,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
@@ -331,3 +332,5 @@ LINKCHECK_MAX_URL_LENGTH = os.environ.get('LINKCHECK_MAX_URL_LENGTH', 255)
 LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT = os.environ.get(
     'LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT', 10)
 SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'testserver')
+
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)

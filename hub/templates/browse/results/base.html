@@ -39,6 +39,15 @@
 {% block javascript %}
     {{ block.super }}
     <script src="{% static "js/browse-results.js" %}"></script>
+    {% if content_type %}
+        <script type="text/javascript" src="{% static  'aashe_theme/unify/plugins/counter/jquery.counterup.min.js' %}"></script>
+        <script type="text/javascript" src="{% static  'aashe_theme/unify/plugins/counter/waypoints.min.js' %}"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                App.initCounter();
+            });
+        </script>
+    {% endif %}
 {% endblock %}
 
 {% block browse_above_tabs %}

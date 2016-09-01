@@ -8,7 +8,6 @@ from ..apps.content.models import Website
 from ..apps.metadata.models import (Organization,
                                     SustainabilityTopic,
                                     InstitutionalOffice)
-from django.utils import timezone
 
 
 class AdminTestCase(WebTest):
@@ -23,13 +22,13 @@ class AdminTestCase(WebTest):
             password='password'
         )
 
-        self.resource = Video(content_type='video',
-                              status='new',
-                              permission='open',
-                              title='Test Video Resource',
-                              slug='test-video-resource',
-                              submitted_by=self.superuser)
-        self.resource.save()
+        self.resource = Video.objects.create(content_type='video',
+                                             status='new',
+                                             permission='open',
+                                             title='Test Video Resource',
+                                             slug='test-video-resource',
+                                             submitted_by=self.superuser)
+
         self.resource.websites.add(
             Website.objects.create(
                 ct=self.resource,
@@ -43,16 +42,6 @@ class AdminTestCase(WebTest):
         self.resource.institutions.add(
             InstitutionalOffice.objects.create(name='Lirum'))
         self.resource.save()
-
-        # Create a Case Study object to test on as well
-        self.cs = CaseStudy(content_type='casestudy',
-                            status='new',
-                            permission='open',
-                            title='Test Case Study',
-                            slug='test-case-study',
-                            submitted_by=self.superuser,
-                            consider_for_award=False)
-        self.cs.save()
 
     def _post_resource(self, status):
         response = self.app.get(self.resource.get_admin_url(),
@@ -71,7 +60,15 @@ class AdminTestCase(WebTest):
         self.assertIn('declined', mail.outbox[0].subject.lower())
 
     def test_case_study_date_fields(self):
-        self.assertEqual(self.cs.date_created, None)
-        self.cs.status = self.cs.STATUS_CHOICES.published
-        self.cs.save()
-        self.assertEqual(self.cs.published, self.cs.date_created)
+        case_study = CaseStudy.objects.create(content_type='casestudy',
+                                              status='new',
+                                              permission='open',
+                                              title='Test Case Study',
+                                              slug='test-case-study',
+                                              submitted_by=self.superuser,
+                                              consider_for_award=False)
+
+        self.assertEqual(case_study.date_created, None)
+        case_study.status = case_study.STATUS_CHOICES.published
+        case_study.save()
+        self.assertEqual(case_study.published, case_study.date_created)

@@ -1,0 +1,61 @@
+<style>
+    #map {
+        width: 95%;
+        height: 400px;
+        margin: auto;
+    }
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}"
+        type="text/javascript"></script>
+<script type="text/javascript">
+    function displayMap() {
+        document.getElementById('map').style.display="block";
+        initialize();
+    }
+    function hideMap() {
+        document.getElementById('map').style.display="None";
+    }
+    function initialize() {
+        var locations = {{ map_data|safe }};
+        var contentTypeLabel = '{{ content_type.content_type_label }}';
+        var mapCanvas = document.getElementById('map');
+        var mapOptions = {
+                mapTypeId: google.maps.MapTypeId.HYBRID
+            };
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i, contentString;
+
+        var bounds = new google.maps.LatLngBounds();
+        for (i = 0; i < locations.length; i++) {
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(
+                        locations[i][1],
+                        locations[i][2]
+                ),
+                map: map,
+                title: locations[i][0]
+            });
+
+            bounds.extend(marker.getPosition());
+
+            google.maps.event.addListener(marker, 'click',
+                    (function(marker, i) {
+                        return function() {
+                            infowindow.setContent(
+                                    "<div><p>" + locations[i][0] + "<br>" +
+                                    "<a href='" + locations[i][5] + "'>" +
+                                     contentTypeLabel + ': ' + locations[i][4]+
+                                    "</a></p></div>"
+                            );
+                            infowindow.open(map, marker);
+                        }
+            })(marker, i));
+        }
+        map.fitBounds(bounds);
+        google.maps.event.trigger(map, 'resize');
+    }
+    this.window.onload = initialize;
+</script>

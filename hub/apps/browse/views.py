@@ -19,6 +19,10 @@ from tagulous.views import autocomplete
 import feedparser
 from django.utils.text import slugify
 
+from django.db.models import Count, CharField, Value as V
+from django.db.models.functions import Concat
+from django.db.models import Q
+
 logger = getLogger(__name__)
 
 
@@ -130,7 +134,7 @@ class BrowseView(RatelimitMixin, ListView):
 
     def get_filterset_data(self):
         """
-        Wether we're in a content type or topic view, we want to have the list
+        Whether we're in a content type or topic view, we want to have the list
         of content types already filtered by these.
         """
         data = self.request.GET.copy()
@@ -209,12 +213,6 @@ class BrowseView(RatelimitMixin, ListView):
         return key
 
     def get_context_data(self, **kwargs):
-        """
-        The context can be cached based on three keys:
-            - url
-            - anon/auth/member user status
-            - get params
-        """
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         topic_name = self.sustainabilty_topic.__str__()
         ctx.update({
@@ -263,6 +261,153 @@ class BrowseView(RatelimitMixin, ListView):
             except Exception as e:  # Any error is bad here, catch all.
                 logger.error('Feed parse failed; {}'.format(feed_address))
                 logger.exception(e)
+
+        # Additional Summary content for content type views
+        if self.content_type_class:
+            # Query all resources in this content type
+            # and sort by date of publication
+            new_resources = ContentType.objects.published()\
+                .filter(content_type=self.content_type_class.slug)\
+                .order_by('-published')
+
+            # Count unique organizations in this data set
+            orgs = new_resources\
+                .values('organizations__account_num')\
+                .distinct()
+
+            # Count unique countries appearing within these organizations
+            country_counts = new_resources\
+                .values('organizations__country')\
+                .annotate(count=Count('organizations__account_num'))\
+                .order_by()
+
+            # Count unique states appearing within these organizations that
+            # have country=USA
+            state_counts = new_resources\
+                .filter(organizations__country_iso='US')\
+                .values('organizations__state')\
+                .annotate(count=Count('organizations__account_num')).order_by()
+
+            # Count unique states appearing within these organizations
+            # that have country=Canada
+            province_counts = new_resources\
+                .filter(organizations__country_iso='CA')\
+                .values('organizations__state')\
+                .annotate(count=Count('organizations__account_num')).order_by()
+
+            # Count unique topics associated with these pieces of content
+            # output a dict of pairs of names and counts
+            topic_counts = [
+                {
+                    'name'.encode("utf8"): t['topics__name'].encode("utf8"),
+                    'count'.encode("utf8"): t['count'],
+                    'link'.encode("utf8"): t['link'].encode("utf8")
+                }
+                for t in
+                new_resources.values('topics__name')
+                .exclude(Q(topics__name=None))
+                .annotate(count=Count('id')).order_by('-count')
+                .annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&topics="),
+                        'topics__slug',
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                )
+            ]
+
+            # Count unique academic disciplines associated with these pieces
+            # of content and output a dict of pairs of names and counts
+            discipline_counts = [
+                {
+                    'name'.encode("utf8"): t['disciplines__name']
+                          .encode("utf8"),
+                    'count'.encode("utf8"): t['count'],
+                    'link'.encode("utf8"): t['link'].encode("utf8")
+                }
+                for t in
+                new_resources.values('disciplines__name')
+                .exclude(Q(disciplines__name=None))
+                .annotate(count=Count('id')).order_by('-count')
+                .annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&discipline="),
+                        'disciplines__pk',
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                )
+            ]
+
+            # Get data for the map
+            map_data = [
+                [t[0].encode("utf8"), float(t[1]), float(t[2]), t[3],
+                 t[4], t[5].encode("utf8")]
+                for t in
+                new_resources.exclude(Q(organizations__org_name=None))
+                             .exclude(Q(organizations__latitude=''))
+                             .values_list('organizations__org_name',
+                                          'organizations__latitude',
+                                          'organizations__longitude',
+                                          'organizations__account_num',
+                                          )
+                             .annotate(
+                                    count=Count('organizations__account_num')
+                             ).annotate(
+                                    link=Concat(
+                                        V("/browse/types/"),
+                                        V(self.content_type_class.slug),
+                                        V("/?search=&content_type="),
+                                        V(self.content_type_class.slug),
+                                        V("&organizations="),
+                                        str('organizations__account_num'),
+                                        V("&country=#resources-panel"),
+                                        output_field=CharField()
+                                    )
+                             ).order_by()
+                        ]
+
+            # Construct lists of which types get which graphs
+            topic_graph_allowed = [
+                'Case Studies',
+                'Conference Presentations',
+                'Outreach Materials',
+                'Photographs',
+                'Publications',
+                'Tools',
+                'Videos & Webinars',
+            ]
+            discipline_graph_allowed = [
+                'Academic Programs',
+                'Case Studies',
+                'Course Materials',
+                'Publications',
+                'Research Centers & Institutes',
+            ]
+
+            # Add all of this to the context data
+            ctx.update({
+                'new_resources_list': new_resources,
+                'orgs': orgs,
+                'country_counts': country_counts,
+                'state_counts': state_counts,
+                'province_counts': province_counts,
+                'topic_counts': topic_counts,
+                'discipline_counts': discipline_counts,
+                'map_data': map_data,
+                'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
+                'topic_graph_allowed': topic_graph_allowed,
+                'discipline_graph_allowed': discipline_graph_allowed,
+            })
         return ctx
 
 
