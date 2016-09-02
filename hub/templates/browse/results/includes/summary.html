@@ -3,9 +3,6 @@
 {% load typogrify_tags %}
 {% load block_content %}
 
-{% include 'browse/results/includes/bar_charts.html' %}
-{% include 'browse/results/includes/map.html' %}
-
 <div class="container profile">
     <div class="row">
         <div class="col-md-8 profile-body">
@@ -74,10 +71,10 @@
                 <div class="panel-heading overflow-h">
                     <ul class="nav nav-tabs">
                         <li class="{% if not request.GET %}active{% endif %}">
-                            <a data-toggle="tab" href="#charts" onclick="hideMap();" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary Charts</a>
+                            <a id="chart-tab" data-toggle="tab" href="#charts" onclick="hideMap(); getChart('chart-tab');" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary Charts</a>
                         </li>
                         <li class="{% if request.GET %}active{% endif %}">
-                            <a data-toggle="tab" href="#map" onclick="displayMap()" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Summary Map</a>
+                            <a id="map-tab" data-toggle="tab" href="#map" onclick="displayMap(); getChart('map-tab');" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Summary Map</a>
                         </li>
                     </ul>
                 </div>
