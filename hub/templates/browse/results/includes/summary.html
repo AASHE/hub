@@ -74,7 +74,7 @@
                 <div class="panel-heading overflow-h">
                     <ul class="nav nav-tabs">
                         <li class="{% if not request.GET %}active{% endif %}">
-                            <a data-toggle="tab" href="#charts" onclick="hideMap(); drawTopicsChart(); drawDisciplinesChart()" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary Charts</a>
+                            <a data-toggle="tab" href="#charts" onclick="hideMap();" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary Charts</a>
                         </li>
                         <li class="{% if request.GET %}active{% endif %}">
                             <a data-toggle="tab" href="#map" onclick="displayMap()" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Summary Map</a>
