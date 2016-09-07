@@ -4,6 +4,20 @@
     google.setOnLoadCallback(drawTopicsChart);
     google.setOnLoadCallback(drawDisciplinesChart);
 
+    var activeTab;
+    function getChart(activeTab) {
+        if (activeTab == "chart-tab") {
+            document.getElementById('charts').style.display = 'block';
+            document.getElementById('map').style.display = 'none';
+            drawTopicsChart();
+            drawDisciplinesChart();
+        }
+        else {
+            document.getElementById('charts').style.display = 'none';
+            document.getElementById('map').style.display = 'block';
+        }
+    }
+
     function drawTopicsChart() {
         var raw_data = {{ topic_counts|safe }};
         var data = new google.visualization.DataTable();
@@ -45,8 +59,10 @@
                 position: 'none'
             },
             chartArea: {
-                left: '25%',
-                right: '5%'
+                left: '27%',
+                right: '5%',
+                top: 25,
+                bottom: 25
             },
             series: {
                 0:{color: '#6BBC49'}
@@ -106,8 +122,10 @@
                 position: 'none'
             },
             chartArea: {
-                left: '25%',
-                right: '5%'
+                left: '27%',
+                right: '5%',
+                top: 25,
+                bottom: 25
             },
             series: {
                 0:{color: '#6BBC49'}

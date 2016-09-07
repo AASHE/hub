@@ -1,12 +1,12 @@
 """Base settings shared by all environments"""
-
-# Import global settings to make it easier to extend settings.
-from django.conf.global_settings import *   # pylint: disable=W0614,W0401
-import os
-
 import os
 import sys
+
+# Import global settings to make it easier to extend settings.
+from django.conf.global_settings import *   # pylint: disable=W0614,W0401  # NOQA
+
 import hub as project_module
+
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(project_module.__file__))
 
