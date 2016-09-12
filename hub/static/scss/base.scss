@@ -452,3 +452,8 @@ li a {
     padding: 15px 15px 0 15px;
     margin: auto;
 }
+
+// Set height for image thumbnail blocks to prevent spacing issues
+.thumbnail-style {
+    height: 400px;
+}
