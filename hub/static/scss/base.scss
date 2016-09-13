@@ -452,3 +452,18 @@ li a {
     padding: 15px 15px 0 15px;
     margin: auto;
 }
+
+ul#id_gallery_view {
+    list-style-type: none;
+}
+
+ul#id_gallery_view li {
+    display: inline;
+    list-style-type: none;
+    padding: 0 10px;
+}
+
+ul#id_gallery_view li.selected a {
+    border-color: $lightgreen;
+    color: $lightgreen;
+}

@@ -19,6 +19,7 @@ from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
+from .widgets import GalleryViewWidget
 
 logger = getLogger(__name__)
 ALL = (('', 'All'),)
@@ -31,6 +32,30 @@ ALL = (('', 'All'),)
 # =============================================================================
 # Generic Filter
 # =============================================================================
+
+class GalleryFilter(filters.ChoiceFilter):
+    """
+    A custom filter to just show resources with images.
+
+    @todo - I used "picture-o", but I would prefer "gallery."
+    This was to keep the GalleryViewWidget as simple as possible.
+    I wonder if we could change it with an SCSS alias?
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': [('list', 'list'), ('gallery', 'picture-o')],
+            'label': 'View as',
+            'widget': GalleryViewWidget(),
+        })
+        super(GalleryFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if value == 'picture-o':
+            # filter the qs for only those with resources with images
+            pass
+        return qs
+
 
 class SearchFilter(filters.CharFilter):
     """

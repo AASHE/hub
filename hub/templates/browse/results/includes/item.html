@@ -1,7 +1,7 @@
 {% load browse_tags %}
 {% load typogrify_tags %}
 
-<div class="inner-results">
+<div class="inner-results col-md-12">
     <h3>
         <a href="{{ obj.get_absolute_url }}">{{ obj.title|safe }}</a>
         {% permission_flag obj user %}

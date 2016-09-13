@@ -173,6 +173,10 @@ class BrowseView(RatelimitMixin, ListView):
         self.filterset_form = filterset.form
         return filterset.qs.distinct()
 
+        # @idea - in gallery view, should we return an image queryset to ensure
+        # that pagination works and the # of results is correct?
+        # for performance we'd likely need a select_ralated on the resource too
+
     def get_cache_key(self):
         """
         Generates a cache key based on:
@@ -215,6 +219,7 @@ class BrowseView(RatelimitMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super(BrowseView, self).get_context_data(**kwargs)
         topic_name = self.sustainabilty_topic.__str__()
+        gallery_view = ('gallery' == self.request.GET.get('gallery_view'))
         ctx.update({
             'object_list_form': self.filterset_form,
             'topic': self.sustainabilty_topic,
@@ -226,6 +231,7 @@ class BrowseView(RatelimitMixin, ListView):
             'page_title': self.get_title(),
             'content_type_slug': self.kwargs.get('ct'),
             'cache_key': self.get_cache_key(),
+            'gallery_view': gallery_view,
         })
 
         # Additional toolkit content for topic views

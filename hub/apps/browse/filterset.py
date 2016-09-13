@@ -9,6 +9,7 @@ class GenericFilterSet(filters.FilterSet):
     `CONTENT_TYPE_FILTERS` mapping.
     """
     search = SearchFilter(widget=forms.HiddenInput)
+    gallery_view = GalleryFilter()
     content_type = ContentTypesFilter()
     topics = TopicFilter()
     discipline = DisciplineFilter()

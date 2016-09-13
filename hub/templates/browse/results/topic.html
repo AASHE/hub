@@ -57,12 +57,3 @@
         </div>
     {% endif %}
 {% endblock %}
-
-
-{% block result_list %}
-    {% for obj in object_list %}
-        {% include "browse/results/includes/item.html" %}
-    {% empty %}
-        <div class="no-results">No resources match your current filter settings.</div>
-    {% endfor %}
-{% endblock result_list %}
