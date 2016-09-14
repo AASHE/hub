@@ -1,4 +1,5 @@
 from django.utils.timezone import now
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from ..apps.metadata.models import Organization, SustainabilityTopic, \
@@ -199,28 +200,37 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             self.assertEqual(len(response.context['object_list']), 1)
 
 
-class TestGalleryView(WithUserSuperuserTestCase):
+class TestGalleryView(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
     """
         Test the gallery view
 
         - ensure filter is working properly (only resources with images)
     """
-    def setup(self):
-        self.resource = Photograph.objects.create(
+    def setUp(self):
+
+        super(TestGalleryView, self).setUp()
+
+        self.resource1 = Photograph.objects.create(
+            status=Photograph.STATUS_CHOICES.published,
+            title='Test Photo Resource',
+            slug='test-photo-resource',
+            submitted_by=self.superuser
+            )
+        self.resource2 = Photograph.objects.create(
             status=Photograph.STATUS_CHOICES.published,
             title='Test Photo Resource',
             slug='test-photo-resource',
             submitted_by=self.superuser
             )
         img1 = Image.objects.create(
-            ct=self.resource,
+            ct=self.resource1,
             image="http://testserver%stest/sold.jpg" % settings.STATIC_URL,
             affirmation=True,
             caption="test caption one",
-            credit="test credit two"
+            credit="test credit one"
         )
         img2 = Image.objects.create(
-            ct=self.resource,
+            ct=self.resource1,
             image="http://testserver%stest/sold.jpg" % settings.STATIC_URL,
             affirmation=True,
             caption="test caption two",
@@ -233,11 +243,11 @@ class TestGalleryView(WithUserSuperuserTestCase):
             'browse:browse',
             kwargs={'ct': 'photograph'})
 
-        # test the list view
+        # test the list view - should show both resources
         _filter_data = {'gallery_view': 'list'}
         response = self.client.get(_url, _filter_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['object_list']), 1)
+        self.assertEqual(len(response.context['object_list']), 2)
 
         # test the gallery view
         # @todo - should the object list be image objects... and therefore 2?

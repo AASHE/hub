@@ -51,9 +51,9 @@ class GalleryFilter(filters.ChoiceFilter):
         super(GalleryFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
-        if value == 'picture-o':
+        if value == 'gallery':
             # filter the qs for only those with resources with images
-            pass
+            qs = qs.filter(images__isnull=False).distinct()
         return qs
 
 
