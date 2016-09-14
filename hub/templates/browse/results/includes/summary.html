@@ -3,10 +3,18 @@
 {% load typogrify_tags %}
 {% load block_content %}
 
+<script type="text/javascript">
+    function switchTab(){
+        $(document.getElementById("resource-tab")).attr('class', 'active');
+        $(document.getElementById("resource-toggle")).attr('aria-expanded', true);
+        $(document.getElementById("summary-tab")).attr('class', '');
+        $(document.getElementById("summary-toggle")).attr('aria-expanded', flase);
+    }
+</script>
+
 <div class="container profile">
     <div class="row">
         <div class="col-md-8 profile-body">
-
             <div class="panel">
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-info"></i> Introduction</h2>
@@ -15,6 +23,8 @@
                     {% with content_type_slug|add:"_page_intro" as key %}
                         {% block_content key %}
                     {% endwith %}
+                    <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
+                    <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#submit">Submit a new {{ content_type_singular }}</a>
                 </div>
             </div>
 
