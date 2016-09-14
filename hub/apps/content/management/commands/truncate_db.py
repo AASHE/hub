@@ -1,5 +1,4 @@
 from hub.apps.content.models import CONTENT_TYPES
-from iss.models import Organization
 from django.core.management.base import BaseCommand, CommandError
 
 
@@ -26,12 +25,6 @@ class Command(BaseCommand):
 
         if confirm == 'y':
             print
-            orgs = Organization.objects.all()
-            orgs_to_delete = orgs[1000:]
-            print "Deleting %d of %d organizations" % (orgs_to_delete.count(),
-                                                       orgs.count())
-            for org in orgs_to_delete:
-                org.delete()
             for k, ctKlass in CONTENT_TYPES.items():
                 to_delete = ctKlass.objects.all()[20:]
                 print "Deleting %d of %d %s objects." % (
