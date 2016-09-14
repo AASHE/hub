@@ -24,7 +24,7 @@
                         {% block_content key %}
                     {% endwith %}
                     <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
-                    <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#submit">Submit a new {{ content_type_singular }}</a>
+                    <a class="btn-u" href="{% url "submit:form" ct=content_type_slug %}"><i class="fa fa-rocket"></i> Submit a new {{ content_type_singular }}</a>
                 </div>
             </div>
 
