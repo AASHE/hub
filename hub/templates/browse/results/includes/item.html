@@ -4,14 +4,10 @@
 {% load static %}
 
 <div class="inner-results">
-    {% if obj.images %}
-        {% with obj.images.all.0 as image %}
-            <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image }}">
-                {% thumbnail image.image "100x100" crop="center" as im %}
-                    <img class="img-responsive" src="{{ im.url }}" alt="{{ image.caption }}">
-                {% endthumbnail %}
-            </a>
-        {% endwith %}
+    {% if obj.images.all %}
+        <div class="col-md-10">
+    {% else %}
+        <div class="col-md-12">
     {% endif %}
     <h3>
         <a href="{{ obj.get_absolute_url }}">{{ obj.title|safe }}</a>
@@ -28,8 +24,20 @@
         <li>{{ obj.instance_type_label }}</li>
         <li><a href="{{ obj.get_absolute_url }}">View more</a></li>
     </ul>
+    </div>
+    <div class="col-md-2">
+    {% if obj.images.all %}
+        {% with obj.images.all.0 as image %}
+            <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image }}">
+                {% thumbnail image.image "100x100" crop="center" as im %}
+                    <img class="img-responsive" src="{{ im.url }}" alt="{{ image.caption }}">
+                {% endthumbnail %}
+            </a>
+        {% endwith %}
+    {% endif %}
+    </div>
 </div>
 
 {% if not forloop.last %}
-<hr>
+<div class="col-md-12"><hr></div>
 {% endif %}
