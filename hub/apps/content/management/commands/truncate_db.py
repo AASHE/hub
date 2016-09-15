@@ -56,8 +56,9 @@ class Command(BaseCommand):
 
             print "====================="
             print "Removing thumbnails"
-            KVStore.objects.all().delete()
+            self.delete_objects_of_class(KVStore, 0)
             print
+            
         else:
             print "Action Cancelled."
 
