@@ -4,6 +4,7 @@ from hub.apps.metadata.models import (
     PresentationType, CourseMaterialType, OutreachMaterialType,
     PublicationMaterialType, Organization)
 from django.core.management.base import BaseCommand, CommandError
+from sorl.thumbnail.models import KVStore
 
 
 class Command(BaseCommand):
@@ -51,6 +52,12 @@ class Command(BaseCommand):
                 PublicationMaterialType]
             for klass in class_list:
                 self.delete_objects_of_class(klass)
+            print
+
+            print "====================="
+            print "Removing thumbnails"
+            KVStore.objects.all().delete()
+            print
         else:
             print "Action Cancelled."
 
