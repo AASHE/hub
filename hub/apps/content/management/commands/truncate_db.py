@@ -58,7 +58,7 @@ class Command(BaseCommand):
             print "Removing thumbnails"
             self.delete_objects_of_class(KVStore, 0)
             print
-            
+
         else:
             print "Action Cancelled."
 
