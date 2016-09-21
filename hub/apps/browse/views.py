@@ -400,6 +400,8 @@ class BrowseView(RatelimitMixin, ListView):
                 'Research Centers & Institutes',
             ]
 
+            singular = self.content_type_class._meta.verbose_name
+
             # Add all of this to the context data
             ctx.update({
                 'new_resources_list': new_resources,
@@ -413,6 +415,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
                 'topic_graph_allowed': topic_graph_allowed,
                 'discipline_graph_allowed': discipline_graph_allowed,
+                'content_type_singular': singular,
             })
         return ctx
 

@@ -3,10 +3,18 @@
 {% load typogrify_tags %}
 {% load block_content %}
 
+<script type="text/javascript">
+    function switchTab(){
+        $(document.getElementById("resource-tab")).attr('class', 'active');
+        $(document.getElementById("resource-toggle")).attr('aria-expanded', true);
+        $(document.getElementById("summary-tab")).attr('class', '');
+        $(document.getElementById("summary-toggle")).attr('aria-expanded', flase);
+    }
+</script>
+
 <div class="container profile">
     <div class="row">
         <div class="col-md-8 profile-body">
-
             <div class="panel">
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-info"></i> Introduction</h2>
@@ -15,6 +23,8 @@
                     {% with content_type_slug|add:"_page_intro" as key %}
                         {% block_content key %}
                     {% endwith %}
+                    <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
+                    <a class="btn-u" href="{% url "submit:form" ct=content_type_slug %}"><i class="fa fa-rocket"></i> Submit a new {{ content_type_singular }}</a>
                 </div>
             </div>
 
@@ -31,7 +41,7 @@
                             </div>
                             <div class="counters col-md-2 col-sm-2">
                                 <span class="counter">{{ orgs.count }}</span>
-                                <h5>Campuses</h5>
+                                <h5>Organizations</h5>
                             </div>
                             <div class="counters col-md-2 col-sm-2">
                                 <span class="counter">{{ country_counts.count }}</span>
@@ -39,7 +49,7 @@
                             </div>
                             <div class="counters col-md-2 col-sm-2">
                                 <span class="counter">{{ state_counts.count }}</span>
-                                <h5>U.S. States</h5>
+                                <h5>U.S. States & Territories</h5>
                             </div>
                             <div class="counters col-md-2 col-sm-2">
                                 <span class="counter">{{ province_counts.count }}</span>
