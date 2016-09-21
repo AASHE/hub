@@ -36,15 +36,11 @@ ALL = (('', 'All'),)
 class GalleryFilter(filters.ChoiceFilter):
     """
     A custom filter to just show resources with images.
-
-    @todo - I used "picture-o", but I would prefer "gallery."
-    This was to keep the GalleryViewWidget as simple as possible.
-    I wonder if we could change it with an SCSS alias?
     """
 
     def __init__(self, *args, **kwargs):
         kwargs.update({
-            'choices': [('list', 'list'), ('gallery', 'picture-o')],
+            'choices': [('list', 'list'), ('gallery', 'gallery')],
             'label': 'View as',
             'widget': GalleryViewWidget(),
         })
@@ -60,8 +56,6 @@ class GalleryFilter(filters.ChoiceFilter):
 class SearchFilter(filters.CharFilter):
     """
     Search currently searches the title against the given keyword.
-
-    TODO: Implement search engine
     """
     def filter(self, qs, value):
         if not value:
