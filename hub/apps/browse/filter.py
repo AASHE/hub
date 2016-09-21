@@ -19,6 +19,7 @@ from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
+from .widgets import GalleryViewWidget
 
 logger = getLogger(__name__)
 ALL = (('', 'All'),)
@@ -32,11 +33,29 @@ ALL = (('', 'All'),)
 # Generic Filter
 # =============================================================================
 
+class GalleryFilter(filters.ChoiceFilter):
+    """
+    A custom filter to just show resources with images.
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': [('list', 'list'), ('gallery', 'gallery')],
+            'label': 'View as',
+            'widget': GalleryViewWidget(),
+        })
+        super(GalleryFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if value == 'gallery':
+            # filter the qs for only those with resources with images
+            qs = qs.filter(images__isnull=False).distinct()
+        return qs
+
+
 class SearchFilter(filters.CharFilter):
     """
     Search currently searches the title against the given keyword.
-
-    TODO: Implement search engine
     """
     def filter(self, qs, value):
         if not value:

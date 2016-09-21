@@ -85,15 +85,26 @@
             </div>
             <div class="col-md-9">
                 <span class="results-number">
-                    {{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}
+                    {{ page_obj.paginator.count }} resource{{ page_obj.paginator.count|pluralize }}
                     <!-- {% if request.GET and not request.GET.search%} | <a href=".?show-all">Show all</a>{% endif %} -->
                 </span>
               {% block result_list %}
-                {% for obj in object_list %}
-                    {% include "browse/results/includes/item.html" %}
-                {% empty %}
+                {% if object_list %}
+                  <div class="row">
+                    {% if gallery_view %}
+                      {% for obj in object_list %}
+                        {% include "browse/results/includes/gallery_item.html" %}
+                      {% endfor %}
+                    {% else %}
+                      {% for obj in object_list %}
+                        {% include "browse/results/includes/item.html" %}
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                {% else %}
                     <div class="no-results">No resources match your current filter settings.</div>
-                {% endfor %}
+                {% endif %}
+                </div>
               {% endblock %}
 
               {% include "browse/results/includes/pagination.html" %}

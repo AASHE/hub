@@ -453,6 +453,21 @@ li a {
     margin: auto;
 }
 
+ul#id_gallery_view {
+    list-style-type: none;
+}
+
+ul#id_gallery_view li {
+    display: inline;
+    list-style-type: none;
+    padding: 0 10px;
+}
+
+ul#id_gallery_view li.selected a {
+    border-color: $lightgreen;
+    color: $lightgreen;
+}
+
 // Set height for image thumbnail blocks to prevent spacing issues
 .thumbnail-style {
     height: 400px;
