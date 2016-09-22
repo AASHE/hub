@@ -10,6 +10,7 @@ class GenericFilterSet(filters.FilterSet):
     `CONTENT_TYPE_FILTERS` mapping.
     """
     search = SearchFilter(widget=forms.HiddenInput)
+    gallery_view = GalleryFilter()
     content_type = ContentTypesFilter()
     topics = TopicFilter()
     discipline = DisciplineFilter()
@@ -31,20 +32,23 @@ class GenericFilterSet(filters.FilterSet):
         fields = []
 
 
-class GalleryFilterMixin(object):
+class ExlcudeGalleryFilterMixin(object):
     """
-        adds the gallery filter to a filterset, but at the beginning
+        removes the gallery filter from a filterset
         in the absence of a better approach coming to me, I had to create a
         new OrderedDict to make this work...
         probably not the most efficient way, but all I could come up with
+
+        setting `gallery_view = None` on the child Filterset didn't work
     """
     def __init__(self, *args, **kwargs):
-        super(GalleryFilterMixin, self).__init__(*args, **kwargs)
+        super(ExlcudeGalleryFilterMixin, self).__init__(*args, **kwargs)
 
         # add the gallery filter to the top of the filters list
-        od = OrderedDict([('gallery_view', GalleryFilter())])
+        od = OrderedDict()
         for key in self.filters:
-            od[key] = self.filters[key]
+            if key is not 'gallery_view':
+                od[key] = self.filters[key]
         self.filters = od
 
 
@@ -53,55 +57,56 @@ class GalleryFilterMixin(object):
 ##############################################################################
 
 
-class AcademicBrowseFilterSet(GenericFilterSet):
+class AcademicBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     program_type = ProgramTypeFilter()
     from ..content.types.academic import AcademicProgram
     created = CreatedFilter(AcademicProgram)
 
 
-class CaseStudyBrowseFilterSet(GalleryFilterMixin, GenericFilterSet):
+class CaseStudyBrowseFilterSet(GenericFilterSet):
     from ..content.types.casestudies import CaseStudy
     created = CreatedFilter(CaseStudy)
 
 
-class CenterAndInstituteBrowseFilterSet(GenericFilterSet):
+class CenterAndInstituteBrowseFilterSet(ExlcudeGalleryFilterMixin,
+                                        GenericFilterSet):
     from ..content.types.centers import CenterAndInstitute
     created = CreatedFilter(CenterAndInstitute)
 
 
-class MaterialBrowseFilterSet(GenericFilterSet):
+class MaterialBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     material_type = MaterialTypeFilter()
     course_level = CourseLevelFilter()
     from ..content.types.courses import Material
     created = CreatedFilter(Material)
 
 
-class OutreachBrowseFilterSet(GalleryFilterMixin, GenericFilterSet):
+class OutreachBrowseFilterSet(GenericFilterSet):
     from ..content.types.outreach import OutreachMaterial
     created = CreatedFilter(OutreachMaterial)
 
 
-class PhotographBrowseFilterSet(GalleryFilterMixin, GenericFilterSet):
+class PhotographBrowseFilterSet(GenericFilterSet):
     from ..content.types.photographs import Photograph
     created = CreatedFilter(Photograph)
 
 
-class PresentationBrowseFilterSet(GalleryFilterMixin, GenericFilterSet):
+class PresentationBrowseFilterSet(GenericFilterSet):
     from ..content.types.presentations import Presentation
     created = CreatedFilter(Presentation)
 
 
-class PublicationBrowseFilterSet(GalleryFilterMixin, GenericFilterSet):
+class PublicationBrowseFilterSet(GenericFilterSet):
     publication_type = PublicationTypeFilter()
     from ..content.types.publications import Publication
     created = CreatedFilter(Publication)
 
 
-class ToolBrowseFilterSet(GenericFilterSet):
+class ToolBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     from ..content.types.tools import Tool
     created = CreatedFilter(Tool)
 
 
-class VideoBrowseFilterSet(GenericFilterSet):
+class VideoBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     from ..content.types.videos import Video
     created = CreatedFilter(Video)
