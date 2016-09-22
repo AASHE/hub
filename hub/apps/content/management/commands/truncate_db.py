@@ -3,6 +3,8 @@ from hub.apps.metadata.models import (
     AcademicDiscipline, InstitutionalOffice, ProgramType, ConferenceName,
     PresentationType, CourseMaterialType, OutreachMaterialType,
     PublicationMaterialType, Organization)
+
+from django.contrib.sessions.models import Session
 from django.core.management.base import BaseCommand, CommandError
 from sorl.thumbnail.models import KVStore
 
@@ -56,7 +58,12 @@ class Command(BaseCommand):
 
             print "====================="
             print "Removing thumbnails"
-            self.delete_objects_of_class(KVStore, 0)
+            self.delete_objects_of_class(KVStore, retain=0)
+            print
+
+            print "====================="
+            print "Removing all Sessions"
+            self.delete_objects_of_class(Session, retain=0)
             print
 
         else:
