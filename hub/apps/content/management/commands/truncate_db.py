@@ -4,6 +4,8 @@ from hub.apps.metadata.models import (
     PresentationType, CourseMaterialType, OutreachMaterialType,
     PublicationMaterialType, Organization)
 
+from django.contrib.admin.models import LogEntry
+from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from django.core.management.base import BaseCommand, CommandError
 from sorl.thumbnail.models import KVStore
@@ -64,6 +66,20 @@ class Command(BaseCommand):
             print "====================="
             print "Removing all Sessions"
             self.delete_objects_of_class(Session, retain=0)
+            print
+
+            print "====================="
+            print "Removing all users who aren't staff/aashe"
+            to_delete = User.objects.filter(is_staff=False)
+            print "Deleting %d of %d Users" % (
+                to_delete.count(), User.objects.count())
+            for obj in to_delete:
+                obj.delete()
+            print
+
+            print "====================="
+            print "Deleting Admin Log Entries"
+            self.delete_objects_of_class(LogEntry, retain=100)
             print
 
         else:
