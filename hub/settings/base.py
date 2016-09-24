@@ -333,4 +333,17 @@ LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT = os.environ.get(
     'LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT', 10)
 SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'testserver')
 
+# ==============================================================================
+# Celery
+# ==============================================================================
+
+# in dev mode, celery won't use redis or a background task, but work inline
+# set the env var to 1 or 0 (or don't set it at all)
+CELERY_ALWAYS_EAGER = os.environ.get('CELERY_ALWAYS_EAGER', '1') == '1'
+BROKER_URL = os.environ.get('CELERY_BROKER_URL', None)
+CELERY_ACCEPT_CONTENT = ['json', ]
+CELERY_TASK_SERIALIZER = 'json'
+# No backend needed right now, since we're not storing results
+# CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND_URL', None)
+
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)

@@ -172,6 +172,14 @@ class ContentType(TimeStampedModel):
         return reverse('admin:content_{0}_change'.format(self.content_type),
                        args=[self.pk])
 
+    def create_thumbnails(self, recreate=False):
+        """
+            Creates thumbnails for each image tied to this resource
+        """
+        from .tasks import thumbnail_image
+        for image in self.images.all():
+            thumbnail_image.delay(image.pk, recreate)
+
     @classmethod
     def content_type_label(cls):
         """
@@ -350,6 +358,10 @@ class Image(TimeStampedModel):
     image = S3DirectField(
         dest='images', help_text="JPG and PNG file formats are accepted",
         blank=True, null=True)
+    small_thumbnail = models.URLField(
+        default="/static/images/100x100_blank.png")
+    med_thumbnail = models.URLField(
+        default="/static/images/300x300_blank.png")
     affirmation = models.BooleanField(
         'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
