@@ -15,12 +15,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='image',
             name='med_thumbnail',
-            field=models.URLField(default='/static/images/300x300_blank.png'),
+            field=models.URLField(default='/static/img/300x300_blank.png'),
         ),
         migrations.AddField(
             model_name='image',
             name='small_thumbnail',
-            field=models.URLField(default='/static/images/100x100_blank.png'),
+            field=models.URLField(default='/static/img/100x100_blank.png'),
         ),
         migrations.AlterField(
             model_name='casestudy',

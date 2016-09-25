@@ -359,9 +359,9 @@ class Image(TimeStampedModel):
         dest='images', help_text="JPG and PNG file formats are accepted",
         blank=True, null=True)
     small_thumbnail = models.URLField(
-        default="/static/images/100x100_blank.png")
+        default="/static/img/100x100_blank.png")
     med_thumbnail = models.URLField(
-        default="/static/images/300x300_blank.png")
+        default="/static/img/300x300_blank.png")
     affirmation = models.BooleanField(
         'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
