@@ -9,14 +9,28 @@ be as easy as:
 
 _(See notes on heroku local in docs/heroku.md)_
 
-Most of the time, you'll want to `export CELERY_ALWAYS_EAGER=0` so that you
-don't have to worry about celery and can have the tasks operate synchronously. You
-really only need to do this when testing or creating tasks. This also means
+## Configuration
+
+When you actually want celery to work in the background, you'll need to set
+several environment variables:
+
+    export CELERY_ALWAYS_EAGER=0
+    export CELERY_BROKER_VAR=REDIS_URL
+    export REDIS_URL=redis://
+
+The reason I've created the intermediate `CELERY_BROKER_VAR` variable, is
+because Heroku creates the REDIS_URL variable for you or an AMQP variable
+depending on your configuration. This allows us to use the env var that's
+managed by Heroku.
+
+**Most of the time**, you'll want to `export CELERY_ALWAYS_EAGER=0` so that you
+don't have to worry about celery and can have the tasks operate synchronously.
+You really only need to do this when testing or creating tasks. This also means
 that you can use the much easier:
 
         $ ./manage.py runserver
 
-instead of `heroku local`.
+for local development instead of `heroku local`.
 
 ## Redis for messages
 
