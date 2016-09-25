@@ -7,7 +7,7 @@
         <div class="col-md-2">
             {% with obj.images.all.0 as image %}
                 <a class="fancybox" href="{{ obj.get_absolute_url }}">
-                    <img class="img-responsive" src="{{ MEDIA_URL }}{{ image.small_thumbnail }}" alt="{{ image.caption }}" style="padding-top:10px;">
+                    <img class="img-responsive" src="{{ image.small_thumbnail }}" alt="{{ image.caption }}" style="padding-top:10px;">
                 </a>
             {% endwith %}
         </div>

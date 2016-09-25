@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
+from django.conf import settings
 from celery import shared_task
-
 from sorl.thumbnail import get_thumbnail
 
 from .models import Image
@@ -27,13 +27,13 @@ def thumbnail_image(image_id, recreate=False):
     # Create the small thumbnail if it hasn't already been created
     default = Image._meta.get_field('small_thumbnail').get_default()
     if recreate or image.small_thumbnail == default:
-        image.small_thumbnail = get_thumbnail(
-            image.image, '100x100', crop='center', quality=99)
+        thmb = get_thumbnail(image.image, '100x100', crop='center', quality=99)
+        image.small_thumbnail = "%s%s" % (settings.MEDIA_URL, thmb.name)
 
     # Create the medium thumbnail if it hasn't already been created
     default = Image._meta.get_field('med_thumbnail').get_default()
     if recreate or image.med_thumbnail == default:
-        image.med_thumbnail = get_thumbnail(
-            image.image, '300x300', crop='center', quality=99)
+        thmb = get_thumbnail(image.image, '300x300', crop='center', quality=99)
+        image.med_thumbnail = "%s%s" % (settings.MEDIA_URL, thmb.name)
 
     image.save()
