@@ -4,7 +4,6 @@
 {% load humanize %}
 {% load block_content %}
 {% load static %}
-{% load thumbnail %}
 {% load typogrify_tags %}
 {% load cache %}
 
@@ -164,9 +163,7 @@
                             <div class="col-md-4">
                                 <div class="thumbnails thumbnail-style">
                                     <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image }}">
-                                        {% thumbnail image.image "300x300" crop="center" as im %}
-                                            <img class="img-responsive" src="{{ im.url }}" alt="{{ image.caption }}">
-                                        {% endthumbnail %}
+                                        <img class="img-responsive" src="{{ image.med_thumbnail }}" alt="{{ image.caption }}">
                                     </a>
                                     <div class="caption">
                                         {% if image.caption %}

@@ -333,4 +333,20 @@ LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT = os.environ.get(
     'LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT', 10)
 SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'testserver')
 
+# ==============================================================================
+# Celery
+# ==============================================================================
+
+# in dev mode, celery won't use redis or a background task, but work inline
+# set the env var to 1 or 0 (or don't set it at all)
+# Since Heroku can set the broker URL, we have to create the intermediate
+# variable `CELERY_BROKER_VAR` to be flexible
+CELERY_ALWAYS_EAGER = os.environ.get('CELERY_ALWAYS_EAGER', '1') == '1'
+CELERY_BROKER_VAR = os.environ.get('CELERY_BROKER_VAR', '')
+BROKER_URL = os.environ.get(CELERY_BROKER_VAR, None)
+CELERY_ACCEPT_CONTENT = ['json', ]
+CELERY_TASK_SERIALIZER = 'json'
+# No backend needed right now, since we're not storing results
+# CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND_URL', None)
+
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
