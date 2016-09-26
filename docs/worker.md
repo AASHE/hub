@@ -7,7 +7,7 @@ be as easy as:
 
         $ heroku local
 
-_(See notes on heroku local in docs/heroku.md)_
+_(See notes on heroku local in [docs/heroku.md](heroku.md)_
 
 ## Configuration
 
@@ -23,7 +23,7 @@ because Heroku creates the REDIS_URL variable for you or an AMQP variable
 depending on your configuration. This allows us to use the env var that's
 managed by Heroku.
 
-**Most of the time**, you'll want to `export CELERY_ALWAYS_EAGER=0` so that you
+**Most of the time**, you'll want to `export CELERY_ALWAYS_EAGER=1` so that you
 don't have to worry about celery and can have the tasks operate synchronously.
 You really only need to do this when testing or creating tasks. This also means
 that you can use the much easier:
