@@ -302,11 +302,25 @@ ALLOWED_FILE_TYPES = [
     'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
 ]
 
+# ==============================================================================
+# S3Direct Settings
+# ==============================================================================
+
+
+# work around from: https://github.com/bradleyg/django-s3direct/issues/50
+def safe_key(prefix, file_name):
+    file_name = file_name.replace(' ', '_')
+    file_name = file_name.replace('+', '-')
+    # Plus any additional file name customization you want.
+    key = '/'.join([prefix, file_name])
+    return key
+
+import functools
 S3DIRECT_REGION = os.environ.get('S3DIRECT_REGION', 'us-east-1')
 S3DIRECT_DESTINATIONS = {
     # Limit uploads to jpeg's and png's.
     'images': {
-        'key': 'uploads',
+        'key': functools.partial(safe_key, 'uploads'),
         'auth': lambda u: u.is_authenticated(),
         'allowed': ['image/jpeg', 'image/png'],
     },
