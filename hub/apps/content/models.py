@@ -178,7 +178,7 @@ class ContentType(TimeStampedModel):
         """
         from .tasks import thumbnail_image
         for image in self.images.all():
-            thumbnail_image.delay(image.pk, recreate)
+            thumbnail_image.delay(image.pk, recreate=recreate)
 
     @classmethod
     def content_type_label(cls):

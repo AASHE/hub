@@ -8,7 +8,7 @@ from .models import Image
 
 
 @shared_task(name='content.thumbnail_image')
-def thumbnail_image(image_id, recreate=False):
+def thumbnail_image(image_id, recreate=False, verbose=False):
     """
         Takes an image object and populates the two thumbnail fields:
 
@@ -29,11 +29,17 @@ def thumbnail_image(image_id, recreate=False):
     if recreate or image.small_thumbnail == default:
         thmb = get_thumbnail(image.image, '100x100', crop='center', quality=99)
         image.small_thumbnail = "%s%s" % (settings.MEDIA_URL, thmb.name)
+        if verbose:
+            print "\t*Created small thumbnail for %s" % image.image
+            print "\t\t(%s)" % thmb.name
 
     # Create the medium thumbnail if it hasn't already been created
     default = Image._meta.get_field('med_thumbnail').get_default()
     if recreate or image.med_thumbnail == default:
         thmb = get_thumbnail(image.image, '300x300', crop='center', quality=99)
         image.med_thumbnail = "%s%s" % (settings.MEDIA_URL, thmb.name)
+        if verbose:
+            print "\t*Created medium thumbnail for %s" % image.image
+            print "\t\t(%s)" % thmb.name
 
     image.save()
