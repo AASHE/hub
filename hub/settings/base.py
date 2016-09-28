@@ -336,20 +336,21 @@ S3DIRECT_DESTINATIONS = {
 # Link checking
 # ==============================================================================
 
-os.environ.get(LINKCHECK_DISABLE, False)
-
-
-INSTALLED_APPS += ('linkcheck',)
-LINKCHECK_EXTERNAL_RECHECK_INTERVAL = int(os.environ.get(
-    'LINKCHECK_EXTERNAL_RECHECK_INTERVAL', 10080))
-LINKCHECK_EXTERNAL_REGEX_STRING = os.environ.get(
-    'LINKCHECK_EXTERNAL_REGEX_STRING', r'^https?://')
-LINKCHECK_MEDIA_PREFIX = os.environ.get('LINKCHECK_MEDIA_PREFIX', '/media/')
-LINKCHECK_RESULTS_PER_PAGE = os.environ.get('LINKCHECK_RESULTS_PER_PAGE', 25)
-LINKCHECK_MAX_URL_LENGTH = os.environ.get('LINKCHECK_MAX_URL_LENGTH', 255)
-LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT = os.environ.get(
-    'LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT', 10)
-SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'testserver')
+LINKCHECK_DISABLE = os.environ.get('LINKCHECK_DISABLE', False)
+if not LINKCHECK_DISABLE:
+    INSTALLED_APPS += ('linkcheck',)
+    LINKCHECK_EXTERNAL_RECHECK_INTERVAL = int(os.environ.get(
+        'LINKCHECK_EXTERNAL_RECHECK_INTERVAL', 10080))
+    LINKCHECK_EXTERNAL_REGEX_STRING = os.environ.get(
+        'LINKCHECK_EXTERNAL_REGEX_STRING', r'^https?://')
+    LINKCHECK_MEDIA_PREFIX = os.environ.get(
+        'LINKCHECK_MEDIA_PREFIX', '/media/')
+    LINKCHECK_RESULTS_PER_PAGE = os.environ.get(
+        'LINKCHECK_RESULTS_PER_PAGE', 25)
+    LINKCHECK_MAX_URL_LENGTH = os.environ.get('LINKCHECK_MAX_URL_LENGTH', 255)
+    LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT = os.environ.get(
+        'LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT', 10)
+    SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'testserver')
 
 # ==============================================================================
 # Celery
