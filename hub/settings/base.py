@@ -53,7 +53,6 @@ INSTALLED_APPS = (
     'integration_settings.google_analytics',
     's3direct',
     'bootstrap_pagination',
-    'linkcheck',
     'django_admin_blocks',
 
     'hub',
@@ -336,6 +335,11 @@ S3DIRECT_DESTINATIONS = {
 # ==============================================================================
 # Link checking
 # ==============================================================================
+
+os.environ.get(LINKCHECK_DISABLE, False)
+
+
+INSTALLED_APPS += ('linkcheck',)
 LINKCHECK_EXTERNAL_RECHECK_INTERVAL = int(os.environ.get(
     'LINKCHECK_EXTERNAL_RECHECK_INTERVAL', 10080))
 LINKCHECK_EXTERNAL_REGEX_STRING = os.environ.get(
