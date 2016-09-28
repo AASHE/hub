@@ -104,7 +104,7 @@
             {% if user and user.is_staff %}
                 {% block_content 'footer_text' %}
             {% else %}
-                {% cache CACHE_TTL_LONG home_below_tab_content %}
+                {% cache CACHE_TTL_LONG footer_content %}
                   <!-- begin cache {% now "c" %} -->
                   {% block_content 'footer_text' %}
                   <!-- end caching -->
