@@ -336,8 +336,8 @@ S3DIRECT_DESTINATIONS = {
 # ==============================================================================
 # Link checking
 # ==============================================================================
-LINKCHECK_EXTERNAL_RECHECK_INTERVAL = os.environ.get(
-    'LINKCHECK_EXTERNAL_RECHECK_INTERVAL', 10080)
+LINKCHECK_EXTERNAL_RECHECK_INTERVAL = int(os.environ.get(
+    'LINKCHECK_EXTERNAL_RECHECK_INTERVAL', 10080))
 LINKCHECK_EXTERNAL_REGEX_STRING = os.environ.get(
     'LINKCHECK_EXTERNAL_REGEX_STRING', r'^https?://')
 LINKCHECK_MEDIA_PREFIX = os.environ.get('LINKCHECK_MEDIA_PREFIX', '/media/')
