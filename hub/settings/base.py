@@ -105,7 +105,6 @@ TEMPLATES = [{
             'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
-            'django.core.context_processors.request',
             'hub.apps.browse.context_processors.cache_vars',
         ],
         'debug': DEBUG,
@@ -312,7 +311,8 @@ def safe_key(prefix, file_name):
     file_name = file_name.replace(' ', '_')
     file_name = file_name.replace('+', '-')
     # Plus any additional file name customization you want.
-    key = '/'.join([prefix, file_name])
+    from random import randint
+    key = "%s/%d-%s" % (prefix, randint(0, 999), file_name)
     return key
 
 import functools
