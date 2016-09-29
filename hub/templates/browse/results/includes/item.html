@@ -1,6 +1,7 @@
 {% load browse_tags %}
 {% load typogrify_tags %}
 {% load static %}
+{% load markup_tags %}
 
 <div class="inner-results col-md-12">
     {% if obj.images.all %}
@@ -27,7 +28,7 @@
             <li>{{ c.org_name }} {% if c.state %}({{ c.state }}){% endif %}</li>
             {% endfor %}
         </ul>
-         {{ obj.description|truncatewords:30 }}
+         {{ obj.description|apply_markup:"markdown"|truncatewords_html:30 }}
         <ul class="list-inline down-ul">
             <li title="{{ obj.published|date }} {{ obj.published|time }}">Posted {{ obj.published|timesince }} ago</li>
             <li>{{ obj.instance_type_label }}</li>
