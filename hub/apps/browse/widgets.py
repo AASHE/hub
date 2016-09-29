@@ -9,7 +9,14 @@ class GalleryViewWidget(LinkWidget):
     Custom LinkWidget for the gallery view
     """
 
+    def __init__(self, attrs=None, choices=(), initial=None):
+        super(GalleryViewWidget, self).__init__(attrs)
+        self.initial = initial
+
     def render(self, name, value, attrs=None, choices=()):
+        if not value and self.initial:
+            value = self.initial
+
         safe_output = super(GalleryViewWidget, self).render(
             name, value, attrs, choices)
 

@@ -42,7 +42,7 @@ class GalleryFilter(filters.ChoiceFilter):
         kwargs.update({
             'choices': [('list', 'list'), ('gallery', 'gallery')],
             'label': 'View as',
-            'widget': GalleryViewWidget(),
+            'widget': GalleryViewWidget(initial='list'),
         })
         super(GalleryFilter, self).__init__(*args, **kwargs)
 
