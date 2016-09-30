@@ -187,12 +187,12 @@
 
                 {# ========================================================== #}
 
-                {% if object.websites.all or object.files.all %}
                 <hr>
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
                         <h2 class="panel-title heading-sm pull-left"><i class="icon  icon-folder"></i> Links and Materials</h2>
                     </div>
+                {% if object.websites.all or object.files.all %}
                     <div class="panel-body">
                         <ul class="list-unstyled social-contacts-v3">
                             <!-- Websites -->
@@ -212,8 +212,12 @@
                             {% endfor %}
                         </ul>
                     </div>
-                </div>
+                {% else %}
+                    <div class="panel-body">
+                        The submitter of this resource did not include any associated files or links.
+                    </div>
                 {% endif %}
+                </div>
 
 
             <!-- /inner body -->

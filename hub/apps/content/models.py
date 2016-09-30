@@ -180,6 +180,9 @@ class ContentType(TimeStampedModel):
         for image in self.images.all():
             thumbnail_image.delay(image.pk, recreate=recreate)
 
+    def get_organization_list(self):
+        return list(self.organizations.all())
+
     @classmethod
     def content_type_label(cls):
         """
