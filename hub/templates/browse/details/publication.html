@@ -7,5 +7,14 @@
     {% include "browse/details/includes/meta.html" with label="Publisher" value=object.publisher %}
     {% include "browse/details/includes/meta.html" with label="Periodical Name" value=object.periodical_name %}
     {% include "browse/details/includes/meta.html" with label="Type" value=object.get__type_display %}
-    {% include "browse/details/includes/meta.html" with label="Institution" value=object.institution.name %}
+    {% with object.get_organization_list as orgs %}
+        {% if orgs %}
+            <div>
+                <strong>Institution:</strong>
+                {% for org in orgs %}
+                    {{ org }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 {% endblock %}
