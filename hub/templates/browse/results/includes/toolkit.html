@@ -2,20 +2,30 @@
 {% load browse_tags %}
 {% load typogrify_tags %}
 
+<script type="text/javascript">
+    function switchTab(){
+        $(document.getElementById("resources-tab")).attr('class', 'active');
+        $(document.getElementById("resources-toggle")).attr('aria-expanded', true);
+        $(document.getElementById("toolkit-tab")).attr('class', '');
+        $(document.getElementById("toolkit-toggle")).attr('aria-expanded', false);
+    }
+</script>
+
 <div class="container profile">
 <div class="row">
   <div class="col-md-8 profile-body">
-
     {% if topic.introduction %}
-    <div class="panel">
-        <div class="panel-heading overflow-h">
-            <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-info"></i> Introduction</h2>
+        <div class="panel">
+            <div class="panel-heading overflow-h">
+                <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-info"></i> Introduction</h2>
+            </div>
+            <div class="panel-body">
+                {{ topic.introduction|apply_markup:"markdown" }}
+                <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
+                <a class="btn-u" href="{% url "submit:new" %}"><i class="fa fa-rocket"></i> Submit a new resource</a>
+            </div>
         </div>
-        <div class="panel-body">
-            {{ topic.introduction|apply_markup:"markdown" }}
-        </div>
-    </div>
-    <div class="margin-bottom-30"></div>
+        <div class="margin-bottom-30"></div>
     {% endif %}
 
     {% if featured_list %}
