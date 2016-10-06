@@ -23,8 +23,10 @@
                     {% with content_type_slug|add:"_page_intro" as key %}
                         {% block_content key %}
                     {% endwith %}
-                    <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
-                    <a class="btn-u" href="{% url "submit:form" ct=content_type_slug %}"><i class="fa fa-rocket"></i> Submit a new {{ content_type_singular }}</a>
+                    <div class="button-row">
+                        <a class="btn btn-default" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
+                        <a class="btn btn-default" href="{% url "submit:form" ct=content_type_slug %}"><i class="fa fa-rocket"></i> Submit a new {{ content_type_singular }}</a>
+                    </div>
                 </div>
             </div>
 

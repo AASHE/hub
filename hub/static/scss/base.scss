@@ -472,3 +472,27 @@ ul#id_gallery_view li.selected a {
 .thumbnail-style {
     height: 400px;
 }
+
+.mvAdBox {
+    text-align:center;
+    border: 1px solid #eee;
+    padding: 10px 0px 5px;
+    margin-bottom: 10px;
+}
+
+#mvAdSpot a img {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.mvAdBox small {
+    text-align: center;
+    display: block;
+    padding: 0px;
+    margin: 5px 0px 0px;
+    color: #777;
+}
+
+div.button-row {
+    text-align: center;
+}

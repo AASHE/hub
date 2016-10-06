@@ -21,8 +21,10 @@
             </div>
             <div class="panel-body">
                 {{ topic.introduction|apply_markup:"markdown" }}
-                <a class="btn-u" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
-                <a class="btn-u" href="{% url "submit:new" %}"><i class="fa fa-rocket"></i> Submit a new resource</a>
+                <div class="button-row">
+                    <a class="btn btn-default" data-toggle="tab" onclick="switchTab()" href="#resources">View all {{ page_title }}</a>
+                    <a class="btn btn-default" href="{% url "submit:new" %}"><i class="fa fa-rocket"></i> Submit a new resource</a>
+                </div>
             </div>
         </div>
         <div class="margin-bottom-30"></div>
@@ -76,19 +78,7 @@
 
         {% if new_resources_list %}
         <div class="panel">
-          {% if topic.slug == 'curriculum' %}
-            <script type="text/javascript">var p="http",d="static";if(document.location.protocol=="https:"){p+="s";d="engine";}var z=document.createElement("script");z.type="text/javascript";z.async=true;z.src=p+"://"+d+".multiview.com/ados.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(z,s);</script>
-            <script type="text/javascript">
-            var ados = ados || {};
-            ados.run = ados.run || [];
-            ados.run.push(function() {
-            /* load placement for account: Multiview, site: AASHEweb - Assoc. for the Advancement Sustainability Higher Education - MultiWeb, size: 300x250 - Medium Rectangle, zone: AASHEweb - 300x250 - Curriculum Hub Page*/
-            ados_add_placement(4466, 53631, "mvCurriculumBox", 5).setZone(158711);
-            ados_setDomain('engine.multiview.com');
-            ados_load();
-            });</script>
-          {% endif %}
-          <div id="mvCurriculumBox" style="text-align:center;"></div>
+          {% include "browse/results/includes/topic_ad.html" %}
             <div class="panel-heading overflow-h">
                 <h2 class="panel-title heading-sm pull-left"><i class="fa  fa-certificate"></i> New Resources</h2>
             </div>
