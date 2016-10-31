@@ -1,5 +1,4 @@
 """Base settings shared by all environments"""
-
 import os
 import sys
 
@@ -8,6 +7,7 @@ import django_cache_url
 from django.conf.global_settings import *   # pylint: disable=W0614,W0401  # NOQA
 
 import hub as project_module
+
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(project_module.__file__))
 
