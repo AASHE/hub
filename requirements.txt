@@ -1,17 +1,13 @@
-Django>=1.9,<1.10
+Django==1.10.1
 awesome-slugify==1.6.5
 django-bootstrap-pagination
 django-filter==0.12.0
 django-flat-theme==1.1.3
-django-haystack==2.4.1
 django-import-export==0.4.5
-django-linkcheck
 django-markup==1.0
-django-model-utils==2.4
+django-model-utils==2.5.2
 django-s3-folder-storage==0.3
 django-tables2==1.1.2
-django-tagulous==0.11.1
-elasticsearch==2.2.0
 feedparser
 fish
 markdown==2.6.5
@@ -51,3 +47,9 @@ https://github.com/chrisdrackett/django-typogrify/archive/master.zip
 https://github.com/jamstooks/django-acme-challenge/archive/master.zip
 
 https://github.com/DjangoAdminHackers/django-admin-blocks/archive/master.zip
+
+# Bob's fork of django-linkchecker
+https://github.com/rerb/django-linkcheck/archive/master.zip
+
+# Bob's fork of django-tagulous
+https://github.com/aashe/django-tagulous/archive/master.zip

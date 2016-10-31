@@ -1,10 +1,11 @@
+import warnings
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core import management
 
 from aashe.aasheauth.models import AASHEUser
 
-from ..apps.metadata.models import ConferenceName, CourseMaterialType
 
 User = get_user_model()
 
@@ -67,6 +68,8 @@ class BaseSearchBackendTestCase(TestCase):
         """
         Purge the search index before each test case run.
         """
+        warnings.warn("clear_index not called", RuntimeWarning)
+        return
         management.call_command('clear_index', verbosity=0,
                                 interactive=False)
 
@@ -74,6 +77,8 @@ class BaseSearchBackendTestCase(TestCase):
         """
         Rebuild the entire search index.
         """
+        warnings.warn("rebuild_index not called", RuntimeWarning)
+        return
         management.call_command('rebuild_index', verbosity=0,
                                 interactive=False)
 

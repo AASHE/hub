@@ -1,21 +1,23 @@
 from __future__ import unicode_literals
 
-import os
-
 from logging import getLogger
 from collections import OrderedDict
-import tagulous
 from urlparse import urlparse
 
-from django.db import models
+import tagulous
+
 from django.conf import settings
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils import timezone
+from django.contrib.postgres.search import SearchVectorField
 from django.core.urlresolvers import reverse
-from model_utils.models import TimeStampedModel
+from django.db import models
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
+from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from model_utils import Choices, FieldTracker
-from slugify import slugify
+from model_utils.models import TimeStampedModel
 from s3direct.fields import S3DirectField
+from slugify import slugify
 
 from .help import AFFIRMATION
 
@@ -131,10 +133,15 @@ class ContentType(TimeStampedModel):
 
     status_tracker = FieldTracker(fields=['status'])
 
+    authors_search_vector = SearchVectorField(blank=True, null=True)
+    websites_search_vector = SearchVectorField(blank=True, null=True)
+    files_search_vector = SearchVectorField(blank=True, null=True)
+    images_search_vector = SearchVectorField(blank=True, null=True)
+
     objects = ContentTypeManager()
 
     class Meta:
-        verbose_name = 'Genric Content Type'
+        verbose_name = 'Generic Content Type'
         verbose_name_plural = '- All Content Types -'
 
     def __str__(self):
@@ -280,6 +287,31 @@ class ContentType(TimeStampedModel):
         """
         return []
 
+    @classmethod
+    def update_search_vectors(cls):
+        """
+        Update the SearchVectorFields for all the things.
+        """
+        for instance in cls.objects.all():
+            # Save one Author, one Website, one File and one Image;
+            # that'll fire signals that cause the associated
+            # SearchVectorFields to refresh.
+            author = instance.authors.first()
+            if author:
+                author.save()
+
+            website = instance.websites.first()
+            if website:
+                website.save()
+
+            file_ = instance.files.first()
+            if file_:
+                file_.save()
+
+            image = instance.images.first()
+            if image:
+                image.save()
+
 
 @python_2_unicode_compatible
 class Author(TimeStampedModel):
@@ -363,6 +395,108 @@ class Image(TimeStampedModel):
     def get_absolute_url(self):
         return self.ct.get_admin_url()
 
+
+def escape_search_vector_value(value):
+    """
+    Escape characters in value that are special in a tsvector.
+    """
+    replace_these = ":&!|*'(),"
+    for target in replace_these:
+        value = value.replace(target, "\\" + target)
+    return value
+
+
+@receiver(post_save, sender=Author, weak=False,
+          dispatch_uid='hub.apps.content.models.author.post_save')
+@receiver(post_delete, sender=Author, weak=False,
+          dispatch_uid='hub.apps.content.models.author.post_delete')
+def update_authors_search_vector(sender, instance, **kwargs):
+    """
+    Update instance.ct.authors_search_vector.
+    """
+    content_type_model = CONTENT_TYPES[instance.ct.content_type]
+    content_type = content_type_model.objects.get(
+        pk=instance.ct.pk)
+    content_type.authors_search_vector = escape_search_vector_value(
+        ' '.join(
+            [author.name for author in content_type.authors.all()]))
+    content_type.save()
+
+
+@receiver(post_save, sender=Website, weak=False,
+          dispatch_uid='hub.apps.content.models.website.post_save')
+@receiver(post_delete, sender=Website, weak=False,
+          dispatch_uid='hub.apps.content.models.website.post_delete')
+def update_websites_search_vector(sender, instance, **kwargs):
+    """
+    Update instance.ct.websites_search_vector.
+    """
+    content_type_model = CONTENT_TYPES[instance.ct.content_type]
+    content_type = content_type_model.objects.get(
+        pk=instance.ct.pk)
+    content_type.websites_search_vector = ""
+    for website in content_type.websites.all():
+        if website.label:
+            content_type.websites_search_vector = " ".join(
+                (content_type.websites_search_vector, website.label))
+        if website.url:
+            content_type.websites_search_vector = " ".join(
+                (content_type.websites_search_vector, website.url))
+    content_type.websites_search_vector = escape_search_vector_value(
+        content_type.websites_search_vector)
+    content_type.save()
+
+
+@receiver(post_save, sender=File, weak=False,
+          dispatch_uid='hub.apps.content.models.file.post_save')
+@receiver(post_delete, sender=File, weak=False,
+          dispatch_uid='hub.apps.content.models.file.post_delete')
+def update_files_search_vector(sender, instance, **kwargs):
+    """
+    Update instance.ct.files_search_vector.
+    """
+    content_type_model = CONTENT_TYPES[instance.ct.content_type]
+    content_type = content_type_model.objects.get(
+        pk=instance.ct.pk)
+    content_type.files_search_vector = escape_search_vector_value(
+        ' '.join(
+            [file.label for file in content_type.files.all()]))
+    content_type.save()
+
+
+@receiver(post_save, sender=Image, weak=False,
+          dispatch_uid='hub.apps.content.models.image.post_save')
+@receiver(post_delete, sender=Image, weak=False,
+          dispatch_uid='hub.apps.content.models.image.post_delete')
+def update_images_search_vector(sender, instance, **kwargs):
+    """
+    Update instance.ct.images_search_vector.
+    """
+    content_type_model = CONTENT_TYPES[instance.ct.content_type]
+    content_type = content_type_model.objects.get(
+        pk=instance.ct.pk)
+    content_type.images_search_vector = ""
+    for image in content_type.images.all():
+        if image.caption:
+            content_type.images_search_vector = " ".join(
+                (content_type.images_search_vector, image.caption))
+        if image.credit:
+            content_type.images_search_vector = " ".join(
+                (content_type.images_search_vector, image.credit))
+    content_type.images_search_vector = escape_search_vector_value(
+        content_type.images_search_vector)
+    content_type.save()
+
+
+def update_all_content_type_search_vectors():
+    """
+    Update all the search vectors for all the things.
+    """
+    for model in CONTENT_TYPES.values():
+        logger.debug("Updating search vectors for " + str(model))
+        model.update_search_vectors()
+
+
 # =============================================================================
 # Mapping of all available content types.
 #
@@ -381,6 +515,7 @@ from .types.tools import Tool
 from .types.videos import Video
 
 CONTENT_TYPES = OrderedDict()
+
 CONTENT_TYPES['academicprogram'] = AcademicProgram
 CONTENT_TYPES['casestudy'] = CaseStudy
 CONTENT_TYPES['presentation'] = Presentation

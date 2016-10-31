@@ -7,7 +7,6 @@ from . import utils
 from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
 from .types.casestudies import CaseStudy
 from .types.publications import Publication
-from django.utils import timezone
 from import_export.admin import ExportMixin
 from model_utils import Choices
 
@@ -78,7 +77,9 @@ class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     search_fields = ('title', 'description', 'keywords',)
     readonly_fields = ('published',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
-    exclude = ('content_type',)
+    exclude = ('content_type', 'authors_search_vector',
+               'websites_search_vector', 'files_search_vector',
+               'images_search_vector')
     raw_id_fields = ('submitted_by',)
 
     def _update_application_index(self):
@@ -107,8 +108,8 @@ class SpecificContentTypeAdmin(BaseContentTypeAdmin):
 class AllContentTypesAdmin(BaseContentTypeAdmin):
     list_display = ('select_link', 'status', 'object_link',
                     'content_type_name', 'created', 'published', 'notes')
-    list_filter = ('status', 'topics', 'permission', 'created', 'published',)
-    list_sort = ('object_link', 'content_type_name',)
+    list_filter = ('status', 'topics', 'permission', 'created', 'published')
+    list_sort = ('object_link', 'content_type_name')
     list_display_links = ('select_link',)
     actions_on_top = True
     actions_on_bottom = False

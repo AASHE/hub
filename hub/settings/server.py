@@ -24,17 +24,6 @@ DATABASES = {
     'default': dj_database_url.parse(os.environ.get('HUB_DB_URL')),
 }
 
-# Haystack ElasticSearch
-haystack_prefix = "haystack.backends.elasticsearch_backend"
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': "%s.ElasticsearchSearchEngine" % haystack_prefix,
-        'URL': os.environ.get('SEARCHBOX_SSL_URL', None),
-        'INDEX_NAME': 'haystack',
-        'TIMEOUT': 60 * 5
-    },
-}
-
 # ==============================================================================
 # Aasheauth
 # ==============================================================================

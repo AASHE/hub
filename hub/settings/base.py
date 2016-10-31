@@ -1,11 +1,12 @@
 """Base settings shared by all environments"""
 
-# Import global settings to make it easier to extend settings.
-from django.conf.global_settings import *   # pylint: disable=W0614,W0401
-import os
-
 import os
 import sys
+
+import django_cache_url
+# Import global settings to make it easier to extend settings.
+from django.conf.global_settings import *   # pylint: disable=W0614,W0401  # NOQA
+
 import hub as project_module
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(project_module.__file__))
@@ -44,7 +45,6 @@ INSTALLED_APPS = (
     'aashe.aasheauth',
     'aashe_theme',
     'block_content',
-    'haystack',
     'iss',
     'import_export',
     'sorl.thumbnail',
@@ -105,7 +105,7 @@ TEMPLATES = [{
             'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
-            'django.core.context_processors.request',
+            'django.template.context_processors.request',
             'hub.apps.browse.context_processors.cache_vars',
         ],
         'debug': DEBUG,
@@ -228,16 +228,6 @@ LOGGING = {
 # Third party app settings
 # ==============================================================================
 
-eng = 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine'
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': eng,
-        'URL': 'http://127.0.0.1:9200/',
-        'INDEX_NAME': 'haystack',
-        'TIMEOUT': 30
-    },
-}
-
 # Debug Toolbar
 DEBUG_TOOLBAR = os.environ.get('DEBUG_TOOLBAR', False)
 if DEBUG_TOOLBAR:
@@ -247,7 +237,6 @@ if DEBUG_TOOLBAR:
 CACHE_TTL_SHORT = 60 * 10  # 10 minutes
 CACHE_TTL_LONG = 60 * 60 * 12  # 12 hours
 
-import django_cache_url
 CACHE_URL = os.environ.get('CACHE_URL', 'dummy://')
 CACHES = {'default': django_cache_url.parse(CACHE_URL)}
 

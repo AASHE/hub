@@ -7,14 +7,12 @@ from operator import or_
 import django_filters as filters
 from django import forms
 from django.conf import settings
+from django.contrib.postgres.search import SearchVector
 from django.core.cache import cache
 from django.db.models import Q
 from django.utils.timezone import now
 
-from haystack.inputs import Raw
-from haystack.query import SearchQuerySet
-
-from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
+from ..content.models import CONTENT_TYPES, ContentType, Material
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType
 from .localflavor import CA_PROVINCES, US_STATES
@@ -33,14 +31,10 @@ ALL = (('', 'All'),)
 # =============================================================================
 
 class SearchFilter(filters.CharFilter):
-    """
-    Search currently searches the title against the given keyword.
 
-    TODO: Implement search engine
-    """
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
+            return queryset
 
         # Remove any special characters
         # http://lucene.apache.org/core/3_4_0/queryparsersyntax.html#Escaping%20Special%20Characters
@@ -48,10 +42,20 @@ class SearchFilter(filters.CharFilter):
         translation_table = dict.fromkeys(map(ord, esc_string), None)
         query = value.translate(translation_table)
 
-        query = Raw(query.lower())
-        result_ids = (SearchQuerySet().filter(content__contains=query)
-                                      .values_list('ct_pk', flat=True))
-        return qs.filter(pk__in=result_ids).distinct()
+        search_vector = SearchVector('title',
+                                     'description',
+                                     'authors_search_vector',
+                                     'websites_search_vector',
+                                     'files_search_vector',
+                                     'images_search_vector')
+
+        return (queryset.annotate(search=search_vector).
+                filter(search=query.lower()))
+
+        # query = Raw(query.lower())
+        # result_ids = (SearchQuerySet().filter(content__contains=query)
+        #                               .values_list('ct_pk', flat=True))
+        # return queryset.filter(pk__in=result_ids).distinct()
 
 
 class TopicFilter(filters.ChoiceFilter):
@@ -75,10 +79,10 @@ class TopicFilter(filters.ChoiceFilter):
         })
         super(TopicFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
-        return qs.filter(topics__slug__in=value)
+            return queryset
+        return queryset.filter(topics__slug__in=value)
 
 
 class ContentTypesFilter(filters.ChoiceFilter):
@@ -101,10 +105,10 @@ class ContentTypesFilter(filters.ChoiceFilter):
         })
         super(ContentTypesFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
-        return qs.filter(content_type__in=value)
+            return queryset
+        return queryset.filter(content_type__in=value)
 
 
 class OrganizationFilter(filters.ChoiceFilter):
@@ -127,10 +131,10 @@ class OrganizationFilter(filters.ChoiceFilter):
         })
         super(OrganizationFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
-        return qs.filter(organizations__in=value)
+            return queryset
+        return queryset.filter(organizations__in=value)
 
 
 class TagFilter(filters.ChoiceFilter):
@@ -156,12 +160,12 @@ class TagFilter(filters.ChoiceFilter):
         })
         super(TagFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
 
-        new_qs = qs
+        new_queryset = queryset
         for slug in value:
-            new_qs = new_qs.filter(keywords__slug=slug)
-        return new_qs
+            new_queryset = new_queryset.filter(keywords__slug=slug)
+        return new_queryset
 
 
 class StudentFteFilter(filters.ChoiceFilter):
@@ -184,9 +188,9 @@ class StudentFteFilter(filters.ChoiceFilter):
         })
         super(StudentFteFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
+            return queryset
 
         # OPTIMIZE: this loads a big chunk of organizations just to use a
         # very little of them to filter the result queryset down.
@@ -194,7 +198,7 @@ class StudentFteFilter(filters.ChoiceFilter):
         for v in value:
             min, max = self.STUDENT_CHOICES_MAP[v][1]
             org_list += Organization.objects.in_fte_range(min, max)
-        return qs.filter(organizations__in=org_list).distinct()
+        return queryset.filter(organizations__in=org_list).distinct()
 
 
 class CountryFilter(filters.ChoiceFilter):
@@ -202,13 +206,13 @@ class CountryFilter(filters.ChoiceFilter):
 
         countries = cache.get('country_filter_choices')
         if not countries:
-            qs = ContentType.objects.published().order_by(
+            queryset = ContentType.objects.published().order_by(
                 'organizations__country')
-            qs = qs.values_list(
+            queryset = queryset.values_list(
                 'organizations__country_iso',
                 'organizations__country').distinct()
             countries = ALL + tuple(
-                [c for c in qs if (c[0] is not None and c[0] is not '')])
+                [c for c in queryset if (c[0] is not None and c[0] is not '')])
 
             cache.set(
                 'country_filter_choices', countries, settings.CACHE_TTL_SHORT)
@@ -219,10 +223,10 @@ class CountryFilter(filters.ChoiceFilter):
         })
         super(CountryFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
-        return qs.filter(organizations__country_iso=value)
+            return queryset
+        return queryset.filter(organizations__country_iso=value)
 
 
 class BaseStateFilter(filters.ChoiceFilter):
@@ -236,10 +240,10 @@ class BaseStateFilter(filters.ChoiceFilter):
         })
         super(BaseStateFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
-        return qs.filter(organizations__state__in=value)
+            return queryset
+        return queryset.filter(organizations__state__in=value)
 
 
 class StateFilter(BaseStateFilter):
@@ -282,13 +286,13 @@ class PublishedFilter(filters.ChoiceFilter):
 
     def get_choices(self):
 
-        qs = ContentType.objects.published()
+        queryset = ContentType.objects.published()
 
         # Find the minimum and maximum year of all ct's and put them
         # in a range for choices.
         # @todo - add caching here for performance
-        min_year = qs.order_by('published').first()
-        max_year = qs.order_by('-published').first()
+        min_year = queryset.order_by('published').first()
+        max_year = queryset.order_by('-published').first()
 
         if not min_year or not max_year:
             year_choices = ((now().year, now().year),)
@@ -302,11 +306,11 @@ class PublishedFilter(filters.ChoiceFilter):
 
         return year_choices
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
+            return queryset
         query = reduce(or_, (Q(published__year=x) for x in value))
-        return qs.filter(query)
+        return queryset.filter(query)
 
 
 class OrderingFilter(filters.ChoiceFilter):
@@ -325,10 +329,10 @@ class OrderingFilter(filters.ChoiceFilter):
         })
         super(OrderingFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs.order_by('-published')
-        return qs.order_by(value)
+            return queryset.order_by('-published')
+        return queryset.order_by(value)
 
 
 # Academic Program specific
@@ -355,15 +359,15 @@ class ProgramTypeFilter(filters.ChoiceFilter):
         })
         super(ProgramTypeFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         """
         Filters always work against the base `ContenType` model, not it's
         sub classes. We have to do a little detour to match them up.
         """
         if not value:
-            return qs
+            return queryset
         from ..content.types.academic import AcademicProgram
-        return qs.filter(pk__in=AcademicProgram.objects.filter(
+        return queryset.filter(pk__in=AcademicProgram.objects.filter(
             program_type__in=value).values_list('pk', flat=True))
 
 
@@ -397,7 +401,7 @@ class OrgTypeFilter(filters.ChoiceFilter):
         })
         super(OrgTypeFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if value:
             cc_values = [x[0] for x in self.carnegie_class_choices]
             t_values = [x[0] for x in self.type_choices]
@@ -420,13 +424,13 @@ class OrgTypeFilter(filters.ChoiceFilter):
             t_kwargs = {'organizations__org_type__in': selected_t_values}
 
             if selected_cc_values and selected_t_values:
-                return qs.filter(Q(**cc_kwargs) | Q(**t_kwargs))
+                return queryset.filter(Q(**cc_kwargs) | Q(**t_kwargs))
             elif selected_cc_values:
-                return qs.filter(**cc_kwargs)
+                return queryset.filter(**cc_kwargs)
             else:
-                return qs.filter(**t_kwargs)
+                return queryset.filter(**t_kwargs)
 
-        return qs
+        return queryset
 
 
 class MaterialTypeFilter(filters.ChoiceFilter):
@@ -444,11 +448,11 @@ class MaterialTypeFilter(filters.ChoiceFilter):
         })
         super(MaterialTypeFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if value:
-            return qs.filter(pk__in=Material.objects.filter(
+            return queryset.filter(pk__in=Material.objects.filter(
                 material_type__in=value).values_list('pk', flat=True))
-        return qs
+        return queryset
 
 
 class CourseLevelFilter(filters.ChoiceFilter):
@@ -466,11 +470,11 @@ class CourseLevelFilter(filters.ChoiceFilter):
         })
         super(CourseLevelFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if value:
-            return qs.filter(pk__in=Material.objects.filter(
+            return queryset.filter(pk__in=Material.objects.filter(
                 course_level__in=value).values_list('pk', flat=True))
-        return qs
+        return queryset
 
 
 # Publication specific
@@ -488,15 +492,15 @@ class PublicationTypeFilter(filters.ChoiceFilter):
         })
         super(PublicationTypeFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         """
         Filters always work against the base `ContenType` model, not it's
         sub classes. We have to do a little detour to match them up.
         """
         if not value:
-            return qs
+            return queryset
         from ..content.types.publications import Publication
-        return qs.filter(pk__in=Publication.objects.filter(
+        return queryset.filter(pk__in=Publication.objects.filter(
             material_type__in=value).values_list('pk', flat=True))
 
 
@@ -527,14 +531,14 @@ class CreatedFilter(filters.ChoiceFilter):
 
     def get_choices(self, ContentTypeClass):
 
-        qs = ContentTypeClass.objects.published().filter(
+        queryset = ContentTypeClass.objects.published().filter(
             date_created__isnull=False)
-        qs = qs.order_by('-date_created')
+        queryset = queryset.order_by('-date_created')
 
         # Find the minimum and maximum year of all ct's and put them
         # in a range for choices.
         # @todo - add caching here for performance
-        all_dates = qs.values_list('date_created', flat=True)
+        all_dates = queryset.values_list('date_created', flat=True)
         if all_dates:
             # using set to remove duplicates
             distinct_years = list(set([d.year for d in all_dates]))
@@ -545,11 +549,11 @@ class CreatedFilter(filters.ChoiceFilter):
 
         return year_choices
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
+            return queryset
         query = reduce(or_, (Q(date_created__year=x) for x in value))
-        return qs.filter(query)
+        return queryset.filter(query)
 
 
 class DisciplineFilter(filters.ChoiceFilter):
@@ -576,7 +580,7 @@ class DisciplineFilter(filters.ChoiceFilter):
         })
         super(DisciplineFilter, self).__init__(*args, **kwargs)
 
-    def filter(self, qs, value):
+    def filter(self, queryset, value):
         if not value:
-            return qs
-        return qs.filter(disciplines__in=value)
+            return queryset
+        return queryset.filter(disciplines__in=value)
