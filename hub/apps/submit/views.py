@@ -67,8 +67,6 @@ class SubmitFormView(LoginRequiredMixin, FormView):
                         if form.has_changed():
                             form.save(instance=instance)
 
-            instance.create_thumbnails()
-
             return HttpResponseRedirect(self.get_success_url())
 
         ctx = self.get_context_data(**forms)

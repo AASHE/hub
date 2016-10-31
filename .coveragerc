@@ -7,4 +7,3 @@ omit =
     hub/imports/*
     hub/wsgi.py
     hub/exports/management/commands/*
-    hub/apps/content/management/commands/*

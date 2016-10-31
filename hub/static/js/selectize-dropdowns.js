@@ -8,15 +8,6 @@ updateOrgDropdowns = function() {
       labelField: 'org_name',
       searchField: 'org_name',
       dropdownParent: 'body',
-      sortField: [
-        {
-            field: 'org_name',
-            direction: 'asc'
-        },
-        {
-            field: '$score'
-        }
-      ],
       load: function(query, callback) {
           if (!query.length || query.length < 2) return callback();
           $.ajax({

@@ -4,16 +4,8 @@
 
 {% block resource_metadata %}
     <div class="margin-bottom-10"></div>
-    {% include "browse/details/includes/meta.html" with label="Conference" value=object.conf_name %}
-    {% include "browse/details/includes/meta.html" with label="Type" value=object.presentation_type %}
-    {% with object.get_organization_list as orgs %}
-        {% if orgs %}
-            <div>
-                <strong>Institution:</strong>
-                {% for org in orgs %}
-                    {{ org }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+    {% include "browse/details/includes/meta.html" with label="institution" value=object.institution.name %}
+    {% include "browse/details/includes/meta.html" with label="Conference" value=object.get_conf_name_display %}
+    {% include "browse/details/includes/meta.html" with label="Type" value=object.get_presentation_type_display %}
 {% endblock %}
+

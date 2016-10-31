@@ -111,7 +111,7 @@ class FileForm(AffirmationMixin, forms.ModelForm):
 class ImageForm(AffirmationMixin, forms.ModelForm):
     class Meta:
         model = Image
-        exclude = ('id', 'ct', 'small_thumbnail', 'med_thumbnail')
+        exclude = ('id', 'ct')
 
     def __init__(self, *args, **kwargs):
         super(ImageForm, self).__init__(*args, **kwargs)

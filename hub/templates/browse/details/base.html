@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load block_content %}
 {% load static %}
+{% load thumbnail %}
 {% load typogrify_tags %}
 {% load cache %}
 
@@ -163,7 +164,9 @@
                             <div class="col-md-4">
                                 <div class="thumbnails thumbnail-style">
                                     <a class="fancybox" data-rel="fancybox-button" title="{{ image.caption }}" href="{{ image.image }}">
-                                        <img class="img-responsive" src="{{ image.med_thumbnail }}" alt="{{ image.caption }}">
+                                        {% thumbnail image.image "300x300" crop="center" as im %}
+                                            <img class="img-responsive" src="{{ im.url }}" alt="{{ image.caption }}">
+                                        {% endthumbnail %}
                                     </a>
                                     <div class="caption">
                                         {% if image.caption %}
@@ -187,12 +190,12 @@
 
                 {# ========================================================== #}
 
+                {% if object.websites.all or object.files.all %}
                 <hr>
                 <div class="panel panel-profile">
                     <div class="panel-heading overflow-h">
                         <h2 class="panel-title heading-sm pull-left"><i class="icon  icon-folder"></i> Links and Materials</h2>
                     </div>
-                {% if object.websites.all or object.files.all %}
                     <div class="panel-body">
                         <ul class="list-unstyled social-contacts-v3">
                             <!-- Websites -->
@@ -212,12 +215,8 @@
                             {% endfor %}
                         </ul>
                     </div>
-                {% else %}
-                    <div class="panel-body">
-                        The submitter of this resource did not include any associated files or links.
-                    </div>
-                {% endif %}
                 </div>
+                {% endif %}
 
 
             <!-- /inner body -->

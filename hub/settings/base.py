@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'integration_settings.google_analytics',
     's3direct',
     'bootstrap_pagination',
+    'linkcheck',
     'django_admin_blocks',
 
     'hub',
@@ -104,7 +105,8 @@ TEMPLATES = [{
             'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
-            'hub.apps.browse.context_processors.cache_vars'
+            'django.template.context_processors.request',
+            'hub.apps.browse.context_processors.cache_vars',
         ],
         'debug': DEBUG,
     }
@@ -289,26 +291,11 @@ ALLOWED_FILE_TYPES = [
     'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
 ]
 
-# ==============================================================================
-# S3Direct Settings
-# ==============================================================================
-
-
-# work around from: https://github.com/bradleyg/django-s3direct/issues/50
-def safe_key(prefix, file_name):
-    file_name = file_name.replace(' ', '_')
-    file_name = file_name.replace('+', '-')
-    # Plus any additional file name customization you want.
-    from random import randint
-    key = "%s/%d-%s" % (prefix, randint(0, 999), file_name)
-    return key
-
-import functools
 S3DIRECT_REGION = os.environ.get('S3DIRECT_REGION', 'us-east-1')
 S3DIRECT_DESTINATIONS = {
     # Limit uploads to jpeg's and png's.
     'images': {
-        'key': functools.partial(safe_key, 'uploads'),
+        'key': 'uploads',
         'auth': lambda u: u.is_authenticated(),
         'allowed': ['image/jpeg', 'image/png'],
     },
@@ -324,37 +311,15 @@ S3DIRECT_DESTINATIONS = {
 # ==============================================================================
 # Link checking
 # ==============================================================================
-
-LINKCHECK_DISABLE = os.environ.get('LINKCHECK_DISABLE', False)
-if not LINKCHECK_DISABLE:
-    INSTALLED_APPS += ('linkcheck',)
-    LINKCHECK_EXTERNAL_RECHECK_INTERVAL = int(os.environ.get(
-        'LINKCHECK_EXTERNAL_RECHECK_INTERVAL', 10080))
-    LINKCHECK_EXTERNAL_REGEX_STRING = os.environ.get(
-        'LINKCHECK_EXTERNAL_REGEX_STRING', r'^https?://')
-    LINKCHECK_MEDIA_PREFIX = os.environ.get(
-        'LINKCHECK_MEDIA_PREFIX', '/media/')
-    LINKCHECK_RESULTS_PER_PAGE = os.environ.get(
-        'LINKCHECK_RESULTS_PER_PAGE', 25)
-    LINKCHECK_MAX_URL_LENGTH = os.environ.get('LINKCHECK_MAX_URL_LENGTH', 255)
-    LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT = os.environ.get(
-        'LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT', 10)
-    SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'testserver')
-
-# ==============================================================================
-# Celery
-# ==============================================================================
-
-# in dev mode, celery won't use redis or a background task, but work inline
-# set the env var to 1 or 0 (or don't set it at all)
-# Since Heroku can set the broker URL, we have to create the intermediate
-# variable `CELERY_BROKER_VAR` to be flexible
-CELERY_ALWAYS_EAGER = os.environ.get('CELERY_ALWAYS_EAGER', '1') == '1'
-CELERY_BROKER_VAR = os.environ.get('CELERY_BROKER_VAR', '')
-BROKER_URL = os.environ.get(CELERY_BROKER_VAR, None)
-CELERY_ACCEPT_CONTENT = ['json', ]
-CELERY_TASK_SERIALIZER = 'json'
-# No backend needed right now, since we're not storing results
-# CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND_URL', None)
+LINKCHECK_EXTERNAL_RECHECK_INTERVAL = os.environ.get(
+    'LINKCHECK_EXTERNAL_RECHECK_INTERVAL', 10080)
+LINKCHECK_EXTERNAL_REGEX_STRING = os.environ.get(
+    'LINKCHECK_EXTERNAL_REGEX_STRING', r'^https?://')
+LINKCHECK_MEDIA_PREFIX = os.environ.get('LINKCHECK_MEDIA_PREFIX', '/media/')
+LINKCHECK_RESULTS_PER_PAGE = os.environ.get('LINKCHECK_RESULTS_PER_PAGE', 25)
+LINKCHECK_MAX_URL_LENGTH = os.environ.get('LINKCHECK_MAX_URL_LENGTH', 255)
+LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT = os.environ.get(
+    'LINKCHECK_CONNECTION_ATTEMPT_TIMEOUT', 10)
+SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'testserver')
 
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)

@@ -11,7 +11,7 @@ Hub.  We reviewed your submission and have decided not to post the
 following resource at this time as it does not appear to meet our
 Campus Sustainability Hub Submission Guidelines.
 
-  - Resource title: {{ resource.title }}
+  - Resource title: {{ resource.title|titlecase }}
   - Content type: {{ resource.content_type_label }}
   - Submitter name: {{ resource.submitted_by.get_full_name }}
 

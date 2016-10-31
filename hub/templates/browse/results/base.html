@@ -34,7 +34,6 @@
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/sky-forms-pro/skyforms/css/sky-forms.css' %}">
     <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css' %}">
-    <link rel="stylesheet" href="{% static 'aashe_theme/unify/plugins/fancybox/source/jquery.fancybox.css' %}">
 {% endblock css %}
 
 {% block javascript %}
@@ -51,13 +50,6 @@
         {% include 'browse/results/includes/bar_charts.html' %}
         {% include 'browse/results/includes/map.html' %}
     {% endif %}
-    <script type="text/javascript" src="{% static 'aashe_theme/unify/plugins/fancybox/source/jquery.fancybox.pack.js' %}"></script>
-    <script type="text/javascript" src="{% static 'aashe_theme/unify/js/plugins/fancy-box.js' %}"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function() {
-            FancyBox.initFancybox();
-        });
-    </script>
 {% endblock %}
 
 {% block browse_above_tabs %}
@@ -85,28 +77,19 @@
             </div>
             <div class="col-md-9">
                 <span class="results-number">
-                    {{ page_obj.paginator.count }} resource{{ page_obj.paginator.count|pluralize }}
+                    {{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}
                     <!-- {% if request.GET and not request.GET.search%} | <a href=".?show-all">Show all</a>{% endif %} -->
                 </span>
-                {% block result_list %}
-                    {% if object_list %}
-                      <div class="row">
-                        {% if gallery_view %}
-                          {% for obj in object_list %}
-                            {% include "browse/results/includes/gallery_item.html" %}
-                          {% endfor %}
-                        {% else %}
-                          {% for obj in object_list %}
-                            {% include "browse/results/includes/item.html" %}
-                          {% endfor %}
-                        {% endif %}
-                      </div>
-                    {% else %}
-                        <div class="no-results">No resources match your current filter settings.</div>
-                    {% endif %}
-                {% endblock %}
+              {% block result_list %}
+                {% for obj in object_list %}
+                    {% include "browse/results/includes/item.html" %}
+                {% empty %}
+                    <div class="no-results">No resources match your current filter settings.</div>
+                {% endfor %}
+              {% endblock %}
+
+              {% include "browse/results/includes/pagination.html" %}
             </div>
-            {% include "browse/results/includes/pagination.html" %}
         </div>
     </div>
     <!-- end cache -->

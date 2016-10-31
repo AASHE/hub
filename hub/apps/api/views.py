@@ -76,10 +76,8 @@ class OrganizationsApiView(AutoCompleteView):
         return 'api_organizations_{}'.format(slugify(self.q))
 
     def get_data(self):
-        data = Organization.objects.values('pk', 'org_name', 'state')
-        data = data.filter(org_name__icontains=self.q)
-        data = data.order_by('org_name')
-
+        data = Organization.objects.values(
+            'pk', 'org_name', 'state').filter(org_name__icontains=self.q)
         data = list(data)
         for x in data:
             x['org_name'] = '{}, {}'.format(x['org_name'], x['state'])

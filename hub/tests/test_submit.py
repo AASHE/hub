@@ -3,17 +3,14 @@ import os
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.test import override_settings
 
 from ..apps.metadata.models import AcademicDiscipline, Organization, \
     SustainabilityTopic, InstitutionalOffice, CourseMaterialType
 from ..apps.content.types.videos import Video
 from ..apps.content.types.courses import Material
-from ..apps.content.types.casestudies import CaseStudy
 from .base import WithUserSuperuserTestCase
 
 
-@override_settings(CELERY_ALWAYS_EAGER=True)
 class SubmitResourceTestCase(WithUserSuperuserTestCase):
     """
     Tests around a content type submission. In this case a Video, since it
@@ -82,19 +79,6 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
             'file-MAX_NUM_FORMS': 5
         })
 
-        self.casestudy_form_valid_data = {}
-        self.casestudy_form_valid_data.update(self.video_form_valid_data)
-        self.casestudy_form_valid_data.update({
-            'document-financing': 'blah',
-            'document-lessons_learned': 'blah',
-            'document-description': 'blah',
-            'document-implementation': 'blah',
-            'document-timeline': 'blah',
-            'document-results': 'blah',
-            'document-goals': 'blah',
-            'document-background': 'blah'
-        })
-
         self.video_form_valid_data.update({
             'website-TOTAL_FORMS': 1,
             'website-MIN_NUM_FORMS': 1,
@@ -116,12 +100,6 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         if form_data:
             data.update(form_data)
         return self.client.post(self.material_form_url, data, follow=True)
-
-    def _post_casestudy(self, form_data=None):
-        data = self.casestudy_form_valid_data
-        if form_data:
-            data.update(form_data)
-        return self.client.post(self.casestudy_form_url, data, follow=True)
 
     def test_invalid_content_type_gives_404(self):
         self.client.logout()
@@ -393,42 +371,6 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         response = self.client.get(self.casestudy_form_url)
         self.assertNotContains(response, html, html=True)
 
-        # materials include date_created
+        # materials do not
         response = self.client.get(self.material_form_url)
         self.assertContains(response, html, html=True)
-
-    def test_image_thumbnailing(self):
-        """
-        Test that images get thumbnailed properly right after submission
-        """
-        additional_data = {
-            'document-topics': [
-                SustainabilityTopic.objects.get(name='Science').pk,
-            ],
-            'image-0-label': 'test file',
-            'image-0-image':
-                "http://testserver%stest/sold.jpg" % settings.STATIC_URL,
-            'image-0-affirmation': 'on',
-            'image-TOTAL_FORMS': '1',
-            'image-INITIAL_FORMS': 0,
-            'image-MIN_NUM_FORMS': 1,
-            'image-MAX_NUM_FORMS': 5,
-
-            'author-0-name': 'Martin',
-            'author-0-email': 'martin@example.com',
-            'author-0-title': 'Head of Regular Expressions',
-
-            'author-TOTAL_FORMS': '1'
-        }
-
-        self.client.login(**self.user_cred)
-        response = self._post_casestudy(additional_data)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(CaseStudy.objects.count(), 1)
-        img = CaseStudy.objects.all()[0].images.all()[0]
-        self.assertNotEqual(img.med_thumbnail, '/static/img/300x300_blank.png')
-        self.assertTrue('cache' in img.med_thumbnail)
-        self.assertNotEqual(
-            img.small_thumbnail, '/static/img/100x100_blank.png')
-        self.assertTrue('cache' in img.small_thumbnail)

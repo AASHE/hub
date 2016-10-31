@@ -6,11 +6,11 @@
 {% block body_class %}page-browse-topic{% endblock %}
 
 {% block browse_additional_tabs %}
-    <li id="toolkit-tab" class="{% if not request.GET %}active{% endif %}">
-        <a id="toolkit-toggle" data-toggle="tab" href="#toolkit" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Toolkit</a>
+    <li class="{% if not request.GET %}active{% endif %}">
+        <a data-toggle="tab" href="#toolkit" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Toolkit</a>
     </li>
-    <li id="resources-tab" class="{% if request.GET %}active{% endif %}">
-        <a id="resources-toggle" data-toggle="tab" href="#resources" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Resources</a>
+    <li class="{% if request.GET %}active{% endif %}">
+        <a data-toggle="tab" href="#resources" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Resources</a>
     </li>
     <li>
         <a data-toggle="tab" href="#stars">STARS Data</a>
@@ -57,3 +57,12 @@
         </div>
     {% endif %}
 {% endblock %}
+
+
+{% block result_list %}
+    {% for obj in object_list %}
+        {% include "browse/results/includes/item.html" %}
+    {% empty %}
+        <div class="no-results">No resources match your current filter settings.</div>
+    {% endfor %}
+{% endblock result_list %}

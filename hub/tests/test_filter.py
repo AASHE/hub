@@ -1,13 +1,11 @@
 from django.utils.timezone import now
-from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from ..apps.metadata.models import Organization, SustainabilityTopic, \
     AcademicDiscipline, PublicationMaterialType
 from ..apps.content.types.academic import AcademicProgram
-from ..apps.content.types.photographs import Photograph
 from ..apps.content.types.publications import Publication
-from ..apps.content.models import CONTENT_TYPES, Image
+from ..apps.content.models import CONTENT_TYPES
 from .base import (
     BaseSearchBackendTestCase,
     WithUserSuperuserTestCase,
@@ -198,61 +196,3 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             response = self.client.get(_url, _filter_data)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(response.context['object_list']), 1)
-
-
-class TestGalleryView(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
-    """
-        Test the gallery view
-
-        - ensure filter is working properly (only resources with images)
-    """
-    def setUp(self):
-
-        super(TestGalleryView, self).setUp()
-
-        self.resource1 = Photograph.objects.create(
-            status=Photograph.STATUS_CHOICES.published,
-            title='Test Photo Resource',
-            slug='test-photo-resource',
-            submitted_by=self.superuser
-            )
-        self.resource2 = Photograph.objects.create(
-            status=Photograph.STATUS_CHOICES.published,
-            title='Test Photo Resource',
-            slug='test-photo-resource',
-            submitted_by=self.superuser
-            )
-        img1 = Image.objects.create(
-            ct=self.resource1,
-            image="http://testserver%stest/sold.jpg" % settings.STATIC_URL,
-            affirmation=True,
-            caption="test caption one",
-            credit="test credit one"
-        )
-        img2 = Image.objects.create(
-            ct=self.resource1,
-            image="http://testserver%stest/sold.jpg" % settings.STATIC_URL,
-            affirmation=True,
-            caption="test caption two",
-            credit="test credit two"
-        )
-
-    def test_view(self):
-
-        _url = reverse(
-            'browse:browse',
-            kwargs={'ct': 'photograph'})
-
-        # test the list view - should show both resources
-        _filter_data = {'gallery_view': 'list'}
-        response = self.client.get(_url, _filter_data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['object_list']), 2)
-
-        # test the gallery view
-        # @todo - should the object list be image objects... and therefore 2?
-        # decision needed
-        _filter_data = {'gallery_view': 'gallery'}
-        response = self.client.get(_url, _filter_data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['object_list']), 1)

@@ -5,11 +5,11 @@
 {% block body_class %}page-browse-content-type{% endblock %}
 
 {% block browse_additional_tabs %}
-    <li id="summary-tab" class="{% if not request.GET %}active{% endif %}">
-        <a id="summary-toggle" data-toggle="tab" href="#summary" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary</a>
+    <li class="{% if not request.GET %}active{% endif %}">
+        <a data-toggle="tab" href="#summary" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary</a>
     </li>
-    <li id="resource-tab" class="{% if request.GET %}active{% endif %}">
-        <a id="resource-toggle" data-toggle="tab" href="#resources" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Resources</a>
+    <li class="{% if request.GET %}active{% endif %}">
+        <a data-toggle="tab" href="#resources" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Resources</a>
     </li>
 {% endblock %}
 

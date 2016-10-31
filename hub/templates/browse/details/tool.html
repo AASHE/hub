@@ -4,16 +4,7 @@
 
 {% block resource_metadata %}
     <div class="margin-bottom-10"></div>
-    {% with object.get_organization_list as orgs %}
-        {% if orgs %}
-            <div>
-                <strong>Institution:</strong>
-                {% for org in orgs %}
-                    {{ org }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+    {% include "browse/details/includes/meta.html" with label="Institution" value=object.institution.name %}
 {% endblock %}
 
 

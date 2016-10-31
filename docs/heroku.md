@@ -1,12 +1,5 @@
 # Heroku Tips & Tricks
 
-## Heroku local
-
-You'll want to set the `DJANGO_SETTINGS_MODULE` when you use the `heroku local`
-command. I usually just set it to:
-
-        export DJANGO_SETTINGS_MODULE=hub.settings.server
-
 ## Load a database backup from Heroku and install it locally:
 
 1. heroku pg:backups capture
@@ -27,8 +20,8 @@ How I do this (Ben):
     heroku pg:backups capture HEROKU_POSTGRESQL_OLIVE_URL --app aashe-hub-stage
     heroku pg:backups public-url b### --app aashe-hub-stage
     curl -o latest.dump "<backup_url>"
-
+    
     # Rename the exiting hub database and create new DB called hub
-
+    
     # Restore: (For some reason I have to run this twice)
     pg_restore --verbose --clean --no-acl --no-owner -h localhost -d hub latest.dump

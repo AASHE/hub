@@ -74,5 +74,3 @@ node_modules
 .idea
 
 *.dump
-
-.env

@@ -1,42 +1,24 @@
 {% load browse_tags %}
 {% load typogrify_tags %}
-{% load static %}
-{% load markup_tags %}
 
-<div class="inner-results col-md-12">
-    {% if obj.images.all %}
-        <div class="col-md-2">
-            {% with obj.images.all.0 as image %}
-                <a class="fancybox" href="{{ obj.get_absolute_url }}">
-                    <img
-                        src="{{ image.small_thumbnail }}"
-                        alt="{{ image.caption }}"
-                        style="padding-top:10px;width:100px;height:100px">
-                </a>
-            {% endwith %}
-        </div>
-        <div class="col-md-10">
-    {% else %}
-      <div class="col-md-12">
-    {% endif %}
-        <h3>
-            <a href="{{ obj.get_absolute_url }}">{{ obj.title|safe }}</a>
-            {% permission_flag obj user %}
-        </h3>
-        <ul class="list-inline up-ul">
-            {% for c in obj.organizations.all %}
-            <li>{{ c.org_name }} {% if c.state %}({{ c.state }}){% endif %}</li>
-            {% endfor %}
-        </ul>
-         {{ obj.description|apply_markup:"markdown"|truncatewords_html:30 }}
-        <ul class="list-inline down-ul">
-            <li title="{{ obj.published|date }} {{ obj.published|time }}">Posted {{ obj.published|timesince }} ago</li>
-            <li>{{ obj.instance_type_label }}</li>
-            <li><a href="{{ obj.get_absolute_url }}">View more</a></li>
-        </ul>
-      </div>
+<div class="inner-results">
+    <h3>
+        <a href="{{ obj.get_absolute_url }}">{{ obj.title|safe }}</a>
+        {% permission_flag obj user %}
+    </h3>
+    <ul class="list-inline up-ul">
+        {% for c in obj.organizations.all %}
+        <li>{{ c.org_name }} {% if c.state %}({{ c.state }}){% endif %}</li>
+        {% endfor %}
+    </ul>
+     {{ obj.description|truncatewords:30 }}
+    <ul class="list-inline down-ul">
+        <li title="{{ obj.published|date }} {{ obj.published|time }}">Posted {{ obj.published|timesince }} ago</li>
+        <li>{{ obj.instance_type_label }}</li>
+        <li><a href="{{ obj.get_absolute_url }}">View more</a></li>
+    </ul>
 </div>
 
 {% if not forloop.last %}
-<div class="col-md-12"><hr></div>
+<hr>
 {% endif %}

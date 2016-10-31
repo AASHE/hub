@@ -64,8 +64,8 @@
         <div class="col-md-5 col-sm-12">
           <form class="search" action="{% url "browse:browse" %}" method="GET">
             <input type="text" name="search" class="form-control" placeholder="Search Hub" value="{{ request.GET.search }}">
-            <button class="btn-u all-resources" type="submit">Search</button>
-            <a class="btn btn-u all-resources" href="{% url "browse:browse" %}?search=">Browse All</a>
+            <button class="btn-u all-resources" type="submit">Go</button>
+            <a class="btn btn-u all-resources" href="{% url "browse:browse" %}?search=">All Resources</a>
           </form>
         </div>
       </div>
@@ -102,11 +102,11 @@
         <div class="row">
           <div class="col-md-8">
             {% if user and user.is_staff %}
-                {% block_content 'footer_text' %}
+                {% block_content 'home_page_intro' %}
             {% else %}
-                {% cache CACHE_TTL_LONG footer_content %}
+                {% cache CACHE_TTL_LONG home_below_tab_content %}
                   <!-- begin cache {% now "c" %} -->
-                  {% block_content 'footer_text' %}
+                  {% block_content 'home_page_intro' %}
                   <!-- end caching -->
                 {% endcache %}
             {% endif %}
