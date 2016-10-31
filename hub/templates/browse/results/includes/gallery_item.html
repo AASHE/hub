@@ -1,0 +1,21 @@
+{% load browse_tags %}
+{% load typogrify_tags %}
+
+{% for image in obj.images.all %}
+    <div class="col-md-4">
+        <div class="thumbnails thumbnail-style">
+            <a title="{{ image.caption }}" href="{{ obj.get_absolute_url }}">
+                <img class="img-responsive" src="{{ image.med_thumbnail }}" alt="{{ obj.title }}">
+            </a>
+            <div class="caption">
+                <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                {% if user.is_staff %}
+                <p class="text-right">
+                    <a href="{{ image.image }}">
+                    <i class='fa fa-download'></i> Download
+                </a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -189,7 +189,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # get the uncached version
         reset_queries()
         response = self.client.get(url)
-        self.assertContains(response, '1 result', status_code=200)
+        self.assertContains(response, '1 resource', status_code=200)
         uncached_request_query_count = len(connection.queries)
 
         # create a second resource; it shouldn't render
@@ -202,7 +202,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # get the cached version
         reset_queries()
         response = self.client.get(url)
-        self.assertContains(response, '1 result', status_code=200)
+        self.assertContains(response, '1 resource', status_code=200)
         cached_request_query_count = len(connection.queries)
 
         # print "**Resources List Caching"
@@ -214,7 +214,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # now clear the cache and it should render
         cache.clear()
         response = self.client.get(url)
-        self.assertContains(response, '2 results', status_code=200)
+        self.assertContains(response, '2 resources', status_code=200)
 
     def test_topic_resources_tab(self):
         """

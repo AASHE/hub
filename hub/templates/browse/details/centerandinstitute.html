@@ -4,7 +4,16 @@
 
 {% block resource_metadata %}
     <div class="margin-bottom-10"></div>
-    {% include "browse/details/includes/meta.html" with label="Institution" value=object.institution.name %}
+    {% with object.get_organization_list as orgs %}
+        {% if orgs %}
+            <div>
+                <strong>Institution:</strong>
+                {% for org in orgs %}
+                    {{ org }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     {% include "browse/details/includes/meta.html" with label="Total Budget" value=object.budget %}
     {% include "browse/details/includes/meta.html" with label="Number of Paid Staff" value=object.num_paid %}
 {% endblock %}
