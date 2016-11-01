@@ -5,10 +5,12 @@ from django.core.urlresolvers import reverse
 
 from . import utils
 from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
+from ..metadata.models import AcademicDiscipline
 from .types.casestudies import CaseStudy
 from .types.publications import Publication
 from django.utils import timezone
 from import_export.admin import ExportMixin
+from import_export.resources import ModelResource
 from model_utils import Choices
 
 # Custom model form for the admin
@@ -54,8 +56,28 @@ class ContentTypeAdminForm(forms.ModelForm):
         super(ContentTypeAdminForm, self).__init__(*args, **kwargs)
 
 
+class ContentTypeResource(ModelResource):
+
+    class Meta(object):
+        model = ContentType
+
+    def __init__(self, *args, **kwargs):
+        super(ContentTypeResource, self).__init__(*args, **kwargs)
+        m2m_fields = {
+            'disciplines': 'name',
+            'organizations': 'org_name',
+            'topics': 'name',
+            'authors': 'name',
+            'submitted_by': 'email'
+        }
+        for k, v in m2m_fields.items():
+            if k in self.fields:
+                self.fields[k].widget.field = v
+
+
 class BaseContentTypeAdmin(ExportMixin, admin.ModelAdmin):
     form = ContentTypeAdminForm
+    resource_class = ContentTypeResource
 
     def save_model(self, request, obj, form, change):
         status_tracker_changed = obj.status_tracker.changed()  # before save
