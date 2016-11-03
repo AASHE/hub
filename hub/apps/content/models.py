@@ -7,7 +7,8 @@ from urlparse import urlparse
 import tagulous
 
 from django.conf import settings
-from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.search import (SearchVector,
+                                            SearchVectorField)
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_delete, post_save
@@ -133,10 +134,9 @@ class ContentType(TimeStampedModel):
 
     status_tracker = FieldTracker(fields=['status'])
 
-    authors_search_vector = SearchVectorField(blank=True, null=True)
-    websites_search_vector = SearchVectorField(blank=True, null=True)
-    files_search_vector = SearchVectorField(blank=True, null=True)
-    images_search_vector = SearchVectorField(blank=True, null=True)
+    search_vector = SearchVectorField(blank=True, null=True)
+
+    authors_search_data = models.TextField(blank=True, null=True, default='')
 
     objects = ContentTypeManager()
 
@@ -167,6 +167,20 @@ class ContentType(TimeStampedModel):
         # since the actual db URL lookup is still done with the pk.
         if not self.slug:
             self.slug = slugify(self.title)
+        # When self.title gets changed, self.slug should be changed
+        # similarly, correct?
+
+        # TODO - only update self.search_vector when one the the
+        # fields it includes changes.  Maybe.  Maybe unneccesary
+        # optimization.
+
+        # self.search_vector = (
+        #     SearchVector('description', 'title', weight='A') +
+        #     SearchVector('authors_search_data', weight='B'))
+
+        self.search_vector = SearchVector('description',
+                                          'title',
+                                          'authors_search_data')
 
         return super(ContentType, self).save(*args, **kwargs)
 
@@ -296,21 +310,25 @@ class ContentType(TimeStampedModel):
             # Save one Author, one Website, one File and one Image;
             # that'll fire signals that cause the associated
             # SearchVectorFields to refresh.
+            save_instance = False
+
             author = instance.authors.first()
             if author:
                 author.save()
-
-            website = instance.websites.first()
-            if website:
-                website.save()
+                save_instance = True
 
             file_ = instance.files.first()
             if file_:
                 file_.save()
+                save_instance = True
 
             image = instance.images.first()
             if image:
                 image.save()
+                save_instance = True
+
+            if save_instance:
+                instance.save()
 
 
 @python_2_unicode_compatible
@@ -396,6 +414,7 @@ class Image(TimeStampedModel):
         return self.ct.get_admin_url()
 
 
+# TODO - is escape_search_vector_value needed?
 def escape_search_vector_value(value):
     """
     Escape characters in value that are special in a tsvector.
@@ -407,85 +426,58 @@ def escape_search_vector_value(value):
 
 
 @receiver(post_save, sender=Author, weak=False,
-          dispatch_uid='hub.apps.content.models.author.post_save')
+          dispatch_uid=('hub.apps.content.models.author.post_save'
+                        '.update_authors_search_data'))
 @receiver(post_delete, sender=Author, weak=False,
-          dispatch_uid='hub.apps.content.models.author.post_delete')
-def update_authors_search_vector(sender, instance, **kwargs):
+          dispatch_uid=('hub.apps.content.models.author.post_delete'
+                        '.update_authors_search_data'))
+def update_authors_search_data(sender, instance, **kwargs):
     """
-    Update instance.ct.authors_search_vector.
+    Update instance.ct.authors_search_data.
     """
+    # Really only want to do this when instance.name changes, but maybe
+    # that would require premature or impractical optimization -- namely
+    # add a FieldTracker field for ContentType.name.  Or maybe that's a
+    # good idea ... for later.
+
     content_type_model = CONTENT_TYPES[instance.ct.content_type]
     content_type = content_type_model.objects.get(
         pk=instance.ct.pk)
-    content_type.authors_search_vector = escape_search_vector_value(
-        ' '.join(
-            [author.name for author in content_type.authors.all()]))
+    content_type.authors_search_data = " ".join(
+        [author.name for author in content_type.authors.all()]).strip()
+
     content_type.save()
 
 
-@receiver(post_save, sender=Website, weak=False,
-          dispatch_uid='hub.apps.content.models.website.post_save')
-@receiver(post_delete, sender=Website, weak=False,
-          dispatch_uid='hub.apps.content.models.website.post_delete')
-def update_websites_search_vector(sender, instance, **kwargs):
-    """
-    Update instance.ct.websites_search_vector.
-    """
-    content_type_model = CONTENT_TYPES[instance.ct.content_type]
-    content_type = content_type_model.objects.get(
-        pk=instance.ct.pk)
-    content_type.websites_search_vector = ""
-    for website in content_type.websites.all():
-        if website.label:
-            content_type.websites_search_vector = " ".join(
-                (content_type.websites_search_vector, website.label))
-        if website.url:
-            content_type.websites_search_vector = " ".join(
-                (content_type.websites_search_vector, website.url))
-    content_type.websites_search_vector = escape_search_vector_value(
-        content_type.websites_search_vector)
-    content_type.save()
+# @receiver(post_save, sender=File, weak=False,
+#           dispatch_uid='hub.apps.content.models.file.post_save')
+# @receiver(post_delete, sender=File, weak=False,
+#           dispatch_uid='hub.apps.content.models.file.post_delete')
+# def update_files_search_vector(sender, instance, **kwargs):
+#     """
+#     Update instance.ct.files_search_vector.
+#     """
+#     content_type_model = CONTENT_TYPES[instance.ct.content_type]
+#     content_type = content_type_model.objects.get(
+#         pk=instance.ct.pk)
+#     content_type.files_search_vector = SearchVector('label')
+#     content_type.save()
 
 
-@receiver(post_save, sender=File, weak=False,
-          dispatch_uid='hub.apps.content.models.file.post_save')
-@receiver(post_delete, sender=File, weak=False,
-          dispatch_uid='hub.apps.content.models.file.post_delete')
-def update_files_search_vector(sender, instance, **kwargs):
-    """
-    Update instance.ct.files_search_vector.
-    """
-    content_type_model = CONTENT_TYPES[instance.ct.content_type]
-    content_type = content_type_model.objects.get(
-        pk=instance.ct.pk)
-    content_type.files_search_vector = escape_search_vector_value(
-        ' '.join(
-            [file.label for file in content_type.files.all()]))
-    content_type.save()
-
-
-@receiver(post_save, sender=Image, weak=False,
-          dispatch_uid='hub.apps.content.models.image.post_save')
-@receiver(post_delete, sender=Image, weak=False,
-          dispatch_uid='hub.apps.content.models.image.post_delete')
-def update_images_search_vector(sender, instance, **kwargs):
-    """
-    Update instance.ct.images_search_vector.
-    """
-    content_type_model = CONTENT_TYPES[instance.ct.content_type]
-    content_type = content_type_model.objects.get(
-        pk=instance.ct.pk)
-    content_type.images_search_vector = ""
-    for image in content_type.images.all():
-        if image.caption:
-            content_type.images_search_vector = " ".join(
-                (content_type.images_search_vector, image.caption))
-        if image.credit:
-            content_type.images_search_vector = " ".join(
-                (content_type.images_search_vector, image.credit))
-    content_type.images_search_vector = escape_search_vector_value(
-        content_type.images_search_vector)
-    content_type.save()
+# @receiver(post_save, sender=Image, weak=False,
+#           dispatch_uid='hub.apps.content.models.image.post_save')
+# @receiver(post_delete, sender=Image, weak=False,
+#           dispatch_uid='hub.apps.content.models.image.post_delete')
+# def update_images_search_vector(sender, instance, **kwargs):
+#     """
+#     Update instance.ct.images_search_vector.
+#     """
+#     content_type_model = CONTENT_TYPES[instance.ct.content_type]
+#     content_type = content_type_model.objects.get(
+#         pk=instance.ct.pk)
+#     content_type.images_search_vector = SearchVector('caption',
+#                                                      'credit')
+#     content_type.save()
 
 
 def update_all_content_type_search_vectors():
@@ -493,7 +485,7 @@ def update_all_content_type_search_vectors():
     Update all the search vectors for all the things.
     """
     for model in CONTENT_TYPES.values():
-        logger.debug("Updating search vectors for " + str(model))
+        print("Updating search vectors for " + str(model))
         model.update_search_vectors()
 
 
