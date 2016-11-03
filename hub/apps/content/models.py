@@ -167,8 +167,6 @@ class ContentType(TimeStampedModel):
         # since the actual db URL lookup is still done with the pk.
         if not self.slug:
             self.slug = slugify(self.title)
-        # When self.title gets changed, self.slug should be changed
-        # similarly, correct?
 
         # TODO - only update self.search_vector when one the the
         # fields it includes changes.  Maybe.  Maybe unneccesary
@@ -178,11 +176,13 @@ class ContentType(TimeStampedModel):
         #     SearchVector('description', 'title', weight='A') +
         #     SearchVector('authors_search_data', weight='B'))
 
-        self.search_vector = SearchVector('description',
-                                          'title',
-                                          'authors_search_data')
+        super(ContentType, self).save(*args, **kwargs)
 
-        return super(ContentType, self).save(*args, **kwargs)
+        qs = ContentType.objects.filter(id=self.id).update(
+            search_vector=SearchVector(
+                'description',
+                'title',
+                'authors_search_data'))
 
     def get_absolute_url(self):
         return reverse('browse:view', kwargs={'ct': self.content_type,

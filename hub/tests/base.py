@@ -63,26 +63,6 @@ class WithUserSuperuserTestCase(TestCase):
     #     return success
 
 
-class BaseSearchBackendTestCase(TestCase):
-    def tearDown(self):
-        """
-        Purge the search index before each test case run.
-        """
-        warnings.warn("clear_index not called", RuntimeWarning)
-        return
-        management.call_command('clear_index', verbosity=0,
-                                interactive=False)
-
-    def _rebuild_index(self):
-        """
-        Rebuild the entire search index.
-        """
-        warnings.warn("rebuild_index not called", RuntimeWarning)
-        return
-        management.call_command('rebuild_index', verbosity=0,
-                                interactive=False)
-
-
 # The kwargs required for `create` for each content type
 EXTRA_REQUIRED_CT_KWARGS = {
     'casestudy': {
