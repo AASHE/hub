@@ -183,9 +183,6 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.ct2.status = ContentType.STATUS_CHOICES.new
         self.ct2.save()
 
-        # update the search index
-        management.call_command('update_index', verbosity=0)
-
         # get the uncached version
         reset_queries()
         response = self.client.get(url)
@@ -195,9 +192,6 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # create a second resource; it shouldn't render
         self.ct2.status = ContentType.STATUS_CHOICES.published
         self.ct2.save()
-
-        # update the search index
-        management.call_command('update_index', verbosity=0)
 
         # get the cached version
         reset_queries()
@@ -323,7 +317,6 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.run_resources_test(
             "%s?topics=first_topic" % self.url_ct)
 
-    @unittest.skip("")
     def test_search_view(self):
         """
             The content-type view should vary on auth and get params
