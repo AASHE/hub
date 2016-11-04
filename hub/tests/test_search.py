@@ -1,7 +1,6 @@
-import unittest
 from django.test import TestCase
 
-from ..apps.content.models import Author
+from ..apps.content.models import Author, File, Image
 from ..apps.content.types.academic import AcademicProgram
 
 TestContentType = AcademicProgram
@@ -34,11 +33,33 @@ class SearchBackendTestCase(TestCase):
         self.assertEqual(
             TestContentType.objects.filter(search_vector='pizza').count(), 0)
 
-        # Create an author to trigger the signal and update the vector
-        a = Author.objects.create(name='Jim Smith', ct=ct)
+        # Create an Author to trigger the signal and update the vector
+        Author.objects.create(name='Jim Smith', ct=ct)
         ct.refresh_from_db()
         self.assertEqual(
             ct.search_vector, "'jim':5 'smith':6 'test':4 'word':3")
         # test search
         self.assertEqual(
             TestContentType.objects.filter(search_vector='smith').count(), 1)
+
+        # Create a File to trigger the signal and update the vector
+        File.objects.create(label='My Banana', ct=ct)
+        ct.refresh_from_db()
+        self.assertEqual(
+            ct.search_vector, "'banana':8 'jim':5 'smith':6 'test':4 'word':3")
+        # test search
+        self.assertEqual(
+            TestContentType.objects.filter(search_vector='banana').count(), 1)
+
+        # Create an Image to trigger the signal and update the vector
+        Image.objects.create(caption='Sunset', credit='Taylor',
+                             # med_thumbnail='http://www.x.com/',
+                             # small_thumbnail='http://www.y.com/',
+                             ct=ct)
+        ct.refresh_from_db()
+        import ipdb; ipdb.set_trace()
+        self.assertEqual(
+            ct.search_vector, "'banana':8 'jim':5 'smith':6 'test':4 'word':3")
+        # test search
+        self.assertEqual(
+            TestContentType.objects.filter(search_vector='sunset').count(), 1)
