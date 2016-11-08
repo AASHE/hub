@@ -188,6 +188,14 @@ class ContentType(TimeStampedModel):
                                               'id': self.pk,
                                               'slug': self.slug})
 
+    def create_thumbnails(self, recreate=False):
+        """
+            Creates thumbnails for each image tied to this resource
+        """
+        from .tasks import thumbnail_image
+        for image in self.images.all():
+            thumbnail_image.delay(image.pk, recreate=recreate)
+
     def get_admin_url(self):
         return reverse('admin:content_{0}_change'.format(self.content_type),
                        args=[self.pk])
@@ -403,6 +411,10 @@ class Image(TimeStampedModel):
     image = S3DirectField(
         dest='images', help_text="JPG and PNG file formats are accepted",
         blank=True, null=True)
+    small_thumbnail = models.URLField(
+        default="/static/img/100x100_blank.png")
+    med_thumbnail = models.URLField(
+        default="/static/img/300x300_blank.png")
     affirmation = models.BooleanField(
         'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
 
