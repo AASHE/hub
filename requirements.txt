@@ -52,4 +52,4 @@ https://github.com/DjangoAdminHackers/django-admin-blocks/archive/master.zip
 https://github.com/rerb/django-linkcheck/archive/master.zip
 
 # Bob's fork of django-tagulous
-https://github.com/aashe/django-tagulous/archive/master.zip
+https://github.com/aashe/django-tagulous/archive/develop.zip
