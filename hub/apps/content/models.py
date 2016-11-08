@@ -483,7 +483,7 @@ def update_images_search_data(sender, instance, **kwargs):
     content_type.images_search_data = " ".join(
         [image.caption for image in content_type.images.all()
          if image.caption]).strip()
-    content_type.images_search_data += " ".join(
+    content_type.images_search_data += " " + " ".join(
         [image.credit for image in content_type.images.all()
          if image.credit]).strip()
     content_type.save()

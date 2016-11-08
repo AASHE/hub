@@ -58,7 +58,9 @@ class SearchBackendTestCase(TestCase):
                              ct=ct)
         ct.refresh_from_db()
         self.assertEqual(
-            ct.search_vector, "'banana':8 'jim':5 'smith':6 'test':4 'word':3")
+            ct.search_vector,
+            "'banana':10 'jim':5 'smith':6 'sunset':7 'taylor':8 'test':4 "
+            "'word':3")
         # test search
         self.assertEqual(
             TestContentType.objects.filter(search_vector='sunset').count(), 1)
