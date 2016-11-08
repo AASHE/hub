@@ -52,12 +52,8 @@ class SearchBackendTestCase(TestCase):
             TestContentType.objects.filter(search_vector='banana').count(), 1)
 
         # Create an Image to trigger the signal and update the vector
-        Image.objects.create(caption='Sunset', credit='Taylor',
-                             med_thumbnail='http://www.x.com/',
-                             # small_thumbnail='http://www.y.com/',
-                             ct=ct)
+        Image.objects.create(caption='Sunset', credit='Taylor', ct=ct)
         ct.refresh_from_db()
-        import ipdb; ipdb.set_trace()
         self.assertEqual(
             ct.search_vector, "'banana':8 'jim':5 'smith':6 'test':4 'word':3")
         # test search

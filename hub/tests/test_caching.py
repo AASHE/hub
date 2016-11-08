@@ -1,9 +1,7 @@
 from __future__ import unicode_literals
 
 import django_cache_url
-import unittest
 
-from django.core import management
 from django.core.urlresolvers import reverse
 from django.core.cache import caches
 from django.db import connection, reset_queries
@@ -88,8 +86,8 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.assertContains(response, "First Topic", status_code=200)
 
         # add a topic and test that the response doesn't update
-        _topic = SustainabilityTopic.objects.create(
-            name="Second Topic", slug="second_topic")
+        SustainabilityTopic.objects.create(name="Second Topic",
+                                           slug="second_topic")
         response = self.client.get(self.url_home)
         self.assertNotContains(response, "Second Topic", status_code=200)
 
@@ -268,8 +266,9 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         cache.clear()
 
         self.topic.name = "Curriculum"
-        self.topic.scpd_rss_feed = \
-            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/curriculum/"
+        self.topic.scpd_rss_feed = (
+            "http://aashe.org/sustainable-campus-partners-directory/rss/"
+            "sustainability-topic/curriculum/")
         self.topic.save()
 
         response = self.client.get(self.url_topic)
@@ -286,8 +285,9 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
 
         # Confirm that a broken RSS Feed link will not break the page
         cache.clear()
-        self.topic.scpd_rss_feed = \
-            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/topic-does-not-exist/"
+        self.topic.scpd_rss_feed = (
+            "http://aashe.org/sustainable-campus-partners-directory/rss/"
+            "sustainability-topic/topic-does-not-exist/")
         self.topic.save()
         response = self.client.get(self.url_topic)
         self.assertEqual(response.status_code, 200)
