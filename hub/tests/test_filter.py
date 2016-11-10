@@ -1,20 +1,20 @@
+import sys
+
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 
-from ..apps.metadata.models import Organization, SustainabilityTopic, \
-    AcademicDiscipline, PublicationMaterialType
+from ..apps.metadata.models import (AcademicDiscipline,
+                                    Organization,
+                                    PublicationMaterialType,
+                                    SustainabilityTopic)
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.publications import Publication
 from ..apps.content.models import CONTENT_TYPES
-from .base import (
-    BaseSearchBackendTestCase,
-    WithUserSuperuserTestCase,
-    EXTRA_REQUIRED_CT_KWARGS)
-
-import sys
+from .base import (EXTRA_REQUIRED_CT_KWARGS,
+                   WithUserSuperuserTestCase)
 
 
-class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
+class FilterTestCase(WithUserSuperuserTestCase):
     def setUp(self):
         """
         Create some sane default objects that will match almost all filter
@@ -50,9 +50,6 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         self.ct.keywords.add("tag 1")
         self.ct.keywords.add("tag2")
         self.ct.disciplines.add(self.discipline)
-
-        # Update search index
-        self._rebuild_index()
 
         self.filter_data = {
             'search': 'keyword',
@@ -133,7 +130,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
         self.assertEqual(len(response.context['object_list']), 1)
 
 
-class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
+class SpecificFilterTestCase(WithUserSuperuserTestCase):
     """
     Test some specific filters for different content types
     """

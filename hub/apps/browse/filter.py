@@ -44,10 +44,9 @@ class SearchFilter(filters.CharFilter):
 
         search_vector = SearchVector('title',
                                      'description',
-                                     'authors_search_vector',
-                                     'websites_search_vector',
-                                     'files_search_vector',
-                                     'images_search_vector')
+                                     'authors_search_data',
+                                     'files_search_data',
+                                     'images_search_data')
 
         return (queryset.annotate(search=search_vector).
                 filter(search=query.lower()))

@@ -1,5 +1,4 @@
 from django.core import mail
-import os
 
 from django.core.urlresolvers import reverse
 from django.conf import settings

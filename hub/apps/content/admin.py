@@ -99,9 +99,8 @@ class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     search_fields = ('title', 'description', 'keywords',)
     readonly_fields = ('published',)
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
-    exclude = ('content_type', 'authors_search_vector',
-               'websites_search_vector', 'files_search_vector',
-               'images_search_vector')
+    exclude = ('content_type', 'authors_search_data',
+               'files_search_data', 'images_search_data')
     raw_id_fields = ('submitted_by',)
 
     def _update_application_index(self):
