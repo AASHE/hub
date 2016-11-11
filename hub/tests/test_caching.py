@@ -1,11 +1,7 @@
 from __future__ import unicode_literals
-from mock import patch
-import django_cache_url
-from haystack.management.commands import update_index
 
-from django.conf import settings
-from django.core import management
-from django.contrib.auth.models import AnonymousUser
+import django_cache_url
+
 from django.core.urlresolvers import reverse
 from django.core.cache import caches
 from django.db import connection, reset_queries
@@ -90,8 +86,8 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.assertContains(response, "First Topic", status_code=200)
 
         # add a topic and test that the response doesn't update
-        _topic = SustainabilityTopic.objects.create(
-            name="Second Topic", slug="second_topic")
+        SustainabilityTopic.objects.create(name="Second Topic",
+                                           slug="second_topic")
         response = self.client.get(self.url_home)
         self.assertNotContains(response, "Second Topic", status_code=200)
 
@@ -185,26 +181,20 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.ct2.status = ContentType.STATUS_CHOICES.new
         self.ct2.save()
 
-        # update the search index
-        management.call_command('update_index', verbosity=0)
-
         # get the uncached version
         reset_queries()
         response = self.client.get(url)
-        self.assertContains(response, '1 resource', status_code=200)
+        self.assertContains(response, '1 result', status_code=200)
         uncached_request_query_count = len(connection.queries)
 
         # create a second resource; it shouldn't render
         self.ct2.status = ContentType.STATUS_CHOICES.published
         self.ct2.save()
 
-        # update the search index
-        management.call_command('update_index', verbosity=0)
-
         # get the cached version
         reset_queries()
         response = self.client.get(url)
-        self.assertContains(response, '1 resource', status_code=200)
+        self.assertContains(response, '1 result', status_code=200)
         cached_request_query_count = len(connection.queries)
 
         # print "**Resources List Caching"
@@ -216,7 +206,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # now clear the cache and it should render
         cache.clear()
         response = self.client.get(url)
-        self.assertContains(response, '2 resources', status_code=200)
+        self.assertContains(response, '2 results', status_code=200)
 
     def test_topic_resources_tab(self):
         """
@@ -276,8 +266,9 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         cache.clear()
 
         self.topic.name = "Curriculum"
-        self.topic.scpd_rss_feed = \
-            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/curriculum/"
+        self.topic.scpd_rss_feed = (
+            "http://aashe.org/sustainable-campus-partners-directory/rss/"
+            "sustainability-topic/curriculum/")
         self.topic.save()
 
         response = self.client.get(self.url_topic)
@@ -294,8 +285,9 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
 
         # Confirm that a broken RSS Feed link will not break the page
         cache.clear()
-        self.topic.scpd_rss_feed = \
-            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/topic-does-not-exist/"
+        self.topic.scpd_rss_feed = (
+            "http://aashe.org/sustainable-campus-partners-directory/rss/"
+            "sustainability-topic/topic-does-not-exist/")
         self.topic.save()
         response = self.client.get(self.url_topic)
         self.assertEqual(response.status_code, 200)

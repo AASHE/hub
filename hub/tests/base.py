@@ -1,10 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from django.core import management
 
 from aashe.aasheauth.models import AASHEUser
 
-from ..apps.metadata.models import ConferenceName, CourseMaterialType
 
 User = get_user_model()
 
@@ -60,22 +58,6 @@ class WithUserSuperuserTestCase(TestCase):
     #             {'roles': {'Member': 'Member'}})
     #         self.member.aasheuser.save()
     #     return success
-
-
-class BaseSearchBackendTestCase(TestCase):
-    def tearDown(self):
-        """
-        Purge the search index before each test case run.
-        """
-        management.call_command('clear_index', verbosity=0,
-                                interactive=False)
-
-    def _rebuild_index(self):
-        """
-        Rebuild the entire search index.
-        """
-        management.call_command('rebuild_index', verbosity=0,
-                                interactive=False)
 
 
 # The kwargs required for `create` for each content type
