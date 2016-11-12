@@ -309,39 +309,6 @@ class ContentType(TimeStampedModel):
         """
         return []
 
-    @classmethod
-    def update_search_data(cls):
-        """
-        Update the search data for all the things.
-        """
-        for instance in cls.objects.all():
-            # Save one Author, one Website, one File and one Image;
-            # that'll fire signals that cause the associated
-            # *_search_data field to refresh.
-            save_instance = False
-
-            author = instance.authors.first()
-            if author:
-                author.save()
-                save_instance = True
-
-            file_ = instance.files.first()
-            if file_:
-                file_.save()
-                save_instance = True
-
-            image = instance.images.first()
-            if image:
-                image.save()
-                save_instance = True
-
-            # What's this instance.save() for?  No instance attribute
-            # has been changed here.  Don't the signal receivers do
-            # save()'s on the instance?  Is this just a workaround for
-            # the "search_vector not updated until 2nd save" bug?
-            if save_instance:
-                instance.save()
-
 
 @python_2_unicode_compatible
 class Author(TimeStampedModel):
@@ -430,31 +397,22 @@ class Image(TimeStampedModel):
         return self.ct.get_admin_url()
 
 
-def update_all_content_type_search_data():
-    """
-    Update all the search data for all the things.
-    """
-    for model in CONTENT_TYPES.values():
-        print("Updating search data for " + str(model))
-        model.update_search_data()
-
-
 # =============================================================================
 # Mapping of all available content types.
 #
 # We also load the content types here into the models namespace, so they are
 # registered in the system, and the migration.
 # =============================================================================
-from .types.academic import AcademicProgram
-from .types.casestudies import CaseStudy
-from .types.centers import CenterAndInstitute
-from .types.courses import Material
-from .types.outreach import OutreachMaterial
-from .types.photographs import Photograph
-from .types.presentations import Presentation
-from .types.publications import Publication
-from .types.tools import Tool
-from .types.videos import Video
+from .types.academic import AcademicProgram  # noqa
+from .types.casestudies import CaseStudy  # noqa
+from .types.centers import CenterAndInstitute  # noqa
+from .types.courses import Material  # noqa
+from .types.outreach import OutreachMaterial  # noqa
+from .types.photographs import Photograph  # noqa
+from .types.presentations import Presentation  # noqa
+from .types.publications import Publication  # noqa
+from .types.tools import Tool  # noqa
+from .types.videos import Video  # noqa
 
 CONTENT_TYPES = OrderedDict()
 
