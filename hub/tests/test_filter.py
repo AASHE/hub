@@ -210,12 +210,14 @@ class TestGalleryView(WithUserSuperuserTestCase):
         self.resource1 = Photograph.objects.create(
             status=Photograph.STATUS_CHOICES.published,
             title='Test Photo Resource',
+            description='Test Description',
             slug='test-photo-resource',
             submitted_by=self.superuser
             )
         self.resource2 = Photograph.objects.create(
             status=Photograph.STATUS_CHOICES.published,
             title='Test Photo Resource',
+            description='Test Description',
             slug='test-photo-resource',
             submitted_by=self.superuser
             )
