@@ -127,14 +127,14 @@ def get_obj_kwargs():
 
     return kwargs
 
-rows = get_rows('hub/imports/fixtures/Presentations.xlsx', 'data')
+rows = get_rows('hub/imports/fixtures/2016Presentations.xlsx', '2016')
 
 # run the sanity check first
 skip_index_list = sanity_check(rows, columns, column_mappings)
 
 print "importing presentations"
 
-rows = get_rows('hub/imports/fixtures/Presentations.xlsx', 'data')
+rows = get_rows('hub/imports/fixtures/2016Presentations.xlsx', '2016')
 count = 0
 for row in rows:
 
