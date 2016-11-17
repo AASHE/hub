@@ -164,5 +164,5 @@ for row in rows:
     get_base_m2m(
         presentation, columns, column_mappings, row,
         bucket_prefix='/uploads/aashe2016/')
-    presentation.published = datetime(month=2, day=26, year=2016)
+    presentation.published = datetime(month=11, day=17, year=2016)
     presentation.save()
