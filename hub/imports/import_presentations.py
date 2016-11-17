@@ -1,5 +1,6 @@
 from utils import get_rows, get_base_kwargs, get_base_m2m, sanity_check
 from hub.apps.content.types.presentations import Presentation
+from hub.apps.metadata.models import ConferenceName, PresentationType
 
 from datetime import datetime
 
@@ -58,6 +59,7 @@ columns = [
     "File1",
     "File2",
     "File3",
+    "File4",
 ]
 
 column_mappings = {
@@ -79,70 +81,88 @@ rows = get_rows(workbook_path, sheet_name)
 for row in rows:
     # common base fields
     kwargs = get_base_kwargs(columns, column_mappings)
-    
+
     # fields specific to this child model type
     kwargs.update(get_object_specficic_kwargs(columns, column_mappings))
-    
+
     # create object
     ObjectKass.object.create(**kwargs)
-    
+
     # apply many-to-many relationships
     get_base_m2m(parent, columns, patterns)
 """
+
 
 def get_obj_kwargs():
     """
         date = models.DateField('Presentation Date')
         conf_name = models.CharField(max_length=100, choices=CONF_NAME_CHOICES)
-        presentation_type = models.CharField(max_length=100, blank=True, null=True,
+        presentation_type = models.CharField(
+            max_length=100, blank=True, null=True,
             choices=PRESENTATION_CHOICES)
     """
     kwargs = {}
     date = row[columns.index("PresentationDate")].value
     if date:
         kwargs['date_created'] = date.date()
-    
+
     # get the conference name
     conf = row[columns.index("ConferenceName")].value
-    for t in Presentation.CONF_NAME_CHOICES:
-        if conf == t[1]:
-            kwargs['conf_name'] = t[0]
-            break
-            
-    if conf and 'conf_name' not in kwargs.keys():
-        print "conference not found: %s" % conf
-        assert False
-    
+    try:
+        cn = ConferenceName.objects.get(name=conf)
+    except:
+        print "Creating ConferenceName: %s" % conf
+        cn = ConferenceName.objects.create(name=conf)
+    kwargs['conf_name'] = cn
+
     # get the material type
     _type = row[columns.index("PresType")].value
-    for t in Presentation.PRESENTATION_CHOICES:
-        if _type == t[1]:
-            kwargs['presentation_type'] = t[0]
-    if _type and 'presentation_type' not in kwargs.keys():
-        print "presentationtype not found: %s" % _type
-        assert False
-        
+    try:
+        pt = PresentationType.objects.get(name=_type)
+    except:
+        print "Creating PresentationType: %s" % _type
+        pt = PresentationType.objects.create(name=_type)
+
+    kwargs['presentation_type'] = pt
+
     return kwargs
-    
-rows = get_rows('hub/imports/fixtures/ConferencePresentations.xlsx', 'data')
+
+rows = get_rows('hub/imports/fixtures/Presentations.xlsx', 'data')
 
 # run the sanity check first
 skip_index_list = sanity_check(rows, columns, column_mappings)
 
 print "importing presentations"
 
-rows = get_rows('hub/imports/fixtures/ConferencePresentations.xlsx', 'data')
+rows = get_rows('hub/imports/fixtures/Presentations.xlsx', 'data')
 count = 0
 for row in rows:
+
+    """
+    openpyxl returns incomplete rows, so I extend them here.
+    """
+    if len(row) < len(columns):
+        class MockVal:
+            def __init__(self, value):
+                self.value = value
+        new_row = []
+        new_row.extend(row)
+        for i in range(len(columns) - len(row)):
+            new_row.append(MockVal(None))
+        row = new_row
 
     count += 1
     if count == 1 or count in skip_index_list:
         continue
+    # if count > 11:
+    #     break
     print count
 
     kwargs = get_base_kwargs(columns, column_mappings, row)
     kwargs.update(get_obj_kwargs())
     presentation = Presentation.objects.create(**kwargs)
-    get_base_m2m(presentation, columns, column_mappings, row)
-    presentation.published = datetime(month=2, day=26, year=2016) #February 26, 2016
+    get_base_m2m(
+        presentation, columns, column_mappings, row,
+        bucket_prefix='/uploads/aashe2016/')
+    presentation.published = datetime(month=2, day=26, year=2016)
     presentation.save()
