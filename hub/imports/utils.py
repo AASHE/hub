@@ -337,7 +337,7 @@ def get_base_m2m(
     file_key = "File%d"
     if 'files' in column_mappings.keys():
         file_key = column_mappings['files']
-    for i in range(1, 3):
+    for i in range(1, 5):
         key = file_key % i
         if key in columns:
             try:
