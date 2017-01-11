@@ -167,7 +167,7 @@
                                     </a>
                                     <div class="caption">
                                         {% if image.caption %}
-                                        <p>{{ image.caption }}</p>
+                                        <p title="{{ image.caption }}">{{ image.caption|truncatewords:10 }}</p>
                                         {% endif %}
                                         {% if image.credit %}
                                         <p><em>Photographer credit: {{ image.credit }}</em></p>
