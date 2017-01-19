@@ -49,6 +49,7 @@ class SustainabilityTopic(MetadataBaseModel):
     icon = models.CharField(max_length=64, blank=True, null=True)
     stars_tab_content = models.TextField(
         blank=True, null=True, help_text="Uses Markdown")
+    multiview_zone_id = models.CharField(max_length=12, blank=True, null=True)
 
     class Meta:
         ordering = ('order', 'name')
