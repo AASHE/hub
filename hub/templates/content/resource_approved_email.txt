@@ -17,6 +17,13 @@ Hub.
 
     {{ request.scheme }}://{{ request.get_host }}{{ resource.get_absolute_url }}
 
+Eligible case study and publication submissions are automatically
+considered for either a Campus Sustainability Achievement Award,
+Campus Sustainability Research Award or a Student Sustainability
+Leadership Award as part of AASHE's annual awards program:
+
+  http://www.aashe.org/about/aashe-awards
+
 If you have questions about this or other resources in the Hub, please
 don’t hesitate to let us know by emailing resources@aashe.org. Thank
 you again for your contribution and interest in the Campus
