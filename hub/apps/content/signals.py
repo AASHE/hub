@@ -8,11 +8,9 @@ from .models import (Author,
 
 
 @receiver(post_save, sender=Author, weak=False,
-          dispatch_uid=('hub.apps.content.signals.author.post_save'
-                        '.update_authors_search_data'))
+          dispatch_uid='hub.apps.content.signals.author.post_save')
 @receiver(post_delete, sender=Author, weak=False,
-          dispatch_uid=('hub.apps.content.signals.author.post_delete'
-                        '.update_authors_search_data'))
+          dispatch_uid='hub.apps.content.signals.author.post_delete')
 def update_authors_search_data(sender, instance, **kwargs):
     """
     Update instance.ct.authors_search_data.
