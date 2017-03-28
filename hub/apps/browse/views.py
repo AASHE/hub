@@ -190,9 +190,9 @@ class BrowseView(RatelimitMixin, ListView):
         key = self.request.path
 
         if self.request.user.is_authenticated():
-            if hasattr(self.request.user, 'aasheuser'):
+            if hasattr(self.request.user, 'membersuiteportaluser'):
                 key = "%s[mem-%s]" % (
-                    key, self.request.user.aasheuser.is_member())
+                    key, self.request.user.membersuiteportaluser.is_member)
             else:
                 # usually just during testing
                 key = "%s[mem-False]" % key

@@ -2,9 +2,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core import management
 
-from aashe.aasheauth.models import AASHEUser
+from django_membersuite_auth.models import MemberSuitePortalUser
 
-from ..apps.metadata.models import ConferenceName, CourseMaterialType
 
 User = get_user_model()
 
@@ -38,28 +37,11 @@ class WithUserSuperuserTestCase(TestCase):
             **self.member_cred
         )
 
-        aashe_user = AASHEUser.objects.create(
-            user=self.member,
-            drupal_id=1,
-            drupal_session_key="blah"
-        )
-        aashe_user.set_drupal_user_dict(
-            {'roles': {'Member': 'Member'}})
-        aashe_user.save()
+        MemberSuitePortalUser.objects.create(user=self.member,
+                                             membersuite_id=1,
+                                             is_member=True)
 
         return super(WithUserSuperuserTestCase, self).setUp()
-
-    # def login_member(self, **credentials):
-    #     """
-    #         Extends the base login functionality to ensure that member status
-    #         is set, if the user is the self.member
-    #     """
-    #     success = self.client.login(**credentials)
-    #     if success and credentials == self.member_cred:
-    #         self.member.aasheuser.set_drupal_user_dict(
-    #             {'roles': {'Member': 'Member'}})
-    #         self.member.aasheuser.save()
-    #     return success
 
 
 class BaseSearchBackendTestCase(TestCase):

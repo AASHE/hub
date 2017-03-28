@@ -44,7 +44,7 @@ def get_aashe_member_flag(user):
     # object, likely created with `manage.py createsuperuser` and therefor
     # has no AASHE user account attached.
     try:
-        return user.aasheuser.is_member()
+        return user.membersuiteportaluser.is_member
     except (ObjectDoesNotExist, AttributeError):
         return False
 

@@ -36,13 +36,11 @@ HAYSTACK_CONNECTIONS = {
 }
 
 # ==============================================================================
-# Aasheauth
+# django_membersuite_auth
 # ==============================================================================
-AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
-AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']
-AASHE_DRUPAL_KEY_DOMAIN = os.environ['AASHE_DRUPAL_KEY_DOMAIN']
-AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
-AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
+MS_ACCESS_KEY = os.environ['MS_ACCESS_KEY']
+MS_SECRET_KEY = os.environ['MS_SECRET_KEY']
+MS_ASSOCIATION_ID = os.environ['MS_ASSOCIATION_ID']
 
 # ==============================================================================
 # iss

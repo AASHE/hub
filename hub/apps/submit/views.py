@@ -145,7 +145,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
     def get_author_form_template(self, **kwargs):
         f = kwargs['author_formset'].empty_form
         org = None
-        if hasattr(self.request.user, 'aasheuser'):
+        if hasattr(self.request.user, 'membersuiteportaluser'):
             drupal_dict = self.request.user.aasheuser.get_drupal_user_dict()
             org = drupal_dict['profile_instlist']
             if type(org) is list:

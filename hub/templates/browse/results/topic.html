@@ -24,7 +24,7 @@
 
 {% block resource_list_body %}
     <div id="toolkit" class="tab-pane fade {% if not request.GET %}active in{% endif %}">
-      {% cache CACHE_TTL_LONG toolkit_tab topic.slug user.is_authenticated user.aasheuser.is_member %}
+      {% cache CACHE_TTL_LONG toolkit_tab topic.slug user.is_authenticated user.membersuiteportaluser.is_member %}
         <!-- begin cache {% now "c" %} -->
         {% include "browse/results/includes/toolkit.html" %}
         <!-- end cache -->

@@ -33,50 +33,47 @@ LANGUAGES = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'aashe.aasheauth.backends.AASHEBackend',
+    'django_membersuite_auth.backends.MemberSuiteBackend'
 )
 
 AUTH_USER_MODEL = 'auth.User'
 
 INSTALLED_APPS = (
-    'flat',
-
     'aashe.aasheauth',
     'aashe_theme',
-    'block_content',
-    'haystack',
-    'iss',
-    'import_export',
-    'sorl.thumbnail',
-    'tagulous',
-    'typogrify',
-    'integration_settings.google_analytics',
-    's3direct',
-    'bootstrap_pagination',
-    'django_admin_blocks',
-
-    'hub',
-    'hub.apps.access',
-    'hub.apps.content',
-    'hub.apps.metadata',
-    'hub.apps.browse',
-    'hub.apps.submit',
-    'hub.exports',
-
     'acme_challenge',
-    'django_tables2',
-    'django_markup',
-
+    'block_content',
+    'bootstrap_pagination',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.flatpages',
+    'django.contrib.humanize',
+    'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
-)
+    'django_admin_blocks',
+    'django_markup',
+    'django_membersuite_auth',
+    'django_tables2',
+    'flat',
+    'haystack',
+    'import_export',
+    'integration_settings.google_analytics',
+    'iss',
+    's3direct',
+    'sorl.thumbnail',
+    'tagulous',
+    'typogrify',
+
+    'hub',
+    'hub.apps.access',
+    'hub.apps.browse',
+    'hub.apps.content',
+    'hub.apps.metadata',
+    'hub.apps.submit',
+    'hub.exports')
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
@@ -249,12 +246,10 @@ import django_cache_url
 CACHE_URL = os.environ.get('CACHE_URL', 'dummy://')
 CACHES = {'default': django_cache_url.parse(CACHE_URL)}
 
-# AASHE Auth
-AASHE_DRUPAL_URI = os.environ['AASHE_DRUPAL_URI']
-AASHE_DRUPAL_KEY = os.environ['AASHE_DRUPAL_KEY']
-AASHE_DRUPAL_KEY_DOMAIN = os.environ['AASHE_DRUPAL_KEY_DOMAIN']
-AASHE_DRUPAL_COOKIE_SESSION = os.environ['AASHE_DRUPAL_COOKIE_SESSION']
-AASHE_DRUPAL_COOKIE_DOMAIN = os.environ['AASHE_DRUPAL_COOKIE_DOMAIN']
+# django-membersuite-auth
+MS_ACCESS_KEY = os.environ['MS_ACCESS_KEY']
+MS_SECRET_KEY = os.environ['MS_SECRET_KEY']
+MS_ASSOCIATION_ID = os.environ['MS_ASSOCIATION_ID']
 
 # List of content type keys which don't require Login This only enables the
 # 'browse' view of the content type. Each object must still be separately set

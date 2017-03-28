@@ -2,12 +2,12 @@ import django.views.defaults
 import django_admin_blocks
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth.views import login, logout
 from django.conf import settings
 from django.conf.urls.static import static
 from ratelimit.decorators import ratelimit
 
 from .apps.browse.views import HomeView
-from aashe.aasheauth.views import login, logout
 
 
 django_admin_blocks.autodiscover()
