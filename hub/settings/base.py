@@ -39,7 +39,6 @@ AUTHENTICATION_BACKENDS = (
 AUTH_USER_MODEL = 'auth.User'
 
 INSTALLED_APPS = (
-    'aashe.aasheauth',
     'aashe_theme',
     'acme_challenge',
     'block_content',

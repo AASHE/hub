@@ -42,7 +42,6 @@ https://github.com/bradleyg/django-s3direct/archive/master.zip
 
 # Non-pypi repos
 https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
-https://github.com/AASHE/aashe-auth/archive/v1.1.2.zip
 https://github.com/AASHE/iss/archive/master.zip
 
 https://github.com/AASHE/django-block-content/archive/v0.0.3.zip
