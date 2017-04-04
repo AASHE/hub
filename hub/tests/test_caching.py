@@ -120,6 +120,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
 
         # a different cache key should be used for authenticated users
         reset_queries()
+        assert self.url_topic is not None
         response = self.client.get(self.url_topic)
         self.assertContains(
             response, '<strong>First Academic Program', status_code=200)
