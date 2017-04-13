@@ -145,13 +145,14 @@ class SubmitFormView(LoginRequiredMixin, FormView):
     def get_author_form_template(self, **kwargs):
         f = kwargs['author_formset'].empty_form
         org = None
-        if hasattr(self.request.user, 'membersuiteportaluser'):
-            drupal_dict = self.request.user.aasheuser.get_drupal_user_dict()
-            org = drupal_dict['profile_instlist']
-            if type(org) is list:
-                org = org[0]
-            f.fields['organization'].initial = org
-            f.fields['title'].initial = drupal_dict['profile_jobtitle']
+        # @todo - we'll need to add primary_org and title to PortalUser
+        # @todo - this isn't tested... so our test user should have a
+        #  membersuiteportaluser property
+        #
+        # if hasattr(self.request.user, 'membersuiteportaluser'):
+        #     ms_user = self.request.user.membersuiteportaluser
+        #     f.fields['organization'].initial = ms_user.primary_org
+        #     f.fields['title'].initial = ms_user.title
         f.fields['name'].initial = self.request.user.get_full_name()
         f.fields['email'].initial = self.request.user.email
         return f
