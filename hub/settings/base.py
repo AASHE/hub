@@ -40,6 +40,7 @@ AUTH_USER_MODEL = 'auth.User'
 
 INSTALLED_APPS = (
     'aashe_theme',
+    'aashestrap',
     'acme_challenge',
     'block_content',
     'bootstrap_pagination',
