@@ -587,3 +587,21 @@ div.button-row {
     line-height: 1.6 !important;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+.hub-breadcrumb {
+    list-style: none;
+    display: inline-block;
+    margin: auto;
+    padding: 10px 0 0 0;
+}
+
+.hub-breadcrumb li {
+    display: inline-block;
+    padding: 0 20px 0 5px;
+    background: url(../img/bg_breadcrumb.png) 100% 50% no-repeat;
+    font-size: 1.55em;
+}
+
+.search-block-v2 {
+    padding-top: 20px;
+}
