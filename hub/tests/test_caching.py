@@ -278,7 +278,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
 
         self.topic.name = "Curriculum"
         self.topic.scpd_rss_feed = \
-            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/curriculum/"
+            "http://partners.aashe.org/rss/sustainability-topic/curriculum/"
         self.topic.save()
 
         response = self.client.get(self.url_topic)
@@ -296,7 +296,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # Confirm that a broken RSS Feed link will not break the page
         cache.clear()
         self.topic.scpd_rss_feed = \
-            "http://aashe.org/sustainable-campus-partners-directory/rss/sustainability-topic/topic-does-not-exist/"
+            "http://partners.aashe.org/rss/sustainability-topic/topic-does-not-exist/"
         self.topic.save()
         response = self.client.get(self.url_topic)
         self.assertEqual(response.status_code, 200)
