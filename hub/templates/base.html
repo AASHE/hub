@@ -18,16 +18,40 @@
       z-index: 120;
   }
   </style>
-  <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,400i,700,700i" rel="stylesheet">
-  <link href="{% static 'aashestrap/css/style.css' %}" rel="stylesheet" type="text/css" />
 {% endblock css %}
 
 {% block header %}
   <div class="header">
     <!-- Header -->
-    {% include 'aashestrap/header.html' %}
-
     <div class="container">
+      <div class="row top-nav">
+        <div class="col-md-8 col-sm-12 aashe-tabs">
+          <a href="http://www.aashe.org/" class="left">
+            aashe</a>
+          <a href="http://bulletin.aashe.org/" class="left">
+            bulletin</a>
+          <a href="http://conference.aashe.org/" class="left">
+            conference</a>
+          <a href="https://hub.aashe.org/" class="left">
+            hub</a>
+          <a href="https://stars.aashe.org/" class="left">
+            stars</a>
+        </div>
+        <div class="col-md-4 col-sm-12 pull-right">
+          <div class="menu">
+            {% if user.is_authenticated %}
+              <a href="http://www.aashe.org/user"><i class="fa fa-user"></i> My Account</a>
+              <a href="{% url "logout" %}">
+                <i class="fa fa-lock"></i> Logout, {{ user.email }}
+              </a>
+            {% else %}
+              <a href="{% url "login" %}"><i class="fa fa-lock"></i> Login</a>
+              <a href="http://www.aashe.org/user/register">Create an Account</a>
+              <a href="http://www.aashe.org/membership">Become a Member</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-7 col-sm-12">
           <a href="http://www.aashe.org/" class="logo">
@@ -52,21 +76,19 @@
 
 {% block body %}
   <div class="container">
-    <div id="breadcrumbs" class="breadcrumb-wrapper">
-        <div class="inner">
-          <ul class="hub-breadcrumb">
-          {% block breadcrumbs %}
-            <li>
-              <a href="{% url 'home' %}"><i class="fa fa-home"></i></a>
-            </li>
-          {% endblock %}
-          </ul>
-        </div>
+    <div id="breadcrumbs">
+      <ul class="breadcrumb">
+        {% block breadcrumbs %}
+          <li>
+            <a href="{% url 'home' %}"><i class="fa fa-home"></i></a>
+          </li>
+        {% endblock %}
+      </ul>
     </div>
   </div>
 
   <div class="content">
-    <div class="container body-main">
+    <div class="container">
       {% block page %}{% endblock %}
     </div>
   </div>
@@ -74,7 +96,32 @@
 
 {% block footer %}
   <!-- Footer -->
-  {% include 'aashestrap/footer.html' %}
+  <div class="footer-default">
+    <div class="copyright">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            {% if user and user.is_staff %}
+                {% block_content 'footer_text' %}
+            {% else %}
+                {% cache CACHE_TTL_LONG footer_content %}
+                  <!-- begin cache {% now "c" %} -->
+                  {% block_content 'footer_text' %}
+                  <!-- end caching -->
+                {% endcache %}
+            {% endif %}
+          </div>
+          <div class="col-md-offset-2 col-md-2">
+            <p>
+              <a href="/about/">About</a><br>
+              <a href="/guidelines/">Submission Guidelines</a><br>
+              <a href="https://www.surveymonkey.com/r/aashe_hub">Provide Feedback</a><br>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- /Footer -->
 {% endblock footer %}
 
