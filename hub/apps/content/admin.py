@@ -40,6 +40,7 @@ class FileInline(admin.TabularInline):
 class ImageInline(admin.TabularInline):
     model = Image
     extra = 0
+    fields = ('caption', 'credit', 'image', 'affirmation')
 
 
 class ContentTypeAdminForm(forms.ModelForm):
@@ -91,6 +92,7 @@ class BaseContentTypeAdmin(ExportMixin, admin.ModelAdmin):
                 utils.send_resource_approved_email(obj, request)
             elif obj.status == obj.STATUS_CHOICES.declined:
                 utils.send_resource_declined_email(obj, request)
+        obj.create_thumbnails()
 
 
 class SpecificContentTypeAdmin(BaseContentTypeAdmin):
