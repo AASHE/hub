@@ -361,6 +361,7 @@ class BrowseView(RatelimitMixin, ListView):
                 for t in
                 new_resources.exclude(Q(organizations__org_name=None))
                              .exclude(Q(organizations__latitude=''))
+                             .exclude(Q(organizations__latitude=None))
                              .values_list('organizations__org_name',
                                           'organizations__latitude',
                                           'organizations__longitude',
