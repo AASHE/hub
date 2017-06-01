@@ -170,7 +170,7 @@ class TagFilter(filters.ChoiceFilter):
 
         kwargs.update({
             'choices': tag_list,
-            'label': 'Tags(s)',
+            'label': 'Tag(s)',
             'widget': LeanSelectMultiple,
         })
         super(TagFilter, self).__init__(*args, **kwargs)
