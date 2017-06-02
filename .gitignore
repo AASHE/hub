@@ -75,4 +75,6 @@ node_modules
 
 *.dump
 
+stellar.yaml
+
 .env
