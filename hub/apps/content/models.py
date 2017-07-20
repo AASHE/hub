@@ -313,7 +313,7 @@ class Author(TimeStampedModel):
 class Website(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="websites")
     label = models.CharField(max_length=100, blank=True, null=True)
-    url = models.URLField()
+    url = models.URLField(max_length=500)
 
     def __str__(self):
         return self.label or 'Website object'
