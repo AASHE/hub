@@ -24,6 +24,7 @@ class GreenPowerProject(ContentType):
     project_size = models.PositiveIntegerField()
     annual_production = models.PositiveIntegerField()
     installed_cost = models.PositiveIntegerField()
+    date_installed = models.DateField()
     first_installation_type = models.CharField(max_length=200, choices=INSTALLATION_TYPES)
     second_installation_type = models.CharField(max_length=200, choices=INSTALLATION_TYPES)
     third_installation_type = models.CharField(max_length=200, choices=INSTALLATION_TYPES)
