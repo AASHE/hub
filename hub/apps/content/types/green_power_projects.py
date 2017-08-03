@@ -29,20 +29,6 @@ class GreenPowerProject(ContentType):
     third_installation_type = models.CharField(max_length=200, choices=INSTALLATION_TYPES)
     ownership_type = models.CharField(max_length=200, choices=OWNERSHIP_TYPES)
 
-    #TODO should this be FK?
-    contact_name = models.CharField(max_length=200, blank=True)
-    contact_title = models.CharField(max_length=200, blank=True)
-    contact_org = models.ForeignKey('iss.Organization', null=True)
-
-    url = models.URLField()
-    url2 = models.URLField()
-    url3 = models.URLField()
-    url4 = models.URLField()
-    url5 = models.URLField()
-
-    #TODO upload fields
-
-
     objects = ContentTypeManager()
 
     class Meta:
