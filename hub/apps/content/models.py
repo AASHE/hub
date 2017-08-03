@@ -388,6 +388,7 @@ from .types.academic import AcademicProgram
 from .types.casestudies import CaseStudy
 from .types.centers import CenterAndInstitute
 from .types.courses import Material
+from .types.green_power_projects import GreenPowerProject
 from .types.outreach import OutreachMaterial
 from .types.photographs import Photograph
 from .types.presentations import Presentation
@@ -406,3 +407,4 @@ CONTENT_TYPES['publication'] = Publication
 CONTENT_TYPES['centerandinstitute'] = CenterAndInstitute
 CONTENT_TYPES['tool'] = Tool
 CONTENT_TYPES['video'] = Video
+CONTENT_TYPES['greenpowerproject'] = GreenPowerProject
