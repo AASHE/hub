@@ -1,5 +1,6 @@
 from django.db import models
 from ..models import ContentType, ContentTypeManager
+from ..search import BaseIndex
 
 
 class GreenPowerProject(ContentType):
@@ -20,7 +21,6 @@ class GreenPowerProject(ContentType):
         ('third-party-purchase', 'Third-party Owned (Power Purchase Agreement'),
     )
 
-
     project_size = models.PositiveIntegerField()
     annual_production = models.PositiveIntegerField()
     installed_cost = models.PositiveIntegerField()
@@ -35,4 +35,8 @@ class GreenPowerProject(ContentType):
         verbose_name = 'Green Power Project'
         verbose_name_plural = 'Green Power Projects'
 
+
+class GreenPowerProjectIndex(BaseIndex):
+    def get_model(self):
+        return GreenPowerProject
 
