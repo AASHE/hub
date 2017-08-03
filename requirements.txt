@@ -53,4 +53,4 @@ https://github.com/jamstooks/django-acme-challenge/archive/master.zip
 
 https://github.com/DjangoAdminHackers/django-admin-blocks/archive/master.zip
 
-https://github.com/AASHE/django-membersuite-auth/archive/master.zip
+https://github.com/AASHE/django-membersuite-auth/archive/v1.5.3.zip
