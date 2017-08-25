@@ -22,13 +22,23 @@ class Command(BaseCommand):
                 install_type1 = row['Installation Type 1']
                 install_type2 = row['Installation Type 2']
                 install_type3 = row['Installation Type 3']
+                cost = row['Installed Cost (U.S. Dollars)'].replace(',', '').replace('$', '')
+                if cost:
+                    cost = int(cost)
+                else:
+                    cost = None
+                annual_prod = row['Approximate Annual Production (kWh)'].replace(',', '')
+                if annual_prod:
+                    annual_prod = int(annual_prod)
+                else:
+                    annual_prod = None
 
                 new_gpp = GreenPowerProject(
                     title=row['Project Name'],
                     description=row['Project Overview'],
                     project_size=int(row['Project Size (kW)'].replace(',', '')),
-                    annual_production=int(row['Approximate Annual Production (kWh)'].replace(',', '')),
-                    installed_cost=int(row['Installed Cost (U.S. Dollars)'].replace(',', '').replace('$', '')),
+                    annual_production=annual_prod,
+                    installed_cost=cost,
                     first_installation_type=install_types[install_type1],
                     ownership_type=ownership_types[row['Ownership type']]
                 )

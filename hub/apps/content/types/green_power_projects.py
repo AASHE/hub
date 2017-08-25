@@ -11,20 +11,22 @@ class GreenPowerProject(ContentType):
         ('solar-wall', 'Solar - Wall Mount'),
         ('solar-ground-pole', 'Solar - Ground or Pole Mount'),
         ('solar-building-photovoltaic', 'Solar - Building Integrated Photovoltaic'),
-        ('solar-other', 'Solar - Other')
+        ('solar-other', 'Solar - Other'),
+        ('wind-horizontal', 'Wind - Horizontal Axis'),
+        ('wind-horizontal', 'Wind - Vertical Axis'),
     )
 
     OWNERSHIP_TYPES = (
         ('unknown', 'Unknown'),
         ('institution-owned', 'Institution Owned'),
-        ('third-party-lease', 'Third-party Owned (Lease)'),
-        ('third-party-purchase', 'Third-party Owned (Power Purchase Agreement'),
+        ('third-party-lease', 'Third-party owned (lease)'),
+        ('third-party-purchase', 'Third-party owned (power purchase agreement)'),
     )
 
     project_size = models.PositiveIntegerField()
-    annual_production = models.PositiveIntegerField()
-    installed_cost = models.PositiveIntegerField()
-    date_installed = models.DateField()
+    annual_production = models.PositiveIntegerField(blank=True, null=True)
+    installed_cost = models.PositiveIntegerField(blank=True, null=True)
+    date_installed = models.DateField(blank=True, null=True)
     first_installation_type = models.CharField(max_length=200, choices=INSTALLATION_TYPES)
     second_installation_type = models.CharField(max_length=200, choices=INSTALLATION_TYPES)
     third_installation_type = models.CharField(max_length=200, choices=INSTALLATION_TYPES)
