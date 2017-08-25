@@ -1,7 +1,7 @@
 import csv
 from django.core.management.base import BaseCommand, CommandError
 
-from hub.apps.content.models import GreenPowerProject
+from hub.apps.content.models import GreenPowerProject, Website
 from hub.apps.metadata.models import Organization
 
 
@@ -59,12 +59,26 @@ class Command(BaseCommand):
                         new_gpp.organizations.add(org)
 
 
-
-
-
                 #parse and create Tags
 
+                # date installed
 
-                #TODO date installed?
+                # project contact
+
+                # uploads
+
+                # urls
+                # TODO disable linkcheck here otherwise takes forever and/or fails
+                for i in range(1, 6):
+                    url = row['URL{}'.format(i)]
+                    if url:
+                        Website.objects.create(
+                            url=url,
+                            ct=new_gpp
+                        )
+
+                # submitter
+
+                # date posted
 
 
