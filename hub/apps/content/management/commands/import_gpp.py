@@ -4,7 +4,7 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from hub.apps.content.models import GreenPowerProject, Website
+from hub.apps.content.models import GreenPowerProject, Website, Author
 from hub.apps.metadata.models import Organization
 
 
@@ -79,6 +79,13 @@ class Command(BaseCommand):
 
 
                 # project contact
+                if row['ProjectContact-Name']:
+                    Author.objects.create(
+                        ct=new_gpp,
+                        name=row['ProjectContact-Name'],
+                        title=row['ProjectContact-Title'],
+                        organization_id=int(row['ProjectContact-OrgID'])
+                    )
 
                 # uploads
 
