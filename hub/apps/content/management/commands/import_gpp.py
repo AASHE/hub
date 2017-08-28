@@ -40,6 +40,8 @@ class Command(BaseCommand):
 
                 _d = [int(p) for p in row['Date Posted'].split('/')]
                 date_posted = datetime(_d[2], _d[0], _d[1])
+                _d = [int(p) for p in row['Date Installed'].split('/')]
+                date_installed = datetime(_d[2], _d[0], _d[1])
 
                 new_gpp = GreenPowerProject(
                     title=row['Project Name'],
@@ -49,7 +51,8 @@ class Command(BaseCommand):
                     installed_cost=cost,
                     first_installation_type=install_types[install_type1],
                     ownership_type=ownership_types[row['Ownership type']],
-                    date_created=date_posted
+                    date_created=date_posted,
+                    date_installed=date_installed
                 )
 
                 if install_type2:
@@ -74,9 +77,6 @@ class Command(BaseCommand):
                 new_gpp.tags = tags
                 new_gpp.save()
 
-
-
-                # date installed
 
                 # project contact
 
