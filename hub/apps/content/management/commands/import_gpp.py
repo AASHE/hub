@@ -60,6 +60,12 @@ class Command(BaseCommand):
 
 
                 #parse and create Tags
+                tags_token = row['Tag(s)']
+                tags = [tag.strip() for tag in tags_token.split(',')]
+                new_gpp.tags = tags
+                new_gpp.save()
+
+
 
                 # date installed
 
