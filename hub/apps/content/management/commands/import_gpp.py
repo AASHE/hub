@@ -1,9 +1,13 @@
 import csv
 
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from hub.apps.content.models import GreenPowerProject, Website
 from hub.apps.metadata.models import Organization
+
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
@@ -74,7 +78,6 @@ class Command(BaseCommand):
                 # uploads
 
                 # urls
-                # TODO disable linkcheck here otherwise takes forever and/or fails
                 for i in range(1, 6):
                     url = row['URL{}'.format(i)]
                     if url:
@@ -84,6 +87,16 @@ class Command(BaseCommand):
                         )
 
                 # submitter
+                submitter_email = row['Submitter email']
+                try:
+                    # TODO Handle submitter doesn't exist
+                    submitter_user = User.objects.get(email=submitter_email)
+                    new_gpp.submitted_by = submitter_user
+                    new_gpp.save()
+                except User.DoesNotExist:
+                    print 'Submitter not found ', submitter_email
+
+
 
                 # date posted
 
