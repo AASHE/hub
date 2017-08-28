@@ -1,14 +1,16 @@
-import requests
 import tempfile
 from datetime import datetime
+
+import requests
+from boto.s3.connection import S3Connection
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core import files
+from django.utils.text import slugify
 
 from hub.apps.content.models import ContentType, Author, File, Website, Image
 from hub.apps.metadata.models import (
     Organization, SustainabilityTopic, AcademicDiscipline, InstitutionalOffice)
-
-from django.contrib.auth.models import User
-from django.utils.text import slugify
-from django.core import files
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -131,24 +133,30 @@ def create_file_from_url(parent, file_url, image=False):
     if len(file_name) > 100:
         file_name = file_name[-100:-1]
 
-    # Create a temporary file
-    lf = tempfile.NamedTemporaryFile()
 
-    # Read the streamed image in sections
-    for block in request.iter_content(1024 * 8):
 
-        # If no more file then stop
-        if not block:
-            break
-
-        # Write image block to temporary file
-        lf.write(block)
 
     # Save the temporary file to the model#
     # This saves the model so be sure that is it valid
+
+    s3_conn = S3Connection(
+        settings.AWS_ACCESS_KEY_ID,
+        settings.AWS_SECRET_ACCESS_KEY)
+    s3_bucket = s3_conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+
+    s3_key = bucket.get_key(file_name)
+    if s3_key:
+        #TODO
+        pass
+    else:
+        s3_key = bucket.new_key(file_name)
+    s3_key.set_contents_from_file(BytesIO(request.raw.read()))
+
     if not image:
         file = File(ct=parent, label=file_name, affirmation=True)
-        file.item.save(file_name, files.File(lf))
+        #TODO get image URL for File.item
+        file.item = 'http://hub-media.aashe.org/uploads/{}'.format(file_name)
+        file.save()
     else:
         image = Image(ct=parent, affirmation=True)
         image.image.save(file_name, files.File(lf))

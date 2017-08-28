@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 
 from hub.apps.content.models import GreenPowerProject, Website, Author
 from hub.apps.metadata.models import Organization
+from hub.imports.utils import create_file_from_url
 
 
 User = get_user_model()
@@ -88,6 +89,10 @@ class Command(BaseCommand):
                     )
 
                 # uploads
+                if row['Upload 1']:
+                    create_file_from_url(new_gpp, row['Upload 1'])
+                if row['Upload 2']:
+                    create_file_from_url(new_gpp, row['Upload 2'])
 
                 # urls
                 for i in range(1, 6):
