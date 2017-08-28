@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
@@ -37,6 +38,9 @@ class Command(BaseCommand):
                 else:
                     annual_prod = None
 
+                _d = [int(p) for p in row['Date Posted'].split('/')]
+                date_posted = datetime(_d[2], _d[0], _d[1])
+
                 new_gpp = GreenPowerProject(
                     title=row['Project Name'],
                     description=row['Project Overview'],
@@ -44,7 +48,8 @@ class Command(BaseCommand):
                     annual_production=annual_prod,
                     installed_cost=cost,
                     first_installation_type=install_types[install_type1],
-                    ownership_type=ownership_types[row['Ownership type']]
+                    ownership_type=ownership_types[row['Ownership type']],
+                    date_created=date_posted
                 )
 
                 if install_type2:
@@ -95,9 +100,3 @@ class Command(BaseCommand):
                     new_gpp.save()
                 except User.DoesNotExist:
                     print 'Submitter not found ', submitter_email
-
-
-
-                # date posted
-
-
