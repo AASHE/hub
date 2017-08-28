@@ -1,12 +1,13 @@
 import csv
-from django.core.management.base import BaseCommand, CommandError
+
+from django.core.management.base import BaseCommand
 
 from hub.apps.content.models import GreenPowerProject, Website
 from hub.apps.metadata.models import Organization
 
 
 class Command(BaseCommand):
-    help = "One-time import of Green Power Project data"
+    help = "One-time import of Green Power Project data; Use the import_gpp settings"
 
     def handle(self, *args, **options):
 
@@ -18,7 +19,6 @@ class Command(BaseCommand):
             row = reader.next()
             print row.keys()
             for row in reader:
-
                 install_type1 = row['Installation Type 1']
                 install_type2 = row['Installation Type 2']
                 install_type3 = row['Installation Type 3']
