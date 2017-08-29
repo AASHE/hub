@@ -354,6 +354,9 @@ class BrowseView(RatelimitMixin, ListView):
                 )
             ]
 
+            # TODO
+            installation_counts = []
+
             # Get data for the map
             map_data = [
                 [t[0].encode("utf8"), float(t[1]), float(t[2]), t[3],
@@ -400,6 +403,9 @@ class BrowseView(RatelimitMixin, ListView):
                 'Publications',
                 'Research Centers & Institutes',
             ]
+            installation_type_graph_allowed = [
+                'Green Power Projects'
+            ]
 
             singular = self.content_type_class._meta.verbose_name
 
@@ -416,6 +422,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
                 'topic_graph_allowed': topic_graph_allowed,
                 'discipline_graph_allowed': discipline_graph_allowed,
+                'installation_graph_allowed': installation_type_graph_allowed,
                 'content_type_singular': singular,
             })
         return ctx
