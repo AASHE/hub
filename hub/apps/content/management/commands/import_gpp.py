@@ -53,7 +53,9 @@ class Command(BaseCommand):
                     first_installation_type=install_types[install_type1],
                     ownership_type=ownership_types[row['Ownership type']],
                     date_created=date_posted,
-                    date_installed=date_installed
+                    date_installed=date_installed,
+                    status='published',
+                    published=datetime.now()
                 )
 
                 if install_type2:
