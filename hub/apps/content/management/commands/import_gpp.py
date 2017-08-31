@@ -1,3 +1,4 @@
+import os.path
 import csv
 from datetime import datetime
 
@@ -20,7 +21,7 @@ class Command(BaseCommand):
         install_types = dict([(i[1], i[0]) for i in GreenPowerProject.INSTALLATION_TYPES])
         ownership_types = dict([(o[1], o[0]) for o in GreenPowerProject.OWNERSHIP_TYPES])
 
-        with open('/tmp/gpp.csv', 'rb') as csvfile:
+        with open("{}/{}".format(os.path.dirname(__file__), 'green_power_projects.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
             row = reader.next()
             print row.keys()
