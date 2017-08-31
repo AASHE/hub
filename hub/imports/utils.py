@@ -142,15 +142,11 @@ def create_file_from_url(parent, file_url, image=False):
         file_name = file_name[-100:-1]
 
 
-
-
-    # Save the temporary file to the model#
-    # This saves the model so be sure that is it valid
-
     s3_conn = S3Connection(
         settings.AWS_ACCESS_KEY_ID,
         settings.AWS_SECRET_ACCESS_KEY)
-    s3_bucket = s3_conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    print 'AWS bucket is ', settings.AWS_STORAGE_BUCKET_NAME
+    s3_bucket = s3_conn.get_bucket('aashe-hub-dev')
 
     s3_key = s3_bucket.get_key(file_name)
     if s3_key:
