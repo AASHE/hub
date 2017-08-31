@@ -3,6 +3,7 @@
     google.load("visualization", "1", {packages: ['corechart', 'bar']});
     google.setOnLoadCallback(drawTopicsChart);
     google.setOnLoadCallback(drawDisciplinesChart);
+    google.setOnLoadCallback(drawInstallationsChart);
 
     var activeTab;
     function getChart(activeTab) {
@@ -11,6 +12,7 @@
             document.getElementById('map').style.display = 'none';
             drawTopicsChart();
             drawDisciplinesChart();
+            drawInstallationsChart();
         }
         else {
             document.getElementById('charts').style.display = 'none';

@@ -355,7 +355,30 @@ class BrowseView(RatelimitMixin, ListView):
             ]
 
             # TODO
-            installation_counts = []
+            # TODO these queries don't need to be run for every type
+            installation_counts = [
+                {
+                    'name'.encode("utf8"): t['greenpowerproject__first_installation_type']
+                        .encode("utf8"),
+                    'count'.encode("utf8"): t['count'],
+                    'link'.encode("utf8"): t['link'].encode("utf8")
+                }
+                for t in
+                new_resources.values('greenpowerproject__first_installation_type')
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&first_installation_type="),
+                        'greenpowerproject__first_installation_type',
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                )
+            ]
 
             # Get data for the map
             map_data = [
@@ -418,6 +441,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'province_counts': province_counts,
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
+                'installation_counts': installation_counts,
                 'map_data': map_data,
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
                 'topic_graph_allowed': topic_graph_allowed,
