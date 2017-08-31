@@ -1,27 +1,26 @@
 from __future__ import unicode_literals
 
+from collections import defaultdict
 from logging import getLogger
 
+import feedparser
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db.models import Count, CharField, Value as V
 from django.db.models import ObjectDoesNotExist
+from django.db.models import Q
+from django.db.models.functions import Concat
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.utils.text import slugify
 from django.views.generic import DetailView, ListView, TemplateView
 from ratelimit.mixins import RatelimitMixin
-
-from ...permissions import get_aashe_member_flag
-from ..content.models import CONTENT_TYPES, ContentType
-from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
-
 from tagulous.views import autocomplete
 
-import feedparser
-from django.utils.text import slugify
-
-from django.db.models import Count, CharField, Value as V
-from django.db.models.functions import Concat
-from django.db.models import Q
+from hub.apps.content.types.green_power_projects import GreenPowerProject
+from ..content.models import CONTENT_TYPES, ContentType
+from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
+from ...permissions import get_aashe_member_flag
 
 logger = getLogger(__name__)
 
@@ -354,31 +353,36 @@ class BrowseView(RatelimitMixin, ListView):
                 )
             ]
 
-            # TODO
             # TODO these queries don't need to be run for every type
-            installation_counts = [
-                {
-                    'name'.encode("utf8"): t['greenpowerproject__first_installation_type']
-                        .encode("utf8"),
-                    'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): t['link'].encode("utf8")
-                }
-                for t in
-                new_resources.values('greenpowerproject__first_installation_type')
-                    .annotate(count=Count('id')).order_by('-count')
-                    .annotate(
-                    link=Concat(
-                        V("/browse/types/"),
-                        V(self.content_type_class.slug),
-                        V("/?search=&content_type="),
-                        V(self.content_type_class.slug),
-                        V("&first_installation_type="),
-                        'greenpowerproject__first_installation_type',
-                        V("&country=#resources-panel"),
-                        output_field=CharField()
-                    )
+
+
+            inst_counts = defaultdict(int)
+            installation_counts = []
+            install_types = dict([(i[0], i[1]) for i in GreenPowerProject.INSTALLATION_TYPES])
+            for t in new_resources.values(
+                'greenpowerproject__first_installation_type',
+                'greenpowerproject__second_installation_type',
+                'greenpowerproject__third_installation_type'
+            ):
+                inst_counts[t['greenpowerproject__first_installation_type']] += 1
+                if t['greenpowerproject__second_installation_type']:
+                    inst_counts[t['greenpowerproject__second_installation_type']] += 1
+                if t['greenpowerproject__third_installation_type']:
+                    inst_counts[t['greenpowerproject__third_installation_type']] += 1
+            for key in inst_counts.keys():
+                link = "/browse/types/{}/?search=&content_type={}&first_installation_type={}&country=#resources-panel"
+                installation_counts.append(
+                    {
+                        'name'.encode("utf8"): install_types[key].encode("utf8"),
+                        'count'.encode("utf8"): inst_counts[key],
+                        'link'.encode("utf8"): link.format(
+                            self.content_type_class.slug,
+                            self.content_type_class.slug,
+                            key
+                        ).encode("utf8")
+                    }
                 )
-            ]
+
 
             # Get data for the map
             map_data = [
