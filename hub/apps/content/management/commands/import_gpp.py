@@ -21,6 +21,8 @@ class Command(BaseCommand):
         install_types = dict([(i[1], i[0]) for i in GreenPowerProject.INSTALLATION_TYPES])
         ownership_types = dict([(o[1], o[0]) for o in GreenPowerProject.OWNERSHIP_TYPES])
 
+        user_monika = User.objects.get(email='monika.urbanski@aashe.org')
+
         with open("{}/{}".format(os.path.dirname(__file__), 'green_power_projects.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
             row = reader.next()
@@ -109,9 +111,9 @@ class Command(BaseCommand):
                 # submitter
                 submitter_email = row['Submitter email']
                 try:
-                    # TODO Handle submitter doesn't exist
                     submitter_user = User.objects.get(email=submitter_email)
-                    new_gpp.submitted_by = submitter_user
-                    new_gpp.save()
                 except User.DoesNotExist:
-                    print 'Submitter not found ', submitter_email
+                    submitter_user = user_monika
+
+                new_gpp.submitted_by = submitter_user
+                new_gpp.save()
