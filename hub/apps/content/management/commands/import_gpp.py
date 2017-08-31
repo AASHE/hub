@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from hub.apps.content.models import GreenPowerProject, Website, Author
-from hub.apps.metadata.models import Organization
+from hub.apps.metadata.models import Organization, SustainabilityTopic
 from hub.imports.utils import create_file_from_url
 
 
@@ -22,6 +22,7 @@ class Command(BaseCommand):
         ownership_types = dict([(o[1], o[0]) for o in GreenPowerProject.OWNERSHIP_TYPES])
 
         user_monika = User.objects.get(email='monika.urbanski@aashe.org')
+        energy_topic = SustainabilityTopic.objects.get(slug='energy')
 
         with open("{}/{}".format(os.path.dirname(__file__), 'green_power_projects.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -75,6 +76,9 @@ class Command(BaseCommand):
                     if org_id:
                         org = Organization.objects.get(account_num=org_id)
                         new_gpp.organizations.add(org)
+
+                # Topic
+                new_gpp.topics.add(energy_topic)
 
 
                 #parse and create Tags
