@@ -14,6 +14,7 @@ class GreenPowerProject(ContentType):
         ('solar-other', 'Solar - Other'),
         ('wind-horizontal', 'Wind - Horizontal Axis'),
         ('wind-horizontal', 'Wind - Vertical Axis'),
+        ('hydroelectric', 'Low - Impact Hydroelectric'),
     )
 
     OWNERSHIP_TYPES = (
