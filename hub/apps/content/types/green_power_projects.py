@@ -38,6 +38,35 @@ class GreenPowerProject(ContentType):
         verbose_name = 'Green Power Project'
         verbose_name_plural = 'Green Power Projects'
 
+    @classmethod
+    def exclude_form_fields(cls):
+        """
+        `topics` field is excluded because instances will belong to Energy topic
+        """
+        return ['topics', 'disciplines']
+
+    @classmethod
+    def label_overrides(cls):
+        return {
+            'description': 'Description / Project Overview',
+            'date_'
+        }
+
+    @classmethod
+    def required_field_overrides(cls):
+        required_list = super(GreenPowerProject, cls).required_field_overrides()
+        required_list.append('description')
+        return required_list
+
+    # @classmethod
+    # def required_metadata(cls):
+    #     return {
+    #         'image': {'max': 5, 'min': 0},  # optional, up to 5
+    #         'file': {'max': 3, 'min': 0},  # optional, up to 5
+    #         'author': {'max': 5, 'min': 1},  # required, up to 5
+    #         'website': {'max': 5, 'min': 0},  # optional, up to 5
+    #     }
+
 
 class GreenPowerProjectIndex(BaseIndex):
     def get_model(self):
