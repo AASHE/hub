@@ -80,9 +80,9 @@ class GreenPowerProject(ContentType):
         """
         return ['topics', 'disciplines']
 
-    @classmethod
-    def preset_topics(cls):
-        return ['Energy']
+    # @classmethod
+    # def preset_topics(cls):
+    #     return ['Energy']
 
     @classmethod
     def label_overrides(cls):

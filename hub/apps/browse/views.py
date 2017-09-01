@@ -354,35 +354,26 @@ class BrowseView(RatelimitMixin, ListView):
             ]
 
             # TODO these queries don't need to be run for every type
-
-
-            inst_counts = defaultdict(int)
-            installation_counts = []
-            install_types = dict([(i[0], i[1]) for i in GreenPowerProject.INSTALLATION_TYPES])
-            for t in new_resources.values(
-                'greenpowerproject__first_installation_type',
-                'greenpowerproject__second_installation_type',
-                'greenpowerproject__third_installation_type'
-            ):
-                inst_counts[t['greenpowerproject__first_installation_type']] += 1
-                if t['greenpowerproject__second_installation_type']:
-                    inst_counts[t['greenpowerproject__second_installation_type']] += 1
-                if t['greenpowerproject__third_installation_type']:
-                    inst_counts[t['greenpowerproject__third_installation_type']] += 1
-            for key in inst_counts.keys():
-                link = "/browse/types/{}/?search=&content_type={}&first_installation_type={}&country=#resources-panel"
-                installation_counts.append(
-                    {
-                        'name'.encode("utf8"): install_types[key].encode("utf8"),
-                        'count'.encode("utf8"): inst_counts[key],
-                        'link'.encode("utf8"): link.format(
-                            self.content_type_class.slug,
-                            self.content_type_class.slug,
-                            key
-                        ).encode("utf8")
-                    }
-                )
-
+            _INSTALL_TYPES = dict([(i[0], i[1]) for i in GreenPowerInstallation.INSTALLATION_TYPES])
+            gpp_ids = new_resources.values_list('greenpowerproject__id', flat=True)
+            install_resources = GreenPowerProject.objects\
+                .filter(id__in=gpp_ids)\
+                .exclude(Q(installations__type=None))\
+                .values('installations__type')\
+                .annotate(count=Count('installations__type'))
+            link = "/browse/types/{}/?search=&content_type={}&installation={}&country=#resources-panel"
+            installation_counts = [
+                {
+                    'name'.encode("utf8"): _INSTALL_TYPES[t['installations__type']].encode("utf8"),
+                    'count'.encode("utf8"): t['count'],
+                    'link'.encode("utf8"): link.format(
+                        self.content_type_class.slug,
+                        self.content_type_class.slug,
+                        5
+                    ).encode('utf8')
+                }
+                for t in install_resources
+            ]
 
             # Get data for the map
             map_data = [
