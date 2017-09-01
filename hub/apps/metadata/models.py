@@ -200,3 +200,56 @@ class Organization(ISSOrganization):
             return '{}, {}'.format(self.org_name, self.state)
         else:
             return self.org_name
+
+
+@python_2_unicode_compatible
+class GreenPowerInstallation(models.Model):
+
+    INSTALLATION_TYPES = (
+        ('solar-canopy', 'Solar - Canopy'),
+        ('solar-rooftop', 'Solar - Roof Top Mount'),
+        ('solar-wall', 'Solar - Wall Mount'),
+        ('solar-ground-pole', 'Solar - Ground or Pole Mount'),
+        ('solar-building-photovoltaic', 'Solar - Building Integrated Photovoltaic'),
+        ('solar-other', 'Solar - Other'),
+        ('wind-horizontal', 'Wind - Horizontal Axis'),
+        ('wind-horizontal', 'Wind - Vertical Axis'),
+        ('hydroelectric', 'Low - Impact Hydroelectric'),
+    )
+
+    type = models.CharField(max_length=100, choices=INSTALLATION_TYPES)
+
+    def __str__(self):
+        return self.get_type_display()
+
+
+@python_2_unicode_compatible
+class GreenPowerFinancing(models.Model):
+
+    FINANCE_TYPES = (
+        ('operating-budget', 'Operating budget'),
+        ('endowment', 'Endowment'),
+        ('capital-budget', 'Capital budget'),
+        ('third-party', 'Third party'),
+        ('donation', 'Donation'),
+    )
+
+    type = models.CharField(max_length=100, choices=FINANCE_TYPES)
+
+    def __str__(self):
+        return self.get_type_display()
+
+
+@python_2_unicode_compatible
+class GreenPowerLocation(models.Model):
+    LOCATION_CHOICES = (
+        ('institution-owned-main', 'Institution-owned property (main campus)'),
+        ('institution-owned-remote', 'Institution-owned property (remote)'),
+        ('Third party-owned', 'Third party-owned property'),
+        ('unknown', 'Unknown'),
+    )
+
+    type = models.CharField(max_length=100, choices=LOCATION_CHOICES)
+
+    def __str__(self):
+        return self.get_type_display()

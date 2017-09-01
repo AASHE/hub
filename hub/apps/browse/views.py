@@ -19,7 +19,7 @@ from tagulous.views import autocomplete
 
 from hub.apps.content.types.green_power_projects import GreenPowerProject
 from ..content.models import CONTENT_TYPES, ContentType
-from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
+from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite, GreenPowerInstallation
 from ...permissions import get_aashe_member_flag
 
 logger = getLogger(__name__)

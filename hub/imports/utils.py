@@ -146,7 +146,6 @@ def create_file_from_url(parent, file_url, image=False):
         settings.AWS_ACCESS_KEY_ID,
         settings.AWS_SECRET_ACCESS_KEY)
     # TODO hard coding bucket name because stage can't access aashe-hub-prod
-    print 'AWS bucket is ', settings.AWS_STORAGE_BUCKET_NAME
     s3_bucket = s3_conn.get_bucket('aashe-hub-dev')
 
     s3_key = s3_bucket.get_key(file_name)

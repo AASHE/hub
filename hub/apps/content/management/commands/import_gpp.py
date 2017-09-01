@@ -4,9 +4,10 @@ from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from hub.apps.content.models import GreenPowerProject, Website, Author
-from hub.apps.metadata.models import Organization, SustainabilityTopic
+from hub.apps.metadata.models import Organization, SustainabilityTopic, GreenPowerInstallation
 from hub.imports.utils import create_file_from_url
 
 
@@ -18,7 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        install_types = dict([(i[1], i[0]) for i in GreenPowerProject.INSTALLATION_TYPES])
+        _INSTALL_TYPES = dict([(i[1], i[0]) for i in GreenPowerInstallation.INSTALLATION_TYPES])
         ownership_types = dict([(o[1], o[0]) for o in GreenPowerProject.OWNERSHIP_TYPES])
 
         user_monika = User.objects.get(email='monika.urbanski@aashe.org')
@@ -27,7 +28,6 @@ class Command(BaseCommand):
         with open("{}/{}".format(os.path.dirname(__file__), 'green_power_projects.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
             row = reader.next()
-            print row.keys()
             for row in reader:
                 install_type1 = row['Installation Type 1']
                 install_type2 = row['Installation Type 2']
@@ -54,41 +54,48 @@ class Command(BaseCommand):
                     project_size=int(row['Project Size (kW)'].replace(',', '')),
                     annual_production=annual_prod,
                     installed_cost=cost,
-                    first_installation_type=install_types[install_type1],
                     ownership_type=ownership_types[row['Ownership type']],
                     date_created=date_posted,
                     date_installed=date_installed,
                     status='published',
-                    published=datetime.now()
+                    published=timezone.now()
                 )
-
-                if install_type2:
-                    new_gpp.second_installation_type = install_types[install_type2]
-                if install_type3:
-                    new_gpp.third_installation_type = install_types[install_type3]
 
                 new_gpp.save()
 
-                #get orgs
-                # up to 4 orgs
+                #
+                # Installations
+                #
+                first = GreenPowerInstallation.objects.create(type=_INSTALL_TYPES[install_type1])
+                new_gpp.installations.add(first)
+                if install_type2:
+                    new_gpp.installations.add(GreenPowerInstallation.objects.create(type=_INSTALL_TYPES[install_type2]))
+                if install_type3:
+                    new_gpp.installations.add(GreenPowerInstallation.objects.create(type=_INSTALL_TYPES[install_type3]))
+
+                #
+                # Organizations
+                #
                 for idx in (1, 2, 3, 4):
                     org_id = row['Organization{}_ID'.format(idx)]
                     if org_id:
                         org = Organization.objects.get(account_num=org_id)
                         new_gpp.organizations.add(org)
 
+                #
                 # Topic
+                #
                 new_gpp.topics.add(energy_topic)
 
 
-                #parse and create Tags
+                # Tags
                 tags_token = row['Tag(s)']
                 tags = [tag.strip() for tag in tags_token.split(',')]
                 new_gpp.tags = tags
                 new_gpp.save()
 
 
-                # project contact
+                # Project Contact
                 if row['ProjectContact-Name']:
                     Author.objects.create(
                         ct=new_gpp,
@@ -97,13 +104,17 @@ class Command(BaseCommand):
                         organization_id=int(row['ProjectContact-OrgID'])
                     )
 
-                # uploads
+                #
+                # Uploads
+                #
                 if row['Upload 1']:
                     create_file_from_url(new_gpp, row['Upload 1'])
                 if row['Upload 2']:
                     create_file_from_url(new_gpp, row['Upload 2'])
 
-                # urls
+                #
+                # URLs / Websites
+                #
                 for i in range(1, 6):
                     url = row['URL{}'.format(i)]
                     if url:
@@ -112,7 +123,9 @@ class Command(BaseCommand):
                             ct=new_gpp
                         )
 
-                # submitter
+                #
+                # Submitter
+                #
                 submitter_email = row['Submitter email']
                 try:
                     submitter_user = User.objects.get(email=submitter_email)
