@@ -16,7 +16,7 @@ from haystack.query import SearchQuerySet
 
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
-    AcademicDiscipline, CourseMaterialType, PublicationMaterialType
+    AcademicDiscipline, CourseMaterialType, PublicationMaterialType, GreenPowerInstallation
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 from .widgets import GalleryViewWidget
