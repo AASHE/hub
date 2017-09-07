@@ -354,25 +354,31 @@ class BrowseView(RatelimitMixin, ListView):
             ]
 
             # TODO these queries don't need to be run for every type
-            _INSTALL_TYPES = dict([(i[0], i[1]) for i in GreenPowerInstallation.INSTALLATION_TYPES])
-            gpp_ids = new_resources.values_list('greenpowerproject__id', flat=True)
-            install_resources = GreenPowerProject.objects\
-                .filter(id__in=gpp_ids)\
-                .exclude(Q(installations__type=None))\
-                .values('installations__type')\
-                .annotate(count=Count('installations__type'))
-            link = "/browse/types/{}/?search=&content_type={}&installation={}&country=#resources-panel"
+
+
             installation_counts = [
                 {
-                    'name'.encode("utf8"): _INSTALL_TYPES[t['installations__type']].encode("utf8"),
+                    'name'.encode("utf8"): t['greenpowerproject__installations__name']
+                        .encode("utf8"),
                     'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): link.format(
-                        self.content_type_class.slug,
-                        self.content_type_class.slug,
-                        5
-                    ).encode('utf8')
+                    'link'.encode("utf8"): t['link'].encode("utf8")
                 }
-                for t in install_resources
+                for t in
+                new_resources.values('greenpowerproject__installations__name')
+                    .exclude(Q(greenpowerproject__installations__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&installation="),
+                        'greenpowerproject__installations__pk',
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                )
             ]
 
             # Get data for the map

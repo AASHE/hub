@@ -1,9 +1,13 @@
 from django.db import models
+
+from hub.apps.metadata.models import SustainabilityTopic
+from hub.apps.submit.forms import SubmitResourceForm
 from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 
 
 class GreenPowerProject(ContentType):
+
 
     OWNERSHIP_TYPES = (
         ('unknown', 'Unknown'),
@@ -44,23 +48,31 @@ class GreenPowerProject(ContentType):
     annual_production = models.PositiveIntegerField(blank=True, null=True)
     installed_cost = models.PositiveIntegerField(blank=True, null=True)
     date_installed = models.DateField(blank=True, null=True)
-    ownership_type = models.CharField(max_length=200, choices=OWNERSHIP_TYPES)
+
+    # Required, 3 max
     installations = models.ManyToManyField(
         'metadata.GreenPowerInstallation',
-        verbose_name='Green Power Installation',
+        verbose_name='Installation Type',
         help_text='Select up to three'
     )
+
+    # Required, select 1
+    ownership_type = models.CharField(max_length=200, choices=OWNERSHIP_TYPES)
+
+    # Optional, 3 max
     finance_sources = models.ManyToManyField(
-        'metadata.GreenPowerFinancing',
-        verbose_name='Green Power Finanance Source',
-        help_text='Select up to 3'
+        'metadata.GreenPowerFinanceOption',
+        verbose_name='Source(s) of Financing',
+        help_text='Select up to 3',
+        blank=True
     )
+    # Required, 2 max
     locations = models.ManyToManyField(
         'metadata.GreenPowerLocation',
         verbose_name='Green Power Location',
         help_text='Select up to 2'
     )
-    money_saver = models.CharField(max_length=100, choices=MONEY_SAVER_OPTIONS)
+    money_saver = models.CharField(max_length=100, choices=MONEY_SAVER_OPTIONS, blank=True, null=True)
     cost_savings_desc = models.TextField(blank=True, null=True)
     starting_ppa_price = models.CharField(blank=True, null=True, max_length=50, choices=PPA_CHOICES)
     ppa_escalator = models.CharField(blank=True, null=True, max_length=50, choices=PPA_CHOICES)
@@ -78,18 +90,36 @@ class GreenPowerProject(ContentType):
         """
         `topics` field is excluded because instances will belong to Energy topic
         """
-        return ['topics', 'disciplines']
+        return ['disciplines']
 
-    # @classmethod
-    # def preset_topics(cls):
-    #     return ['Energy']
+    @classmethod
+    def get_custom_filterset(cls):
+        from ...browse.filterset import GreenPowerBrowseFilterSet
+        return GreenPowerBrowseFilterSet
 
     @classmethod
     def label_overrides(cls):
         return {
             'description': 'Description / Project Overview',
-            'project_size': 'Project size (kW)'
+            'project_size': 'Project size (kW)',
+            'annual_production': 'Estimated Annual Production (kWh)',
+            'installed_cost': 'Installed Cost (US Dollars)',
+            'date_installed': 'Project installation date',
+            'money_saver': 'Expected to save money for institution overall?',
+            'cost_savings_desc': 'Description of cost savings and calculation methods',
+            'starting_ppa_price': 'Starting PPA price, if applicable',
+            'ppa_escalator': 'Annual PPA price escalator',
+            'ppa_escalator_desc': 'PPA escalator description',
+            'ppa_duration': 'Duration of PPA in years',
+            'authors': 'Project Contacts'
         }
+
+    @classmethod
+    def preset_topics(cls):
+        """
+        Require "Energy" in topics
+        """
+        return [SustainabilityTopic.objects.get(name="Energy")]
 
     @classmethod
     def required_field_overrides(cls):

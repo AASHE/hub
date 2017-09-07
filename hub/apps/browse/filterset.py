@@ -74,6 +74,12 @@ class CenterAndInstituteBrowseFilterSet(ExlcudeGalleryFilterMixin,
     created = CreatedFilter(CenterAndInstitute)
 
 
+class GreenPowerBrowseFilterSet(GenericFilterSet):
+    installation = GreenPowerInstallationFilter()
+    from ..content.types.green_power_projects import GreenPowerProject
+    created = CreatedFilter(GreenPowerProject)
+
+
 class MaterialBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     material_type = MaterialTypeFilter()
     course_level = CourseLevelFilter()

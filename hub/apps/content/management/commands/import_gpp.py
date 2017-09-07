@@ -7,7 +7,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from hub.apps.content.models import GreenPowerProject, Website, Author
-from hub.apps.metadata.models import Organization, SustainabilityTopic, GreenPowerInstallation
+from hub.apps.metadata.models import Organization, SustainabilityTopic, GreenPowerInstallation, GreenPowerLocation, \
+    GreenPowerFinanceOption
 from hub.imports.utils import create_file_from_url
 
 
@@ -19,8 +20,47 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        _INSTALL_TYPES = dict([(i[1], i[0]) for i in GreenPowerInstallation.INSTALLATION_TYPES])
+        INSTALLATION_TYPES = (
+            ('solar-canopy', 'Solar - Canopy'),
+            ('solar-rooftop', 'Solar - Roof Top Mount'),
+            ('solar-wall', 'Solar - Wall Mount'),
+            ('solar-ground-pole', 'Solar - Ground or Pole Mount'),
+            ('solar-building-photovoltaic', 'Solar - Building Integrated Photovoltaic'),
+            ('solar-other', 'Solar - Other'),
+            ('wind-horizontal', 'Wind - Horizontal Axis'),
+            ('wind-horizontal', 'Wind - Vertical Axis'),
+            ('hydroelectric', 'Low - Impact Hydroelectric'),
+        )
+
+        # Create Installation choices
+        installation_types = {}
+        for _, name in INSTALLATION_TYPES:
+            installation_types[name] = GreenPowerInstallation.objects.create(name=name)
+
+        FINANCE_TYPES = (
+            ('operating-budget', 'Operating budget'),
+            ('endowment', 'Endowment'),
+            ('capital-budget', 'Capital budget'),
+            ('third-party', 'Third party'),
+            ('donation', 'Donation'),
+        )
+
+        finance_types = {}
+        for _, name in FINANCE_TYPES:
+            finance_types[name] = GreenPowerFinanceOption.objects.create(name=name)
+
         ownership_types = dict([(o[1], o[0]) for o in GreenPowerProject.OWNERSHIP_TYPES])
+
+        LOCATION_CHOICES = (
+            ('institution-owned-main', 'Institution-owned property (main campus)'),
+            ('institution-owned-remote', 'Institution-owned property (remote)'),
+            ('Third party-owned', 'Third party-owned property'),
+            ('unknown', 'Unknown'),
+        )
+
+        location_options = {}
+        for _, name in LOCATION_CHOICES:
+            location_options[name] = GreenPowerLocation.objects.create(name=name)
 
         user_monika = User.objects.get(email='monika.urbanski@aashe.org')
         energy_topic = SustainabilityTopic.objects.get(slug='energy')
@@ -66,12 +106,12 @@ class Command(BaseCommand):
                 #
                 # Installations
                 #
-                first = GreenPowerInstallation.objects.create(type=_INSTALL_TYPES[install_type1])
+                first = installation_types[install_type1]
                 new_gpp.installations.add(first)
                 if install_type2:
-                    new_gpp.installations.add(GreenPowerInstallation.objects.create(type=_INSTALL_TYPES[install_type2]))
+                    new_gpp.installations.add(installation_types[install_type2])
                 if install_type3:
-                    new_gpp.installations.add(GreenPowerInstallation.objects.create(type=_INSTALL_TYPES[install_type3]))
+                    new_gpp.installations.add(installation_types[install_type3])
 
                 #
                 # Organizations

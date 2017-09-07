@@ -386,6 +386,42 @@ class ProgramTypeFilter(filters.ChoiceFilter):
             program_type__in=value).values_list('pk', flat=True))
 
 
+# Green Power specific
+class GreenPowerInstallationFilter(filters.ChoiceFilter):
+    """
+    Academic Program specific Program Type filter.
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+
+        installation_choices = cache.get('greenpower_installation_filter_choices')
+        if not installation_choices:
+            installation_choices = GreenPowerInstallation.objects.values_list('pk', 'name')
+            cache.set(
+                'greenpower_installation_filter_choices',
+                installation_choices,
+                settings.CACHE_TTL_SHORT)
+
+        kwargs.update({
+            'choices': installation_choices,
+            'label': 'Installation Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(GreenPowerInstallationFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        """
+        Filters always work against the base `ContenType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not value:
+            return qs
+        from ..content.types.green_power_projects import GreenPowerProject
+        return qs.filter(pk__in=GreenPowerProject.objects.filter(
+            installations__in=value).values_list('pk', flat=True))
+
+
 class OrgTypeFilter(filters.ChoiceFilter):
     """
     Filter on the organization type from the ISS
