@@ -44,9 +44,9 @@ class GreenPowerProject(ContentType):
         ('Greater than 4%', 'Greater than 4%')
     )
 
-    project_size = models.PositiveIntegerField()
-    annual_production = models.PositiveIntegerField(blank=True, null=True)
-    installed_cost = models.PositiveIntegerField(blank=True, null=True)
+    project_size = models.CharField(max_length=50)
+    annual_production = models.CharField(max_length=50, blank=True, null=True)
+    installed_cost = models.CharField(max_length=50, blank=True, null=True)
     date_installed = models.DateField(blank=True, null=True)
 
     # Required, 3 max
