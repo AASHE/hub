@@ -105,7 +105,7 @@ class GreenPowerProject(ContentType):
             'annual_production': 'Estimated Annual Production (kWh)',
             'installed_cost': 'Installed Cost (US Dollars)',
             'date_installed': 'Project installation date',
-            'money_saver': 'Expected to save money for institution overall?',
+            'money_saver': 'Is the project expected to save money for the institution overall?',
             'cost_savings_desc': 'Description of cost savings and calculation methods',
             'starting_ppa_price': 'Starting PPA price, if applicable',
             'ppa_escalator': 'Annual PPA price escalator',
