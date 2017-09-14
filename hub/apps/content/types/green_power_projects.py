@@ -69,7 +69,7 @@ class GreenPowerProject(ContentType):
     # Required, 2 max
     locations = models.ManyToManyField(
         'metadata.GreenPowerLocation',
-        verbose_name='Green Power Location',
+        verbose_name='Project Location',
         help_text='Select up to 2'
     )
     money_saver = models.CharField(max_length=100, choices=MONEY_SAVER_OPTIONS, blank=True, null=True)
