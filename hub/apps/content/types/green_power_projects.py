@@ -75,7 +75,7 @@ class GreenPowerProject(ContentType):
     money_saver = models.CharField(max_length=100, choices=MONEY_SAVER_OPTIONS, blank=True, null=True)
     cost_savings_desc = models.TextField(blank=True, null=True)
     starting_ppa_price = models.CharField(blank=True, null=True, max_length=50, choices=PPA_CHOICES)
-    ppa_escalator = models.CharField(blank=True, null=True, max_length=50, choices=PPA_CHOICES)
+    ppa_escalator = models.CharField(blank=True, null=True, max_length=50, choices=PPA_ESCALATOR_CHOICES)
     ppa_escalator_desc = models.TextField(blank=True, null=True)
     ppa_duration = models.PositiveIntegerField(blank=True, null=True)
 
