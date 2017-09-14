@@ -131,8 +131,9 @@ class Command(BaseCommand):
                 # Tags
                 tags_token = row['Tag(s)']
                 tags = [tag.strip() for tag in tags_token.split(',')]
-                new_gpp.keywords = ','.join(tags)
-                new_gpp.save()
+                for tag in tags:
+                    new_gpp.keywords.add(tag)
+
 
 
                 # Project Contact
