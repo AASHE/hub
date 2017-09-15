@@ -1,0 +1,162 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+
+
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+    {% if object.program_type %}
+    <div><strong>Program Type:</strong> {{ object.program_type.name }}</div>
+    {% endif %}
+{% endblock %}
+
+
+{% block resource_content %}
+
+    {% if object.project_size %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Project size (kW)</h2>
+        </div>
+        <div class="panel-body">{{ object.project_size }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.annual_production %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Estimated Annual Production (kWh)</h2>
+        </div>
+        <div class="panel-body">{{ object.annual_production }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.installed_cost %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Installed Cost (US Dollars)</h2>
+        </div>
+        <div class="panel-body">{{ object.installed_cost }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.installations.count %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Installation Type</h2>
+        </div>
+         {% for installation in object.installations.all %}
+        <div class="panel-body">
+            {{ installation }}
+        </div>
+         {% endfor %}
+
+    </div>
+    {% endif %}
+
+    {% if object.ownership_type %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Ownership type</h2>
+        </div>
+        <div class="panel-body">{{ object.get_ownership_type_display }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.finance_sources.count %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Source(s) of Financing</h2>
+        </div>
+         {% for source in object.finance_sources.all %}
+        <div class="panel-body">
+            {{ source }}
+        </div>
+         {% endfor %}
+
+    </div>
+    {% endif %}
+
+    {% if object.locations.count %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Project Location</h2>
+        </div>
+         {% for location in object.locations.all %}
+        <div class="panel-body">
+            {{ location }}
+        </div>
+         {% endfor %}
+
+    </div>
+    {% endif %}
+
+    {% if object.money_saver %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Is the project expected to save money for the institution overall?</h2>
+        </div>
+        <div class="panel-body">{{ object.get_money_saver_display }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.cost_savings_desc %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Describe the cost savings the instituion expects to generate through this project, including how these savings were calculated</h2>
+        </div>
+        <div class="panel-body">{{ object.cost_savings_desc|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.starting_ppa_price %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Starting PPA price, if applicable</h2>
+        </div>
+        <div class="panel-body">{{ object.get_starting_ppa_price_display }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.ppa_escalator %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Annual PPA price escalator</h2>
+        </div>
+        <div class="panel-body">{{ object.get_ppa_escalator_display }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.ppa_escalator_desc %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">PPA escalator description</h2>
+        </div>
+        <div class="panel-body">{{ object.ppa_escalator_desc|apply_markup:'markdown' }}</div>
+    </div>
+    {% endif %}
+
+    {% if object.ppa_duration %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Duration of PPA in years</h2>
+        </div>
+        <div class="panel-body">{{ object.ppa_duration }}</div>
+    </div>
+    {% endif %}
+
+{% endblock %}
