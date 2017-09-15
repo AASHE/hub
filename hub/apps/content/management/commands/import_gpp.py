@@ -84,7 +84,7 @@ class Command(BaseCommand):
                     annual_prod = None
 
                 _d = [int(p) for p in row['Date Posted'].split('/')]
-                date_posted = datetime(_d[2], _d[0], _d[1])
+                date_submitted = timezone.datetime(_d[2], _d[0], _d[1])
                 _d = [int(p) for p in row['Date Installed'].split('/')]
                 date_installed = datetime(_d[2], _d[0], _d[1])
 
@@ -95,10 +95,10 @@ class Command(BaseCommand):
                     annual_production=annual_prod,
                     installed_cost=cost,
                     ownership_type=ownership_types[row['Ownership type']],
-                    date_created=date_posted,
-                    date_installed=date_installed,
-                    status='published',
-                    published=timezone.now()
+                    date_created=date_installed,
+                    date_submitted=date_submitted,
+                    published=date_submitted,
+                    status='published'
                 )
 
                 new_gpp.save()
@@ -112,6 +112,13 @@ class Command(BaseCommand):
                     new_gpp.installations.add(installation_types[install_type2])
                 if install_type3:
                     new_gpp.installations.add(installation_types[install_type3])
+
+
+                #
+                # Locations
+                #
+                # default to Unknown
+                new_gpp.locations.add(location_options['Unknown'])
 
                 #
                 # Organizations

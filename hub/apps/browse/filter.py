@@ -389,7 +389,7 @@ class ProgramTypeFilter(filters.ChoiceFilter):
 # Green Power specific
 class GreenPowerInstallationFilter(filters.ChoiceFilter):
     """
-    Academic Program specific Program Type filter.
+    Green Power specific Program Type filter.
     """
     field_class = forms.fields.MultipleChoiceField
 

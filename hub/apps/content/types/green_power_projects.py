@@ -1,7 +1,7 @@
 from django.db import models
 
+from hub.apps.browse.forms import LeanSelectMultiple
 from hub.apps.metadata.models import SustainabilityTopic
-from hub.apps.submit.forms import SubmitResourceForm
 from ..models import ContentType, ContentTypeManager
 from ..search import BaseIndex
 
@@ -47,7 +47,6 @@ class GreenPowerProject(ContentType):
     project_size = models.CharField(max_length=50)
     annual_production = models.CharField(max_length=50, blank=True, null=True)
     installed_cost = models.CharField(max_length=50, blank=True, null=True)
-    date_installed = models.DateField(blank=True, null=True)
 
     # Required, 3 max
     installations = models.ManyToManyField(
@@ -104,7 +103,7 @@ class GreenPowerProject(ContentType):
             'project_size': 'Project size (kW)',
             'annual_production': 'Estimated Annual Production (kWh)',
             'installed_cost': 'Installed Cost (US Dollars)',
-            'date_installed': 'Project installation date',
+            'date_created': 'Project installation date',
             'money_saver': 'Is the project expected to save money for the institution overall?',
             'cost_savings_desc': 'Description of cost savings and calculation methods',
             'starting_ppa_price': 'Starting PPA price, if applicable',
@@ -126,6 +125,12 @@ class GreenPowerProject(ContentType):
         required_list = super(GreenPowerProject, cls).required_field_overrides()
         required_list.append('description')
         return required_list
+
+    # @classmethod
+    # def widget_overrides(cls):
+    #     return {
+    #         'installations': LeanSelectMultiple()
+    #     }
 
     @classmethod
     def required_metadata(cls):
