@@ -1,24 +1,24 @@
 {% extends "browse/details/base.html" %}
 
 {% load markup_tags %}
-
+{%  load humanize %}
 
 
 {% block resource_metadata %}
     <div class="margin-bottom-10"></div>
     {% if object.project_size %}
         <div>
-            <strong>Project size:</strong> {{ object.project_size }} kW
+            <strong>Project size:</strong> {{ object.project_size|intcomma }} kW
         </div>
     {% endif %}
     {% if object.annual_production %}
         <div>
-            <strong>Estimated Annual Production (kWh):</strong> {{ object.annual_production }}
+            <strong>Estimated Annual Production (kWh):</strong> {{ object.annual_production|intcomma }}
         </div>
     {% endif %}
     {% if object.installed_cost %}
         <div>
-            <strong>Installed Cost (US Dollars):</strong> ${{ object.installed_cost }}
+            <strong>Installed Cost (US Dollars):</strong> ${{ object.installed_cost|intcomma }}
         </div>
     {% endif %}
     {% if object.installations.count %}
