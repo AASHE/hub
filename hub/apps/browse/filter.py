@@ -14,6 +14,7 @@ from django.utils.timezone import now
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
+from hub.apps.content.types.green_power_projects import GreenPowerProject
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType, GreenPowerInstallation
@@ -412,7 +413,7 @@ class GreenPowerInstallationFilter(filters.ChoiceFilter):
 
     def filter(self, qs, value):
         """
-        Filters always work against the base `ContenType` model, not it's
+        Filters always work against the base `ContentType` model, not it's
         sub classes. We have to do a little detour to match them up.
         """
         if not value:
@@ -420,6 +421,83 @@ class GreenPowerInstallationFilter(filters.ChoiceFilter):
         from ..content.types.green_power_projects import GreenPowerProject
         return qs.filter(pk__in=GreenPowerProject.objects.filter(
             installations__in=value).values_list('pk', flat=True))
+
+
+class GreenPowerOwnershipFilter(filters.ChoiceFilter):
+    """
+    Green Power specific Program Type filter.
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+
+        kwargs.update({
+            'choices': GreenPowerProject.OWNERSHIP_TYPES,
+            'label': 'Ownership Type',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(GreenPowerOwnershipFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        """
+        Filters always work against the base `ContentType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not value:
+            return qs
+        from ..content.types.green_power_projects import GreenPowerProject
+        return qs.filter(pk__in=GreenPowerProject.objects.filter(
+            ownership_type__in=value).values_list('pk', flat=True))
+
+
+class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
+    """
+    Green Power specific Program Type filter.
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+
+        project_size_choices = (
+            ('<10', '< 10 kW'),
+            ('10-100', '10 - 100 kW'),
+            ('101-1000', '101 - 1000 kW'),
+            ('1001-5000', '1001 - 5000 kW',),
+            ('>5000', '> 5000 kW'),
+        )
+
+        kwargs.update({
+            'choices': project_size_choices,
+            'label': 'Project Size',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(GreenPowerProjectSizeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, values):
+        """
+        Filters always work against the base `ContentType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not values:
+            return qs
+        from ..content.types.green_power_projects import GreenPowerProject
+
+        sizes = [(pk, int(size)) for pk, size in GreenPowerProject.objects.values_list('pk', 'project_size')]
+
+        gpp_pks = []
+        for value in values:
+            if value == '<10':
+                gpp_pks.extend([pk for pk, size in sizes if size < 10])
+            elif value == '10-100':
+                gpp_pks.extend([pk for pk, size in sizes if 10 <= size < 100])
+            elif value == '101-1000':
+                gpp_pks.extend([pk for pk, size in sizes if 100 <= size < 1000])
+            elif value == '1001-5000':
+                gpp_pks.extend([pk for pk, size in sizes if 1000 <= size < 5000])
+            elif value == '>5000':
+                gpp_pks.extend([pk for pk, size in sizes if size >= 5000])
+
+        return qs.filter(pk__in=gpp_pks)
 
 
 class OrgTypeFilter(filters.ChoiceFilter):
