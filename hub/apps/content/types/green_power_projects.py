@@ -114,6 +114,12 @@ class GreenPowerProject(ContentType):
         }
 
     @classmethod
+    def initial_value_overrides(cls):
+        return {
+            'keywords': 'renewable energy'
+        }
+
+    @classmethod
     def preset_topics(cls):
         """
         Require "Energy" in topics
@@ -125,12 +131,6 @@ class GreenPowerProject(ContentType):
         required_list = super(GreenPowerProject, cls).required_field_overrides()
         required_list.append('description')
         return required_list
-
-    # @classmethod
-    # def widget_overrides(cls):
-    #     return {
-    #         'installations': LeanSelectMultiple()
-    #     }
 
     @classmethod
     def required_metadata(cls):

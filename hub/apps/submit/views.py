@@ -6,11 +6,10 @@ from django.forms.models import formset_factory
 from django.http import Http404, HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 
-from ...permissions import LoginRequiredMixin
-from ..content.models import CONTENT_TYPES, Author
-from ..metadata.models import Organization
 from .forms import AuthorForm, FileForm, ImageForm, SubmitResourceForm, \
     WebsiteForm
+from ..content.models import CONTENT_TYPES
+from ...permissions import LoginRequiredMixin
 
 logger = getLogger(__name__)
 
@@ -100,6 +99,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         """
         Collection of our base DocumentForm and all related formsets.
         """
+
         # The base 'document' form
         DocumentForm = forms.modelform_factory(
             self.content_type_class,
@@ -125,6 +125,11 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         initial_topics = self.content_type_class.preset_topics()
         if len(initial_topics) > 0:
             DocumentForm.base_fields['topics'].initial = initial_topics
+
+            if hasattr(self.content_type_class, 'initial_value_overrides'):
+                for field, initval in self.content_type_class.initial_value_overrides().items():
+                    DocumentForm.base_fields[field].initial = initval
+
 
         document_form = DocumentForm(
             prefix='document', **self.get_form_kwargs())
