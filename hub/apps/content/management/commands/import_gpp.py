@@ -29,7 +29,7 @@ class Command(BaseCommand):
             ('solar-other', 'Solar - Other'),
             ('wind-horizontal', 'Wind - Horizontal Axis'),
             ('wind-horizontal', 'Wind - Vertical Axis'),
-            ('hydroelectric', 'Low - Impact Hydroelectric'),
+            ('hydroelectric', 'Low Impact Hydroelectric'),
         )
 
         # Create Installation choices
