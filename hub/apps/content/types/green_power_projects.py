@@ -14,6 +14,7 @@ class GreenPowerProject(ContentType):
         ('institution-owned', 'Institution Owned'),
         ('third-party-lease', 'Third-party owned (lease)'),
         ('third-party-purchase', 'Third-party owned (power purchase agreement)'),
+        ('other', 'Other',)
     )
     MONEY_SAVER_OPTIONS = (
         ('yes', 'Yes'),
