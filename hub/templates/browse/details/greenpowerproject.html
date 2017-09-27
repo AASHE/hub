@@ -23,7 +23,7 @@
     {% endif %}
     {% if object.installations.count %}
          <div>
-            <strong>Installations:</strong>
+            <strong>Installation Type:</strong>
 
         {% for installation in object.installations.all %}
             {{ installation }}{% if not forloop.last %},{% endif %}
@@ -37,7 +37,7 @@
     {% endif %}
     {% if object.locations.count %}
          <div>
-            <strong>Project Locations:</strong>
+            <strong>Project Location:</strong>
 
         {% for location in object.locations.all %}
             {{ location }}{% if not forloop.last %},{% endif %}
