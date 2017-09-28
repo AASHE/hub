@@ -21,6 +21,10 @@
     }
 
     function drawTopicsChart() {
+        var container = document.getElementById('by_topic');
+        if (!container) {
+            return;
+        }
         var raw_data = {{ topic_counts|safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Topic');
@@ -70,7 +74,7 @@
                 0:{color: '#6BBC49'}
             }
         };
-        var chart = new google.visualization.BarChart(document.getElementById('by_topic'));
+        var chart = new google.visualization.BarChart(container);
         chart.draw(data, options);
 
         var rowNum;
@@ -84,6 +88,10 @@
 
 
     function drawDisciplinesChart() {
+        var container = document.getElementById('by_discipline');
+        if (!container) {
+            return;
+        }
         var raw_data = {{ discipline_counts|safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Discipline');
@@ -133,7 +141,7 @@
                 0:{color: '#6BBC49'}
             }
         };
-        var chart = new google.visualization.BarChart(document.getElementById('by_discipline'));
+        var chart = new google.visualization.BarChart(container);
         chart.draw(data, options);
 
         var rowNum;
@@ -146,6 +154,10 @@
     }
 
     function drawInstallationsChart() {
+        var container = document.getElementById('by_installation');
+        if (!container) {
+            return;
+        }
         var raw_data = {{ installation_counts|safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Discipline');
@@ -195,7 +207,7 @@
                 0:{color: '#6BBC49'}
             }
         };
-        var chart = new google.visualization.BarChart(document.getElementById('by_installation'));
+        var chart = new google.visualization.BarChart(container);
         chart.draw(data, options);
 
         var rowNum;
