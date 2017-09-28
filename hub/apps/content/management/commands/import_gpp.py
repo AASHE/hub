@@ -67,7 +67,7 @@ class Command(BaseCommand):
 
         with open("{}/{}".format(os.path.dirname(__file__), 'green_power_projects.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
-            row = reader.next()
+
             for row in reader:
                 install_type1 = row['Installation Type 1']
                 install_type2 = row['Installation Type 2']
