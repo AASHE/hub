@@ -1,9 +1,11 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
+    console.log('starting charts');
     google.load("visualization", "1", {packages: ['corechart', 'bar']});
     google.setOnLoadCallback(drawTopicsChart);
     google.setOnLoadCallback(drawDisciplinesChart);
     google.setOnLoadCallback(drawInstallationsChart);
+    console.log('callbacks set');
 
     var activeTab;
     function getChart(activeTab) {
@@ -22,6 +24,8 @@
 
     function drawTopicsChart() {
         var container = document.getElementById('by_topic');
+                console.log('drawTopicsChart', container);
+
         if (!container) {
             return;
         }
@@ -89,6 +93,8 @@
 
     function drawDisciplinesChart() {
         var container = document.getElementById('by_discipline');
+                console.log('drawDisciplinesChart', container);
+
         if (!container) {
             return;
         }
@@ -155,6 +161,8 @@
 
     function drawInstallationsChart() {
         var container = document.getElementById('by_installation');
+                console.log('drawInstallationsChart', container);
+
         if (!container) {
             return;
         }
