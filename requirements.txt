@@ -42,7 +42,7 @@ https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
 https://github.com/AASHE/django-block-content/archive/v0.0.3.zip
 https://github.com/AASHE/django-integration-settings/archive/master.zip
 https://github.com/AASHE/django-membersuite-auth/archive/v1.6.2.zip
-https://github.com/AASHE/iss/archive/v2.5.10.zip
+https://github.com/AASHE/iss/archive/v2.5.6.zip
 https://github.com/DjangoAdminHackers/django-admin-blocks/archive/master.zip
 https://github.com/DjangoAdminHackers/django-linkcheck/archive/master.zip
 # Bob's fork of django-tagulous:
