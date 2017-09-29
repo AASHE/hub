@@ -1,0 +1,13 @@
+{% extends "search/indexes/content/base.txt" %}
+
+{% block index %}
+
+    Green Power Projects
+    {{ block.super }}
+
+    {{ object.project_size }}
+    {{ object.annual_production }}
+    {{ object.installed_cost }}
+    {{ object.ownership_type }}
+    {{ object.cost_savings_desc }}
+{% endblock %}
