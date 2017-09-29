@@ -1,8 +1,11 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
+    console.log('starting charts');
     google.load("visualization", "1", {packages: ['corechart', 'bar']});
     google.setOnLoadCallback(drawTopicsChart);
     google.setOnLoadCallback(drawDisciplinesChart);
+    google.setOnLoadCallback(drawInstallationsChart);
+    console.log('callbacks set');
 
     var activeTab;
     function getChart(activeTab) {
@@ -11,6 +14,7 @@
             document.getElementById('map').style.display = 'none';
             drawTopicsChart();
             drawDisciplinesChart();
+            drawInstallationsChart();
         }
         else {
             document.getElementById('charts').style.display = 'none';
@@ -19,6 +23,12 @@
     }
 
     function drawTopicsChart() {
+        var container = document.getElementById('by_topic');
+                console.log('drawTopicsChart', container);
+
+        if (!container) {
+            return;
+        }
         var raw_data = {{ topic_counts|safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Topic');
@@ -68,7 +78,7 @@
                 0:{color: '#6BBC49'}
             }
         };
-        var chart = new google.visualization.BarChart(document.getElementById('by_topic'));
+        var chart = new google.visualization.BarChart(container);
         chart.draw(data, options);
 
         var rowNum;
@@ -82,6 +92,12 @@
 
 
     function drawDisciplinesChart() {
+        var container = document.getElementById('by_discipline');
+                console.log('drawDisciplinesChart', container);
+
+        if (!container) {
+            return;
+        }
         var raw_data = {{ discipline_counts|safe }};
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Discipline');
@@ -131,7 +147,75 @@
                 0:{color: '#6BBC49'}
             }
         };
-        var chart = new google.visualization.BarChart(document.getElementById('by_discipline'));
+        var chart = new google.visualization.BarChart(container);
+        chart.draw(data, options);
+
+        var rowNum;
+        function selectHandler(e) {
+            rowNum = chart.getSelection()[0]['row'];
+            window.location = raw_data[rowNum]['link'];
+        }
+
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+    }
+
+    function drawInstallationsChart() {
+        var container = document.getElementById('by_installation');
+                console.log('drawInstallationsChart', container);
+
+        if (!container) {
+            return;
+        }
+        var raw_data = {{ installation_counts|safe }};
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Discipline');
+        data.addColumn('number', 'Count');
+
+        data.addRows([
+            {% for row in installation_counts %}
+                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]);
+        data.sort([{column: 1, desc: true}]);
+        var max_value = data.getColumnRange(1).max;
+
+        var chartHeight = data.getNumberOfRows() * 25 + 80;
+
+        var tick_count;
+        if (max_value <= 10) {
+            tick_count = max_value + 1;
+        }
+        else {
+            tick_count = 6
+        }
+
+        var options = {
+            title: "Summary by Installation",
+            height: chartHeight,
+            hAxis: {
+                viewWindow: {
+                    min: 0,
+                    max: max_value
+                },
+                format: '0',
+                gridlines: {
+                    count: tick_count
+                }
+            },
+            legend: {
+                position: 'none'
+            },
+            chartArea: {
+                left: '27%',
+                right: '5%',
+                top: 25,
+                bottom: 25
+            },
+            series: {
+                0:{color: '#6BBC49'}
+            }
+        };
+        var chart = new google.visualization.BarChart(container);
         chart.draw(data, options);
 
         var rowNum;

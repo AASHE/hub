@@ -200,3 +200,24 @@ class Organization(ISSOrganization):
             return '{}, {}'.format(self.org_name, self.state)
         else:
             return self.org_name
+
+
+class GreenPowerInstallation(MetadataBaseModel):
+    class Meta:
+        ordering = ('name', )
+        verbose_name = 'Green Power Installation'
+        verbose_name_plural = 'Green Power Installations'
+
+
+class GreenPowerFinanceOption(MetadataBaseModel):
+    class Meta:
+        ordering = ('name', )
+        verbose_name = 'Green Power Finance Option'
+        verbose_name_plural = 'Green Power Finance Options'
+
+
+class GreenPowerLocation(MetadataBaseModel):
+    class Meta:
+        ordering = ('name', )
+        verbose_name = 'Green Power Location'
+        verbose_name_plural = 'Green Power Locations'

@@ -1,0 +1,102 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+{%  load humanize %}
+
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+    {% if object.project_size %}
+        <div>
+            <strong>Project size:</strong> {{ object.project_size|intcomma }} kW
+        </div>
+    {% endif %}
+    {% if object.annual_production %}
+        <div>
+            <strong>Estimated Annual Production (kWh):</strong> {{ object.annual_production|intcomma }}
+        </div>
+    {% endif %}
+    {% if object.installed_cost %}
+        <div>
+            <strong>Installed Cost (US Dollars):</strong> ${{ object.installed_cost|intcomma }}
+        </div>
+    {% endif %}
+    {% if object.installations.count %}
+         <div>
+            <strong>Installation Type:</strong>
+
+        {% for installation in object.installations.all %}
+            {{ installation }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% if object.ownership_type %}
+        <div>
+            <strong>Ownership type:</strong> {{ object.get_ownership_type_display }}
+        </div>
+    {% endif %}
+    {% if object.locations.count %}
+         <div>
+            <strong>Project Location:</strong>
+
+        {% for location in object.locations.all %}
+            {{ location }}{% if not forloop.last %},{% endif %}
+         {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if object.money_saver %}
+        <div>
+            <strong>Is the project expected to save money for the institution overall?:</strong> {{ object.get_money_saver_display }}
+        </div>
+    {% endif %}
+
+    {% if object.starting_ppa_price %}
+        <div>
+            <strong>Starting PPA price, if applicable:</strong> {{ object.get_starting_ppa_price_display }}
+        </div>
+    {% endif %}
+
+    {% if object.ppa_escalator %}
+        <div>
+            <strong>Annual PPA price escalator:</strong> {{ object.get_ppa_escalator_display }}
+        </div>
+    {% endif %}
+
+    {% if object.ppa_duration %}
+        <div>
+            <strong>Duration of PPA in years:</strong> {{ object.ppa_duration }}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+
+{% block resource_content %}
+
+
+    {% if object.cost_savings_desc %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">Describe the cost savings the instituion expects to generate through this project, including how these savings were calculated</h2>
+        </div>
+        <div class="panel-body">{{ object.cost_savings_desc|apply_markup:"markdown" }}</div>
+    </div>
+    {% endif %}
+
+
+    {% if object.ppa_escalator_desc %}
+    <div class="margin-bottom-30"></div>
+    <div class="panel panel-profile">
+        <div class="panel-heading overflow-h">
+            <h2 class="panel-title heading-sm pull-left">PPA escalator description</h2>
+        </div>
+        <div class="panel-body">{{ object.ppa_escalator_desc|apply_markup:'markdown' }}</div>
+    </div>
+    {% endif %}
+
+
+
+{% endblock %}

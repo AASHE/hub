@@ -1,14 +1,17 @@
-import requests
 import tempfile
 from datetime import datetime
+
+import requests
+from boto.s3.connection import S3Connection
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core import files
+from django.utils.text import slugify
+from io import BytesIO
 
 from hub.apps.content.models import ContentType, Author, File, Website, Image
 from hub.apps.metadata.models import (
     Organization, SustainabilityTopic, AcademicDiscipline, InstitutionalOffice)
-
-from django.contrib.auth.models import User
-from django.utils.text import slugify
-from django.core import files
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -117,8 +120,15 @@ def create_file_from_url(parent, file_url, image=False):
         http://stackoverflow.com/questions/16174022/download-a-remote-image-and-save-it-to-a-django-model
     """
 
-    # Steam the image from the url
-    request = requests.get(file_url, stream=True)
+    # Use stream to give access to the raw content
+    try:
+        request = requests.get(file_url, stream=True)
+    except requests.ConnectionError:
+        print "Connection error for {}".format(file_url)
+        return
+    except requests.exceptions.MissingSchema:
+        print "Not a URL ||| {}".format(file_url)
+        return
 
     # Was the request OK?
     if request.status_code != requests.codes.ok:
@@ -131,24 +141,27 @@ def create_file_from_url(parent, file_url, image=False):
     if len(file_name) > 100:
         file_name = file_name[-100:-1]
 
-    # Create a temporary file
-    lf = tempfile.NamedTemporaryFile()
 
-    # Read the streamed image in sections
-    for block in request.iter_content(1024 * 8):
+    s3_conn = S3Connection(
+        settings.AWS_ACCESS_KEY_ID,
+        settings.AWS_SECRET_ACCESS_KEY)
+    # TODO hard coding bucket name because stage can't access aashe-hub-prod
+    s3_bucket = s3_conn.get_bucket('aashe-hub-dev')
 
-        # If no more file then stop
-        if not block:
-            break
+    s3_key = s3_bucket.get_key(file_name)
+    if s3_key:
+        # TODO check if file is same, or resolve to different name
+        print 'File name already exists in bucket {}'.format(file_name)
+    else:
+        s3_key = s3_bucket.new_key(file_name)
+        print 'sending {} to S3 bucket'.format(file_name)
+        s3_key.set_contents_from_file(BytesIO(request.raw.read()))
 
-        # Write image block to temporary file
-        lf.write(block)
-
-    # Save the temporary file to the model#
-    # This saves the model so be sure that is it valid
     if not image:
-        file = File(ct=parent, label=file_name, affirmation=True)
-        file.item.save(file_name, files.File(lf))
+        new_file = File(ct=parent, label=file_name, affirmation=True)
+        # TODO calculate URL based on settings
+        new_file.item = 'http://hub-media.aashe.org/uploads/{}'.format(file_name)
+        new_file.save()
     else:
         image = Image(ct=parent, affirmation=True)
         image.image.save(file_name, files.File(lf))

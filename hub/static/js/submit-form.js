@@ -17,7 +17,7 @@ jQuery(document).ready(function() {
     // -------------------------------------------------------------------------
     // Other large dropdowns
     // -------------------------------------------------------------------------
-    $('select[name*=topics], select[name*=disciplines], select[name*=institutions]').selectize({
+    $('select[name*=topics],select[name*=disciplines],select[name*=institutions],select[name*=installations],select[name*=finance_sources],select[name*=locations]').selectize({
         maxItems: 3,
         plugins: ['required-options',],
         required_values: []
@@ -26,7 +26,7 @@ jQuery(document).ready(function() {
     if(preset_topics != undefined) {
         $('select[name*=topics]')[0].selectize.settings.required_values = preset_topics
     }
-    
+
     // -------------------------------------------------------------------------
     // Tagging (Keywords)
     // -------------------------------------------------------------------------

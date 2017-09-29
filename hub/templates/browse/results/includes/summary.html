@@ -101,6 +101,9 @@
                         {% if discipline_counts.count > 0 and content_type.content_type_label in discipline_graph_allowed %}
                             <div id="by_discipline" class="summary-chart"></div>
                         {% endif %}
+                        {% if installation_counts and content_type.content_type_label in installation_graph_allowed %}
+                            <div id="by_installation" class="summary-chart"></div>
+                        {% endif %}
                     </div>
 
                     <div id="map" class="tab-pane fade"></div>

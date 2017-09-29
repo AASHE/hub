@@ -1,27 +1,26 @@
 from __future__ import unicode_literals
 
+from collections import defaultdict
 from logging import getLogger
 
+import feedparser
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db.models import Count, CharField, Value as V
 from django.db.models import ObjectDoesNotExist
+from django.db.models import Q
+from django.db.models.functions import Concat
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.utils.text import slugify
 from django.views.generic import DetailView, ListView, TemplateView
 from ratelimit.mixins import RatelimitMixin
-
-from ...permissions import get_aashe_member_flag
-from ..content.models import CONTENT_TYPES, ContentType
-from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite
-
 from tagulous.views import autocomplete
 
-import feedparser
-from django.utils.text import slugify
-
-from django.db.models import Count, CharField, Value as V
-from django.db.models.functions import Concat
-from django.db.models import Q
+from hub.apps.content.types.green_power_projects import GreenPowerProject
+from ..content.models import CONTENT_TYPES, ContentType
+from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite, GreenPowerInstallation
+from ...permissions import get_aashe_member_flag
 
 logger = getLogger(__name__)
 
@@ -354,6 +353,34 @@ class BrowseView(RatelimitMixin, ListView):
                 )
             ]
 
+            # TODO these queries don't need to be run for every type
+
+
+            installation_counts = [
+                {
+                    'name'.encode("utf8"): t['greenpowerproject__installations__name']
+                        .encode("utf8"),
+                    'count'.encode("utf8"): t['count'],
+                    'link'.encode("utf8"): t['link'].encode("utf8")
+                }
+                for t in
+                new_resources.values('greenpowerproject__installations__name')
+                    .exclude(Q(greenpowerproject__installations__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&installation="),
+                        'greenpowerproject__installations__pk',
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                )
+            ]
+
             # Get data for the map
             map_data = [
                 [t[0].encode("utf8"), float(t[1]), float(t[2]), t[3],
@@ -400,6 +427,9 @@ class BrowseView(RatelimitMixin, ListView):
                 'Publications',
                 'Research Centers & Institutes',
             ]
+            installation_type_graph_allowed = [
+                'Green Power Projects'
+            ]
 
             singular = self.content_type_class._meta.verbose_name
 
@@ -412,10 +442,12 @@ class BrowseView(RatelimitMixin, ListView):
                 'province_counts': province_counts,
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
+                'installation_counts': installation_counts,
                 'map_data': map_data,
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
                 'topic_graph_allowed': topic_graph_allowed,
                 'discipline_graph_allowed': discipline_graph_allowed,
+                'installation_graph_allowed': installation_type_graph_allowed,
                 'content_type_singular': singular,
             })
         return ctx

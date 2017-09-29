@@ -313,7 +313,7 @@ class Author(TimeStampedModel):
 class Website(TimeStampedModel):
     ct = models.ForeignKey(ContentType, related_name="websites")
     label = models.CharField(max_length=100, blank=True, null=True)
-    url = models.URLField()
+    url = models.URLField(max_length=500)
 
     def __str__(self):
         return self.label or 'Website object'
@@ -388,6 +388,7 @@ from .types.academic import AcademicProgram
 from .types.casestudies import CaseStudy
 from .types.centers import CenterAndInstitute
 from .types.courses import Material
+from .types.green_power_projects import GreenPowerProject
 from .types.outreach import OutreachMaterial
 from .types.photographs import Photograph
 from .types.presentations import Presentation
@@ -400,6 +401,7 @@ CONTENT_TYPES['academicprogram'] = AcademicProgram
 CONTENT_TYPES['casestudy'] = CaseStudy
 CONTENT_TYPES['presentation'] = Presentation
 CONTENT_TYPES['material'] = Material
+CONTENT_TYPES['greenpowerproject'] = GreenPowerProject
 CONTENT_TYPES['outreachmaterial'] = OutreachMaterial
 CONTENT_TYPES['photograph'] = Photograph
 CONTENT_TYPES['publication'] = Publication
