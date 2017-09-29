@@ -315,6 +315,9 @@ class Website(TimeStampedModel):
     label = models.CharField(max_length=100, blank=True, null=True)
     url = models.URLField(max_length=500)
 
+    class Meta:
+        ordering = ('-modified', )
+
     def __str__(self):
         return self.label or 'Website object'
 
