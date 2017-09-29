@@ -1,22 +1,22 @@
-import sys
-
 from django.utils.timezone import now
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from ..apps.metadata.models import (AcademicDiscipline,
-                                    Organization,
-                                    PublicationMaterialType,
-                                    SustainabilityTopic)
+from ..apps.metadata.models import Organization, SustainabilityTopic, \
+    AcademicDiscipline, PublicationMaterialType
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.photographs import Photograph
 from ..apps.content.types.publications import Publication
 from ..apps.content.models import CONTENT_TYPES, Image
-from .base import (EXTRA_REQUIRED_CT_KWARGS,
-                   WithUserSuperuserTestCase)
+from .base import (
+    BaseSearchBackendTestCase,
+    WithUserSuperuserTestCase,
+    EXTRA_REQUIRED_CT_KWARGS)
+
+import sys
 
 
-class FilterTestCase(WithUserSuperuserTestCase):
+class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
     def setUp(self):
         """
         Create some sane default objects that will match almost all filter
@@ -52,6 +52,9 @@ class FilterTestCase(WithUserSuperuserTestCase):
         self.ct.keywords.add("tag 1")
         self.ct.keywords.add("tag2")
         self.ct.disciplines.add(self.discipline)
+
+        # Update search index
+        self._rebuild_index()
 
         self.filter_data = {
             'search': 'keyword',
@@ -132,7 +135,7 @@ class FilterTestCase(WithUserSuperuserTestCase):
         self.assertEqual(len(response.context['object_list']), 1)
 
 
-class SpecificFilterTestCase(WithUserSuperuserTestCase):
+class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
     """
     Test some specific filters for different content types
     """
@@ -197,7 +200,7 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase):
             self.assertEqual(len(response.context['object_list']), 1)
 
 
-class TestGalleryView(WithUserSuperuserTestCase):
+class TestGalleryView(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
     """
         Test the gallery view
 
@@ -210,14 +213,12 @@ class TestGalleryView(WithUserSuperuserTestCase):
         self.resource1 = Photograph.objects.create(
             status=Photograph.STATUS_CHOICES.published,
             title='Test Photo Resource',
-            description='Test Description',
             slug='test-photo-resource',
             submitted_by=self.superuser
             )
         self.resource2 = Photograph.objects.create(
             status=Photograph.STATUS_CHOICES.published,
             title='Test Photo Resource',
-            description='Test Description',
             slug='test-photo-resource',
             submitted_by=self.superuser
             )

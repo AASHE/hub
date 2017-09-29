@@ -7,12 +7,14 @@ from operator import or_
 import django_filters as filters
 from django import forms
 from django.conf import settings
-from django.contrib.postgres.search import SearchVector
 from django.core.cache import cache
 from django.db.models import Q
 from django.utils.timezone import now
 
-from ..content.models import CONTENT_TYPES, ContentType, Material
+from haystack.inputs import Raw
+from haystack.query import SearchQuerySet
+
+from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType
 from .localflavor import CA_PROVINCES, US_STATES
@@ -65,19 +67,10 @@ class SearchFilter(filters.CharFilter):
         translation_table = dict.fromkeys(map(ord, esc_string), None)
         query = value.translate(translation_table)
 
-        search_vector = SearchVector('title',
-                                     'description',
-                                     'authors_search_data',
-                                     'files_search_data',
-                                     'images_search_data')
-
-        return (qs.annotate(search=search_vector).
-                filter(search=query.lower()))
-
-        # query = Raw(query.lower())
-        # result_ids = (SearchQuerySet().filter(content__contains=query)
-        #                               .values_list('ct_pk', flat=True))
-        # return queryset.filter(pk__in=result_ids).distinct()
+        query = Raw(query.lower())
+        result_ids = (SearchQuerySet().filter(content__contains=query)
+                                      .values_list('ct_pk', flat=True))
+        return qs.filter(pk__in=result_ids).distinct()
 
 
 class TopicFilter(filters.ChoiceFilter):

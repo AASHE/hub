@@ -1,22 +1,21 @@
 from __future__ import unicode_literals
 
+import os
+
 from logging import getLogger
 from collections import OrderedDict
+import tagulous
 from urlparse import urlparse
 
-import tagulous
-
-from django.conf import settings
-from django.contrib.postgres.search import (SearchVector,
-                                            SearchVectorField)
-from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils import timezone
+from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
-from model_utils import Choices, FieldTracker
+from django.utils import timezone
+from django.core.urlresolvers import reverse
 from model_utils.models import TimeStampedModel
-from s3direct.fields import S3DirectField
+from model_utils import Choices, FieldTracker
 from slugify import slugify
+from s3direct.fields import S3DirectField
 
 from .help import AFFIRMATION
 
@@ -132,16 +131,10 @@ class ContentType(TimeStampedModel):
 
     status_tracker = FieldTracker(fields=['status'])
 
-    search_vector = SearchVectorField(blank=True, null=True)
-
-    authors_search_data = models.TextField(blank=True, null=True, default='')
-    files_search_data = models.TextField(blank=True, null=True, default='')
-    images_search_data = models.TextField(blank=True, null=True, default='')
-
     objects = ContentTypeManager()
 
     class Meta:
-        verbose_name = 'Generic Content Type'
+        verbose_name = 'Genric Content Type'
         verbose_name_plural = '- All Content Types -'
 
     def __str__(self):
@@ -168,18 +161,7 @@ class ContentType(TimeStampedModel):
         if not self.slug:
             self.slug = slugify(self.title)
 
-        super(ContentType, self).save(*args, **kwargs)
-
-        # TODO - only update self.search_vector when one the the
-        # fields it includes changes.  Maybe.  Maybe unneccesary
-        # optimization.
-        ContentType.objects.filter(id=self.id).update(
-            search_vector=SearchVector(
-                'description',
-                'title',
-                'authors_search_data',
-                'images_search_data',
-                'files_search_data'))
+        return super(ContentType, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('browse:view', kwargs={'ct': self.content_type,
@@ -396,26 +378,24 @@ class Image(TimeStampedModel):
     def get_absolute_url(self):
         return self.ct.get_admin_url()
 
-
 # =============================================================================
 # Mapping of all available content types.
 #
 # We also load the content types here into the models namespace, so they are
 # registered in the system, and the migration.
 # =============================================================================
-from .types.academic import AcademicProgram  # noqa
-from .types.casestudies import CaseStudy  # noqa
-from .types.centers import CenterAndInstitute  # noqa
-from .types.courses import Material  # noqa
-from .types.outreach import OutreachMaterial  # noqa
-from .types.photographs import Photograph  # noqa
-from .types.presentations import Presentation  # noqa
-from .types.publications import Publication  # noqa
-from .types.tools import Tool  # noqa
-from .types.videos import Video  # noqa
+from .types.academic import AcademicProgram
+from .types.casestudies import CaseStudy
+from .types.centers import CenterAndInstitute
+from .types.courses import Material
+from .types.outreach import OutreachMaterial
+from .types.photographs import Photograph
+from .types.presentations import Presentation
+from .types.publications import Publication
+from .types.tools import Tool
+from .types.videos import Video
 
 CONTENT_TYPES = OrderedDict()
-
 CONTENT_TYPES['academicprogram'] = AcademicProgram
 CONTENT_TYPES['casestudy'] = CaseStudy
 CONTENT_TYPES['presentation'] = Presentation

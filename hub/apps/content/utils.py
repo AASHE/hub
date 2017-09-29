@@ -1,13 +1,7 @@
 import logging
 
 from django.core.mail import EmailMultiAlternatives
-from django.db.models.signals import post_save
 from django.template.loader import render_to_string
-
-from .models import (Author,
-                     CONTENT_TYPES,
-                     File,
-                     Image)
 
 logger = logging.getLogger(__name__)
 
@@ -57,31 +51,3 @@ def _send_resource_email(resource, request, subject,
         message.send()
     except:
         logger.exception(exception_text)
-
-
-def update_all_content_type_search_data():
-    """
-    Update all the search data for all the things.
-    """
-    for model in CONTENT_TYPES.values():
-        print("Updating search data for " + str(model))
-        update_search_data(model)
-
-
-def update_search_data(model):
-    """
-    Update the search data for all the things.
-    """
-    for instance in model.objects.all():
-
-        author = instance.authors.first()
-        if author:
-            post_save.send(Author, instance=author, created=False)
-
-        file_ = instance.files.first()
-        if file_:
-            post_save.send(File, instance=file_, created=False)
-
-        image = instance.images.first()
-        if image:
-            post_save.send(Image, instance=image, created=False)

@@ -1,7 +1,11 @@
 from __future__ import unicode_literals
-
+from mock import patch
 import django_cache_url
+from haystack.management.commands import update_index
 
+from django.conf import settings
+from django.core import management
+from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.core.cache import caches
 from django.db import connection, reset_queries
@@ -86,8 +90,8 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.assertContains(response, "First Topic", status_code=200)
 
         # add a topic and test that the response doesn't update
-        SustainabilityTopic.objects.create(name="Second Topic",
-                                           slug="second_topic")
+        _topic = SustainabilityTopic.objects.create(
+            name="Second Topic", slug="second_topic")
         response = self.client.get(self.url_home)
         self.assertNotContains(response, "Second Topic", status_code=200)
 
@@ -182,6 +186,9 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.ct2.status = ContentType.STATUS_CHOICES.new
         self.ct2.save()
 
+        # update the search index
+        management.call_command('update_index', verbosity=0)
+
         # get the uncached version
         reset_queries()
         response = self.client.get(url)
@@ -191,6 +198,9 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         # create a second resource; it shouldn't render
         self.ct2.status = ContentType.STATUS_CHOICES.published
         self.ct2.save()
+
+        # update the search index
+        management.call_command('update_index', verbosity=0)
 
         # get the cached version
         reset_queries()

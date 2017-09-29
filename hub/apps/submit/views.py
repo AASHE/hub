@@ -7,7 +7,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 
 from ...permissions import LoginRequiredMixin
-from ..content.models import CONTENT_TYPES
+from ..content.models import CONTENT_TYPES, Author
+from ..metadata.models import Organization
 from .forms import AuthorForm, FileForm, ImageForm, SubmitResourceForm, \
     WebsiteForm
 

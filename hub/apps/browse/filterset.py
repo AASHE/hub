@@ -74,13 +74,7 @@ class CenterAndInstituteBrowseFilterSet(ExlcudeGalleryFilterMixin,
     created = CreatedFilter(CenterAndInstitute)
 
 
-class CaseStudyBrowseFilterSet(GenericFilterSet):
-    from ..content.types.courses import Material
-    created = CreatedFilter(Material)
-
-
-class MaterialBrowseFilterSet(ExlcudeGalleryFilterMixin, 
-                              GenericFilterSet):
+class MaterialBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     material_type = MaterialTypeFilter()
     course_level = CourseLevelFilter()
     from ..content.types.courses import Material
