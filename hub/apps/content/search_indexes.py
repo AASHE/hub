@@ -2,7 +2,7 @@ from .types.academic import AcademicProgramIndex
 from .types.casestudies import CaseStudyIndex
 from .types.centers import CenterAndInstituteIndex
 from .types.courses import MaterialIndex
-from .types.green_power_projects import GreenPowerProject
+from .types.green_power_projects import GreenPowerProjectIndex
 from .types.outreach import OutreachMaterialIndex
 from .types.photographs import PhotographIndex
 from .types.presentations import PresentationIndex
