@@ -6,5 +6,5 @@
     <div class="margin-bottom-10"></div>
     {% include "browse/details/includes/meta.html" with label="Publisher" value=object.publisher %}
     {% include "browse/details/includes/meta.html" with label="Periodical Name" value=object.periodical_name %}
-    {% include "browse/details/includes/meta.html" with label="Type" value=object.get__type_display %}
+    {% include "browse/details/includes/meta.html" with label="Type" value=object.material_type.name %}
 {% endblock %}
