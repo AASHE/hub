@@ -459,11 +459,11 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
 
         project_size_choices = (
-            ('<10', '< 10 kW'),
-            ('10-100', '10 - 100 kW'),
-            ('101-1000', '101 - 1000 kW'),
-            ('1001-5000', '1001 - 5000 kW',),
-            ('>5000', '> 5000 kW'),
+            ('lt10', '< 10 kW'),
+            ('10_100', '10 - 100 kW'),
+            ('101_1000', '101 - 1000 kW'),
+            ('1001_5000', '1001 - 5000 kW',),
+            ('gt5000', '> 5000 kW'),
         )
 
         kwargs.update({
@@ -486,15 +486,15 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
 
         gpp_pks = []
         for value in values:
-            if value == '<10':
+            if value == 'lt10':
                 gpp_pks.extend([pk for pk, size in sizes if size < 10])
-            elif value == '10-100':
+            elif value == '10_100':
                 gpp_pks.extend([pk for pk, size in sizes if 10 <= size < 100])
-            elif value == '101-1000':
+            elif value == '101_1000':
                 gpp_pks.extend([pk for pk, size in sizes if 100 <= size < 1000])
-            elif value == '1001-5000':
+            elif value == '1001_5000':
                 gpp_pks.extend([pk for pk, size in sizes if 1000 <= size < 5000])
-            elif value == '>5000':
+            elif value == 'gt5000':
                 gpp_pks.extend([pk for pk, size in sizes if size >= 5000])
 
         return qs.filter(pk__in=gpp_pks)
