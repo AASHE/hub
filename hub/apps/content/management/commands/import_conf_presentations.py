@@ -1,0 +1,107 @@
+import os
+import csv
+
+from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
+
+from hub.apps.content.models import Author
+from hub.apps.content.types.presentations import Presentation
+from hub.apps.metadata.models import Organization, SustainabilityTopic, ConferenceName, PresentationType, AcademicDiscipline, InstitutionalOffice
+
+User = get_user_model()
+
+
+class Command(BaseCommand):
+    help = "One-time import of Conference Presentation data; Use the import_content settings"
+
+    def handle(self, *args, **options):
+
+        with open("{}/{}".format(os.path.dirname(__file__), 'conference_presentations.csv'), 'rb') as csvfile:
+            reader = csv.DictReader(csvfile)
+
+            for row in reader:
+
+                presentation_date = row['PresentationDate']
+                file1_name = row['File1']
+                file2_name = row['File2']
+                file3_name = row['File3']
+                file4_name = row['File4']
+
+                title = row['Presentation Title']
+                description = row['Description or Abstract']
+                conference_name = ConferenceName.objects.get(name=row['ConferenceName'])
+                presentation_type = PresentationType.objects.get(name=row['PresType'])
+
+                presentation = Presentation.objects.create(
+                    title=title,
+                    description=description,
+                    conf_name=conference_name,
+                    presentation_type=presentation_type
+                )
+
+                #
+                # Academic Disciplines
+                #
+                disc = row['AcademicDiscipline1']
+                if disc:
+                    academic_discipline = AcademicDiscipline.objects.get(name=disc)
+                    presentation.disciplines.add(academic_discipline)
+
+                #
+                # Institution
+                #
+                office_dept1 = row['OfficeDepartment1']
+                if office_dept1:
+                    office_dept1 = InstitutionalOffice.objects.get(name=office_dept1)
+                    presentation.institutions.add(office_dept1)
+
+                #
+                # Organizations
+                #
+                for idx in (1, 2, 3, 4, 5, 6, 7):
+                    org_id = row['Organization{}_id'.format(idx)]
+                    if org_id:
+                        try:
+                            org = Organization.objects.get(membersuite_id=org_id)
+                            presentation.organizations.add(org)
+                        except Organization.DoesNotExist:
+                            print "Org {} not found for {}".format(org_id, title)
+
+
+                #
+                # Topics
+                #
+                for idx in (1, 2, 3):
+                    topic = row['SustainabilityTopic{}'.format(idx)]
+                    if topic:
+                        topic = SustainabilityTopic.objects.get(name=topic)
+                        presentation.topics.add(topic)
+
+                #
+                # Tags
+                #
+                tags_token = row['Tags']
+                tags = [tag.strip() for tag in tags_token.split(',')]
+                for tag in tags:
+                    presentation.keywords.add(tag)
+
+                #
+                # Authors
+                #
+                for idx in (1, 2, 3, 4, 5, 6, 7, 8):
+                    author_name = row['Author{}_Name'.format(idx)]
+                    if author_name:
+                        author_title = row['Author{}_Title'.format(idx)]
+                        org_id = row['Author{}_OrgID'.format(idx)]
+                        org = None
+                        if org_id:
+                            try:
+                                org = Organization.objects.get(membersuite_id=org_id)
+                            except Organization.DoesNotExist:
+                                print "Org {} not found for Author {} for {}".format(row['Author{}_OrgID'.format(idx)], author_name, title)
+                        Author.objects.create(
+                            ct=presentation,
+                            name=author_name,
+                            title=author_title,
+                            organization=org
+                        )
