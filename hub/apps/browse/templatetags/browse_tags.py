@@ -39,14 +39,17 @@ def permission_flag(obj, user, icon_only=False):
     if user.is_authenticated():
         is_member = get_aashe_member_flag(user)
         if (obj.permission == obj.PERMISSION_CHOICES.member and not is_member):
-            return mark_safe(label.format(label='The information page about this resource is accessible only to AASHE members.'))
+            return mark_safe(label.format(label='The information page about'
+                        ' this resource is accessible only to AASHE'
+                        ' members.'))
         else:
             return ''
 
     # We know the user is not logged in, so give a proper label, either
     # member or just login required.
     if obj.permission == obj.PERMISSION_CHOICES.member:
-        return mark_safe(label.format(label='The information page about this resource is accessible only to AASHE members.'))
+        return mark_safe(label.format(label='The information page about this'
+                        ' resource is accessible only to AASHE members.'))
 
     return mark_safe(label.format(label='Login Required'))
 
