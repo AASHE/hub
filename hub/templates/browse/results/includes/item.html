@@ -21,7 +21,9 @@
     {% endif %}
         <h3>
             <a href="{{ obj.get_absolute_url }}">{{ obj.title|safe }}</a>
-            {% permission_flag obj user %}
+            {% with True as icon_only %}
+              {% permission_flag obj user icon_only %}
+            {% endwith %}
         </h3>
         <ul class="list-inline up-ul">
             {% for c in obj.organizations.all %}
