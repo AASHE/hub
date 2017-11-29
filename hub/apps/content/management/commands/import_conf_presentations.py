@@ -1,12 +1,14 @@
-import os
 import csv
+import os
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from hub.apps.content.models import Author
 from hub.apps.content.types.presentations import Presentation
-from hub.apps.metadata.models import Organization, SustainabilityTopic, ConferenceName, PresentationType, AcademicDiscipline, InstitutionalOffice
+from hub.apps.metadata.models import Organization, SustainabilityTopic, ConferenceName, PresentationType, \
+    AcademicDiscipline, InstitutionalOffice
+from hub.imports.utils import create_file_from_path
 
 User = get_user_model()
 
@@ -16,6 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        FILES_PATH = '/Users/brian/virtualenvs/AASHE/src/hub/conf_presentations'
         with open("{}/{}".format(os.path.dirname(__file__), 'conference_presentations.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
 
@@ -105,3 +108,15 @@ class Command(BaseCommand):
                             title=author_title,
                             organization=org
                         )
+
+                #
+                # Files
+                #
+                for f in (1, 2, 3, 4):
+                    file_name = 'File{}'.format(f)
+                    if row[file_name]:
+                        create_file_from_path(
+                            presentation,
+                            FILES_PATH,
+                            row[file_name])
+
