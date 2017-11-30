@@ -75,6 +75,7 @@
 
 {% block browse_tab_content %}
 {% block resource_list_body %}
+  {% cache CACHE_TTL_LONG resource_list_body cache_key %}
     <!-- begin cache {% now "c" %} -->
     <!-- key {{ cache_key }} -->
     <!-- TTL {{ CACHE_TTL_LONG }} -->
@@ -110,5 +111,6 @@
         </div>
     </div>
     <!-- end cache -->
+  {% endcache %}
 {% endblock %}
 {% endblock %}
