@@ -1,9 +1,9 @@
 import csv
 import os
-import datetime
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from hub.apps.content.models import Author
 from hub.apps.content.types.presentations import Presentation
@@ -25,12 +25,6 @@ class Command(BaseCommand):
 
             for row in reader:
 
-                presentation_date = row['PresentationDate']
-                file1_name = row['File1']
-                file2_name = row['File2']
-                file3_name = row['File3']
-                file4_name = row['File4']
-
                 title = row['Presentation Title']
                 description = row['Description or Abstract']
                 conference_name = ConferenceName.objects.get(name=row['ConferenceName'])
@@ -43,7 +37,7 @@ class Command(BaseCommand):
                     conf_name=conference_name,
                     presentation_type=presentation_type,
                     date_created='{}-{}-{}'.format(year, month, day),
-                    published=datetime.datetime.now(),
+                    published=timezone.now(),
                     status='published'
                 )
 
