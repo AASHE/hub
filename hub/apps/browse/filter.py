@@ -724,7 +724,8 @@ class InstitutionalOfficeFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
 
-        institutional_office_choices = cache.get('institutional_offices_filter_choices')
+        institutional_office_choices = cache.get(
+            'institutional_offices_filter_choices')
         if not institutional_office_choices:
             institutional_office_choices = InstitutionalOffice.objects.values_list(
                 'pk', 'name')
@@ -735,7 +736,7 @@ class InstitutionalOfficeFilter(filters.ChoiceFilter):
 
         kwargs.update({
             'choices': institutional_office_choices,
-            'label': 'Institutional Office',
+            'label': 'Office or Department',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
         super(InstitutionalOfficeFilter, self).__init__(*args, **kwargs)
