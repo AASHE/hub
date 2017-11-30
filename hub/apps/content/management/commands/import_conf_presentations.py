@@ -123,5 +123,7 @@ class Command(BaseCommand):
                         create_file_from_path(
                             presentation,
                             FILES_PATH,
-                            row[file_name])
+                            row[file_name],
+                            upload=False
+                        )
 
