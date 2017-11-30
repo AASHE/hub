@@ -318,7 +318,7 @@ class PublishedFilter(filters.ChoiceFilter):
             )
         else:
             year_choices = [(i, i) for i in range(
-                min_year.published.year, max_year.published.year + 1)]
+                max_year.published.year + 1, min_year.published.year, -1)]
 
         return year_choices
 
