@@ -16,7 +16,7 @@ class GenericFilterSet(filters.FilterSet):
     discipline = DisciplineFilter()
     tagfilter = TagFilter('tags')
     organizations = OrganizationFilter()
-    # organization_type = OrgTypeFilter()
+    institution_types = InstitutionTypeFilter()
     size = StudentFteFilter()
     country = CountryFilter(required=False)
     state = StateFilter(required=False)

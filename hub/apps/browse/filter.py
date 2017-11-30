@@ -500,7 +500,7 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
         return qs.filter(pk__in=gpp_pks)
 
 
-class OrgTypeFilter(filters.ChoiceFilter):
+class InstitutionTypeFilter(filters.ChoiceFilter):
     """
     Filter on the organization type from the ISS
     """
@@ -515,51 +515,31 @@ class OrgTypeFilter(filters.ChoiceFilter):
             ("Master", "Master's Institution"),
         ]
 
-        self.type_choices = [
-            ("Business", "Business"),
-            ("System Office", "College or University System"),
-            ("Government Agency", "Government Agency"),
-            ("K-12 School", "K-12 School"),
-            ("Nonprofit/NGO", "Non-profit/NGO"),
-        ]
-
         kwargs.update({
-            'choices': self.carnegie_class_choices + self.type_choices,
-            'label': 'Organization Type',
+            'choices': self.carnegie_class_choices,
+            'label': 'Institution Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
-        super(OrgTypeFilter, self).__init__(*args, **kwargs)
+        super(InstitutionTypeFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if value:
             cc_values = [x[0] for x in self.carnegie_class_choices]
-            t_values = [x[0] for x in self.type_choices]
             selected_cc_values = []
-            selected_t_values = []
             for v in value:
                 # filter according to either carnegie or type
                 try:
                     carnegie_index = cc_values.index(v)
                     selected_cc_values.append(v)
                 except ValueError:
-                    try:
-                        type_index = t_values.index(v)
-                        selected_t_values.append(v)
-                    except ValueError:
-                        pass
+                    pass
 
             cc_kwargs = {
                 'organizations__carnegie_class__in': selected_cc_values}
-            t_kwargs = {'organizations__org_type__in': selected_t_values}
 
-            if selected_cc_values and selected_t_values:
-                return qs.filter(Q(**cc_kwargs) | Q(**t_kwargs))
-            elif selected_cc_values:
-                return qs.filter(**cc_kwargs)
-            else:
-                return qs.filter(**t_kwargs)
-
+            return qs.filter(**cc_kwargs)
         return qs
+
 
 
 class MaterialTypeFilter(filters.ChoiceFilter):
