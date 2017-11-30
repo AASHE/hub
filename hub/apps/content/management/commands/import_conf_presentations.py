@@ -1,5 +1,6 @@
 import csv
 import os
+import datetime
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
@@ -35,11 +36,15 @@ class Command(BaseCommand):
                 conference_name = ConferenceName.objects.get(name=row['ConferenceName'])
                 presentation_type = PresentationType.objects.get(name=row['PresType'])
 
+                month, day, year = row['PresentationDate'].split('/')
                 presentation = Presentation.objects.create(
                     title=title,
                     description=description,
                     conf_name=conference_name,
-                    presentation_type=presentation_type
+                    presentation_type=presentation_type,
+                    date_created='{}-{}-{}'.format(year, month, day),
+                    published=datetime.datetime.now(),
+                    status='published'
                 )
 
                 #
