@@ -169,9 +169,9 @@ def create_file_from_url(parent, file_url, image=False):
 
 def create_file_from_path(parent, files_dir, path, upload=True):
     file_name = 'uploads/presentations_{}'.format(path)
-    file = open(os.path.join(files_dir, path), 'rb')
 
     if upload:
+
         s3_conn = S3Connection(
             settings.AWS_ACCESS_KEY_ID,
             settings.AWS_SECRET_ACCESS_KEY)
@@ -183,10 +183,13 @@ def create_file_from_path(parent, files_dir, path, upload=True):
             # TODO check if file is same, or resolve to different name
             print 'File name already exists in bucket {}'.format(file_name)
         else:
+            file = open(os.path.join(files_dir, path), 'rb')
+
             s3_key = s3_bucket.new_key(file_name)
             print 'sending {} to S3 bucket'.format(file_name)
             s3_key.set_contents_from_file(file)
             s3_key.set_acl('public-read')
+            file.close()
 
     new_file = File(ct=parent, label=file_name, affirmation=True)
     # TODO calculate URL based on settings
