@@ -91,7 +91,7 @@ class Command(BaseCommand):
                 # Authors
                 #
                 for idx in (1, 2, 3, 4, 5, 6, 7, 8):
-                    author_name = row['Author{}_Name'.format(idx)]
+                    author_name = row['Author{}_Name'.format(idx)].strip()
                     if author_name:
                         author_title = row['Author{}_Title'.format(idx)]
                         org_id = row['Author{}_OrgID'.format(idx)]
