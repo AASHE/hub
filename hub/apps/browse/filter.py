@@ -18,7 +18,7 @@ from hub.apps.content.types.green_power_projects import GreenPowerProject
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType, \
-    GreenPowerInstallation, ConferenceName
+    GreenPowerInstallation, ConferenceName, InstitutionalOffice
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 from .widgets import GalleryViewWidget
@@ -748,3 +748,32 @@ class ConferenceNameFilter(filters.ChoiceFilter):
         from ..content.types.presentations import Presentation
         return qs.filter(pk__in=Presentation.objects.filter(
             conf_name__in=value).values_list('pk', flat=True))
+      
+class InstitutionalOfficeFilter(filters.ChoiceFilter):
+    """
+    Institutional Office Filter
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        institutional_office_choices = cache.get(
+            'institutional_offices_filter_choices')
+        if not institutional_office_choices:
+            institutional_office_choices = InstitutionalOffice.objects.values_list(
+                'pk', 'name')
+            cache.set(
+                'institutional_offices_filter_choices',
+                institutional_office_choices,
+                settings.CACHE_TTL_SHORT)
+
+        kwargs.update({
+            'choices': institutional_office_choices,
+            'label': 'Office or Department',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(InstitutionalOfficeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(institutions__in=value)

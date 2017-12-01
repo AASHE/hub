@@ -96,6 +96,14 @@
                         </div>
                         {% endif %}
 
+                        {% if object.institutions.all %}
+                        <div><strong>Office or Department{{ object.institutions.all|length|pluralize }}:</strong>
+                            {% for t in object.institutions.all %}
+                                <a href="{% url "browse:browse" %}?search=&institutional_office={{ t.pk }}">{{ t.name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
                         <div>
                             <strong>Tags:</strong>
                             {% for kw in object.keywords.all %}

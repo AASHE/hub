@@ -14,6 +14,7 @@ class GenericFilterSet(filters.FilterSet):
     content_type = ContentTypesFilter()
     topics = TopicFilter()
     discipline = DisciplineFilter()
+    institutional_office = InstitutionalOfficeFilter()
     tagfilter = TagFilter('tags')
     organizations = OrganizationFilter()
     # organization_type = OrgTypeFilter()
