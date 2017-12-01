@@ -512,8 +512,8 @@ class InstitutionTypeFilter(filters.ChoiceFilter):
         self.carnegie_class_choices = [
             ("Associate", "Associate (2-year) Institution"),
             ("Baccalaureate", "Baccalaureate Institution"),
-            ("Doctorate", "Doctoral/Research Institution"),
             ("Master", "Master's Institution"),
+            ("Doctorate", "Doctoral/Research Institution"),
         ]
 
         kwargs.update({
@@ -728,7 +728,7 @@ class ConferenceNameFilter(filters.ChoiceFilter):
         from ..content.types.presentations import Presentation
         return qs.filter(pk__in=Presentation.objects.filter(
             conf_name__in=value).values_list('pk', flat=True))
-      
+
 class InstitutionalOfficeFilter(filters.ChoiceFilter):
     """
     Institutional Office Filter
