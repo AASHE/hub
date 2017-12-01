@@ -101,6 +101,7 @@ class PhotographBrowseFilterSet(GenericFilterSet):
 
 
 class PresentationBrowseFilterSet(GenericFilterSet):
+    conference_name = ConferenceNameFilter()
     from ..content.types.presentations import Presentation
     created = CreatedFilter(Presentation)
 

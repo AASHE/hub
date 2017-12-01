@@ -18,7 +18,7 @@ from hub.apps.content.types.green_power_projects import GreenPowerProject
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType, \
-    GreenPowerInstallation, InstitutionalOffice
+    GreenPowerInstallation, ConferenceName, InstitutionalOffice
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 from .widgets import GalleryViewWidget
@@ -715,7 +715,40 @@ class DisciplineFilter(filters.ChoiceFilter):
             return qs
         return qs.filter(disciplines__in=value)
 
+class ConferenceNameFilter(filters.ChoiceFilter):
+    """
+    Conference Presentation specific filter for conference name
+    """
+    field_class = forms.fields.MultipleChoiceField
 
+    def __init__(self, *args, **kwargs):
+        conference_name_choices = cache.get('conference_name_choices')
+        if not conference_name_choices:
+            conference_name_choices = ConferenceName.objects.values_list(
+                'pk', 'name')
+            cache.set(
+                'conference_name_choices',
+                conference_name_choices,
+                settings.CACHE_TTL_SHORT)
+
+        kwargs.update({
+            'choices': conference_name_choices,
+            'label': 'Conference Name',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(ConferenceNameFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        """
+        Filters always work against the base `ContentType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not value:
+            return qs
+        from ..content.types.presentations import Presentation
+        return qs.filter(pk__in=Presentation.objects.filter(
+            conf_name__in=value).values_list('pk', flat=True))
+      
 class InstitutionalOfficeFilter(filters.ChoiceFilter):
     """
     Institutional Office Filter
@@ -723,7 +756,6 @@ class InstitutionalOfficeFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
-
         institutional_office_choices = cache.get(
             'institutional_offices_filter_choices')
         if not institutional_office_choices:
