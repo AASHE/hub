@@ -38,13 +38,15 @@
         <div class="panel-body">
             <ul class="list-unstyled social-contacts-v2">
                 {% for ct in featured_list|slice:":5" %}
-                <li>
+                <li class="col-sm-12">
+                    <i class="fa fa-star-o rounded col-sm-1"></i>
+                    <div class="col-sm-9">
+                      <a href="{{ ct.get_absolute_url }}">{{ ct.title|safe }}</a>
+                      {% with True as icon_only %}
+                        {% permission_flag ct user icon_only %}
+                      {% endwith %}
+                    </div>
                     <small class="pull-right">{{ ct.instance_type_label }}</small>
-                    <i class="fa fa-star-o rounded"></i>
-                    <a href="{{ ct.get_absolute_url }}">{{ ct.title|safe }}</a>
-                    {% with True as icon_only %}
-                      {% permission_flag ct user icon_only %}
-                    {% endwith %}
                 </li>
                 {% endfor %}
             </ul>
