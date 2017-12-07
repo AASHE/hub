@@ -352,6 +352,31 @@ class OrderingFilter(filters.ChoiceFilter):
         return qs.order_by(value)
 
 
+class GreenPowerOrderingFilter(filters.ChoiceFilter):
+    field_class = forms.fields.ChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                ('title', 'Title'),
+                ('content_type', 'Content Type'),
+                ('-published', 'Date Posted'),
+                ('-date_created', 'Date Created, Published, Presented'),
+                ('-project_size', 'Project Size')
+            ),
+            'label': 'Sort by:',
+            'widget': forms.widgets.RadioSelect,
+        })
+        super(GreenPowerOrderingFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs.order_by('-published')
+        if value == 'Project Size':
+            raise 'Yellow!'
+        return qs.order_by(value)
+
+
 # Academic Program specific
 class ProgramTypeFilter(filters.ChoiceFilter):
     """

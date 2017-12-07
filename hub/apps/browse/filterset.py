@@ -75,13 +75,34 @@ class CenterAndInstituteBrowseFilterSet(ExlcudeGalleryFilterMixin,
     created = CreatedFilter(CenterAndInstitute)
 
 
-class GreenPowerBrowseFilterSet(GenericFilterSet):
+class GreenPowerBrowseFilterSet(filters.FilterSet):
+    search = SearchFilter(widget=forms.HiddenInput)
+    gallery_view = GalleryFilter()
+    content_type = ContentTypesFilter()
+    topics = TopicFilter()
+    discipline = DisciplineFilter()
+    institutional_office = InstitutionalOfficeFilter()
+    tagfilter = TagFilter('tags')
+    organizations = OrganizationFilter()
+    institution_types = InstitutionTypeFilter()
+    size = StudentFteFilter()
+    country = CountryFilter(required=False)
+    state = StateFilter(required=False)
+    province = ProvinceFilter(required=False)
+    published = PublishedFilter()
+    created = CreatedFilter()
     installation = GreenPowerInstallationFilter()
     ownership = GreenPowerOwnershipFilter()
     project_size = GreenPowerProjectSizeFilter()
+    order = GreenPowerOrderingFilter()
     from ..content.types.green_power_projects import GreenPowerProject
     created = CreatedFilter(GreenPowerProject)
 
+    class Meta:
+        model = ContentType
+        #  Don't set any automatic fields, we already defined
+        # a specific list above.
+        fields = []
 
 class MaterialBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     material_type = MaterialTypeFilter()
