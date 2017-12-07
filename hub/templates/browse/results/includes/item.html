@@ -32,7 +32,7 @@
         </ul>
          {{ obj.description|apply_markup:"markdown"|truncatewords_html:30 }}
         <ul class="list-inline down-ul">
-            <li title="{{ obj.published|date }} {{ obj.published|time }}">Posted {{ obj.published|timesince }} ago</li>
+            <li title="{{ obj.published|date }} {{ obj.published|time }}">Posted {{ obj.published|date }}</li>
             <li>{{ obj.instance_type_label }}</li>
             <li><a href="{{ obj.get_absolute_url }}">View more</a></li>
         </ul>
