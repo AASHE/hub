@@ -362,7 +362,7 @@ class GreenPowerOrderingFilter(filters.ChoiceFilter):
                 ('content_type', 'Content Type'),
                 ('-published', 'Date Posted'),
                 ('-date_created', 'Date Created, Published, Presented'),
-                ('-project_size', 'Project Size')
+                ('greenpowerproject', 'Project Size')
             ),
             'label': 'Sort by:',
             'widget': forms.widgets.RadioSelect,
@@ -372,8 +372,11 @@ class GreenPowerOrderingFilter(filters.ChoiceFilter):
     def filter(self, qs, value):
         if not value:
             return qs.order_by('-published')
-        if value == 'Project Size':
-            raise 'Yellow!'
+        if value == 'greenpowerproject':
+            list_of_pks = []
+            for ob in qs:
+                list_of_pks.append(ob.pk)
+            return GreenPowerProject.objects.filter(pk__in=list_of_pks).order_by('project_size')
         return qs.order_by(value)
 
 

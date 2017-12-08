@@ -1,5 +1,6 @@
 from .filter import *
 from collections import OrderedDict
+from ..content.types.green_power_projects import GreenPowerProject
 
 
 class GenericFilterSet(filters.FilterSet):
@@ -94,9 +95,8 @@ class GreenPowerBrowseFilterSet(filters.FilterSet):
     installation = GreenPowerInstallationFilter()
     ownership = GreenPowerOwnershipFilter()
     project_size = GreenPowerProjectSizeFilter()
-    order = GreenPowerOrderingFilter()
-    from ..content.types.green_power_projects import GreenPowerProject
     created = CreatedFilter(GreenPowerProject)
+    order = GreenPowerOrderingFilter()
 
     class Meta:
         model = ContentType
