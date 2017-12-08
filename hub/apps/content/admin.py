@@ -92,7 +92,10 @@ class BaseContentTypeAdmin(ExportMixin, admin.ModelAdmin):
                 utils.send_resource_approved_email(obj, request)
             elif obj.status == obj.STATUS_CHOICES.declined:
                 utils.send_resource_declined_email(obj, request)
-        obj.create_thumbnails()
+
+    def save_related(self, request, form, formsets, change):
+        super(BaseContentTypeAdmin, self).save_related(request, form, formsets, change)
+        form.instance.create_thumbnails()
 
 
 class SpecificContentTypeAdmin(BaseContentTypeAdmin):
