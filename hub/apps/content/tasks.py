@@ -24,8 +24,6 @@ def thumbnail_image(image_id, recreate=False, verbose=False):
     """
     image = Image.objects.get(pk=image_id)
 
-    print 'in task ', image.small_thumbnail, image.med_thumbnail
-
     # Create the small thumbnail if it hasn't already been created
     default = Image._meta.get_field('small_thumbnail').get_default()
     if recreate or image.small_thumbnail == default:

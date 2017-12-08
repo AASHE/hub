@@ -178,7 +178,7 @@ class ContentType(TimeStampedModel):
         """
         from .tasks import thumbnail_image
         for image in self.images.all():
-            print 'thumbnailing ', image.pk, image.caption
+            logger.info('sending task for Image: {} {}', image.pk, image.caption)
             thumbnail_image.apply_async(
                 args=[image.pk],
                 kwargs={
