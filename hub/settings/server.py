@@ -87,3 +87,28 @@ if raven_dsn:
 # Very custom url and wsgi settings
 # ROOT_URLCONF = 'hub.urls.local'
 # WSGI_APPLICATION = 'hub.wsgi.local.application'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/tmp/django_cache',
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_bmemcached.memcached.BMemcached',
+        'LOCATION': 'your_server:port',
+        'OPTIONS': {
+            'username': 'user',
+            'password': 'password'
+        }
+    }
+}

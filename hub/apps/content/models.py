@@ -183,8 +183,8 @@ class ContentType(TimeStampedModel):
                 args=[image.pk],
                 kwargs={
                     'recreate': recreate,
-                    'verbose': settings.DEBUG,
-                    'countdown': 15})
+                    'verbose': settings.DEBUG},
+                countdown=15)
 
     def get_organization_list(self):
         return list(self.organizations.all())
