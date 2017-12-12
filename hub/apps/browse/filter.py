@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
 from django.utils.timezone import now
+from django.db.models import FloatField, ExpressionWrapper, F
 
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
@@ -376,7 +377,10 @@ class GreenPowerOrderingFilter(filters.ChoiceFilter):
             list_of_pks = []
             for ob in qs:
                 list_of_pks.append(ob.pk)
-            return GreenPowerProject.objects.filter(pk__in=list_of_pks).order_by('project_size')
+            return (GreenPowerProject.objects.filter(pk__in=list_of_pks)
+                            .extra({'casted_project_size':
+                            "CAST(replace(project_size, ',', '') as real)"})
+                            .order_by('-casted_project_size'))
         return qs.order_by(value)
 
 
