@@ -10,7 +10,6 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
 from django.utils.timezone import now
-from django.db.models import FloatField, ExpressionWrapper, F
 
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
