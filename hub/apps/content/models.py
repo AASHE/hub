@@ -178,7 +178,13 @@ class ContentType(TimeStampedModel):
         """
         from .tasks import thumbnail_image
         for image in self.images.all():
-            thumbnail_image.delay(image.pk, recreate=recreate)
+            logger.info('sending task for Image: {} {}', image.pk, image.caption)
+            thumbnail_image.apply_async(
+                args=[image.pk],
+                kwargs={
+                    'recreate': recreate,
+                    'verbose': settings.DEBUG},
+                countdown=15)
 
     def get_organization_list(self):
         return list(self.organizations.all())
