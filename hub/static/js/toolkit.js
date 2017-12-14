@@ -12,9 +12,9 @@ function checkForLock(){
   $('.lock-or-star').each(function(){
 
     if($(this).children().hasClass('icon-warning') == 0){
-      $(this).append("<i class='fa fa-star-o rounded'></i>");
+      $(this).append("<i class='icon-sm fa fa-star-o rounded'></i>");
     }
 
   });
-  
+
 }
