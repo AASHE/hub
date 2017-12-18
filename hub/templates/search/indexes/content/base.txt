@@ -1,9 +1,22 @@
 {% block index %}
-    <h1>{{ object.title }}</h1>
-    <p>{{ object.description }}</p>
+    {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
+
+
+    {{ object.description }}
+    {{ object.description }}
+    {{ object.description }}
+
+
     {% for k in object.keywords.all %}
-      <h2>{{ k.name }}</h2>
+      {{ k.name }}
     {% endfor %}
+
     {{ object.content_type_label }}
     {% for o in object.organizations.all %}{{ o.org_name }} {% endfor %}
     {% for o in object.topics.all %}{{ o.name }} {% endfor %}
