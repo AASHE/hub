@@ -103,10 +103,12 @@ class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     list_filter = (
         'status', 'permission', 'created', 'published', 'disciplines')
     search_fields = ('title', 'description', 'keywords',)
-    readonly_fields = ('published',)
+    readonly_fields = ('published', 'submitter')
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
-    exclude = ('content_type',)
-    raw_id_fields = ('submitted_by',)
+    exclude = ('content_type', 'submitted_by')
+
+    def submitter(self, obj):
+        return obj.submitted_by.email
 
     def _update_application_index(self):
         # from django.core import management
