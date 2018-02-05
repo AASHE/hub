@@ -314,6 +314,12 @@ class Author(TimeStampedModel):
     def __str__(self):
         return self.name
 
+    def get_title(self):
+        return self.title
+
+    def get_organization(self):
+        return self.organization
+
 
 @python_2_unicode_compatible
 class Website(TimeStampedModel):

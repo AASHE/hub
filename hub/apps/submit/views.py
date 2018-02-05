@@ -2,13 +2,14 @@ from logging import getLogger
 
 from django import forms
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import formset_factory
 from django.http import Http404, HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 
 from .forms import AuthorForm, FileForm, ImageForm, SubmitResourceForm, \
     WebsiteForm
-from ..content.models import CONTENT_TYPES
+from ..content.models import CONTENT_TYPES, Author
 from ...permissions import LoginRequiredMixin
 
 logger = getLogger(__name__)
@@ -150,6 +151,13 @@ class SubmitFormView(LoginRequiredMixin, FormView):
     def get_author_form_template(self, **kwargs):
         f = kwargs['author_formset'].empty_form
         org = None
+        try:
+            person = Author.objects.get(email=self.request.user.email)
+            rowdy = True
+        except ObjectDoesNotExist:
+            rowdy = False
+        #     person = Author.objects.get(email=self.request.user.email)
+        #     rowdy = True
         # @todo - we'll need to add primary_org and title to PortalUser
         # @todo - this isn't tested... so our test user should have a
         #  membersuiteportaluser property
@@ -160,6 +168,9 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         #     f.fields['title'].initial = ms_user.title
         f.fields['name'].initial = self.request.user.get_full_name()
         f.fields['email'].initial = self.request.user.email
+        if rowdy:
+            f.fields['title'].initial = person.get_title()
+            f.fields['organization'].initial = person.get_organization()
         return f
 
     def get_required_formsets(self):
