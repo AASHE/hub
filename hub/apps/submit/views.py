@@ -153,11 +153,9 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         org = None
         try:
             person = Author.objects.get(email=self.request.user.email)
-            rowdy = True
+            user_is_author = True
         except ObjectDoesNotExist:
-            rowdy = False
-        #     person = Author.objects.get(email=self.request.user.email)
-        #     rowdy = True
+            user_is_author = False
         # @todo - we'll need to add primary_org and title to PortalUser
         # @todo - this isn't tested... so our test user should have a
         #  membersuiteportaluser property
@@ -168,7 +166,7 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         #     f.fields['title'].initial = ms_user.title
         f.fields['name'].initial = self.request.user.get_full_name()
         f.fields['email'].initial = self.request.user.email
-        if rowdy:
+        if user_is_author:
             f.fields['title'].initial = person.get_title()
             f.fields['organization'].initial = person.get_organization()
         return f
