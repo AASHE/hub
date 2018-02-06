@@ -127,11 +127,16 @@
                       {% if object.websites.all %}
                         {% for i in object.websites.all %}
                         <div class="panel-body">
-                          <div class="embed-responsive embed-responsive-16by9">
-                            {% with i.url as link %}
-                              <iframe src="{% video_embed link %}"></iframe>
-                            {% endwith %}
-                          </div>
+
+                                {% with i.url as link %}
+                                <div class="embed-responsive embed-responsive-16by9">
+                                  <iframe src="{% video_embed link %}"></iframe>
+                                </div>
+                                {% endwith %}
+
+                                
+
+
                         </div>
                         {% endfor %}
                       {% endif %}

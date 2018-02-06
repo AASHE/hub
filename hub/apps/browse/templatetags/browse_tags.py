@@ -100,5 +100,7 @@ def video_embed(link):
         begin = "https://player.vimeo.com/video/"
     elif "youtu" in link:
         begin = "https://www.youtube.com/embed/"
+    else:
+        return "Video not in the supported format."
     end = link.rpartition('/')[2]
     return begin + end
