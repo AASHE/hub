@@ -93,6 +93,12 @@ def render_form(form, field=None, type='input'):
 
 @register.simple_tag
 def video_embed(link):
-    begin = "https://www.youtube.com/embed/"
-    end = link[-11:]
+    """
+        Prep vimeo and youtube links for embedded videos
+    """
+    if "vimeo" in link:
+        begin = "https://player.vimeo.com/video/"
+    elif "youtu" in link:
+        begin = "https://www.youtube.com/embed/"
+    end = link.rpartition('/')[2]
     return begin + end
