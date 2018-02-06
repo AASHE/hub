@@ -98,9 +98,18 @@ def video_embed(link):
     """
     if "vimeo" in link:
         begin = "https://player.vimeo.com/video/"
+        end = link.rpartition('/')[2]
     elif "youtu" in link:
         begin = "https://www.youtube.com/embed/"
+        end = link.rpartition('/')[2]
+        if "watch" in link:
+            end = link.rpartition('=')[2]
     else:
-        return "Video not in the supported format."
-    end = link.rpartition('/')[2]
-    return begin + end
+        hidden_return = "<div style='display:none;'></div>"
+        return mark_safe(hidden_return)
+
+    full_return = "<div style='margin-bottom:13px;\
+        'class='embed-responsive embed-responsive-16by9'>\
+        <iframe src='" + begin + end + "'></iframe></div>"
+        
+    return mark_safe(full_return)
