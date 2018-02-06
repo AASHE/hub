@@ -1,6 +1,7 @@
 {% extends "browse/base.html" %}
 
 {% load markup_tags %}
+{% load browse_tags %}
 {% load humanize %}
 {% load block_content %}
 {% load static %}
@@ -116,6 +117,26 @@
 
                     </div>
                 </div>
+
+                {% if object.content_type_label == "Videos & Webinars"%}
+                  <div class="margin-bottom-30"></div>
+                  <div class="panel panel-profile">
+                      <div class="panel-heading overflow-h">
+                          <h2 class="panel-title heading-sm pull-left">Some Panel Title</h2>
+                      </div>
+                      {% if object.websites.all %}
+                        {% for i in object.websites.all %}
+                        <div class="panel-body">
+                          <div class="embed-responsive embed-responsive-16by9">
+                            {% with i.url as link %}
+                              <iframe src="{% video_embed link %}"></iframe>
+                            {% endwith %}
+                          </div>
+                        </div>
+                        {% endfor %}
+                      {% endif %}
+                  </div>
+                {% endif %}
 
                 {% if object.description %}
                 <div class="margin-bottom-30"></div>

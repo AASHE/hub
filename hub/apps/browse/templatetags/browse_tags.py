@@ -90,3 +90,9 @@ def render_form(form, field=None, type='input'):
         response += render_to_string(template_name, {'field': f})
 
     return mark_safe(response)
+
+@register.simple_tag
+def video_embed(link):
+    begin = "https://www.youtube.com/embed/"
+    end = link[-11:]
+    return begin + end
