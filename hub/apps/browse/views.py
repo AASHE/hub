@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from collections import defaultdict
 from logging import getLogger
 
+import datetime
+
 import feedparser
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -18,7 +20,7 @@ from ratelimit.mixins import RatelimitMixin
 from tagulous.views import autocomplete
 
 from hub.apps.content.types.green_power_projects import GreenPowerProject
-from ..content.models import CONTENT_TYPES, ContentType
+from ..content.models import CONTENT_TYPES, ContentType, Image
 from ..metadata.models import SustainabilityTopic, SustainabilityTopicFavorite, GreenPowerInstallation
 from ...permissions import get_aashe_member_flag
 
@@ -244,6 +246,13 @@ class BrowseView(RatelimitMixin, ListView):
             new_resources = ContentType.objects.published().filter(
                 topics=self.sustainabilty_topic).order_by('-published')
 
+            new_pictures = (Image.objects
+                .filter(ct__topics=self.sustainabilty_topic)
+                .filter(ct__published__lte=datetime.date.today())
+                .order_by('ct__published')
+                .distinct('ct__published')
+                .reverse()[:3])
+
             # @DONE - using the [:#] notation executes the query and undoes
             # caching. This needed to happen in the template `use |slice:":#"`
 
@@ -253,6 +262,7 @@ class BrowseView(RatelimitMixin, ListView):
                 'featured_list': featured_content_types,
                 'news_list': news_list,
                 'new_resources_list': new_resources,
+                'new_pictures': new_pictures,
             })
 
             # Additional Partners Tab content for topic views
