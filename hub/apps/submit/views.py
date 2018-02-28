@@ -2,7 +2,7 @@ from logging import getLogger
 
 from django import forms
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.forms.models import formset_factory
 from django.http import Http404, HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
@@ -153,6 +153,9 @@ class SubmitFormView(LoginRequiredMixin, FormView):
         org = None
         try:
             person = Author.objects.get(email=self.request.user.email)
+            user_is_author = True
+        except MultipleObjectsReturned:
+            person = Author.objects.filter(email=self.request.user.email)[0]
             user_is_author = True
         except ObjectDoesNotExist:
             user_is_author = False
