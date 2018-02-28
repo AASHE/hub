@@ -1,6 +1,7 @@
 {% extends "browse/base.html" %}
 
 {% load markup_tags %}
+{% load browse_tags %}
 {% load humanize %}
 {% load block_content %}
 {% load static %}
@@ -26,6 +27,7 @@
     {{ block.super }}
     <script type="text/javascript" src="{% static 'aashe_theme/unify/plugins/fancybox/source/jquery.fancybox.pack.js' %}"></script>
     <script type="text/javascript" src="{% static 'aashe_theme/unify/js/plugins/fancy-box.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/details.js'%}"></script>
     <script type="text/javascript">
     jQuery(document).ready(function() {
         FancyBox.initFancybox();
@@ -116,6 +118,24 @@
 
                     </div>
                 </div>
+
+                {% if object.content_type_label == "Videos & Webinars"%}
+                  <div class="margin-bottom-30"></div>
+                  <div class="panel panel-profile">
+                      <div class="panel-heading overflow-h">
+                          <h2 class="panel-title heading-sm pull-left">Video Content</h2>
+                      </div>
+                      {% if object.websites.all %}
+                        <div class="panel-body" id="embedded-videos">
+                          {% for i in object.websites.all %}
+                            {% with i.url as link %}
+                              {% video_embed link %}
+                            {% endwith %}
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                  </div>
+                {% endif %}
 
                 {% if object.description %}
                 <div class="margin-bottom-30"></div>
