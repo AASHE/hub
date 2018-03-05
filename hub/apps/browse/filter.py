@@ -514,7 +514,7 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
             return qs
         from ..content.types.green_power_projects import GreenPowerProject
 
-        sizes = [(pk, int(float(size.replace(',', '')))) for pk, size in GreenPowerProject.objects.values_list('pk', 'project_size')]
+        sizes = [(pk, int(float(size.replace(',', '')))) for pk, size in GreenPowerProject.objects.filter(status='published').values_list('pk', 'project_size')]
 
         gpp_pks = []
         for value in values:
