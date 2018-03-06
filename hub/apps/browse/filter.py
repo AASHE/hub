@@ -63,16 +63,16 @@ class SearchFilter(filters.CharFilter):
         if not value:
             return qs
 
-        # Remove any special characters
-        # http://lucene.apache.org/core/3_4_0/queryparsersyntax.html#Escaping%20Special%20Characters
-        esc_string = '+-&|!\(\){}[]^"~*?:\\\/'
-        translation_table = dict.fromkeys(map(ord, esc_string), None)
-        query = value.translate(translation_table)
-
-        query = Raw(query.lower())
-        result_ids = (SearchQuerySet().filter(content__contains=query)
+        result_ids = (SearchQuerySet().auto_query(value)
                                       .values_list('ct_pk', flat=True))
-        return qs.filter(pk__in=result_ids).distinct()
+        clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
+        ordering = 'CASE %s END' % clauses
+        items = qs.filter(pk__in=result_ids).extra(
+            select={'ordering': ordering}, order_by=('ordering',))
+
+        # Workaround - we don't want the OrderingFilter to touch this later down the line
+        setattr(items, '__no_ordering__', True)
+        return items
 
 
 class TopicFilter(filters.ChoiceFilter):
@@ -347,6 +347,8 @@ class OrderingFilter(filters.ChoiceFilter):
         super(OrderingFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
+        if hasattr(qs, '__no_ordering__'):
+            return qs
         if not value:
             return qs.order_by('-published')
         return qs.order_by(value)
