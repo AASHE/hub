@@ -2,16 +2,20 @@
     {{ object.title }}
     {{ object.title }}
     {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
+    {{ object.title }}
 
 
-
+    {{ object.description }}
     {{ object.description }}
     {{ object.description }}
 
 
 
     {% for k in object.keywords.all %}
-      {{ k.name }} {{ k.name }}
+      {{ k.name }} {{ k.name }} {{ k.name }}
     {% endfor %}
 
     {{ object.content_type_label }}
