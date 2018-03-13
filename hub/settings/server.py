@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', None)
 DEBUG = os.environ.get('DEBUG', False)  # Set env var to 1
 
 ADMINS = (
-    ('Benjamin Stookey', 'ben@aashe.org'),
+    ('Tylor Dodge', 'tylor.dodge@aashe.org'),
 )
 MANAGERS = ADMINS
 
