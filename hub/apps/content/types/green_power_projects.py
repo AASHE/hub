@@ -45,7 +45,7 @@ class GreenPowerProject(ContentType):
         ('Greater than 4%', 'Greater than 4%')
     )
 
-    project_size = models.CharField(max_length=50)
+    project_size = models.FloatField()
     annual_production = models.CharField(max_length=50, blank=True, null=True)
     installed_cost = models.CharField(max_length=50, blank=True, null=True)
 
@@ -146,4 +146,3 @@ class GreenPowerProject(ContentType):
 class GreenPowerProjectIndex(BaseIndex):
     def get_model(self):
         return GreenPowerProject
-
