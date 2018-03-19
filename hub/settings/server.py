@@ -25,10 +25,9 @@ DATABASES = {
 }
 
 # Haystack ElasticSearch
-haystack_prefix = "haystack.backends.elasticsearch_backend"
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': "%s.ElasticsearchSearchEngine" % haystack_prefix,
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': os.environ.get('SEARCHBOX_SSL_URL', None),
         'INDEX_NAME': 'haystack',
         'TIMEOUT': 60 * 5
