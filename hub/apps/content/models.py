@@ -245,7 +245,7 @@ class ContentType(TimeStampedModel):
             required_list.append('disciplines')
             return required_list
         """
-        return ['organizations']
+        return ['organizations', 'description']
 
     @classmethod
     def required_metadata(cls):
