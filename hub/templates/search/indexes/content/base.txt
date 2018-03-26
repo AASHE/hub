@@ -13,6 +13,7 @@
     {{ object.description }}
 
 
+
     {% for k in object.keywords.all %}
       {{ k.name }} {{ k.name }} {{ k.name }}
     {% endfor %}
