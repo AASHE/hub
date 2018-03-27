@@ -103,7 +103,9 @@ def video_embed(link):
         begin = "https://www.youtube.com/embed/"
         end = link.rpartition('/')[2]
         if "watch" in link:
-            end = link.rpartition('=')[2]
+            video_marker = "v="
+            start_position = link.find(video_marker)+len(video_marker)
+            end = link[start_position:start_position + 11]
     else:
         hidden_return = "<div style='display:none;'></div>"
         return mark_safe(hidden_return)
@@ -111,5 +113,5 @@ def video_embed(link):
     full_return = "<div style='margin-bottom:13px;\
         'class='embed-responsive embed-responsive-16by9'>\
         <iframe src='" + begin + end + "'></iframe></div>"
-        
+
     return mark_safe(full_return)
