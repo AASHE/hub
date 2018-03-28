@@ -235,9 +235,10 @@
                             {% for i in object.files.all %}
                             <li>
                                 <i class="rounded-x tw icon icon-doc"></i>
-                                <strong>File:</strong> <a href="{{ i.item }}"> {{ i.label|default:i.get_filename }}</a>
+                                <strong>File:</strong> <a href="{% with i.item as link%}{% mask_url link %}{% endwith %}"> {{ i.label|default:i.get_filename }}</a>
                             </li>
                             {% endfor %}
+
                         </ul>
                     </div>
                 {% else %}

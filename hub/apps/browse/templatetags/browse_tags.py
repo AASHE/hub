@@ -103,7 +103,9 @@ def video_embed(link):
         begin = "https://www.youtube.com/embed/"
         end = link.rpartition('/')[2]
         if "watch" in link:
-            end = link.rpartition('=')[2]
+            video_marker = "v="
+            start_position = link.find(video_marker)+len(video_marker)
+            end = link[start_position:start_position + 11]
     else:
         hidden_return = "<div style='display:none;'></div>"
         return mark_safe(hidden_return)
@@ -111,5 +113,16 @@ def video_embed(link):
     full_return = "<div style='margin-bottom:13px;\
         'class='embed-responsive embed-responsive-16by9'>\
         <iframe src='" + begin + end + "'></iframe></div>"
-        
+
     return mark_safe(full_return)
+
+@register.simple_tag
+def mask_url(link):
+    """
+    Mask url of uploaded file, so it does not show that it is from S3
+    """
+    begin = "https://hub-media.aashe.org/uploads/"
+    if "amazonaws.com" in link:
+        end = link.rpartition('/')[2]
+        return begin + end
+    return link
