@@ -379,9 +379,7 @@ class GreenPowerOrderingFilter(filters.ChoiceFilter):
             for ob in qs:
                 list_of_pks.append(ob.pk)
             return (GreenPowerProject.objects.filter(pk__in=list_of_pks)
-                            .extra({'casted_project_size':
-                            "CAST(replace(project_size, ',', '') as real)"})
-                            .order_by('-casted_project_size'))
+                            .order_by('-project_size'))
         return qs.order_by(value)
 
 
@@ -516,7 +514,7 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
             return qs
         from ..content.types.green_power_projects import GreenPowerProject
 
-        sizes = [(pk, int(float(size.replace(',', '')))) for pk, size in GreenPowerProject.objects.filter(status='published').values_list('pk', 'project_size')]
+        sizes = [(pk, size) for pk, size in GreenPowerProject.objects.filter(status='published').values_list('pk', 'project_size')]
 
         gpp_pks = []
         for value in values:
