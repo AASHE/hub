@@ -237,10 +237,9 @@ def get_base_kwargs(
     if desc:
         desc = desc.replace("\n", "\n\n")
     if not submitter:
-        submitter = User.objects.get(email='monika.urbanski@aashe.org')
+        submitter = User.objects.get(email='jade@aashe.org')
 
     kwargs = {
-        'submitted_by': User.objects.get(email='monika.urbanski@aashe.org'),
         'status': ContentType.STATUS_CHOICES.published,
         'permission': default_permission,
         'published': datetime.now().date(),
