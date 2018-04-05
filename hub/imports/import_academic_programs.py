@@ -31,7 +31,7 @@ column_mappings = {
     'title': "Program Name",
     'description': "Description",
     'organizations_id': "Organization%d ID",
-    'topics': "Topic%d"
+    'topics': "Topic%d",
     'disciplines': "Acad Discipline%d",
     'keywords': "Tag(s): (comma separated)",
     'outcomes': "Learning Outcomes",
@@ -41,9 +41,6 @@ column_mappings = {
     'commitment': "Commitment",
     'website_url': "Link URL",
 }
-
-#foreign keys
-# program_type,
 
 def get_obj_kwargs():
     """
