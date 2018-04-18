@@ -12,19 +12,24 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
     """
     Tests around the search backend behavior.
     """
-    def _create_video_item(self, title, published=False, **kwargs):
-        status = (
-            published and TestContentType.STATUS_CHOICES.published or
-            TestContentType.STATUS_CHOICES.new)
+    def _create_academic_program(self, title, published=False, **kwargs):
+        status = published
         return TestContentType.objects.create(
             title=title, status=status, **kwargs)
+
+    # def _create_video_item(self, title, published=False, **kwargs):
+    #     status = (
+    #         published and TestContentType.STATUS_CHOICES.published or
+    #         TestContentType.STATUS_CHOICES.new)
+    #     return TestContentType.objects.create(
+    #         title=title, status=status, **kwargs)
 
     def test_unpublished_item_is_not_indexed(self):
         """
         A content type which is not yet published is not indexed.
         """
         # Create one item, and build the search index
-        self._create_video_item('My unpublished item')
+        self._create_academic_program(title='My unpublished item')
         self._rebuild_index()
 
         # The item is is created, but not in the search backend,
@@ -37,7 +42,7 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
         A published item is in the search index.
         """
         # Create an object and publish it right away
-        self._create_video_item('My published item', True)
+        self._create_academic_program(title='My published item', published=True)
         self._rebuild_index()
 
         # One item is in the search index
@@ -54,7 +59,7 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
 
         The search matching should be case-insensitive.
         """
-        self._create_video_item('my DIVersiTY item', True)
+        self._create_academic_program(title='my DIVersiTY item', published=True)
         self._rebuild_index()
 
         # One item is in the search index
@@ -66,17 +71,17 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
         """
         Multiple items in the search index are properly indexed and found.
         """
-        self._create_video_item('my first item', True)
-        self._create_video_item('my other first item', True)
-        self._create_video_item('my second item', True)
+        self._create_academic_program(title='my first item', published=True)
+        self._create_academic_program(title='my other first item', published=True)
+        self._create_academic_program(title='my second item', published=True)
         self._rebuild_index()
 
         # 'first' only returns two elements
         self.assertEqual(SearchQuerySet().filter(text=Raw('first')).count(), 2)
 
     def test_keyword_tags_are_properly_indexed(self):
-        vid = self._create_video_item(
-            'another test item', True)
+        vid = self._create_academic_program(
+            title='another test item', published=True)
         vid.keywords.add('figure')
 
         self._rebuild_index()
@@ -84,13 +89,13 @@ class SearchBackendTestCase(BaseSearchBackendTestCase):
         self.assertEqual(SearchQuerySet().filter(
             text=Raw('figure')).count(), 1)
 
-    def test_authors_are_properly_indexed(self):
-        vid = self._create_video_item(
-            'author test', True)
-        tester = Author.objects.create(name='tester', ct=vid)
-        vid.authors.add(tester)
-
-        self._rebuild_index()
-
-        self.assertEqual(SearchQuerySet().filter(
-            text=Raw('tester')).count(), 1)
+    # def test_authors_are_properly_indexed(self):
+    #     vid = self._create_video_item(
+    #         'author test', True)
+    #     tester = Author.objects.create(name='tester', ct=vid)
+    #     vid.authors.add(tester)
+    #
+    #     self._rebuild_index()
+    #
+    #     self.assertEqual(SearchQuerySet().filter(
+    #         text=Raw('tester')).count(), 1)
