@@ -30,7 +30,7 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             if module in sys.modules.keys():
                 del sys.modules[module]
 
-        self.url_search = '{}?search=keyword'.format(reverse('browse:browse'))
+        self.url_search = '{}?search='.format(reverse('browse:browse'))
 
         self.topic = SustainabilityTopic.objects.create(
             name='Curriculum', slug='curriculum')
