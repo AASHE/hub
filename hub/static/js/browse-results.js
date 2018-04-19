@@ -40,6 +40,13 @@ jQuery(document).ready(function() {
     $country.on('change', showHideStateForm)
     showHideStateForm();
 
+    // -----------------------------------------------------------------------
+    // Add some description here
+    // -----------------------------------------------------------------------
+    $('#summary-tab').click(function(){
+      setTimeout(chartClick, 500);
+    });
+
     // -------------------------------------------------------------------------
     // Filter Select Multiple with checkboxes widget.
     // -------------------------------------------------------------------------
@@ -97,3 +104,7 @@ jQuery(document).ready(function() {
         });
     });
 });
+
+function chartClick(){
+    $('#chart-tab').trigger('click');
+}
