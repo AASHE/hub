@@ -44,7 +44,7 @@ jQuery(document).ready(function() {
     // Add some description here
     // -----------------------------------------------------------------------
     $('#summary-tab').click(function(){
-      setTimeout(chartClick, 500);
+        setTimeout(chartClick, 500);
     });
 
     // -------------------------------------------------------------------------
