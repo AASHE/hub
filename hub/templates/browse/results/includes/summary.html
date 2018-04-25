@@ -82,10 +82,10 @@
             <div class="panel">
                 <div class="panel-heading overflow-h">
                     <ul class="nav nav-tabs">
-                        <li class="{% if not request.GET %}active{% endif %}">
+                        <li id="js-chart-tab" class="active">
                             <a id="chart-tab" data-toggle="tab" href="#charts" onclick="hideMap(); getChart('chart-tab');" aria-expanded="{% if request.GET %}false{% else %}true{% endif %}">Summary Charts</a>
                         </li>
-                        <li class="{% if request.GET %}active{% endif %}">
+                        <li>
                             <a id="map-tab" data-toggle="tab" href="#map" onclick="displayMap(); getChart('map-tab');" aria-expanded="{% if request.GET %}true{% else %}false{% endif %}">Summary Map</a>
                         </li>
                     </ul>
