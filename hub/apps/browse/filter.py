@@ -65,14 +65,15 @@ class SearchFilter(filters.CharFilter):
 
         result_ids = (SearchQuerySet().auto_query(value)
                                       .values_list('ct_pk', flat=True))
-        clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
-        ordering = 'CASE %s END' % clauses
-        items = qs.filter(pk__in=result_ids).extra(
-            select={'ordering': ordering}, order_by=('ordering',))
+        return qs.filter(pk__in=result_ids).distinct()
+        # clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
+        # ordering = 'CASE %s END' % clauses
+        # items = qs.filter(pk__in=result_ids).extra(
+        #     select={'ordering': ordering}, order_by=('ordering',))
 
         # Workaround - we don't want the OrderingFilter to touch this later down the line
-        setattr(items, '__no_ordering__', True)
-        return items
+        # setattr(items, '__no_ordering__', True)
+        # return items
 
 
 class TopicFilter(filters.ChoiceFilter):
