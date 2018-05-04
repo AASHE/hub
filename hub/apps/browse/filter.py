@@ -66,17 +66,9 @@ class SearchFilter(filters.CharFilter):
         result_ids = (SearchQuerySet().auto_query(value)
                                       .values_list('ct_pk', flat=True))
 
-        if hasattr(qs, '__already_searched__'):
-            return qs.filter(pk__in=result_ids).distinct()
+        items = qs.filter(pk__in=result_ids).distinct()
+        setattr(items, '__search_ordering__', True)
 
-        clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
-        ordering = 'CASE %s END' % clauses
-        items = qs.filter(pk__in=result_ids).extra(
-            select={'ordering': ordering}, order_by=('ordering',))
-
-        #Workaround - we don't want the OrderingFilter to touch this later down the line
-        setattr(items, '__no_ordering__', True)
-        setattr(items, '__already_searched__', True)
         return items
 
 
@@ -352,9 +344,15 @@ class OrderingFilter(filters.ChoiceFilter):
         super(OrderingFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
-        if hasattr(qs, '__no_ordering__'):
-            return qs
-        if not value:
+
+        if not value and hasattr(qs, '__special_filter__'):
+            result_ids = qs.values_list('ct_pk', flat=True)
+            clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
+            ordering = 'CASE %s END' % clauses
+            items = qs.filter(pk__in=result_ids).extra(
+                select={'ordering': ordering}, order_by=('ordering',))
+            return items
+        elif not value:
             return qs.order_by('-published')
         return qs.order_by(value)
 
