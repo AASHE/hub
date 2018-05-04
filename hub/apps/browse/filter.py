@@ -346,7 +346,7 @@ class OrderingFilter(filters.ChoiceFilter):
     def filter(self, qs, value):
 
         if not value and hasattr(qs, '__search_ordering__'):
-            result_ids = qs.values_list('ct_pk', flat=True)
+            result_ids = qs.values_list('id', flat=True)
             clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
             ordering = 'CASE %s END' % clauses
             items = qs.filter(pk__in=result_ids).extra(
