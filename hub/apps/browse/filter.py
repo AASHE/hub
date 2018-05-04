@@ -68,6 +68,7 @@ class SearchFilter(filters.CharFilter):
 
         items = qs.filter(pk__in=result_ids).distinct()
         setattr(items, '__search_ordering__', True)
+        setattr(items, '__result_ids__', result_ids)
 
         return items
 
@@ -346,7 +347,7 @@ class OrderingFilter(filters.ChoiceFilter):
     def filter(self, qs, value):
 
         if not value and hasattr(qs, '__search_ordering__'):
-            result_ids = qs.values_list('id', flat=True)
+            result_ids = qs.__result_ids__
             clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
             ordering = 'CASE %s END' % clauses
             items = qs.filter(pk__in=result_ids).extra(
