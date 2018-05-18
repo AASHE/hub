@@ -164,7 +164,8 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
         self.ct.permission = self.ct.PERMISSION_CHOICES.member
         self.ct.save()
         self.assertTrue(
-            self.MATCH_MEMBER_REQUIRED in permission_flag(
+            'The information page about this resource is accessible only to'
+            ' AASHE members.' in permission_flag(
                 self.ct, AnonymousUser()))
 
     def test_permission_flag_for_logged_in_user(self):
@@ -182,7 +183,9 @@ class PermissionFlagTagTestCase(ContentTypePermissionTestCase):
         self.ct.permission = self.ct.PERMISSION_CHOICES.login
         self.ct.save()
         self.assertEqual(
-            permission_flag(self.ct, self.user), self.MATCH_EMPTY_LABEL)
+            permission_flag(self.ct, self.user), 'The information page about'
+                        ' this resource is accessible only to AASHE'
+                        ' members.')
 
         self.ct.permission = self.ct.PERMISSION_CHOICES.member
         self.ct.save()
