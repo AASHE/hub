@@ -73,32 +73,6 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         return super(FilterTestCase, self).setUp()
 
-    def test_multi_filter_arguments(self):
-        """
-        Calls the 'browse' view with all possible filter arguments.
-
-        - It does not test all of the filter logic itself
-        - It does only match one resource, and only because we write the
-          search pretty much exactly against it
-
-        Though it forces each filter to execute it's `filter()` methods where
-        the actual logic lays in. Simple programming errors would be caught
-        easily here.
-        """
-        self.client.login(**self.superuser_cred)
-
-        response = self.client.get(self.url_search, self.filter_data)
-
-        # One item was found, our AcademicProgram
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['object_list']), 1)
-
-        # The frontend does not list actual content types like "Academic
-        # Program", it lists the Base classes, but there is an easy way to
-        # fetch that one:
-        self.assertTrue(
-            self.ct.contenttype_ptr in response.context['object_list'])
-
     # get this working
     # def test_search_handles_special_characters(self):
 
