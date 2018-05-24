@@ -64,7 +64,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             {
                 'ct': 'publication',
                 'expected_fields': [
-                    'topics', 'material_type'
+                    'topics', 'material_type', 'organizations'
                 ],
                 'min_reqs': ['author'],
                 'conditionally_required': ['website', 'file']
@@ -151,4 +151,4 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                         "%s in __all__ error" % req)
 
             # match the total error count
-            self.assertEqual(error_count, len(errors.keys()), sub['ct'])
+            self.assertEqual(error_count, len(errors.keys()))
