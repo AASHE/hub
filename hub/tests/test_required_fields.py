@@ -26,7 +26,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             {
                 'ct': 'casestudy',
                 'expected_fields': [
-                    'topics', 'organizations', 'description', 'background',
+                    'topics', 'organizations', 'background',
                     'goals', 'implementation', 'timeline', 'financing',
                     'results', 'lessons_learned'
                 ],
