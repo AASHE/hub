@@ -151,4 +151,4 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                         "%s in __all__ error" % req)
 
             # match the total error count
-            self.assertEqual(error_count, len(errors.keys()))
+            self.assertEqual(error_count, len(errors.keys()), sub['ct'])
