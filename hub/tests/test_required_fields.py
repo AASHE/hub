@@ -130,6 +130,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
 
             expected = sub['expected_fields']
             expected.append('title')  # title applies everywhere
+            expected.append('description')  # description applies everywhere
             for f in sub['expected_fields']:
                 self.assertTrue(f in errors.keys(), "%s not found in keys" % f)
 
