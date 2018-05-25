@@ -59,6 +59,7 @@ class SubmitResourceForm(forms.ModelForm):
     def save(self, request):
 
         self.instance.submitted_by = request.user
+        submitter_email = self.instance.submitted_by.email
         obj = super(SubmitResourceForm, self).save()
 
         # Add the requst.User as an author
@@ -67,7 +68,7 @@ class SubmitResourceForm(forms.ModelForm):
                                   name=request.user.get_full_name())
 
         utils.send_resource_submitted_email(resource=self.instance,
-                                            submitter=self.instance.submitted_by,
+                                            submitter=submitter_email,
                                             request=request)
         return obj
 

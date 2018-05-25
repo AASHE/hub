@@ -166,10 +166,11 @@ TAGULOUS_AUTOCOMPLETE_JS = None
 # Email
 # ==============================================================================
 
-EMAIL_BACKEND = os.environ.get(
-    'EMAIL_BACKEND', 'django.core.mail.backends.filebased.EmailBackend')
-EMAIL_FILE_PATH = os.environ.get(
-    'EMAIL_FILE_PATH', '/tmp/hub-email-messages')
+# EMAIL_BACKEND = os.environ.get(
+#     'EMAIL_BACKEND', 'django.core.mail.backends.filebased.EmailBackend')
+# EMAIL_FILE_PATH = os.environ.get(
+#     'EMAIL_FILE_PATH', '/tmp/hub-email-messages')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
 EMAIL_HOST = os.environ.get('EMAIL_HOST', None)
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
