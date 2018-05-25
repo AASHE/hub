@@ -26,7 +26,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             {
                 'ct': 'casestudy',
                 'expected_fields': [
-                    'topics', 'organizations', 'description', 'background',
+                    'topics', 'organizations', 'background',
                     'goals', 'implementation', 'timeline', 'financing',
                     'results', 'lessons_learned'
                 ],
@@ -64,7 +64,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
             {
                 'ct': 'publication',
                 'expected_fields': [
-                    'topics', 'material_type'
+                    'topics', 'material_type', 'organizations'
                 ],
                 'min_reqs': ['author'],
                 'conditionally_required': ['website', 'file']
@@ -130,6 +130,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
 
             expected = sub['expected_fields']
             expected.append('title')  # title applies everywhere
+            expected.append('description')  # description applies everywhere
             for f in sub['expected_fields']:
                 self.assertTrue(f in errors.keys(), "%s not found in keys" % f)
 
@@ -150,4 +151,4 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
                         "%s in __all__ error" % req)
 
             # match the total error count
-            self.assertEqual(error_count, len(errors.keys()), errors.keys())
+            self.assertEqual(error_count, len(errors.keys()))
