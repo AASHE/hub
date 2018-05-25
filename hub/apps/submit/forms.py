@@ -67,6 +67,7 @@ class SubmitResourceForm(forms.ModelForm):
                                   name=request.user.get_full_name())
 
         utils.send_resource_submitted_email(resource=self.instance,
+                                            submitter=self.instance.submitted_by,
                                             request=request)
         return obj
 
