@@ -34,6 +34,37 @@ class GenericFilterSet(filters.FilterSet):
         fields = []
 
 
+class CustomFilterSet(filters.FilterSet):
+    """
+    The custom Filter form handling the filtering for all views that require
+    custom filters. Essentially the same as GenericFilterSet, but without the
+    'order' value set. Content types that require custom filtersets, and do not
+    simply redefine existing attributes, can append their unique filters, and
+    then add the OrderingFilter to the end.
+    """
+    search = SearchFilter(widget=forms.HiddenInput)
+    gallery_view = GalleryFilter()
+    content_type = ContentTypesFilter()
+    topics = TopicFilter()
+    discipline = DisciplineFilter()
+    institutional_office = InstitutionalOfficeFilter()
+    tagfilter = TagFilter('tags')
+    organizations = OrganizationFilter()
+    institution_types = InstitutionTypeFilter()
+    size = StudentFteFilter()
+    country = CountryFilter(required=False)
+    state = StateFilter(required=False)
+    province = ProvinceFilter(required=False)
+    published = PublishedFilter()
+    created = CreatedFilter()
+
+    class Meta:
+        model = ContentType
+        #  Don't set any automatic fields, we already defined
+        # a specific list above.
+        fields = []
+
+
 class ExlcudeGalleryFilterMixin(object):
     """
         removes the gallery filter from a filterset
@@ -59,10 +90,11 @@ class ExlcudeGalleryFilterMixin(object):
 ##############################################################################
 
 
-class AcademicBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
+class AcademicBrowseFilterSet(ExlcudeGalleryFilterMixin, CustomFilterSet):
     program_type = ProgramTypeFilter()
     from ..content.types.academic import AcademicProgram
     created = CreatedFilter(AcademicProgram)
+    order = OrderingFilter()
 
 
 class CaseStudyBrowseFilterSet(GenericFilterSet):
@@ -76,7 +108,7 @@ class CenterAndInstituteBrowseFilterSet(ExlcudeGalleryFilterMixin,
     created = CreatedFilter(CenterAndInstitute)
 
 
-class GreenPowerBrowseFilterSet(GenericFilterSet):
+class GreenPowerBrowseFilterSet(CustomFilterSet):
     installation = GreenPowerInstallationFilter()
     ownership = GreenPowerOwnershipFilter()
     project_size = GreenPowerProjectSizeFilter()
@@ -84,11 +116,12 @@ class GreenPowerBrowseFilterSet(GenericFilterSet):
     order = GreenPowerOrderingFilter()
 
 
-class MaterialBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
+class MaterialBrowseFilterSet(ExlcudeGalleryFilterMixin, CustomFilterSet):
     material_type = MaterialTypeFilter()
     course_level = CourseLevelFilter()
     from ..content.types.courses import Material
     created = CreatedFilter(Material)
+    order = OrderingFilter()
 
 
 class OutreachBrowseFilterSet(GenericFilterSet):
@@ -101,16 +134,18 @@ class PhotographBrowseFilterSet(GenericFilterSet):
     created = CreatedFilter(Photograph)
 
 
-class PresentationBrowseFilterSet(GenericFilterSet):
+class PresentationBrowseFilterSet(CustomFilterSet):
     conference_name = ConferenceNameFilter()
     from ..content.types.presentations import Presentation
     created = CreatedFilter(Presentation)
+    order = OrderingFilter()
 
 
-class PublicationBrowseFilterSet(GenericFilterSet):
+class PublicationBrowseFilterSet(CustomFilterSet):
     publication_type = PublicationTypeFilter()
     from ..content.types.publications import Publication
     created = CreatedFilter(Publication)
+    order = OrderingFilter()
 
 
 class ToolBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):

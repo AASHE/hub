@@ -13,8 +13,8 @@ def send_resource_approved_email(resource, request):
     _send_resource_email(resource=resource,
                          request=request,
                          subject=subject,
-                         text_template='content/resource_approved_email.txt',
-                         html_template='content/resource_approved_email.html',
+                         text_template='email-content/resource_approved_email.txt',
+                         html_template='email-content/resource_approved_email.html',
                          exception_text=exception_text)
 
 
@@ -25,8 +25,8 @@ def send_resource_declined_email(resource, request):
     _send_resource_email(resource=resource,
                          request=request,
                          subject=subject,
-                         text_template='content/resource_declined_email.txt',
-                         html_template='content/resource_declined_email.html',
+                         text_template='email-content/resource_declined_email.txt',
+                         html_template='email-content/resource_declined_email.html',
                          exception_text=exception_text)
 
 

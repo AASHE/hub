@@ -77,6 +77,7 @@
                         {% endif %}
                         {% include "browse/details/includes/meta.html" with label="Date Posted" value=object.published|date %}
                         {# }{% include "browse/details/includes/meta.html" with label="Last Updated" value=object.modified|date %} #}
+                        {% include "browse/details/includes/meta.html" with label="Submitted by" value=object.submitted_by.get_full_name %}
 
                         <div class="margin-bottom-10"></div>
 

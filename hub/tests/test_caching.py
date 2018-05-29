@@ -326,44 +326,11 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
         self.run_resources_test(
             "%s?topics=first_topic" % self.url_ct)
 
-    def test_search_view(self):
-        """
-            The content-type view should vary on auth and get params
-        """
-        cache = caches['default']
-        cache.clear()
-
-        self.client.logout()
-        self.run_resources_test(self.url_search)
-        self.run_resources_test(
-            "%s&topics=first_topic" % self.url_search)
-
-        self.client.login(**self.user_cred)
-        self.run_resources_test(self.url_search)
-        self.run_resources_test(
-            "%s&topics=first_topic" % self.url_search)
-
-        self.client.login(**self.member_cred)
-        self.run_resources_test(self.url_search)
-        self.run_resources_test(
-            "%s&topics=first_topic" % self.url_search)
-
-        # now test a really long key (> 250)
-        self.ct1.description = """
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-        rhoncus orci eget ex sodales porta. Sed tincidunt elit quam, at
-        tristique purus commodo viverra. Nullam fermentum et ipsum quis
-        egestas. Donec nec lorem ut ligula sodales volutpat. Duis tincidunt
-        justo elit, quis venenatis nisi vehicula nec.
-        """
-        self.ct1.save()
-        self.ct2.description = self.ct1.description
-        self.ct2.save()
-
-        long_search_url = '{}?search='.format(reverse('browse:browse'))
-        long_search_url = "%s%s" % (
-            long_search_url, urlquote(self.ct1.description))
-        self.run_resources_test(long_search_url)
+    # reinstate when rebuilding search tests
+    # def test_search_view(self):
+    #     """
+    #         The content-type view should vary on auth and get params
+    #     """
 
     def test_detail_view(self):
         """

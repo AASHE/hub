@@ -29,6 +29,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.video_form_valid_data = {
             # Document Form
             'document-title': 'My first Video',
+            'document-description': 'blah',
             'document-affirmation': True,
             'document-keywords': "tag 1, tag 2",
 
