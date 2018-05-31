@@ -33,7 +33,7 @@ django-s3direct<1.0
 django-sslify
 gunicorn
 ipython
-psycopg2
+psycopg2-binary
 python-binary-memcached==0.24.6
 raven==5.25
 redis==2.10.5
