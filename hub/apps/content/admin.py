@@ -228,7 +228,11 @@ admin.site.register(Publication, PublicationAdmin)
 
 class CaseStudyAdmin(SpecificContentTypeAdmin):
     list_display = (
-        '__unicode__', 'permission', 'created', 'consider_for_award')
+        '__unicode__',
+        'permission',
+        'created',
+        'consider_for_award',
+        'published')
     list_filter = ('status', 'permission', 'created', 'consider_for_award')
 
 admin.site.register(CaseStudy, CaseStudyAdmin)
