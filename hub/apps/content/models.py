@@ -178,7 +178,13 @@ class ContentType(TimeStampedModel):
         """
         from .tasks import thumbnail_image
         for image in self.images.all():
-            thumbnail_image.delay(image.pk, recreate=recreate)
+            logger.info('sending task for Image: {} {}', image.pk, image.caption)
+            thumbnail_image.apply_async(
+                args=[image.pk],
+                kwargs={
+                    'recreate': recreate,
+                    'verbose': settings.DEBUG},
+                countdown=15)
 
     def get_organization_list(self):
         return list(self.organizations.all())
@@ -239,7 +245,7 @@ class ContentType(TimeStampedModel):
             required_list.append('disciplines')
             return required_list
         """
-        return ['organizations']
+        return ['organizations', 'description']
 
     @classmethod
     def required_metadata(cls):
@@ -307,6 +313,12 @@ class Author(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+    def get_title(self):
+        return self.title
+
+    def get_organization(self):
+        return self.organization
 
 
 @python_2_unicode_compatible

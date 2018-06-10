@@ -19,6 +19,7 @@ def permission_flag(obj, user, icon_only=False):
     Renders a HTML field using a custom template for each possible type of
     fields we support, or Bootstrap supports.
     """
+
     if icon_only:
         label = '''<i
             class="icon-sm icon-warning fa fa-lock"
@@ -38,14 +39,17 @@ def permission_flag(obj, user, icon_only=False):
     if user.is_authenticated():
         is_member = get_aashe_member_flag(user)
         if (obj.permission == obj.PERMISSION_CHOICES.member and not is_member):
-            return mark_safe(label.format(label='Membership Required'))
+            return mark_safe(label.format(label='The information page about'
+                        ' this resource is accessible only to AASHE'
+                        ' members.'))
         else:
             return ''
 
     # We know the user is not logged in, so give a proper label, either
     # member or just login required.
     if obj.permission == obj.PERMISSION_CHOICES.member:
-        return mark_safe(label.format(label='Membership Required'))
+        return mark_safe(label.format(label='The information page about this'
+                        ' resource is accessible only to AASHE members.'))
 
     return mark_safe(label.format(label='Login Required'))
 
@@ -86,3 +90,39 @@ def render_form(form, field=None, type='input'):
         response += render_to_string(template_name, {'field': f})
 
     return mark_safe(response)
+
+@register.simple_tag
+def video_embed(link):
+    """
+        Prep vimeo and youtube links for embedded videos
+    """
+    if "vimeo" in link:
+        begin = "https://player.vimeo.com/video/"
+        end = link.rpartition('/')[2]
+    elif "youtu" in link:
+        begin = "https://www.youtube.com/embed/"
+        end = link.rpartition('/')[2]
+        if "watch" in link:
+            video_marker = "v="
+            start_position = link.find(video_marker)+len(video_marker)
+            end = link[start_position:start_position + 11]
+    else:
+        hidden_return = "<div style='display:none;'></div>"
+        return mark_safe(hidden_return)
+
+    full_return = "<div style='margin-bottom:13px;\
+        'class='embed-responsive embed-responsive-16by9'>\
+        <iframe src='" + begin + end + "'></iframe></div>"
+
+    return mark_safe(full_return)
+
+@register.simple_tag
+def mask_url(link):
+    """
+    Mask url of uploaded file, so it does not show that it is from S3
+    """
+    begin = "https://hub-media.aashe.org/uploads/"
+    if "amazonaws.com" in link:
+        end = link.rpartition('/')[2]
+        return begin + end
+    return link

@@ -3,7 +3,11 @@
 <div>
   <button class="btn btn-info" id="i-am-author" type="button">
     <i class="fa fa-plus-square"></i>
-    I am an Author
+    {% if content_type_label == "Conference Presentation" %}
+      I am a Presenter
+    {% else %}
+      I am an Author
+    {% endif %}
   </button>
   {% with author_formset as formset %}
     {% include 'submit/includes/errors.html' %}
@@ -20,7 +24,11 @@
 <div>
   <button class="btn-u btn-u-default inline-add" id="add-author" type="button">
     <i class="fa fa-plus-square"></i>
-    Add Author
+    {% if content_type_label == "Conference Presentation" %}
+      Add Presenter
+    {% else %}
+      Add Author
+    {% endif %}
   </button>
   <button
     class="btn-u btn-u-default inline-add"

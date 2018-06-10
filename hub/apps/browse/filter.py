@@ -17,7 +17,8 @@ from haystack.query import SearchQuerySet
 from hub.apps.content.types.green_power_projects import GreenPowerProject
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
-    AcademicDiscipline, CourseMaterialType, PublicationMaterialType, GreenPowerInstallation
+    AcademicDiscipline, CourseMaterialType, PublicationMaterialType, \
+    GreenPowerInstallation, ConferenceName, InstitutionalOffice
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 from .widgets import GalleryViewWidget
@@ -62,16 +63,14 @@ class SearchFilter(filters.CharFilter):
         if not value:
             return qs
 
-        # Remove any special characters
-        # http://lucene.apache.org/core/3_4_0/queryparsersyntax.html#Escaping%20Special%20Characters
-        esc_string = '+-&|!\(\){}[]^"~*?:\\\/'
-        translation_table = dict.fromkeys(map(ord, esc_string), None)
-        query = value.translate(translation_table)
-
-        query = Raw(query.lower())
-        result_ids = (SearchQuerySet().filter(content__contains=query)
+        result_ids = (SearchQuerySet().auto_query(value)
                                       .values_list('ct_pk', flat=True))
-        return qs.filter(pk__in=result_ids).distinct()
+
+        items = qs.filter(pk__in=result_ids).distinct()
+        setattr(items, '__search_ordering__', True)
+        setattr(items, '__result_ids__', result_ids)
+
+        return items
 
 
 class TopicFilter(filters.ChoiceFilter):
@@ -318,7 +317,7 @@ class PublishedFilter(filters.ChoiceFilter):
             )
         else:
             year_choices = [(i, i) for i in range(
-                min_year.published.year, max_year.published.year + 1)]
+                max_year.published.year + 1, min_year.published.year, -1)]
 
         return year_choices
 
@@ -346,8 +345,45 @@ class OrderingFilter(filters.ChoiceFilter):
         super(OrderingFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
+
+        if not value and hasattr(qs, '__search_ordering__'):
+            result_ids = qs.__result_ids__
+            clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
+            ordering = 'CASE %s END' % clauses
+            items = qs.filter(pk__in=result_ids).extra(
+                select={'ordering': ordering}, order_by=('ordering',))
+            return items
+        elif not value:
+            return qs.order_by('-published')
+        return qs.order_by(value)
+
+
+class GreenPowerOrderingFilter(filters.ChoiceFilter):
+    field_class = forms.fields.ChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                ('title', 'Title'),
+                ('content_type', 'Content Type'),
+                ('-published', 'Date Posted'),
+                ('-date_created', 'Date Created, Published, Presented'),
+                ('greenpowerproject', 'Project Size')
+            ),
+            'label': 'Sort by:',
+            'widget': forms.widgets.RadioSelect,
+        })
+        super(GreenPowerOrderingFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
         if not value:
             return qs.order_by('-published')
+        if value == 'greenpowerproject':
+            list_of_pks = []
+            for ob in qs:
+                list_of_pks.append(ob.pk)
+            return (GreenPowerProject.objects.filter(pk__in=list_of_pks)
+                            .order_by('-project_size'))
         return qs.order_by(value)
 
 
@@ -459,11 +495,11 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
 
         project_size_choices = (
-            ('<10', '< 10 kW'),
-            ('10-100', '10 - 100 kW'),
-            ('101-1000', '101 - 1000 kW'),
-            ('1001-5000', '1001 - 5000 kW',),
-            ('>5000', '> 5000 kW'),
+            ('lt10', '< 10 kW'),
+            ('10to100', '10 - 100 kW'),
+            ('101to1000', '101 - 1000 kW'),
+            ('1001to5000', '1001 - 5000 kW',),
+            ('gt5000', '> 5000 kW'),
         )
 
         kwargs.update({
@@ -482,25 +518,25 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
             return qs
         from ..content.types.green_power_projects import GreenPowerProject
 
-        sizes = [(pk, int(size)) for pk, size in GreenPowerProject.objects.values_list('pk', 'project_size')]
+        sizes = [(pk, size) for pk, size in GreenPowerProject.objects.filter(status='published').values_list('pk', 'project_size')]
 
         gpp_pks = []
         for value in values:
-            if value == '<10':
+            if value == 'lt10':
                 gpp_pks.extend([pk for pk, size in sizes if size < 10])
-            elif value == '10-100':
+            elif value == '10to100':
                 gpp_pks.extend([pk for pk, size in sizes if 10 <= size < 100])
-            elif value == '101-1000':
+            elif value == '101to1000':
                 gpp_pks.extend([pk for pk, size in sizes if 100 <= size < 1000])
-            elif value == '1001-5000':
+            elif value == '1001to5000':
                 gpp_pks.extend([pk for pk, size in sizes if 1000 <= size < 5000])
-            elif value == '>5000':
+            elif value == 'gt5000':
                 gpp_pks.extend([pk for pk, size in sizes if size >= 5000])
 
         return qs.filter(pk__in=gpp_pks)
 
 
-class OrgTypeFilter(filters.ChoiceFilter):
+class InstitutionTypeFilter(filters.ChoiceFilter):
     """
     Filter on the organization type from the ISS
     """
@@ -511,55 +547,35 @@ class OrgTypeFilter(filters.ChoiceFilter):
         self.carnegie_class_choices = [
             ("Associate", "Associate (2-year) Institution"),
             ("Baccalaureate", "Baccalaureate Institution"),
-            ("Doctorate", "Doctoral/Research Institution"),
             ("Master", "Master's Institution"),
-        ]
-
-        self.type_choices = [
-            ("Business", "Business"),
-            ("System Office", "College or University System"),
-            ("Government Agency", "Government Agency"),
-            ("K-12 School", "K-12 School"),
-            ("Nonprofit/NGO", "Non-profit/NGO"),
+            ("Doctorate", "Doctoral/Research Institution"),
         ]
 
         kwargs.update({
-            'choices': self.carnegie_class_choices + self.type_choices,
-            'label': 'Organization Type',
+            'choices': self.carnegie_class_choices,
+            'label': 'Institution Type',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
-        super(OrgTypeFilter, self).__init__(*args, **kwargs)
+        super(InstitutionTypeFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
         if value:
             cc_values = [x[0] for x in self.carnegie_class_choices]
-            t_values = [x[0] for x in self.type_choices]
             selected_cc_values = []
-            selected_t_values = []
             for v in value:
                 # filter according to either carnegie or type
                 try:
                     carnegie_index = cc_values.index(v)
                     selected_cc_values.append(v)
                 except ValueError:
-                    try:
-                        type_index = t_values.index(v)
-                        selected_t_values.append(v)
-                    except ValueError:
-                        pass
+                    pass
 
             cc_kwargs = {
                 'organizations__carnegie_class__in': selected_cc_values}
-            t_kwargs = {'organizations__org_type__in': selected_t_values}
 
-            if selected_cc_values and selected_t_values:
-                return qs.filter(Q(**cc_kwargs) | Q(**t_kwargs))
-            elif selected_cc_values:
-                return qs.filter(**cc_kwargs)
-            else:
-                return qs.filter(**t_kwargs)
-
+            return qs.filter(**cc_kwargs)
         return qs
+
 
 
 class MaterialTypeFilter(filters.ChoiceFilter):
@@ -713,3 +729,66 @@ class DisciplineFilter(filters.ChoiceFilter):
         if not value:
             return qs
         return qs.filter(disciplines__in=value)
+
+class ConferenceNameFilter(filters.ChoiceFilter):
+    """
+    Conference Presentation specific filter for conference name
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        conference_name_choices = cache.get('conference_name_choices')
+        if not conference_name_choices:
+            conference_name_choices = ConferenceName.objects.values_list(
+                'pk', 'name')
+            cache.set(
+                'conference_name_choices',
+                conference_name_choices,
+                settings.CACHE_TTL_SHORT)
+
+        kwargs.update({
+            'choices': conference_name_choices,
+            'label': 'Conference Name',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(ConferenceNameFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        """
+        Filters always work against the base `ContentType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not value:
+            return qs
+        from ..content.types.presentations import Presentation
+        return qs.filter(pk__in=Presentation.objects.filter(
+            conf_name__in=value).values_list('pk', flat=True))
+
+class InstitutionalOfficeFilter(filters.ChoiceFilter):
+    """
+    Institutional Office Filter
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        institutional_office_choices = cache.get(
+            'institutional_offices_filter_choices')
+        if not institutional_office_choices:
+            institutional_office_choices = InstitutionalOffice.objects.values_list(
+                'pk', 'name')
+            cache.set(
+                'institutional_offices_filter_choices',
+                institutional_office_choices,
+                settings.CACHE_TTL_SHORT)
+
+        kwargs.update({
+            'choices': institutional_office_choices,
+            'label': 'Office or Department',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(InstitutionalOfficeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(institutions__in=value)

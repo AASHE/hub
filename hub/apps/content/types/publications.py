@@ -38,9 +38,10 @@ class Publication(ContentType):
             'date_created': 'Publication Release Date',
         }
 
-    @classmethod
-    def required_field_overrides(cls):
-        return []
+    # if required fields are different than default, append to list here
+    # @classmethod
+    # def required_field_overrides(cls):
+    #     return []
 
     @classmethod
     def get_custom_filterset(cls):

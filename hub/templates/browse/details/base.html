@@ -1,6 +1,7 @@
 {% extends "browse/base.html" %}
 
 {% load markup_tags %}
+{% load browse_tags %}
 {% load humanize %}
 {% load block_content %}
 {% load static %}
@@ -26,6 +27,7 @@
     {{ block.super }}
     <script type="text/javascript" src="{% static 'aashe_theme/unify/plugins/fancybox/source/jquery.fancybox.pack.js' %}"></script>
     <script type="text/javascript" src="{% static 'aashe_theme/unify/js/plugins/fancy-box.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/details.js'%}"></script>
     <script type="text/javascript">
     jQuery(document).ready(function() {
         FancyBox.initFancybox();
@@ -75,6 +77,7 @@
                         {% endif %}
                         {% include "browse/details/includes/meta.html" with label="Date Posted" value=object.published|date %}
                         {# }{% include "browse/details/includes/meta.html" with label="Last Updated" value=object.modified|date %} #}
+                        {% include "browse/details/includes/meta.html" with label="Submitted by" value=object.submitted_by.get_full_name %}
 
                         <div class="margin-bottom-10"></div>
 
@@ -96,6 +99,14 @@
                         </div>
                         {% endif %}
 
+                        {% if object.institutions.all %}
+                        <div><strong>Office or Department{{ object.institutions.all|length|pluralize }}:</strong>
+                            {% for t in object.institutions.all %}
+                                <a href="{% url "browse:browse" %}?search=&institutional_office={{ t.pk }}">{{ t.name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
                         <div>
                             <strong>Tags:</strong>
                             {% for kw in object.keywords.all %}
@@ -108,6 +119,24 @@
 
                     </div>
                 </div>
+
+                {% if object.content_type_label == "Videos & Webinars"%}
+                  <div class="margin-bottom-30"></div>
+                  <div class="panel panel-profile">
+                      <div class="panel-heading overflow-h">
+                          <h2 class="panel-title heading-sm pull-left">Video Content</h2>
+                      </div>
+                      {% if object.websites.all %}
+                        <div class="panel-body" id="embedded-videos">
+                          {% for i in object.websites.all %}
+                            {% with i.url as link %}
+                              {% video_embed link %}
+                            {% endwith %}
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                  </div>
+                {% endif %}
 
                 {% if object.description %}
                 <div class="margin-bottom-30"></div>
@@ -207,9 +236,10 @@
                             {% for i in object.files.all %}
                             <li>
                                 <i class="rounded-x tw icon icon-doc"></i>
-                                <strong>File:</strong> <a href="{{ i.item }}"> {{ i.label|default:i.get_filename }}</a>
+                                <strong>File:</strong> <a href="{% with i.item as link%}{% mask_url link %}{% endwith %}"> {{ i.label|default:i.get_filename }}</a>
                             </li>
                             {% endfor %}
+
                         </ul>
                     </div>
                 {% else %}

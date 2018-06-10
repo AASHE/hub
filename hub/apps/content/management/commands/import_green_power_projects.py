@@ -16,7 +16,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = "One-time import of Green Power Project data; Use the import_gpp settings"
+    help = "One-time import of Green Power Project data; Use the import_content settings"
 
     def handle(self, *args, **options):
 

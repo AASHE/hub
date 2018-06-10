@@ -1,4 +1,4 @@
-import tempfile
+import os
 from datetime import datetime
 
 import requests
@@ -167,6 +167,44 @@ def create_file_from_url(parent, file_url, image=False):
         image.image.save(file_name, files.File(lf))
 
 
+def create_file_from_path(parent, files_dir, path, upload=True):
+
+    file_name = 'uploads/presentations_{}'.format(path)
+    if len(file_name) > 100:
+        n, e = os.path.splitext(file_name)
+        file_name = '{}__{}'.format(n[:100 - (len(e) + len('__'))], e)
+
+    if upload:
+
+        s3_conn = S3Connection(
+            settings.AWS_ACCESS_KEY_ID,
+            settings.AWS_SECRET_ACCESS_KEY)
+        # TODO hard coding bucket name because stage can't access aashe-hub-prod
+        s3_bucket = s3_conn.get_bucket('aashe-hub-production')
+
+        s3_key = s3_bucket.get_key(file_name)
+        if s3_key:
+            # TODO check if file is same, or resolve to different name
+            print 'File name already exists in bucket {}'.format(file_name)
+        else:
+            try:
+                file = open(os.path.join(files_dir, path), 'rb')
+            except IOError:
+                print 'File not found: {}'.format(path)
+                return
+            s3_key = s3_bucket.new_key(file_name)
+            print 'sending {} to S3 bucket'.format(file_name)
+            s3_key.set_contents_from_file(file)
+            s3_key.set_acl('public-read')
+            file.close()
+
+    new_file = File(ct=parent, label=file_name, affirmation=True)
+    # TODO calculate URL based on settings
+    new_file.item = 'http://hub-media.aashe.org/{}'.format(file_name)
+    new_file.save()
+
+
+
 def get_base_kwargs(
         columns, column_mappings, row,
         default_permission=ContentType.PERMISSION_CHOICES.member,
@@ -199,10 +237,9 @@ def get_base_kwargs(
     if desc:
         desc = desc.replace("\n", "\n\n")
     if not submitter:
-        submitter = User.objects.get(email='monika.urbanski@aashe.org')
+        submitter = User.objects.get(email='jade@aashe.org')
 
     kwargs = {
-        'submitted_by': User.objects.get(email='monika.urbanski@aashe.org'),
         'status': ContentType.STATUS_CHOICES.published,
         'permission': default_permission,
         'published': datetime.now().date(),

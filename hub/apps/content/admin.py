@@ -92,7 +92,10 @@ class BaseContentTypeAdmin(ExportMixin, admin.ModelAdmin):
                 utils.send_resource_approved_email(obj, request)
             elif obj.status == obj.STATUS_CHOICES.declined:
                 utils.send_resource_declined_email(obj, request)
-        obj.create_thumbnails()
+
+    def save_related(self, request, form, formsets, change):
+        super(BaseContentTypeAdmin, self).save_related(request, form, formsets, change)
+        form.instance.create_thumbnails()
 
 
 class SpecificContentTypeAdmin(BaseContentTypeAdmin):
@@ -100,10 +103,15 @@ class SpecificContentTypeAdmin(BaseContentTypeAdmin):
     list_filter = (
         'status', 'permission', 'created', 'published', 'disciplines')
     search_fields = ('title', 'description', 'keywords',)
-    readonly_fields = ('published',)
+    readonly_fields = ('published', 'submitter_name', 'submitter_email')
     inlines = (AuthorInline, WebsiteInline, FileInline, ImageInline)
-    exclude = ('content_type',)
-    raw_id_fields = ('submitted_by',)
+    exclude = ('content_type', 'submitted_by')
+
+    def submitter_email(self, obj):
+        return obj.submitted_by.email
+
+    def submitter_name(self, obj):
+        return obj.submitted_by.get_full_name()
 
     def _update_application_index(self):
         # from django.core import management
@@ -220,7 +228,11 @@ admin.site.register(Publication, PublicationAdmin)
 
 class CaseStudyAdmin(SpecificContentTypeAdmin):
     list_display = (
-        '__unicode__', 'permission', 'created', 'consider_for_award')
+        '__unicode__',
+        'permission',
+        'created',
+        'consider_for_award',
+        'published')
     list_filter = ('status', 'permission', 'created', 'consider_for_award')
 
 admin.site.register(CaseStudy, CaseStudyAdmin)

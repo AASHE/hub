@@ -232,6 +232,7 @@ HAYSTACK_CONNECTIONS = {
         'TIMEOUT': 30
     },
 }
+HAYSTACK_DEFAULT_OPERATOR = 'AND'
 
 # Debug Toolbar
 DEBUG_TOOLBAR = os.environ.get('DEBUG_TOOLBAR', False)

@@ -1,7 +1,7 @@
 # Tip:
 # PYTHONIOENCODING=UTF-8 ./manage.py export_casestudy_awards > casestudy_awards.tsv
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from hub.apps.content.types.casestudies import CaseStudy
 
@@ -10,12 +10,12 @@ import datetime
 
 class Command(BaseCommand):
     help = 'Export for awards'
-    
+
     def handle(self, *args, **options):
 
         # By date created: June 20, 2015 - June 11, 2016
-        START_DATE = datetime.date(year=2015, month=6, day=20)
-        END_DATE = datetime.date(year=2016, month=6, day=11)
+        START_DATE = datetime.date(year=2017, month=5, day=23)
+        END_DATE = datetime.date(year=2018, month=5, day=19)
 
         pub_columns = [
             "Submission Title",
@@ -31,24 +31,27 @@ class Command(BaseCommand):
             "First Author Org FTE",
             "First Author Org Type",
             "Student Leadership Award",
-            "Date Created",
-        ] 
+            "Date Submitted",
+            "Sustainability Topic #1",
+            "Sustainability Topic #2",
+            "Sustainability Topic #3"
+        ]
 
         print '\t'.join(pub_columns)
 
-        cs_qs = CaseStudy.objects.filter(
-            # date_created__gte=START_DATE,
-            date_created__lte=END_DATE,
+        casestudies = CaseStudy.objects.filter(
+            date_submitted__gte=START_DATE,
+            date_submitted__lte=END_DATE,
             status=CaseStudy.STATUS_CHOICES.published)
 
-        for cs in cs_qs.order_by('date_created'):
+        for casestudy in casestudies.order_by('date_submitted'):
             row = []
-            row.append(cs.title)
-            row.append("https://hub.aashe.org%s" % cs.get_absolute_url())
-            row.append(", ".join([unicode(o) for o in cs.organizations.all()]))
-            row.append(cs.submitted_by.email)
+            row.append(casestudy.title)
+            row.append("https://hub.aashe.org%s" % casestudy.get_absolute_url())  # noqa
+            row.append(", ".join([unicode(o) for o in casestudy.organizations.all()]))  # noqa
+            row.append(casestudy.submitted_by.email)
             try:
-                author = cs.authors.all()[0]
+                author = casestudy.authors.all()[0]
                 row.append(author.name)
                 row.append(author.title)
                 row.append(author.email)
@@ -66,8 +69,12 @@ class Command(BaseCommand):
                 row.append('')
                 row.append('')
                 row.append('')
-            row.append(cs.consider_for_award)
-            row.append(cs.date_created)
-            
+            row.append(casestudy.consider_for_award)
+            row.append(casestudy.date_submitted)
+            for i in range(3):
+                try:
+                    row.append(casestudy.topics.all()[i])
+                except IndexError:
+                    row.append('')
+
             print '\t'.join([unicode(x) if x else '' for x in row])
-        

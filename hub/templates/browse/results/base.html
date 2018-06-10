@@ -40,6 +40,7 @@
 {% block javascript %}
     {{ block.super }}
     <script src="{% static "js/browse-results.js" %}"></script>
+    <script src="{% static 'js/toolkit.js' %}"></script>
     {% if content_type %}
         <script type="text/javascript" src="{% static  'aashe_theme/unify/plugins/counter/jquery.counterup.min.js' %}"></script>
         <script type="text/javascript" src="{% static  'aashe_theme/unify/plugins/counter/waypoints.min.js' %}"></script>
@@ -78,6 +79,7 @@
   {% cache CACHE_TTL_LONG resource_list_body cache_key %}
     <!-- begin cache {% now "c" %} -->
     <!-- key {{ cache_key }} -->
+    <!-- TTL {{ CACHE_TTL_LONG }} -->
     <div class="container s-results margin-bottom-50">
         <div class="row">
             <div class="col-md-3 hidden-xs related-search">
@@ -105,8 +107,8 @@
                         <div class="no-results">No resources match your current filter settings.</div>
                     {% endif %}
                 {% endblock %}
+                {% include "browse/results/includes/pagination.html" %}
             </div>
-            {% include "browse/results/includes/pagination.html" %}
         </div>
     </div>
     <!-- end cache -->
