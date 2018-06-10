@@ -2,6 +2,7 @@ Django>=1.9,<1.10
 awesome-slugify==1.6.5
 celery==3.1.23
 django-bootstrap-pagination
+django-extensions==1.6.1
 django-filter==0.12.0
 django-flat-theme==1.1.3
 django-haystack==2.4.1

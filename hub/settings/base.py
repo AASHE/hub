@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django_admin_blocks',
+    'django_extensions',
     'django_markup',
     'django_membersuite_auth',
     'django_tables2',
