@@ -43,7 +43,7 @@ newrelic
 
 # Non-pypi repos
 https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
-https://github.com/AASHE/iss/archive/v2.7.1.zip
+https://github.com/AASHE/iss/archive/v2.8.zip
 
 https://github.com/AASHE/django-block-content/archive/v0.0.3.zip
 https://github.com/jamstooks/django-cache-url/archive/master.zip
