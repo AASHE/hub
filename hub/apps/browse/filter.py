@@ -561,6 +561,7 @@ class InstitutionTypeFilter(filters.ChoiceFilter):
     def filter(self, qs, value):
         if value:
             cc_values = [x[0] for x in self.carnegie_class_choices]
+            print cc_values
             selected_cc_values = []
             for v in value:
                 # filter according to either carnegie or type
@@ -569,11 +570,10 @@ class InstitutionTypeFilter(filters.ChoiceFilter):
                     selected_cc_values.append(v)
                 except ValueError:
                     pass
-
-            cc_kwargs = {
-                'organizations__carnegie_class__in': selected_cc_values}
-
-            return qs.filter(**cc_kwargs)
+            qs_of_orgs = (Organization.objects
+                .filter(institution_type__in=selected_cc_values))
+            filtered_list = qs.filter(organizations__in=qs_of_orgs)
+            return filtered_list
         return qs
 
 
