@@ -569,11 +569,10 @@ class InstitutionTypeFilter(filters.ChoiceFilter):
                     selected_cc_values.append(v)
                 except ValueError:
                     pass
-
-            cc_kwargs = {
-                'organizations__carnegie_class__in': selected_cc_values}
-
-            return qs.filter(**cc_kwargs)
+            qs_of_orgs = (Organization.objects
+                .filter(institution_type__in=selected_cc_values))
+            filtered_qs = qs.filter(organizations__in=qs_of_orgs)
+            return filtered_qs
         return qs
 
 
