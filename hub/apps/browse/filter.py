@@ -572,8 +572,8 @@ class InstitutionTypeFilter(filters.ChoiceFilter):
                     pass
             qs_of_orgs = (Organization.objects
                 .filter(institution_type__in=selected_cc_values))
-            filtered_list = qs.filter(organizations__in=qs_of_orgs)
-            return filtered_list
+            filtered_qs = qs.filter(organizations__in=qs_of_orgs)
+            return filtered_qs
         return qs
 
 
