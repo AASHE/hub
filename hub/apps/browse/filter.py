@@ -548,7 +548,7 @@ class InstitutionTypeFilter(filters.ChoiceFilter):
             ("Associate", "Associate (2-year) Institution"),
             ("Baccalaureate", "Baccalaureate Institution"),
             ("Master", "Master's Institution"),
-            ("Doctorate", "Doctoral/Research Institution"),
+            ("Doctoral/Research", "Doctoral/Research Institution"),
         ]
 
         kwargs.update({
