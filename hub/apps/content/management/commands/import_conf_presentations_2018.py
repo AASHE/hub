@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        with open("{}/{}".format(os.path.dirname(__file__), 'conference_presentations_2018.csv'), 'rb') as csvfile:
+        with open("{}/{}".format(os.path.dirname(__file__), 'AASHE_2018_Presentations.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
 
             submitter_monika = User.objects.get(
