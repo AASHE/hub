@@ -125,7 +125,7 @@ class Command(BaseCommand):
                 #
                 for idx in (1, 2, 3, 4):
                     file_url = row['File{}_URL'.format(idx)]
-                    if file_name:
+                    if file_url:
                         create_file_from_url(
                             parent=presentation,
                             file_url=file_url,
