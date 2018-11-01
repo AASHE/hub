@@ -141,12 +141,11 @@ def create_file_from_url(parent, file_url, image=False):
     if len(file_name) > 100:
         file_name = file_name[-100:-1]
 
-
     s3_conn = S3Connection(
         settings.AWS_ACCESS_KEY_ID,
         settings.AWS_SECRET_ACCESS_KEY)
     # TODO hard coding bucket name because stage can't access aashe-hub-prod
-    s3_bucket = s3_conn.get_bucket('aashe-hub-production')
+    s3_bucket = s3_conn.get_bucket('aashe-hub-dev')
 
     s3_key = s3_bucket.get_key(file_name)
     if s3_key:
@@ -160,7 +159,8 @@ def create_file_from_url(parent, file_url, image=False):
     if not image:
         new_file = File(ct=parent, label=file_name, affirmation=True)
         # TODO calculate URL based on settings
-        new_file.item = 'http://hub-media.aashe.org/uploads/{}'.format(file_name)
+        new_file.item = 'http://hub-media.aashe.org/uploads/{}'.format(
+            file_name)
         new_file.save()
     else:
         image = Image(ct=parent, affirmation=True)
@@ -202,7 +202,6 @@ def create_file_from_path(parent, files_dir, path, upload=True):
     # TODO calculate URL based on settings
     new_file.item = 'http://hub-media.aashe.org/{}'.format(file_name)
     new_file.save()
-
 
 
 def get_base_kwargs(
