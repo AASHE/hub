@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 # Academic Disciplines
                 #
                 for idx in (1, 2):
-                    disc = row['AcademicDiscipline{}'.format(idx)]
+                    disc = row['Academic_Discipline_{}'.format(idx)]
                     if disc:
                         academic_discipline = AcademicDiscipline.objects.get(
                             name=disc)
