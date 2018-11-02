@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        FILES_PATH = '~/src/hub/presentations'
+        FILES_PATH = '/Users/tylor/src/hub/presentations'
 
         with open("{}/{}".format(os.path.dirname(__file__), 'AASHE_2018_Presentations.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)

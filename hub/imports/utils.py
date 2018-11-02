@@ -190,7 +190,8 @@ def create_file_from_path(parent, files_dir, path, upload=True):
             try:
                 file = open(os.path.join(files_dir, path), 'rb')
             except IOError:
-                print 'File not found: {}'.format(path)
+                print 'File not found: {}'.format(
+                    os.path.join(files_dir, path))
                 return
             s3_key = s3_bucket.new_key(file_name)
             print 'sending {} to S3 bucket'.format(file_name)
