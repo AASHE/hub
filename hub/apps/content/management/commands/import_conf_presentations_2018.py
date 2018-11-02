@@ -17,9 +17,9 @@ User = get_user_model()
 class Command(BaseCommand):
     help = "One-time import of Conference Presentation data for 2018"
 
-    FILES_PATH = '/Users/tylor/src/hub/presentations'
-
     def handle(self, *args, **options):
+
+        FILES_PATH = '~/src/hub/presentations'
 
         with open("{}/{}".format(os.path.dirname(__file__), 'AASHE_2018_Presentations.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
