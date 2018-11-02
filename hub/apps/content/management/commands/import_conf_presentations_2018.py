@@ -133,5 +133,5 @@ class Command(BaseCommand):
                             parent=presentation,
                             files_dir=FILES_PATH,
                             path=file_name,
-                            upload=True
+                            upload=False
                         )

@@ -169,10 +169,12 @@ def create_file_from_url(parent, file_url, image=False):
 
 def create_file_from_path(parent, files_dir, path, upload=True):
 
-    file_name = 'uploads/presentations_{}'.format(path)
+    file_name = 'uploads/{}'.format(path)
     if len(file_name) > 100:
         n, e = os.path.splitext(file_name)
-        file_name = '{}__{}'.format(n[:100 - (len(e) + len('__'))], e)
+        file_label = '{}__{}'.format(n[:100 - (len(e) + len('__'))], e)
+    else:
+        file_label = file_name
 
     if upload:
 
@@ -199,7 +201,7 @@ def create_file_from_path(parent, files_dir, path, upload=True):
             s3_key.set_acl('public-read')
             file.close()
 
-    new_file = File(ct=parent, label=file_name, affirmation=True)
+    new_file = File(ct=parent, label=file_label, affirmation=True)
     # TODO calculate URL based on settings
     new_file.item = 'http://hub-media.aashe.org/{}'.format(file_name)
     new_file.save()
