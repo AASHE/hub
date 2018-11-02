@@ -9,13 +9,15 @@ from hub.apps.content.models import Author
 from hub.apps.content.types.presentations import Presentation
 from hub.apps.metadata.models import Organization, SustainabilityTopic, ConferenceName, PresentationType, \
     AcademicDiscipline, InstitutionalOffice
-from hub.imports.utils import create_file_from_url
+from hub.imports.utils import create_file_from_path
 
 User = get_user_model()
 
 
 class Command(BaseCommand):
     help = "One-time import of Conference Presentation data for 2018"
+
+    FILES_PATH = '~/src/hub/presentations'
 
     def handle(self, *args, **options):
 
@@ -126,8 +128,10 @@ class Command(BaseCommand):
                 for idx in (1, 2, 3, 4):
                     file_url = row['File{}_URL'.format(idx)]
                     if file_url:
-                        create_file_from_url(
+                        file_name = file_url.split('/')[-1]
+                        create_file_from_path(
                             parent=presentation,
-                            file_url=file_url,
-                            image=False
+                            files_dir=FILES_PATH,
+                            path=file_name,
+                            upload=True
                         )
