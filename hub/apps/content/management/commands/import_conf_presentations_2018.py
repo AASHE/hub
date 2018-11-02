@@ -17,7 +17,7 @@ User = get_user_model()
 class Command(BaseCommand):
     help = "One-time import of Conference Presentation data for 2018"
 
-    FILES_PATH = '~/src/hub/presentations'
+    FILES_PATH = '/Users/tylor/src/hub/presentations'
 
     def handle(self, *args, **options):
 
