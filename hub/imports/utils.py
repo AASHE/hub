@@ -141,7 +141,6 @@ def create_file_from_url(parent, file_url, image=False):
     if len(file_name) > 100:
         file_name = file_name[-100:-1]
 
-
     s3_conn = S3Connection(
         settings.AWS_ACCESS_KEY_ID,
         settings.AWS_SECRET_ACCESS_KEY)
@@ -160,7 +159,8 @@ def create_file_from_url(parent, file_url, image=False):
     if not image:
         new_file = File(ct=parent, label=file_name, affirmation=True)
         # TODO calculate URL based on settings
-        new_file.item = 'http://hub-media.aashe.org/uploads/{}'.format(file_name)
+        new_file.item = 'http://hub-media.aashe.org/uploads/{}'.format(
+            file_name)
         new_file.save()
     else:
         image = Image(ct=parent, affirmation=True)
@@ -169,10 +169,12 @@ def create_file_from_url(parent, file_url, image=False):
 
 def create_file_from_path(parent, files_dir, path, upload=True):
 
-    file_name = 'uploads/presentations_{}'.format(path)
-    if len(file_name) > 100:
-        n, e = os.path.splitext(file_name)
-        file_name = '{}__{}'.format(n[:100 - (len(e) + len('__'))], e)
+    file_name = 'uploads/{}'.format(path)
+    if len(path) > 100:
+        n, e = os.path.splitext(path)
+        file_label = '{}__{}'.format(n[:100 - (len(e) + len('__'))], e)
+    else:
+        file_label = path
 
     if upload:
 
@@ -190,7 +192,8 @@ def create_file_from_path(parent, files_dir, path, upload=True):
             try:
                 file = open(os.path.join(files_dir, path), 'rb')
             except IOError:
-                print 'File not found: {}'.format(path)
+                print 'File not found: {}'.format(
+                    os.path.join(files_dir, path))
                 return
             s3_key = s3_bucket.new_key(file_name)
             print 'sending {} to S3 bucket'.format(file_name)
@@ -198,11 +201,10 @@ def create_file_from_path(parent, files_dir, path, upload=True):
             s3_key.set_acl('public-read')
             file.close()
 
-    new_file = File(ct=parent, label=file_name, affirmation=True)
+    new_file = File(ct=parent, label=file_label, affirmation=True)
     # TODO calculate URL based on settings
     new_file.item = 'http://hub-media.aashe.org/{}'.format(file_name)
     new_file.save()
-
 
 
 def get_base_kwargs(
