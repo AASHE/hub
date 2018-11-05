@@ -170,11 +170,11 @@ def create_file_from_url(parent, file_url, image=False):
 def create_file_from_path(parent, files_dir, path, upload=True):
 
     file_name = 'uploads/{}'.format(path)
-    if len(file_name) > 100:
-        n, e = os.path.splitext(file_name)
+    if len(path) > 100:
+        n, e = os.path.splitext(path)
         file_label = '{}__{}'.format(n[:100 - (len(e) + len('__'))], e)
     else:
-        file_label = file_name
+        file_label = path
 
     if upload:
 
