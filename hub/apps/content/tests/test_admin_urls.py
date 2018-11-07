@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 from django.test.client import RequestFactory
 
-from datetime import datetime
+from django.utils import timezone
 
 from hub.apps.content.models import (
     AcademicProgram,
@@ -62,12 +62,12 @@ class AdminURLTestCase(TestCase):
         self.generic_properties = {
             'status': 'new',
             'permission': 'open',
-            'published': datetime.now(),
+            'published': timezone.now(),
             'submitted_by': self.user,
             'title': "test resource",
             'slug': "test_resource",
             'description': "testing this",
-            'date_created': datetime.now()
+            'date_created': timezone.now()
         }
 
         self.ct_specific_fields = {
@@ -101,8 +101,11 @@ class AdminURLTestCase(TestCase):
         # are called upon success
         user = User.objects.create_user('test_user', email='test@aashe.org')
         # Set that user as submitted_by for our test content piece
-        content = Video.objects.create(submitted_by=user)
+        content = Video.objects.create(submitted_by=user, description='blah')
+        content.organizations.add(self.org)
         # Verify this was all set up with the correct attribute values
+        self.assertEqual(Video.objects.count(), 1)
+
         self.assertEqual(content.status, 'new')
         self.assertEqual(content.submitted_by.email, 'test@aashe.org')
 
@@ -116,11 +119,11 @@ class AdminURLTestCase(TestCase):
         content_admin = AllContentTypesAdmin(ContentType, AdminSite())
 
         # Test Publish Action (need to retrieve queryset to operate on first)
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertEqual(queryset[0].status, 'new')
         self.assertTrue(queryset)
         content_admin.publish(request, queryset)
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertTrue(queryset)
         self.assertEqual(queryset[0].status, 'published')
         self.assertEqual(1, len(mail.outbox))
@@ -129,13 +132,13 @@ class AdminURLTestCase(TestCase):
         # Test Unpublish Action
         # (status is already 'published' and queryset loaded)
         content_admin.unpublish(request, queryset)
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertTrue(queryset)
         self.assertEqual(queryset[0].status, 'new')
 
         # Test Decline Action (status already 'new' and queryset loaded)
         content_admin.decline(request, queryset)
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertTrue(queryset)
         self.assertEqual(queryset[0].status, 'declined')
         self.assertEqual(2, len(mail.outbox))
@@ -145,19 +148,19 @@ class AdminURLTestCase(TestCase):
         # other than 'new'
 
         # declined > published
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertEqual(queryset[0].status, 'declined')
         content_admin.publish(request, queryset)
 
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertEqual(queryset[0].status, 'published')
         self.assertEqual(2, len(mail.outbox))  # no additional emails
 
         # published > declined
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertEqual(queryset[0].status, 'published')
         content_admin.decline(request, queryset)
 
-        queryset = Video.objects.filter(pk=1)
+        queryset = Video.objects.all()
         self.assertEqual(queryset[0].status, 'declined')
         self.assertEqual(2, len(mail.outbox))  # no additional emails
