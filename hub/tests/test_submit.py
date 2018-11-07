@@ -19,6 +19,7 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
     Tests around a content type submission. In this case a Video, since it
     has the least complex fieldset.
     """
+
     def setUp(self):
         self.video_form_url = reverse('submit:form', kwargs={'ct': 'video'})
         self.material_form_url = reverse(
@@ -421,6 +422,8 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
 
             'author-TOTAL_FORMS': '1'
         }
+
+        print "http://testserver%stest/sold.jpg" % settings.STATIC_URL
 
         self.client.login(**self.user_cred)
         response = self._post_casestudy(additional_data)
