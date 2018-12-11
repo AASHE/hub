@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 
 from ..apps.access.models import TemporaryUser
-from ..apps.browse.templatetags.browse_tags import permission_flag
+from ..apps.browse.templatetags.browse_tags import permission_flag, mask_url
 from ..apps.content.models import ContentType
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.metadata.models import SustainabilityTopic
@@ -17,6 +17,7 @@ class ContentTypePermissionTestCase(WithUserSuperuserTestCase):
     """
     Test permission handling of content type detail pages.
     """
+
     def setUp(self):
         """
         Create a non-published, member only academic program. We don't set a
@@ -222,6 +223,7 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
       - except certain 'PUBLIC_CONTENT_TYPES' content types
         which results are  open to unauthed users as well
     """
+
     def setUp(self):
         # Setup some content
         self.sus = SustainabilityTopic.objects.create(
@@ -312,3 +314,25 @@ class BrowsePermissionTestCase(WithUserSuperuserTestCase):
         self.client.login(**self.member_cred)
         response = self.client.get(self.url_search)
         self.assertEqual(response.status_code, 200)
+
+
+class MaskUrlTagTestCase(WithUserSuperuserTestCase):
+    """
+        Test that the mask_url template tag is mutating strings as we wish
+    """
+
+    def test_good_url_is_not_mutated(self):
+        good_url = "https://www.google.com"
+        not_mutated = mask_url(good_url)
+        self.assertEqual(good_url, not_mutated)
+
+    def test_aws_url_is_mutated(self):
+        aws_url = "https://s3-us-west-2.amazonaws.com/a/b/end"
+        mutated = mask_url(aws_url)
+        self.assertEqual("https://hub-media.aashe.org/uploads/end", mutated)
+
+    def test_plus_is_replaced(self):
+        plus_url = "https://s3-us-west-2.amazonaws.com/a/b/end+end"
+        mutated = mask_url(plus_url)
+        self.assertEqual(
+            "https://hub-media.aashe.org/uploads/end%2Bend", mutated)
