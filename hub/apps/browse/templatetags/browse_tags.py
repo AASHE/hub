@@ -40,8 +40,8 @@ def permission_flag(obj, user, icon_only=False):
         is_member = get_aashe_member_flag(user)
         if (obj.permission == obj.PERMISSION_CHOICES.member and not is_member):
             return mark_safe(label.format(label='The information page about'
-                        ' this resource is accessible only to AASHE'
-                        ' members.'))
+                                          ' this resource is accessible only to AASHE'
+                                          ' members.'))
         else:
             return ''
 
@@ -49,7 +49,7 @@ def permission_flag(obj, user, icon_only=False):
     # member or just login required.
     if obj.permission == obj.PERMISSION_CHOICES.member:
         return mark_safe(label.format(label='The information page about this'
-                        ' resource is accessible only to AASHE members.'))
+                                      ' resource is accessible only to AASHE members.'))
 
     return mark_safe(label.format(label='Login Required'))
 
@@ -91,6 +91,7 @@ def render_form(form, field=None, type='input'):
 
     return mark_safe(response)
 
+
 @register.simple_tag
 def video_embed(link):
     """
@@ -116,6 +117,7 @@ def video_embed(link):
 
     return mark_safe(full_return)
 
+
 @register.simple_tag
 def mask_url(link):
     """
@@ -124,5 +126,5 @@ def mask_url(link):
     begin = "https://hub-media.aashe.org/uploads/"
     if "amazonaws.com" in link:
         end = link.rpartition('/')[2]
-        return begin + end
-    return link
+        return (begin + end).replace("+", "%2B")
+    return link.replace("+", "%2B")
