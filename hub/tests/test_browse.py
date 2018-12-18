@@ -334,10 +334,11 @@ class MaskUrlTagTestCase(WithUserSuperuserTestCase):
     def test_plus_is_not_replaced(self):
         plus_url = "https://s3-us-west-2.amazonaws.com/a/b/end+end"
         mutated = mask_url(plus_url)
-        self.assertEqual(plus_url, mutated)
+        self.assertEqual(
+            "https://hub-media.aashe.org/uploads/end+end", mutated)
 
     def test_plus_is_replaced(self):
         plus_url = "https://s3-us-west-2.amazonaws.com/a/b/end+end.pdf"
         mutated = mask_url(plus_url)
         self.assertEqual(
-            "https://s3-us-west-2.amazonaws.com/a/b/end%2Bend.pdf", mutated)
+            "https://hub-media.aashe.org/uploads/end%2Bend.pdf", mutated)
