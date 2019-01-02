@@ -126,10 +126,5 @@ def mask_url(link):
     begin = "https://hub-media.aashe.org/uploads/"
     if "amazonaws.com" in link:
         end = link.rpartition('/')[2]
-        if ".pdf" in end:
-            return (begin + end).replace("+", "%2B")
-        else:
-            return begin + end
-    elif ".pdf" in link:
-        return link.replace("+", "%2B")
+        return begin + end
     return link
