@@ -74,6 +74,7 @@ class ExlcudeGalleryFilterMixin(object):
 
         setting `gallery_view = None` on the child Filterset didn't work
     """
+
     def __init__(self, *args, **kwargs):
         super(ExlcudeGalleryFilterMixin, self).__init__(*args, **kwargs)
 
@@ -156,3 +157,8 @@ class ToolBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
 class VideoBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     from ..content.types.videos import Video
     created = CreatedFilter(Video)
+
+
+class GreenFundFilterSet(GenericFilterSet):
+    from ..content.types.green_funds import GreenFund
+    created = CreatedFilter(GreenFund)

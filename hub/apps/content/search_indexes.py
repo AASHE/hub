@@ -9,3 +9,4 @@ from .types.presentations import PresentationIndex
 from .types.publications import PublicationIndex
 from .types.tools import ToolIndex
 from .types.videos import VideoIndex
+from .types.green_funds import GreenFundIndex

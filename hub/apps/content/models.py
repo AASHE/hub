@@ -178,7 +178,8 @@ class ContentType(TimeStampedModel):
         """
         from .tasks import thumbnail_image
         for image in self.images.all():
-            logger.info('sending task for Image: {} {}', image.pk, image.caption)
+            logger.info('sending task for Image: {} {}',
+                        image.pk, image.caption)
             thumbnail_image.apply_async(
                 args=[image.pk],
                 kwargs={
@@ -393,6 +394,7 @@ class Image(TimeStampedModel):
     def get_absolute_url(self):
         return self.ct.get_admin_url()
 
+
 # =============================================================================
 # Mapping of all available content types.
 #
@@ -403,6 +405,7 @@ from .types.academic import AcademicProgram
 from .types.casestudies import CaseStudy
 from .types.centers import CenterAndInstitute
 from .types.courses import Material
+from .types.green_funds import GreenFund
 from .types.green_power_projects import GreenPowerProject
 from .types.outreach import OutreachMaterial
 from .types.photographs import Photograph
@@ -416,6 +419,7 @@ CONTENT_TYPES['academicprogram'] = AcademicProgram
 CONTENT_TYPES['casestudy'] = CaseStudy
 CONTENT_TYPES['presentation'] = Presentation
 CONTENT_TYPES['material'] = Material
+CONTENT_TYPES['greenfund'] = GreenFund
 CONTENT_TYPES['greenpowerproject'] = GreenPowerProject
 CONTENT_TYPES['outreachmaterial'] = OutreachMaterial
 CONTENT_TYPES['photograph'] = Photograph
