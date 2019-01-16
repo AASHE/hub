@@ -221,3 +221,10 @@ class GreenPowerLocation(MetadataBaseModel):
         ordering = ('name', )
         verbose_name = 'Green Power Location'
         verbose_name_plural = 'Green Power Locations'
+
+
+class FundingSource(MetadataBaseModel):
+    class Meta:
+        ordering = ('name', )
+        verbose_name = 'Primary Funding Source'
+        verbose_name_plural = 'Primary Funding Sources'

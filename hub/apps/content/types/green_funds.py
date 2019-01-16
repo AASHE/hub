@@ -10,6 +10,21 @@ class GreenFund(ContentType):
 
     objects = ContentTypeManager()
 
+    funding_sources = models.ManyToManyField(
+        'metadata.FundingSource',
+        verbose_name='Primary Funding Source(s)',
+        help_text="""Select up to three funding sources.""")
+
+    revolving_fund = models.BooleanField(
+        'Revolving Loan Fund',
+        default=False,
+        help_text="""Check the box if this is a revolving loan fund (i.e.,
+        the fund makes loans that are eventually repaid back into the fund).""")
+
+    student_fee = models.FloatField(null=True, blank=True)
+
+    annual_budget = models.FloatField(null=True, blank=True)
+
     class Meta:
         verbose_name = 'Green Fund'
         verbose_name_plural = 'Green Funds'
@@ -19,14 +34,24 @@ class GreenFund(ContentType):
         return ['disciplines', 'submitted_by']
 
     @classmethod
+    def required_field_overrides(cls):
+        required_list = super(
+            GreenFund, cls).required_field_overrides()
+        required_list.append('date_created')
+        return required_list
+
+    @classmethod
     def label_overrides(cls):
         return {
             'date_created': 'Fund Creation Date',
+            'student_fee': 'Typical Annual Fee per Student (US Dollars)',
+            'annual_budget': 'Approximate Annual Budget (US Dollars)'
         }
 
     @classmethod
     def required_metadata(cls):
         return {
+            'funding_sources': {'max': 3, 'min': 1},
             'website': {'max': 5, 'min': 0},  # optional, up to 5
             'file': {'max': 3, 'min': 0},  # optional, up to 3
             'conditionally_required': {'website', 'file'}
