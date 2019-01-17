@@ -300,89 +300,119 @@ class BrowseView(RatelimitMixin, ListView):
                 .values('organizations__state')\
                 .annotate(count=Count('organizations__account_num')).order_by()
 
+            # Construct lists of which types get which graphs
+            topic_graph_allowed = [
+                'Case Studies',
+                'Conference Presentations',
+                'Outreach Materials',
+                'Photographs',
+                'Publications',
+                'Tools',
+                'Videos & Webinars',
+            ]
+            discipline_graph_allowed = [
+                'Academic Programs',
+                'Case Studies',
+                'Course Materials',
+                'Publications',
+                'Research Centers & Institutes',
+            ]
+            installation_type_graph_allowed = [
+                'Green Power Projects'
+            ]
+            funding_source_graph_allowed = [
+                'Green Funds',
+            ]
+
+            label = self.content_type_class.content_type_label()
+
             # Count unique topics associated with these pieces of content
             # output a dict of pairs of names and counts
-            topic_counts = [
-                {
-                    'name'.encode("utf8"): t['topics__name'].encode("utf8"),
-                    'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): t['link'].encode("utf8")
-                }
-                for t in
-                new_resources.values('topics__name')
-                .exclude(Q(topics__name=None))
-                .annotate(count=Count('id')).order_by('-count')
-                .annotate(
-                    link=Concat(
-                        V("/browse/types/"),
-                        V(self.content_type_class.slug),
-                        V("/?search=&content_type="),
-                        V(self.content_type_class.slug),
-                        V("&topics="),
-                        'topics__slug',
-                        V("&country=#resources-panel"),
-                        output_field=CharField()
+            topic_counts = None
+            if label in topic_graph_allowed:
+                topic_counts = [
+                    {
+                        'name'.encode("utf8"): t['topics__name'].encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values('topics__name')
+                    .exclude(Q(topics__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&topics="),
+                            'topics__slug',
+                            V("&country=#resources-panel"),
+                            output_field=CharField()
+                        )
                     )
-                )
-            ]
+                ]
 
             # Count unique academic disciplines associated with these pieces
             # of content and output a dict of pairs of names and counts
-            discipline_counts = [
-                {
-                    'name'.encode("utf8"): t['disciplines__name']
-                          .encode("utf8"),
-                    'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): t['link'].encode("utf8")
-                }
-                for t in
-                new_resources.values('disciplines__name')
-                .exclude(Q(disciplines__name=None))
-                .annotate(count=Count('id')).order_by('-count')
-                .annotate(
-                    link=Concat(
-                        V("/browse/types/"),
-                        V(self.content_type_class.slug),
-                        V("/?search=&content_type="),
-                        V(self.content_type_class.slug),
-                        V("&discipline="),
-                        'disciplines__pk',
-                        V("&country=#resources-panel"),
-                        output_field=CharField()
+            discipline_counts = None
+            if label in discipline_graph_allowed:
+                discipline_counts = [
+                    {
+                        'name'.encode("utf8"): t['disciplines__name']
+                              .encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values('disciplines__name')
+                    .exclude(Q(disciplines__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&discipline="),
+                            'disciplines__pk',
+                            V("&country=#resources-panel"),
+                            output_field=CharField()
+                        )
                     )
-                )
-            ]
+                ]
 
-            # TODO these queries don't need to be run for every type
-
-            installation_counts = [
-                {
-                    'name'.encode("utf8"): t['greenpowerproject__installations__name']
-                    .encode("utf8"),
-                    'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): t['link'].encode("utf8")
-                }
-                for t in
-                new_resources.values('greenpowerproject__installations__name')
-                .exclude(Q(greenpowerproject__installations__name=None))
-                .annotate(count=Count('id')).order_by('-count')
-                .annotate(
-                    link=Concat(
-                        V("/browse/types/"),
-                        V(self.content_type_class.slug),
-                        V("/?search=&content_type="),
-                        V(self.content_type_class.slug),
-                        V("&installation="),
-                        'greenpowerproject__installations__pk',
-                        V("&country=#resources-panel"),
-                        output_field=CharField()
+            installation_counts = None
+            if label in installation_type_graph_allowed:
+                installation_counts = [
+                    {
+                        'name'.encode("utf8"): t['greenpowerproject__installations__name']
+                        .encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values(
+                        'greenpowerproject__installations__name')
+                    .exclude(Q(greenpowerproject__installations__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&installation="),
+                            'greenpowerproject__installations__pk',
+                            V("&country=#resources-panel"),
+                            output_field=CharField()
+                        )
                     )
-                )
-            ]
+                ]
 
-            if self.content_type_class.slug != 'greenfund':
-                funding_source_counts = None
-            else:
+            funding_source_counts = None
+            if label in funding_source_graph_allowed:
                 funding_source_counts = [
                     {
                         'name'.encode("utf8"): t['greenfund__funding_sources__name']
@@ -436,30 +466,6 @@ class BrowseView(RatelimitMixin, ListView):
                 ).order_by()
             ]
 
-            # Construct lists of which types get which graphs
-            topic_graph_allowed = [
-                'Case Studies',
-                'Conference Presentations',
-                'Outreach Materials',
-                'Photographs',
-                'Publications',
-                'Tools',
-                'Videos & Webinars',
-            ]
-            discipline_graph_allowed = [
-                'Academic Programs',
-                'Case Studies',
-                'Course Materials',
-                'Publications',
-                'Research Centers & Institutes',
-            ]
-            installation_type_graph_allowed = [
-                'Green Power Projects'
-            ]
-            funding_source_graph_allowed = [
-                'Green Funds',
-            ]
-
             singular = self.content_type_class._meta.verbose_name
 
             # Add all of this to the context data
@@ -475,10 +481,6 @@ class BrowseView(RatelimitMixin, ListView):
                 'funding_source_counts': funding_source_counts,
                 'map_data': map_data,
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
-                'topic_graph_allowed': topic_graph_allowed,
-                'discipline_graph_allowed': discipline_graph_allowed,
-                'installation_graph_allowed': installation_type_graph_allowed,
-                'funding_source_graph_allowed': funding_source_graph_allowed,
                 'content_type_singular': singular
             })
         return ctx
