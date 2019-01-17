@@ -8,7 +8,7 @@ from ..help import AFFIRMATION, FILE_UPLOAD
 
 class GreenFund(ContentType):
 
-    BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
+    BOOL_CHOICES = (('Yes', 'Yes'), ('No', 'No'))
 
     objects = ContentTypeManager()
 
@@ -17,9 +17,12 @@ class GreenFund(ContentType):
         verbose_name='Primary Funding Source(s)',
         help_text="""Select up to three funding sources.""")
 
-    revolving_fund = models.BooleanField(
+    # Changed to CharField from Bool as False became difficult to usefully apply in
+    # browse filters
+    revolving_fund = models.CharField(
         'Revolving Loan Fund',
         choices=BOOL_CHOICES,
+        max_length=3,
         help_text="""Indicate "Yes" if this is a revolving loan fund (i.e.,
         the fund makes loans that are eventually repaid back into the fund).""")
 

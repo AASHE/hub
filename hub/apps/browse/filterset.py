@@ -159,6 +159,11 @@ class VideoBrowseFilterSet(ExlcudeGalleryFilterMixin, GenericFilterSet):
     created = CreatedFilter(Video)
 
 
-class GreenFundFilterSet(GenericFilterSet):
+class GreenFundFilterSet(CustomFilterSet):
+    revolving_fund = RevolvingFundFilter()
+    funding_source = PrimaryFundingSourceFilter()
+    student_fee = GreenFundStudentFeeFilter()
+    annual_budget = GreenFundAnnualBudgetFilter()
     from ..content.types.green_funds import GreenFund
     created = CreatedFilter(GreenFund)
+    order = GreenFundOrderingFilter()

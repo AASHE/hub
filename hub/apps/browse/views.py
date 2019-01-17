@@ -427,15 +427,19 @@ class BrowseView(RatelimitMixin, ListView):
                         link=Concat(
                             V("/browse/types/"),
                             V(self.content_type_class.slug),
-                            V("/?search=&content_type="),
+                            V("/?search=&gallery_view=list&content_type="),
                             V(self.content_type_class.slug),
-                            V("&funding_sources="),
+                            V("&country="),
+                            V("&funding_source="),
                             'greenfund__funding_sources__pk',
-                            V("&country=#resources-panel"),
+                            V('#resources-panel'),
                             output_field=CharField()
                         )
                     )
                 ]
+
+                # http://127.0.0.1:8000/browse/types/greenfund/?search=&gallery_view=list&content_type=greenfund&country=&funding_source=3#resources-panel
+                # http://127.0.0.1:8000/browse/types/greenfund/?search=&gallery_view=list&content_type=greenfund&country=&funding_source=3#resources-panel
 
             # Get data for the map
             map_data = [
