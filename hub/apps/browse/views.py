@@ -355,19 +355,18 @@ class BrowseView(RatelimitMixin, ListView):
 
             # TODO these queries don't need to be run for every type
 
-
             installation_counts = [
                 {
                     'name'.encode("utf8"): t['greenpowerproject__installations__name']
-                        .encode("utf8"),
+                    .encode("utf8"),
                     'count'.encode("utf8"): t['count'],
                     'link'.encode("utf8"): t['link'].encode("utf8")
                 }
                 for t in
                 new_resources.values('greenpowerproject__installations__name')
-                    .exclude(Q(greenpowerproject__installations__name=None))
-                    .annotate(count=Count('id')).order_by('-count')
-                    .annotate(
+                .exclude(Q(greenpowerproject__installations__name=None))
+                .annotate(count=Count('id')).order_by('-count')
+                .annotate(
                     link=Concat(
                         V("/browse/types/"),
                         V(self.content_type_class.slug),
@@ -380,6 +379,33 @@ class BrowseView(RatelimitMixin, ListView):
                     )
                 )
             ]
+
+            if self.content_type_class.slug != 'greenfund':
+                funding_source_counts = None
+            else:
+                funding_source_counts = [
+                    {
+                        'name'.encode("utf8"): t['greenfund__funding_sources__name']
+                        .encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values('greenfund__funding_sources__name')
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&funding_sources="),
+                            'greenfund__funding_sources__pk',
+                            V("&country=#resources-panel"),
+                            output_field=CharField()
+                        )
+                    )
+                ]
 
             # Get data for the map
             map_data = [
@@ -395,20 +421,20 @@ class BrowseView(RatelimitMixin, ListView):
                                           'organizations__account_num',
                                           )
                              .annotate(
-                                    count=Count('organizations__account_num')
-                             ).annotate(
-                                    link=Concat(
-                                        V("/browse/types/"),
-                                        V(self.content_type_class.slug),
-                                        V("/?search=&content_type="),
-                                        V(self.content_type_class.slug),
-                                        V("&organizations="),
-                                        str('organizations__account_num'),
-                                        V("&country=#resources-panel"),
-                                        output_field=CharField()
-                                    )
-                             ).order_by()
-                        ]
+                    count=Count('organizations__account_num')
+                ).annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&organizations="),
+                        str('organizations__account_num'),
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                ).order_by()
+            ]
 
             # Construct lists of which types get which graphs
             topic_graph_allowed = [
@@ -430,6 +456,9 @@ class BrowseView(RatelimitMixin, ListView):
             installation_type_graph_allowed = [
                 'Green Power Projects'
             ]
+            funding_source_graph_allowed = [
+                'Green Funds',
+            ]
 
             singular = self.content_type_class._meta.verbose_name
 
@@ -443,12 +472,14 @@ class BrowseView(RatelimitMixin, ListView):
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
                 'installation_counts': installation_counts,
+                'funding_source_counts': funding_source_counts,
                 'map_data': map_data,
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
                 'topic_graph_allowed': topic_graph_allowed,
                 'discipline_graph_allowed': discipline_graph_allowed,
                 'installation_graph_allowed': installation_type_graph_allowed,
-                'content_type_singular': singular,
+                'funding_source_graph_allowed': funding_source_graph_allowed,
+                'content_type_singular': singular
             })
         return ctx
 
@@ -463,6 +494,7 @@ class ResourceView(DetailView):
         - Each ContentType has a `member_only` attribut we will check too.
           Some objects might only need Login.
     """
+
     def dispatch(self, *args, **kwargs):
         """
         Check if this object is `Member Only`. If so, only AASHE members and

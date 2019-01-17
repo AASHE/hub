@@ -1,18 +1,13 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
     google.load("visualization", "1", {packages: ['corechart', 'bar']});
-    google.setOnLoadCallback(drawTopicsChart);
-    google.setOnLoadCallback(drawDisciplinesChart);
-    google.setOnLoadCallback(drawInstallationsChart);
+    google.setOnLoadCallback(drawAllCharts);
 
-    var activeTab;
     function getChart(activeTab) {
         if (activeTab == "chart-tab") {
             document.getElementById('charts').style.display = 'block';
             document.getElementById('map').style.display = 'none';
-            drawTopicsChart();
-            drawDisciplinesChart();
-            drawInstallationsChart();
+            drawAllCharts();
         }
         else {
             document.getElementById('charts').style.display = 'none';
@@ -20,22 +15,70 @@
         }
     }
 
-    function drawTopicsChart() {
-        var container = document.getElementById('by_topic');
+    function drawAllCharts() {
+        drawChart('by_topic');
+        drawChart('by_discipline');
+        drawChart('by_installation');
+        drawChart('by_funding');
+    }
 
-        if (!container) {
+    function drawChart(elementId) {
+        var container = document.getElementById(elementId);
+
+        if (!container){
             return;
         }
-        var raw_data = {{ topic_counts|safe }};
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Topic');
-        data.addColumn('number', 'Count');
 
-        data.addRows([
-            {% for row in topic_counts %}
-                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ]);
+        var raw_data;
+        var title;
+        var data;
+        
+        if (elementId === 'by_topic'){
+            title = "Summary by Topic"
+            raw_data = {{ topic_counts|safe }};
+            data = new google.visualization.DataTable();
+            data.addColumn('string', 'Topic');
+            data.addColumn('number', 'Count');
+            data.addRows([
+                {% for row in topic_counts %}
+                    ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]);
+        } else if (elementId === 'by_discipline') {
+            title = "Summary by Discipline"
+            raw_data = {{ discipline_counts|safe }};
+            data = new google.visualization.DataTable();
+            data.addColumn('string', 'Discipline');
+            data.addColumn('number', 'Count');
+            data.addRows([
+                {% for row in discipline_counts %}
+                    ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]);
+        } else if (elementId === 'by_installation') {
+            title = "Summary by Installation"
+            raw_data = {{ installation_counts|safe }};
+            data = new google.visualization.DataTable();
+            data.addColumn('string', 'Installation');
+            data.addColumn('number', 'Count');
+            data.addRows([
+                {% for row in installation_counts %}
+                    ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]);
+        } else if (elementId === 'by_funding') {
+            title = "Summary by Funding Source"
+            raw_data = {{ funding_source_counts|safe }};
+            data = new google.visualization.DataTable();
+            data.addColumn('string', 'Funding Source');
+            data.addColumn('number', 'Count');
+            data.addRows([
+                {% for row in funding_source_counts %}
+                    ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]);
+        }
+
         data.sort([{column: 1, desc: true}]);
         var max_value = data.getColumnRange(1).max;
 
@@ -50,7 +93,7 @@
         }
 
         var options = {
-            title: "Summary by Topic",
+            title: title,
             height: chartHeight,
             hAxis: {
                 viewWindow: {
@@ -85,140 +128,8 @@
         }
 
         google.visualization.events.addListener(chart, 'select', selectHandler);
+
+
     }
 
-
-    function drawDisciplinesChart() {
-        var container = document.getElementById('by_discipline');
-
-        if (!container) {
-            return;
-        }
-        var raw_data = {{ discipline_counts|safe }};
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Discipline');
-        data.addColumn('number', 'Count');
-
-        data.addRows([
-            {% for row in discipline_counts %}
-                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ]);
-        data.sort([{column: 1, desc: true}]);
-        var max_value = data.getColumnRange(1).max;
-
-        var chartHeight = data.getNumberOfRows() * 25 + 80;
-
-        var tick_count;
-        if (max_value <= 10) {
-            tick_count = max_value + 1;
-        }
-        else {
-            tick_count = 6
-        }
-
-        var options = {
-            title: "Summary by Discipline",
-            height: chartHeight,
-            hAxis: {
-                viewWindow: {
-                    min: 0,
-                    max: max_value
-                },
-                format: '0',
-                gridlines: {
-                    count: tick_count
-                }
-            },
-            legend: {
-                position: 'none'
-            },
-            chartArea: {
-                left: '27%',
-                right: '5%',
-                top: 25,
-                bottom: 25
-            },
-            series: {
-                0:{color: '#6BBC49'}
-            }
-        };
-        var chart = new google.visualization.BarChart(container);
-        chart.draw(data, options);
-
-        var rowNum;
-        function selectHandler(e) {
-            rowNum = chart.getSelection()[0]['row'];
-            window.location = raw_data[rowNum]['link'];
-        }
-
-        google.visualization.events.addListener(chart, 'select', selectHandler);
-    }
-
-    function drawInstallationsChart() {
-        var container = document.getElementById('by_installation');
-
-        if (!container) {
-            return;
-        }
-        var raw_data = {{ installation_counts|safe }};
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Discipline');
-        data.addColumn('number', 'Count');
-
-        data.addRows([
-            {% for row in installation_counts %}
-                ['{{ row.name }}'.replace(/&amp;/g, '&'), {{ row.count }}]{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ]);
-        data.sort([{column: 1, desc: true}]);
-        var max_value = data.getColumnRange(1).max;
-
-        var chartHeight = data.getNumberOfRows() * 25 + 80;
-
-        var tick_count;
-        if (max_value <= 10) {
-            tick_count = max_value + 1;
-        }
-        else {
-            tick_count = 6
-        }
-
-        var options = {
-            title: "Summary by Installation",
-            height: chartHeight,
-            hAxis: {
-                viewWindow: {
-                    min: 0,
-                    max: max_value
-                },
-                format: '0',
-                gridlines: {
-                    count: tick_count
-                }
-            },
-            legend: {
-                position: 'none'
-            },
-            chartArea: {
-                left: '27%',
-                right: '5%',
-                top: 25,
-                bottom: 25
-            },
-            series: {
-                0:{color: '#6BBC49'}
-            }
-        };
-        var chart = new google.visualization.BarChart(container);
-        chart.draw(data, options);
-
-        var rowNum;
-        function selectHandler(e) {
-            rowNum = chart.getSelection()[0]['row'];
-            window.location = raw_data[rowNum]['link'];
-        }
-
-        google.visualization.events.addListener(chart, 'select', selectHandler);
-    }
 </script>

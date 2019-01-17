@@ -8,6 +8,8 @@ from ..help import AFFIRMATION, FILE_UPLOAD
 
 class GreenFund(ContentType):
 
+    BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
+
     objects = ContentTypeManager()
 
     funding_sources = models.ManyToManyField(
@@ -17,13 +19,13 @@ class GreenFund(ContentType):
 
     revolving_fund = models.BooleanField(
         'Revolving Loan Fund',
-        default=False,
-        help_text="""Check the box if this is a revolving loan fund (i.e.,
+        choices=BOOL_CHOICES,
+        help_text="""Indicate "Yes" if this is a revolving loan fund (i.e.,
         the fund makes loans that are eventually repaid back into the fund).""")
 
-    student_fee = models.FloatField(null=True, blank=True)
+    student_fee = models.IntegerField(null=True, blank=True)
 
-    annual_budget = models.FloatField(null=True, blank=True)
+    annual_budget = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Green Fund'
@@ -38,6 +40,7 @@ class GreenFund(ContentType):
         required_list = super(
             GreenFund, cls).required_field_overrides()
         required_list.append('date_created')
+        required_list.append('revolving_fund')
         return required_list
 
     @classmethod

@@ -91,6 +91,7 @@
                     </ul>
                 </div>
                 <div class="tab-content">
+
                     <div id="charts" class="tab-pane fade active in">
                         <div id="chart-intro" class="summary-chart">
                             {% block_content 'chart-intro' %}
@@ -103,6 +104,9 @@
                         {% endif %}
                         {% if installation_counts and content_type.content_type_label in installation_graph_allowed %}
                             <div id="by_installation" class="summary-chart"></div>
+                        {% endif %}
+                        {% if funding_source_counts and content_type.content_type_label in funding_source_graph_allowed %}
+                            <div id="by_funding" class="summary-chart"></div>
                         {% endif %}
                     </div>
 
