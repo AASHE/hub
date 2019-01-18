@@ -114,7 +114,7 @@ def sanity_check(rows, columns, column_mappings):
     return index_list
 
 
-def create_file_from_url(parent, file_url, image=False):
+def create_file_from_url(parent, file_url, label=None image=False):
     """
         Thanks:
         http://stackoverflow.com/questions/16174022/download-a-remote-image-and-save-it-to-a-django-model
@@ -157,7 +157,10 @@ def create_file_from_url(parent, file_url, image=False):
         s3_key.set_contents_from_file(BytesIO(request.raw.read()))
 
     if not image:
-        new_file = File(ct=parent, label=file_name, affirmation=True)
+        if label:
+            new_file = File(ct=parent, label=label, affirmation=True)
+        else:
+            new_file = File(ct=parent, label=file_name, affirmation=True)
         # TODO calculate URL based on settings
         new_file.item = 'http://hub-media.aashe.org/uploads/{}'.format(
             file_name)
