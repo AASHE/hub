@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from ..apps.metadata.models import Organization, SustainabilityTopic, \
-    AcademicDiscipline, PublicationMaterialType
+    AcademicDiscipline, PublicationMaterialType, FundingSource
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.photographs import Photograph
 from ..apps.content.types.publications import Publication
@@ -40,6 +40,9 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             account_num=1, org_name='Washington', country_iso='AU',
             country='Australia', enrollment_fte=2000, exclude_from_website=0,
             carnegie_class="Associate")  # , org_type="Business")
+
+        self.funding_source = FundingSource.objects.create(
+            name='Institutional Funds')
 
         self.ct = AcademicProgram.objects.create(
             title='My Keyword resource',
@@ -94,14 +97,14 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             material_type=type_1,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
-            )
+        )
 
         ct2 = Publication.objects.create(
             title='Test Publication 2',
             material_type=type_2,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
-            )
+        )
 
         _url = reverse('browse:browse', kwargs={'ct': 'publication'})
         _filter_data = {'publication_type': [type_1.pk]}
@@ -148,6 +151,7 @@ class TestGalleryView(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         - ensure filter is working properly (only resources with images)
     """
+
     def setUp(self):
 
         super(TestGalleryView, self).setUp()
@@ -157,13 +161,13 @@ class TestGalleryView(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             title='Test Photo Resource',
             slug='test-photo-resource',
             submitted_by=self.superuser
-            )
+        )
         self.resource2 = Photograph.objects.create(
             status=Photograph.STATUS_CHOICES.published,
             title='Test Photo Resource',
             slug='test-photo-resource',
             submitted_by=self.superuser
-            )
+        )
         img1 = Image.objects.create(
             ct=self.resource1,
             image="http://testserver%stest/sold.jpg" % settings.STATIC_URL,

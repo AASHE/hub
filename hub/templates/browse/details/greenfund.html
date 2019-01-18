@@ -14,16 +14,7 @@
             {% endfor %}
         </div>
 
-        <div>
-            <strong>Revolving Fund:</strong>
-                {% if object.revolving_fund %}
-                    Yes
-                {% else %}
-                    No
-                {% endif %}
-        </div>
-
-    {% include "browse/details/includes/meta.html" with label="Revolving Loan Fund" value=object.revolving_fund %}
+    {% include "browse/details/includes/meta.html" with label="Revolving Fund" value=object.revolving_fund %}
 
     {% if object.student_fee %}
     <div><strong>Typical Annual Fee per Student:</strong> ${{ object.student_fee }}</div>

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core import management
 
 from django_membersuite_auth.models import MemberSuitePortalUser
+from hub.apps.metadata.models import FundingSource
 
 
 User = get_user_model()
@@ -12,6 +13,7 @@ class WithUserSuperuserTestCase(TestCase):
     """
     Some base models/structure to create before doing actual tests.
     """
+
     def setUp(self):
         self.superuser_cred = {'username': 'superjoe', 'password': 'password'}
         self.superuser = User.objects.create_superuser(
@@ -71,5 +73,9 @@ EXTRA_REQUIRED_CT_KWARGS = {
         'results': "blah",
         'lessons_learned': "blah",
         'consider_for_award': False,
+    },
+    'greenfund': {
+        'funding_sources': FundingSource.objects.get(name='Institutional Funds'),
+        'revolving_fund': 'No',
     },
 }
