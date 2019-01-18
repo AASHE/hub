@@ -77,6 +77,7 @@ class Command(BaseCommand):
                 #
                 # Funding Sources
                 #
+
                 funding_token = row['FundingSource(s)']
                 sources = [source.strip()
                            for source in funding_token.split(',')]
@@ -89,15 +90,17 @@ class Command(BaseCommand):
                 # Get rid of the dollar sign, and cast to int
                 if row['Fee']:
                     fee = row['Fee']
-                    greenfund.student_fee = int(fee[1:])
+                    if fee != ' ':
+                        greenfund.student_fee = int(fee[1:])
 
                 #
                 # Budget
                 # get rid of leading dollar sign, all commas and cast to int
                 if row['Budget']:
                     budget = row['Budget']
-                    new_budget = budget[1:].replace(',', '')
-                    greenfund.annual_budget = int(new_budget)
+                    if budget != ' ':
+                        new_budget = budget[1:].replace(',', '')
+                        greenfund.annual_budget = int(new_budget)
 
                 #
                 # Files
@@ -116,11 +119,13 @@ class Command(BaseCommand):
                     Website.objects.create(
                         url=row['Website_1_URL'],
                         ct=greenfund,
-                        lable=row['Website_1_Label']
+                        label=row['Website_1_Label']
                     )
                 if row['Website_2_URL']:
                     Website.objects.create(
                         url=row['Website_2_URL'],
                         ct=greenfund,
-                        lable=row['Website_2_Label']
+                        label=row['Website_2_Label']
                     )
+
+                self.stdout.write(self.style.SUCCESS('Ok'))

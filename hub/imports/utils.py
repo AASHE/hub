@@ -114,7 +114,7 @@ def sanity_check(rows, columns, column_mappings):
     return index_list
 
 
-def create_file_from_url(parent, file_url, label=None image=False):
+def create_file_from_url(parent, file_url, label=None, image=False):
     """
         Thanks:
         http://stackoverflow.com/questions/16174022/download-a-remote-image-and-save-it-to-a-django-model
