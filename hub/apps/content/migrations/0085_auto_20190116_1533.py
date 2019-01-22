@@ -5,6 +5,21 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
+def add_funding_types(apps, schema_editor):
+    # We get the model from the versioned app registry;
+    # if we directly import it, it'll be the wrong version
+    FundingSource = apps.get_model("metadata", "FundingSource")
+    db_alias = schema_editor.connection.alias
+    FundingSource.objects.using(db_alias).bulk_create([
+        FundingSource(name="Donations (Alumni)"),
+        FundingSource(name="Donations (General)"),
+        FundingSource(name="Institutional Funds"),
+        FundingSource(name="Other"),
+        FundingSource(name="Student Fees"),
+        FundingSource(name="Student Government Funds"),
+    ])
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -21,16 +36,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='greenfund',
             name='funding_sources',
-            field=models.ManyToManyField(help_text=b'Select up to three funding sources.', to='metadata.FundingSource', verbose_name=b'Primary Funding Source(s)'),
+            field=models.ManyToManyField(help_text=b'Select up to three funding sources.',
+                                         to='metadata.FundingSource', verbose_name=b'Primary Funding Source(s)'),
         ),
         migrations.AddField(
             model_name='greenfund',
             name='revolving_fund',
-            field=models.BooleanField(default=False, help_text=b'Indicate "Yes" if this is a revolving loan fund (i.e.,\n        the fund makes loans that are eventually repaid back into the fund).', verbose_name=b'Revolving Loan Fund'),
+            field=models.BooleanField(
+                default=False, help_text=b'Indicate "Yes" if this is a revolving loan fund (i.e.,\n        the fund makes loans that are eventually repaid back into the fund).', verbose_name=b'Revolving Loan Fund'),
         ),
         migrations.AddField(
             model_name='greenfund',
             name='student_fee',
             field=models.FloatField(blank=True, null=True),
         ),
+        migrations.RunPython(add_funding_types),
     ]
