@@ -5,6 +5,21 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
+def add_funding_types(apps, schema_editor):
+    # We get the model from the versioned app registry;
+    # if we directly import it, it'll be the wrong version
+    FundingSource = apps.get_model("metadata", "FundingSource")
+    db_alias = schema_editor.connection.alias
+    FundingSource.objects.using(db_alias).bulk_create([
+        FundingSource(name="Donations (Alumni)"),
+        FundingSource(name="Donations (General)"),
+        FundingSource(name="Institutional Funds"),
+        FundingSource(name="Other"),
+        FundingSource(name="Student Fees"),
+        FundingSource(name="Student Government Funds"),
+    ])
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -35,4 +50,5 @@ class Migration(migrations.Migration):
             name='student_fee',
             field=models.FloatField(blank=True, null=True),
         ),
+        migrations.RunPython(add_funding_types),
     ]

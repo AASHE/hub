@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core import management
 
 from django_membersuite_auth.models import MemberSuitePortalUser
-from hub.apps.metadata.models import FundingSource
+from ..apps.metadata.models import FundingSource
 
 
 User = get_user_model()
