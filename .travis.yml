@@ -9,7 +9,7 @@ services:
 env:
   global:
   - DJANGO_SETTINGS_MODULE=hub.settings.server
-  - HUB_DB_URL=postgresql://postgres@localhost/test_travis_ci_test
+  - HUB_DB_URL=postgresql://postgres@localhost/travis_ci_test
   - SECRET_KEY=blahblahblah
   - AASHE_DRUPAL_URI=http://www.aashe.org/services/xmlrpc
   - AASHE_DRUPAL_KEY_DOMAIN=acupcc.aashe.org
@@ -44,6 +44,7 @@ install:
 before_script:
     - npm install
     - python manage.py collectstatic --noinput --verbosity 0
+    - psql -c 'create database travis_ci_test;' -U postgres
 script: coverage run manage.py test -v3
 after_success: coveralls
 notifications:
