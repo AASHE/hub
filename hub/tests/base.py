@@ -3,11 +3,9 @@ from django.contrib.auth import get_user_model
 from django.core import management
 
 from django_membersuite_auth.models import MemberSuitePortalUser
-from ..apps.metadata.models import FundingSource
 
 
 User = get_user_model()
-fs = FundingSource.objects.get(name='Institutional Funds')
 
 
 class WithUserSuperuserTestCase(TestCase):
@@ -76,7 +74,6 @@ EXTRA_REQUIRED_CT_KWARGS = {
         'consider_for_award': False,
     },
     'greenfund': {
-        'funding_sources': fs,
         'revolving_fund': 'No',
     },
 }
