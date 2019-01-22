@@ -41,9 +41,6 @@ class FilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             country='Australia', enrollment_fte=2000, exclude_from_website=0,
             carnegie_class="Associate")  # , org_type="Business")
 
-        self.funding_source = FundingSource.objects.create(
-            name='Institutional Funds')
-
         self.ct = AcademicProgram.objects.create(
             title='My Keyword resource',
             date_created=now(),

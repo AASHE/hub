@@ -7,6 +7,7 @@ from hub.apps.metadata.models import FundingSource
 
 
 User = get_user_model()
+fs = FundingSource.objects.get(name='Institutional Funds')
 
 
 class WithUserSuperuserTestCase(TestCase):
@@ -75,7 +76,7 @@ EXTRA_REQUIRED_CT_KWARGS = {
         'consider_for_award': False,
     },
     'greenfund': {
-        'funding_sources': FundingSource.objects.get(name='Institutional Funds'),
+        'funding_sources': fs,
         'revolving_fund': 'No',
     },
 }

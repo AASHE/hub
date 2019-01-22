@@ -44,7 +44,6 @@ install:
 before_script:
     - npm install
     - python manage.py collectstatic --noinput --verbosity 0
-    - psql -c 'create database travis_ci_test;' -U postgres
 script: coverage run manage.py test -v3
 after_success: coveralls
 notifications:
