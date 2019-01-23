@@ -73,7 +73,4 @@ EXTRA_REQUIRED_CT_KWARGS = {
         'lessons_learned': "blah",
         'consider_for_award': False,
     },
-    'greenfund': {
-        'revolving_fund': 'No',
-    },
 }
