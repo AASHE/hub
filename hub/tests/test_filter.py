@@ -123,9 +123,6 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
 
         for k, ct_class in CONTENT_TYPES.items():
 
-            if k == 'greenfund':
-                FundingSource.objects.create(name='junk')
-
             ct_kwargs = {
                 'title': 'Date Created Resource',
                 'date_created': now(),
@@ -134,13 +131,6 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             }
             if k in EXTRA_REQUIRED_CT_KWARGS.keys():
                 ct_kwargs.update(EXTRA_REQUIRED_CT_KWARGS[k])
-            elif k == 'greenfund':
-                ct_kwargs.update(
-                    {
-                        'revolving_fund': 'No',
-                        'funding_sources': FundingSource.objects.get(name='junk')
-                    }
-                )
 
             ct = ct_class.objects.create(**ct_kwargs)
 
