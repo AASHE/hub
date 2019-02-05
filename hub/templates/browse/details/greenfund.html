@@ -17,11 +17,11 @@
     {% include "browse/details/includes/meta.html" with label="Revolving Fund" value=object.revolving_fund %}
 
     {% if object.student_fee %}
-    <div><strong>Typical Annual Fee per Student:</strong> ${{ object.student_fee }}</div>
+    <div><strong>Typical Annual Fee per Student:</strong> ${{ object.student_fee|intcomma }}</div>
     {% endif %}
 
     {% if object.annual_budget %}
-    <div><strong>Approximate Annual Budget:</strong> ${{ object.annual_budget }}</div>
+    <div><strong>Approximate Annual Budget:</strong> ${{ object.annual_budget|intcomma }}</div>
     {% endif %}
 
 

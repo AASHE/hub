@@ -8,7 +8,8 @@ import django_filters as filters
 from django import forms
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Q, Value
+from django.db.models.functions import Coalesce
 from django.utils.timezone import now
 
 from haystack.inputs import Raw
@@ -400,8 +401,8 @@ class GreenFundOrderingFilter(filters.ChoiceFilter):
                 ('content_type', 'Content Type'),
                 ('-published', 'Date Posted'),
                 ('-date_created', 'Date Created, Published, Presented'),
-                ('student_fee', 'Student Fee'),
-                ('annual_budget', 'Annual Budget')
+                ('student_fee', 'Student Fee (largest)'),
+                ('annual_budget', 'Annual Budget (largest)')
             ),
             'label': 'Sort by:',
             'widget': forms.widgets.RadioSelect,
@@ -415,14 +416,17 @@ class GreenFundOrderingFilter(filters.ChoiceFilter):
             list_of_pks = []
             for ob in qs:
                 list_of_pks.append(ob.pk)
-            return (GreenFund.objects.filter(pk__in=list_of_pks)
-                    .order_by('-student_fee'))
+            return (GreenFund.objects.filter(student_fee__isnull=False)
+                    .annotate(fee_null=Coalesce('student_fee', Value(-100000000)))
+                    .order_by('-fee_null'))
         elif value == 'annual_budget':
             list_of_pks = []
             for ob in qs:
                 list_of_pks.append(ob.pk)
             return (GreenFund.objects.filter(pk__in=list_of_pks)
-                    .order_by('-annual_budget'))
+                    .annotate(budget_null=Coalesce('annual_budget', Value(-100000000)))
+                    .order_by('-budget_null'))
+
         return qs.order_by(value)
 
 
@@ -956,19 +960,15 @@ class PrimaryFundingSourceFilter(filters.ChoiceFilter):
     field_class = forms.fields.MultipleChoiceField
 
     def __init__(self, *args, **kwargs):
-
-        funding_choices = cache.get(
-            'funding_filter_choices')
-        if not funding_choices:
-            funding_choices = FundingSource.objects.values_list(
-                'pk', 'name')
-            cache.set(
-                'funding_filter_choices',
-                funding_choices,
-                settings.CACHE_TTL_SHORT)
-
         kwargs.update({
-            'choices': funding_choices,
+            'choices': (
+                ('Donations (Alumni)', 'Donations (Alumni)'),
+                ('Donations (General)', 'Donations (General)'),
+                ('Institutional Funds', 'Institutional Funds'),
+                ('Student Fees', 'Student Fees'),
+                ('Student Government Funds', 'Student Government Funds'),
+                ('Other', 'Other')
+            ),
             'label': 'Primary Funding Source(s)',
             'widget': forms.widgets.CheckboxSelectMultiple(),
         })
@@ -982,7 +982,7 @@ class PrimaryFundingSourceFilter(filters.ChoiceFilter):
         if not value:
             return qs
         return qs.filter(pk__in=GreenFund.objects.filter(
-            funding_sources__in=value).values_list('pk', flat=True))
+            funding_sources__name__in=value).values_list('pk', flat=True))
 
 
 class RevolvingFundFilter(filters.ChoiceFilter):

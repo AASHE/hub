@@ -1,4 +1,5 @@
 import os.path
+import sys
 import csv
 from datetime import datetime
 
@@ -90,17 +91,15 @@ class Command(BaseCommand):
                 # Get rid of the dollar sign, and cast to int
                 if row['Fee']:
                     fee = row['Fee']
-                    if fee != ' ':
-                        greenfund.student_fee = int(fee[1:])
+                    greenfund.student_fee = int(fee[1:])
 
                 #
                 # Budget
                 # get rid of leading dollar sign, all commas and cast to int
                 if row['Budget']:
                     budget = row['Budget']
-                    if budget != ' ':
-                        new_budget = budget[1:].replace(',', '')
-                        greenfund.annual_budget = int(new_budget)
+                    new_budget = budget[1:].replace(',', '')
+                    greenfund.annual_budget = int(new_budget)
 
                 #
                 # Files
@@ -128,4 +127,7 @@ class Command(BaseCommand):
                         label=row['Website_2_Label']
                     )
 
+                greenfund.save()
+
                 self.stdout.write(self.style.SUCCESS('Ok'))
+            sys.exit(1)
