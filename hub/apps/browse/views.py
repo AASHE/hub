@@ -300,116 +300,6 @@ class BrowseView(RatelimitMixin, ListView):
                 .values('organizations__state')\
                 .annotate(count=Count('organizations__account_num')).order_by()
 
-            # Count unique topics associated with these pieces of content
-            # output a dict of pairs of names and counts
-            topic_counts = [
-                {
-                    'name'.encode("utf8"): t['topics__name'].encode("utf8"),
-                    'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): t['link'].encode("utf8")
-                }
-                for t in
-                new_resources.values('topics__name')
-                .exclude(Q(topics__name=None))
-                .annotate(count=Count('id')).order_by('-count')
-                .annotate(
-                    link=Concat(
-                        V("/browse/types/"),
-                        V(self.content_type_class.slug),
-                        V("/?search=&content_type="),
-                        V(self.content_type_class.slug),
-                        V("&topics="),
-                        'topics__slug',
-                        V("&country=#resources-panel"),
-                        output_field=CharField()
-                    )
-                )
-            ]
-
-            # Count unique academic disciplines associated with these pieces
-            # of content and output a dict of pairs of names and counts
-            discipline_counts = [
-                {
-                    'name'.encode("utf8"): t['disciplines__name']
-                          .encode("utf8"),
-                    'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): t['link'].encode("utf8")
-                }
-                for t in
-                new_resources.values('disciplines__name')
-                .exclude(Q(disciplines__name=None))
-                .annotate(count=Count('id')).order_by('-count')
-                .annotate(
-                    link=Concat(
-                        V("/browse/types/"),
-                        V(self.content_type_class.slug),
-                        V("/?search=&content_type="),
-                        V(self.content_type_class.slug),
-                        V("&discipline="),
-                        'disciplines__pk',
-                        V("&country=#resources-panel"),
-                        output_field=CharField()
-                    )
-                )
-            ]
-
-            # TODO these queries don't need to be run for every type
-
-
-            installation_counts = [
-                {
-                    'name'.encode("utf8"): t['greenpowerproject__installations__name']
-                        .encode("utf8"),
-                    'count'.encode("utf8"): t['count'],
-                    'link'.encode("utf8"): t['link'].encode("utf8")
-                }
-                for t in
-                new_resources.values('greenpowerproject__installations__name')
-                    .exclude(Q(greenpowerproject__installations__name=None))
-                    .annotate(count=Count('id')).order_by('-count')
-                    .annotate(
-                    link=Concat(
-                        V("/browse/types/"),
-                        V(self.content_type_class.slug),
-                        V("/?search=&content_type="),
-                        V(self.content_type_class.slug),
-                        V("&installation="),
-                        'greenpowerproject__installations__pk',
-                        V("&country=#resources-panel"),
-                        output_field=CharField()
-                    )
-                )
-            ]
-
-            # Get data for the map
-            map_data = [
-                [t[0].encode("utf8"), float(t[1]), float(t[2]), t[3],
-                 t[4], t[5].encode("utf8")]
-                for t in
-                new_resources.exclude(Q(organizations__org_name=None))
-                             .exclude(Q(organizations__latitude=''))
-                             .exclude(Q(organizations__latitude=None))
-                             .values_list('organizations__org_name',
-                                          'organizations__latitude',
-                                          'organizations__longitude',
-                                          'organizations__account_num',
-                                          )
-                             .annotate(
-                                    count=Count('organizations__account_num')
-                             ).annotate(
-                                    link=Concat(
-                                        V("/browse/types/"),
-                                        V(self.content_type_class.slug),
-                                        V("/?search=&content_type="),
-                                        V(self.content_type_class.slug),
-                                        V("&organizations="),
-                                        str('organizations__account_num'),
-                                        V("&country=#resources-panel"),
-                                        output_field=CharField()
-                                    )
-                             ).order_by()
-                        ]
-
             # Construct lists of which types get which graphs
             topic_graph_allowed = [
                 'Case Studies',
@@ -430,6 +320,155 @@ class BrowseView(RatelimitMixin, ListView):
             installation_type_graph_allowed = [
                 'Green Power Projects'
             ]
+            funding_source_graph_allowed = [
+                'Green Funds',
+            ]
+
+            label = self.content_type_class.content_type_label()
+
+            # Count unique topics associated with these pieces of content
+            # output a dict of pairs of names and counts
+            topic_counts = None
+            if label in topic_graph_allowed:
+                topic_counts = [
+                    {
+                        'name'.encode("utf8"): t['topics__name'].encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values('topics__name')
+                    .exclude(Q(topics__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&topics="),
+                            'topics__slug',
+                            V("&country=#resources-panel"),
+                            output_field=CharField()
+                        )
+                    )
+                ]
+
+            # Count unique academic disciplines associated with these pieces
+            # of content and output a dict of pairs of names and counts
+            discipline_counts = None
+            if label in discipline_graph_allowed:
+                discipline_counts = [
+                    {
+                        'name'.encode("utf8"): t['disciplines__name']
+                              .encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values('disciplines__name')
+                    .exclude(Q(disciplines__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&discipline="),
+                            'disciplines__pk',
+                            V("&country=#resources-panel"),
+                            output_field=CharField()
+                        )
+                    )
+                ]
+
+            installation_counts = None
+            if label in installation_type_graph_allowed:
+                installation_counts = [
+                    {
+                        'name'.encode("utf8"): t['greenpowerproject__installations__name']
+                        .encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values(
+                        'greenpowerproject__installations__name')
+                    .exclude(Q(greenpowerproject__installations__name=None))
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&installation="),
+                            'greenpowerproject__installations__pk',
+                            V("&country=#resources-panel"),
+                            output_field=CharField()
+                        )
+                    )
+                ]
+
+            funding_source_counts = None
+            if label in funding_source_graph_allowed:
+                funding_source_counts = [
+                    {
+                        'name'.encode("utf8"): t['greenfund__funding_sources__name']
+                        .encode("utf8"),
+                        'count'.encode("utf8"): t['count'],
+                        'link'.encode("utf8"): t['link'].encode("utf8")
+                    }
+                    for t in
+                    new_resources.values('greenfund__funding_sources__name')
+                    .annotate(count=Count('id')).order_by('-count')
+                    .annotate(
+                        link=Concat(
+                            V("/browse/types/"),
+                            V(self.content_type_class.slug),
+                            V("/?search=&gallery_view=list&content_type="),
+                            V(self.content_type_class.slug),
+                            V("&country="),
+                            V("&funding_source="),
+                            'greenfund__funding_sources__pk',
+                            V('#resources-panel'),
+                            output_field=CharField()
+                        )
+                    )
+                ]
+
+                # http://127.0.0.1:8000/browse/types/greenfund/?search=&gallery_view=list&content_type=greenfund&country=&funding_source=3#resources-panel
+                # http://127.0.0.1:8000/browse/types/greenfund/?search=&gallery_view=list&content_type=greenfund&country=&funding_source=3#resources-panel
+
+            # Get data for the map
+            map_data = [
+                [t[0].encode("utf8"), float(t[1]), float(t[2]), t[3],
+                 t[4], t[5].encode("utf8")]
+                for t in
+                new_resources.exclude(Q(organizations__org_name=None))
+                             .exclude(Q(organizations__latitude=''))
+                             .exclude(Q(organizations__latitude=None))
+                             .values_list('organizations__org_name',
+                                          'organizations__latitude',
+                                          'organizations__longitude',
+                                          'organizations__account_num',
+                                          )
+                             .annotate(
+                    count=Count('organizations__account_num')
+                ).annotate(
+                    link=Concat(
+                        V("/browse/types/"),
+                        V(self.content_type_class.slug),
+                        V("/?search=&content_type="),
+                        V(self.content_type_class.slug),
+                        V("&organizations="),
+                        str('organizations__account_num'),
+                        V("&country=#resources-panel"),
+                        output_field=CharField()
+                    )
+                ).order_by()
+            ]
 
             singular = self.content_type_class._meta.verbose_name
 
@@ -443,12 +482,10 @@ class BrowseView(RatelimitMixin, ListView):
                 'topic_counts': topic_counts,
                 'discipline_counts': discipline_counts,
                 'installation_counts': installation_counts,
+                'funding_source_counts': funding_source_counts,
                 'map_data': map_data,
                 'GOOGLE_API_KEY': settings.GOOGLE_API_KEY,
-                'topic_graph_allowed': topic_graph_allowed,
-                'discipline_graph_allowed': discipline_graph_allowed,
-                'installation_graph_allowed': installation_type_graph_allowed,
-                'content_type_singular': singular,
+                'content_type_singular': singular
             })
         return ctx
 
@@ -463,6 +500,7 @@ class ResourceView(DetailView):
         - Each ContentType has a `member_only` attribut we will check too.
           Some objects might only need Login.
     """
+
     def dispatch(self, *args, **kwargs):
         """
         Check if this object is `Member Only`. If so, only AASHE members and

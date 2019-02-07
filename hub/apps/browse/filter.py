@@ -8,17 +8,19 @@ import django_filters as filters
 from django import forms
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Q, Value
+from django.db.models.functions import Coalesce
 from django.utils.timezone import now
 
 from haystack.inputs import Raw
 from haystack.query import SearchQuerySet
 
-from hub.apps.content.types.green_power_projects import GreenPowerProject
+from ..content.types.green_power_projects import GreenPowerProject
+from ..content.types.green_funds import GreenFund
 from ..content.models import CONTENT_TYPES, ContentType, Material, Publication
 from ..metadata.models import Organization, ProgramType, SustainabilityTopic, \
     AcademicDiscipline, CourseMaterialType, PublicationMaterialType, \
-    GreenPowerInstallation, ConferenceName, InstitutionalOffice
+    GreenPowerInstallation, ConferenceName, InstitutionalOffice, FundingSource
 from .localflavor import CA_PROVINCES, US_STATES
 from .forms import LeanSelectMultiple
 from .widgets import GalleryViewWidget
@@ -59,6 +61,7 @@ class SearchFilter(filters.CharFilter):
     """
     Search currently searches the title against the given keyword.
     """
+
     def filter(self, qs, value):
         if not value:
             return qs
@@ -348,7 +351,8 @@ class OrderingFilter(filters.ChoiceFilter):
 
         if not value and hasattr(qs, '__search_ordering__'):
             result_ids = qs.__result_ids__
-            clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(result_ids)])
+            clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i)
+                                for i, pk in enumerate(result_ids)])
             ordering = 'CASE %s END' % clauses
             items = qs.filter(pk__in=result_ids).extra(
                 select={'ordering': ordering}, order_by=('ordering',))
@@ -383,7 +387,46 @@ class GreenPowerOrderingFilter(filters.ChoiceFilter):
             for ob in qs:
                 list_of_pks.append(ob.pk)
             return (GreenPowerProject.objects.filter(pk__in=list_of_pks)
-                            .order_by('-project_size'))
+                    .order_by('-project_size'))
+        return qs.order_by(value)
+
+
+class GreenFundOrderingFilter(filters.ChoiceFilter):
+    field_class = forms.fields.ChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                ('title', 'Title'),
+                ('content_type', 'Content Type'),
+                ('-published', 'Date Posted'),
+                ('-date_created', 'Date Created, Published, Presented'),
+                ('student_fee', 'Student Fee (largest)'),
+                ('annual_budget', 'Annual Budget (largest)')
+            ),
+            'label': 'Sort by:',
+            'widget': forms.widgets.RadioSelect,
+        })
+        super(GreenFundOrderingFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs.order_by('-published')
+        if value == 'student_fee':
+            list_of_pks = []
+            for ob in qs:
+                list_of_pks.append(ob.pk)
+            return (GreenFund.objects.filter(student_fee__isnull=False)
+                    .annotate(fee_null=Coalesce('student_fee', Value(-100000000)))
+                    .order_by('-fee_null'))
+        elif value == 'annual_budget':
+            list_of_pks = []
+            for ob in qs:
+                list_of_pks.append(ob.pk)
+            return (GreenFund.objects.filter(pk__in=list_of_pks)
+                    .annotate(budget_null=Coalesce('annual_budget', Value(-100000000)))
+                    .order_by('-budget_null'))
+
         return qs.order_by(value)
 
 
@@ -432,9 +475,11 @@ class GreenPowerInstallationFilter(filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
 
-        installation_choices = cache.get('greenpower_installation_filter_choices')
+        installation_choices = cache.get(
+            'greenpower_installation_filter_choices')
         if not installation_choices:
-            installation_choices = GreenPowerInstallation.objects.values_list('pk', 'name')
+            installation_choices = GreenPowerInstallation.objects.values_list(
+                'pk', 'name')
             cache.set(
                 'greenpower_installation_filter_choices',
                 installation_choices,
@@ -518,7 +563,8 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
             return qs
         from ..content.types.green_power_projects import GreenPowerProject
 
-        sizes = [(pk, size) for pk, size in GreenPowerProject.objects.filter(status='published').values_list('pk', 'project_size')]
+        sizes = [(pk, size) for pk, size in GreenPowerProject.objects.filter(
+            status='published').values_list('pk', 'project_size')]
 
         gpp_pks = []
         for value in values:
@@ -527,9 +573,11 @@ class GreenPowerProjectSizeFilter(filters.ChoiceFilter):
             elif value == '10to100':
                 gpp_pks.extend([pk for pk, size in sizes if 10 <= size < 100])
             elif value == '101to1000':
-                gpp_pks.extend([pk for pk, size in sizes if 100 <= size < 1000])
+                gpp_pks.extend(
+                    [pk for pk, size in sizes if 100 <= size < 1000])
             elif value == '1001to5000':
-                gpp_pks.extend([pk for pk, size in sizes if 1000 <= size < 5000])
+                gpp_pks.extend(
+                    [pk for pk, size in sizes if 1000 <= size < 5000])
             elif value == 'gt5000':
                 gpp_pks.extend([pk for pk, size in sizes if size >= 5000])
 
@@ -571,11 +619,10 @@ class InstitutionTypeFilter(filters.ChoiceFilter):
                 except ValueError:
                     pass
             qs_of_orgs = (Organization.objects
-                .filter(institution_type__in=selected_cc_values))
+                          .filter(institution_type__in=selected_cc_values))
             filtered_qs = qs.filter(organizations__in=qs_of_orgs)
             return filtered_qs
         return qs
-
 
 
 class MaterialTypeFilter(filters.ChoiceFilter):
@@ -730,6 +777,7 @@ class DisciplineFilter(filters.ChoiceFilter):
             return qs
         return qs.filter(disciplines__in=value)
 
+
 class ConferenceNameFilter(filters.ChoiceFilter):
     """
     Conference Presentation specific filter for conference name
@@ -764,6 +812,7 @@ class ConferenceNameFilter(filters.ChoiceFilter):
         return qs.filter(pk__in=Presentation.objects.filter(
             conf_name__in=value).values_list('pk', flat=True))
 
+
 class InstitutionalOfficeFilter(filters.ChoiceFilter):
     """
     Institutional Office Filter
@@ -792,3 +841,166 @@ class InstitutionalOfficeFilter(filters.ChoiceFilter):
         if not value:
             return qs
         return qs.filter(institutions__in=value)
+
+
+class GreenFundStudentFeeFilter(filters.ChoiceFilter):
+    """
+    Green Fund specific student fee filter.
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+
+        student_fee_choices = (
+            ('lt9', '$1 - $9'),
+            ('10to19', '$10 - $19'),
+            ('20to29', '$20 - $29'),
+            ('30to39', '$30 - $39'),
+            ('40to49', '$40 - $49'),
+            ('gte50', '>= $50'),
+        )
+
+        kwargs.update({
+            'choices': student_fee_choices,
+            'label': 'Typical Annual Fee per Student',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(GreenFundStudentFeeFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, values):
+        """
+        Filters always work against the base `ContentType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not values:
+            return qs
+
+        fees = [(pk, student_fee) for pk, student_fee in GreenFund.objects.filter(
+            status='published').values_list('pk', 'student_fee')]
+
+        green_fund_pks = []
+        for value in values:
+            if value == 'lt9':
+                green_fund_pks.extend(
+                    [pk for pk, student_fee in fees if 0 < student_fee < 10])
+            elif value == '10to19':
+                green_fund_pks.extend(
+                    [pk for pk, student_fee in fees if 10 <= student_fee < 20])
+            elif value == '20to29':
+                green_fund_pks.extend(
+                    [pk for pk, student_fee in fees if 20 <= student_fee < 30])
+            elif value == '30to39':
+                green_fund_pks.extend(
+                    [pk for pk, student_fee in fees if 30 <= student_fee < 40])
+            elif value == '40to49':
+                green_fund_pks.extend(
+                    [pk for pk, student_fee in fees if 40 <= student_fee < 50])
+            elif value == 'gte50':
+                green_fund_pks.extend(
+                    [pk for pk, student_fee in fees if student_fee >= 50])
+
+        return qs.filter(pk__in=green_fund_pks)
+
+
+class GreenFundAnnualBudgetFilter(filters.ChoiceFilter):
+    """
+    Green Fund specific annual budget filter.
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+
+        annual_budget_choices = (
+            ('lt100000', '$1 - $99,999'),
+            ('100000to499999', '$100,000 - $499,999'),
+            ('500000to999999', '$500,000 - $999,999'),
+            ('gte1000000', '>= $1,000,000'),
+        )
+
+        kwargs.update({
+            'choices': annual_budget_choices,
+            'label': 'Approximate Annual Budget',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(GreenFundAnnualBudgetFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, values):
+        """
+        Filters always work against the base `ContentType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not values:
+            return qs
+
+        budgets = [(pk, annual_budget) for pk, annual_budget in GreenFund.objects.filter(
+            status='published').values_list('pk', 'annual_budget')]
+
+        green_fund_pks = []
+        for value in values:
+            if value == 'lt100000':
+                green_fund_pks.extend(
+                    [pk for pk, annual_budget in budgets if 0 < annual_budget < 100000])
+            elif value == '100000to499999':
+                green_fund_pks.extend(
+                    [pk for pk, annual_budget in budgets if 1100000 <= annual_budget < 499999])
+            elif value == '500000to999999':
+                green_fund_pks.extend(
+                    [pk for pk, annual_budget in budgets if 500000 <= annual_budget < 999999])
+            elif value == 'gte1000000':
+                green_fund_pks.extend(
+                    [pk for pk, annual_budget in budgets if annual_budget >= 1000000])
+
+        return qs.filter(pk__in=green_fund_pks)
+
+
+class PrimaryFundingSourceFilter(filters.ChoiceFilter):
+    """
+    Primary Funding Source filter
+    """
+    field_class = forms.fields.MultipleChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                ('Donations (Alumni)', 'Donations (Alumni)'),
+                ('Donations (General)', 'Donations (General)'),
+                ('Institutional Funds', 'Institutional Funds'),
+                ('Student Fees', 'Student Fees'),
+                ('Student Government Funds', 'Student Government Funds'),
+                ('Other', 'Other')
+            ),
+            'label': 'Primary Funding Source(s)',
+            'widget': forms.widgets.CheckboxSelectMultiple(),
+        })
+        super(PrimaryFundingSourceFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        """
+        Filters always work against the base `ContentType` model, not it's
+        sub classes. We have to do a little detour to match them up.
+        """
+        if not value:
+            return qs
+        return qs.filter(pk__in=GreenFund.objects.filter(
+            funding_sources__name__in=value).values_list('pk', flat=True))
+
+
+class RevolvingFundFilter(filters.ChoiceFilter):
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                (None, 'All'),
+                ('Yes', 'Yes'),
+                ('No', 'No'),
+            ),
+            'label': 'Reolving Fund',
+        })
+        super(RevolvingFundFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        values = GreenFund.objects.filter(
+            revolving_fund=value).values_list('pk', flat=True)
+        return qs.filter(pk__in=values)

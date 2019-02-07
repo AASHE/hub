@@ -3,10 +3,11 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from ..apps.metadata.models import Organization, SustainabilityTopic, \
-    AcademicDiscipline, PublicationMaterialType
+    AcademicDiscipline, PublicationMaterialType, FundingSource
 from ..apps.content.types.academic import AcademicProgram
 from ..apps.content.types.photographs import Photograph
 from ..apps.content.types.publications import Publication
+from ..apps.content.types.green_funds import GreenFund
 from ..apps.content.models import CONTENT_TYPES, Image
 from .base import (
     BaseSearchBackendTestCase,
@@ -94,14 +95,14 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
             material_type=type_1,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
-            )
+        )
 
         ct2 = Publication.objects.create(
             title='Test Publication 2',
             material_type=type_2,
             published=now(),
             status=Publication.STATUS_CHOICES.published,
-            )
+        )
 
         _url = reverse('browse:browse', kwargs={'ct': 'publication'})
         _filter_data = {'publication_type': [type_1.pk]}
@@ -123,15 +124,31 @@ class SpecificFilterTestCase(WithUserSuperuserTestCase, BaseSearchBackendTestCas
 
         for k, ct_class in CONTENT_TYPES.items():
 
-            ct_kwargs = {
-                'title': 'Date Created Resource',
-                'date_created': now(),
-                'status': ct_class.STATUS_CHOICES.published,
-                'published': now(),
-            }
-            if k in EXTRA_REQUIRED_CT_KWARGS.keys():
-                ct_kwargs.update(EXTRA_REQUIRED_CT_KWARGS[k])
-            ct = ct_class.objects.create(**ct_kwargs)
+            if k == 'greenfund':
+                st = SustainabilityTopic.objects.create(
+                    name='Blah', slug='blah')
+                fs = FundingSource.objects.create(name='Junk')
+                gf = GreenFund.objects.create(
+                    title='blah',
+                    description='blah',
+                    date_created=now(),
+                    published=now(),
+                    status=ct_class.STATUS_CHOICES.published,
+                    revolving_fund='Yes',
+                )
+                gf.topics.add(st)
+                gf.funding_sources.add(fs)
+            else:
+                ct_kwargs = {
+                    'title': 'Date Created Resource',
+                    'date_created': now(),
+                    'status': ct_class.STATUS_CHOICES.published,
+                    'published': now(),
+                }
+                if k in EXTRA_REQUIRED_CT_KWARGS.keys():
+                    ct_kwargs.update(EXTRA_REQUIRED_CT_KWARGS[k])
+
+                ct = ct_class.objects.create(**ct_kwargs)
 
             _url = reverse('browse:browse', kwargs={'ct': k})
             _filter_data = {'date_created': [now().year]}
@@ -148,6 +165,7 @@ class TestGalleryView(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
 
         - ensure filter is working properly (only resources with images)
     """
+
     def setUp(self):
 
         super(TestGalleryView, self).setUp()
@@ -157,13 +175,13 @@ class TestGalleryView(WithUserSuperuserTestCase, BaseSearchBackendTestCase):
             title='Test Photo Resource',
             slug='test-photo-resource',
             submitted_by=self.superuser
-            )
+        )
         self.resource2 = Photograph.objects.create(
             status=Photograph.STATUS_CHOICES.published,
             title='Test Photo Resource',
             slug='test-photo-resource',
             submitted_by=self.superuser
-            )
+        )
         img1 = Image.objects.create(
             ct=self.resource1,
             image="http://testserver%stest/sold.jpg" % settings.STATIC_URL,

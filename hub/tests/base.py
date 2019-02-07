@@ -12,6 +12,7 @@ class WithUserSuperuserTestCase(TestCase):
     """
     Some base models/structure to create before doing actual tests.
     """
+
     def setUp(self):
         self.superuser_cred = {'username': 'superjoe', 'password': 'password'}
         self.superuser = User.objects.create_superuser(

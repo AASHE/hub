@@ -91,18 +91,22 @@
                     </ul>
                 </div>
                 <div class="tab-content">
+
                     <div id="charts" class="tab-pane fade active in">
                         <div id="chart-intro" class="summary-chart">
                             {% block_content 'chart-intro' %}
                         </div>
-                        {% if topic_counts.count > 0 and content_type.content_type_label in topic_graph_allowed %}
+                        {% if topic_counts %}
                             <div id="by_topic" class="summary-chart"></div>
                         {% endif %}
-                        {% if discipline_counts.count > 0 and content_type.content_type_label in discipline_graph_allowed %}
+                        {% if discipline_counts %}
                             <div id="by_discipline" class="summary-chart"></div>
                         {% endif %}
-                        {% if installation_counts and content_type.content_type_label in installation_graph_allowed %}
+                        {% if installation_counts %}
                             <div id="by_installation" class="summary-chart"></div>
+                        {% endif %}
+                        {% if funding_source_counts %}
+                            <div id="by_funding" class="summary-chart"></div>
                         {% endif %}
                     </div>
 

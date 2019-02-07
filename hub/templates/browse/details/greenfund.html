@@ -1,0 +1,28 @@
+{% extends "browse/details/base.html" %}
+
+{% load markup_tags %}
+{%  load humanize %}
+
+
+{% block resource_metadata %}
+    <div class="margin-bottom-10"></div>
+
+        <div>
+            <strong>Primary Funding Source:</strong>
+            {% for source in object.funding_sources.all %}
+                {{ source }}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        </div>
+
+    {% include "browse/details/includes/meta.html" with label="Revolving Fund" value=object.revolving_fund %}
+
+    {% if object.student_fee %}
+    <div><strong>Typical Annual Fee per Student:</strong> ${{ object.student_fee|intcomma }}</div>
+    {% endif %}
+
+    {% if object.annual_budget %}
+    <div><strong>Approximate Annual Budget:</strong> ${{ object.annual_budget|intcomma }}</div>
+    {% endif %}
+
+
+{% endblock %}

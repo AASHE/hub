@@ -8,7 +8,6 @@ from ..search import BaseIndex
 
 class GreenPowerProject(ContentType):
 
-
     OWNERSHIP_TYPES = (
         ('unknown', 'Unknown'),
         ('institution-owned', 'Institution Owned'),
@@ -45,7 +44,7 @@ class GreenPowerProject(ContentType):
         ('Greater than 4%', 'Greater than 4%')
     )
 
-    project_size = models.FloatField()
+    project_size = models.FloatField(default=0.0)
     annual_production = models.CharField(max_length=50, blank=True, null=True)
     installed_cost = models.CharField(max_length=50, blank=True, null=True)
 
@@ -72,10 +71,13 @@ class GreenPowerProject(ContentType):
         verbose_name='Project Location',
         help_text='Select up to 2'
     )
-    money_saver = models.CharField(max_length=100, choices=MONEY_SAVER_OPTIONS, blank=True, null=True)
+    money_saver = models.CharField(
+        max_length=100, choices=MONEY_SAVER_OPTIONS, blank=True, null=True)
     cost_savings_desc = models.TextField(blank=True, null=True)
-    starting_ppa_price = models.CharField(blank=True, null=True, max_length=50, choices=PPA_CHOICES)
-    ppa_escalator = models.CharField(blank=True, null=True, max_length=50, choices=PPA_ESCALATOR_CHOICES)
+    starting_ppa_price = models.CharField(
+        blank=True, null=True, max_length=50, choices=PPA_CHOICES)
+    ppa_escalator = models.CharField(
+        blank=True, null=True, max_length=50, choices=PPA_ESCALATOR_CHOICES)
     ppa_escalator_desc = models.TextField(blank=True, null=True)
     ppa_duration = models.PositiveIntegerField(blank=True, null=True)
 
@@ -129,7 +131,8 @@ class GreenPowerProject(ContentType):
 
     @classmethod
     def required_field_overrides(cls):
-        required_list = super(GreenPowerProject, cls).required_field_overrides()
+        required_list = super(
+            GreenPowerProject, cls).required_field_overrides()
         required_list.append('description')
         return required_list
 
@@ -138,7 +141,8 @@ class GreenPowerProject(ContentType):
         return {
             'image': {'max': 5, 'min': 0},  # optional, up to 5
             'file': {'max': 3, 'min': 0},  # optional, up to 5
-            'author': {'max': 5, 'min': 0},  # optional, up to 5 (project contact)
+            # optional, up to 5 (project contact)
+            'author': {'max': 5, 'min': 0},
             'website': {'max': 5, 'min': 0},  # optional, up to 5
         }
 

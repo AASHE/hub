@@ -34,6 +34,7 @@ class OrganizationAdmin(admin.ModelAdmin):
         """Nobody is allowed to add records."""
         return False
 
+
 admin.site.register(models.SustainabilityTopic, SustainabilityTopicAdmin)
 admin.site.register(models.AcademicDiscipline)
 admin.site.register(models.InstitutionalOffice)
@@ -44,3 +45,4 @@ admin.site.register(models.PresentationType)
 admin.site.register(models.CourseMaterialType)
 admin.site.register(models.OutreachMaterialType)
 admin.site.register(models.PublicationMaterialType)
+admin.site.register(models.FundingSource)
