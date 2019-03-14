@@ -362,74 +362,6 @@ class OrderingFilter(filters.ChoiceFilter):
         return qs.order_by(value)
 
 
-class GreenPowerOrderingFilter(filters.ChoiceFilter):
-    field_class = forms.fields.ChoiceField
-
-    def __init__(self, *args, **kwargs):
-        kwargs.update({
-            'choices': (
-                ('title', 'Title'),
-                ('content_type', 'Content Type'),
-                ('-published', 'Date Posted'),
-                ('-date_created', 'Date Created, Published, Presented'),
-                ('greenpowerproject', 'Project Size')
-            ),
-            'label': 'Sort by:',
-            'widget': forms.widgets.RadioSelect,
-        })
-        super(GreenPowerOrderingFilter, self).__init__(*args, **kwargs)
-
-    def filter(self, qs, value):
-        if not value:
-            return qs.order_by('-published')
-        if value == 'greenpowerproject':
-            list_of_pks = []
-            for ob in qs:
-                list_of_pks.append(ob.pk)
-            return (GreenPowerProject.objects.filter(pk__in=list_of_pks)
-                    .order_by('-project_size'))
-        return qs.order_by(value)
-
-
-class GreenFundOrderingFilter(filters.ChoiceFilter):
-    field_class = forms.fields.ChoiceField
-
-    def __init__(self, *args, **kwargs):
-        kwargs.update({
-            'choices': (
-                ('title', 'Title'),
-                ('content_type', 'Content Type'),
-                ('-published', 'Date Posted'),
-                ('-date_created', 'Date Created, Published, Presented'),
-                ('student_fee', 'Student Fee (largest)'),
-                ('annual_budget', 'Annual Budget (largest)')
-            ),
-            'label': 'Sort by:',
-            'widget': forms.widgets.RadioSelect,
-        })
-        super(GreenFundOrderingFilter, self).__init__(*args, **kwargs)
-
-    def filter(self, qs, value):
-        if not value:
-            return qs.order_by('-published')
-        if value == 'student_fee':
-            list_of_pks = []
-            for ob in qs:
-                list_of_pks.append(ob.pk)
-            return (GreenFund.objects.filter(student_fee__isnull=False)
-                    .annotate(fee_null=Coalesce('student_fee', Value(-100000000)))
-                    .order_by('-fee_null'))
-        elif value == 'annual_budget':
-            list_of_pks = []
-            for ob in qs:
-                list_of_pks.append(ob.pk)
-            return (GreenFund.objects.filter(pk__in=list_of_pks)
-                    .annotate(budget_null=Coalesce('annual_budget', Value(-100000000)))
-                    .order_by('-budget_null'))
-
-        return qs.order_by(value)
-
-
 # Academic Program specific
 class ProgramTypeFilter(filters.ChoiceFilter):
     """
@@ -1004,3 +936,59 @@ class RevolvingFundFilter(filters.ChoiceFilter):
         values = GreenFund.objects.filter(
             revolving_fund=value).values_list('pk', flat=True)
         return qs.filter(pk__in=values)
+
+
+class GreenPowerOrderingFilter(filters.ChoiceFilter):
+    field_class = forms.fields.ChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                ('title', 'Title'),
+                ('content_type', 'Content Type'),
+                ('-published', 'Date Posted'),
+                ('-date_created', 'Date Created, Published, Presented'),
+                ('greenpowerproject', 'Project Size')
+            ),
+            'label': 'Sort by:',
+            'widget': forms.widgets.RadioSelect,
+        })
+        super(GreenPowerOrderingFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs.order_by('-published')
+        if value == 'greenpowerproject':
+            list_of_pks = [ob.pk for ob in qs]
+            return (GreenPowerProject.objects.filter(pk__in=list_of_pks)
+                    .order_by('-project_size'))
+        return qs.order_by(value)
+
+
+class GreenFundOrderingFilter(filters.ChoiceFilter):
+    field_class = forms.fields.ChoiceField
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update({
+            'choices': (
+                ('title', 'Title'),
+                ('content_type', 'Content Type'),
+                ('-published', 'Date Posted'),
+                ('-date_created', 'Date Created, Published, Presented'),
+                ('student_fee', 'Student Fee (largest)'),
+                ('annual_budget', 'Annual Budget (largest)')
+            ),
+            'label': 'Sort by:',
+            'widget': forms.widgets.RadioSelect,
+        })
+        super(GreenFundOrderingFilter, self).__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        if not value:
+            return qs.order_by('-published')
+        if value == 'student_fee' or value == 'annual_budget':
+            list_of_pks = [ob.pk for ob in qs]
+            return (GreenFund.objects.filter(pk__in=list_of_pks)
+                    .annotate(value_null=Coalesce(value, Value(-100000000)))
+                    .order_by('-value_null'))
+        return qs.order_by(value)
