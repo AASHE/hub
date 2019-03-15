@@ -285,6 +285,20 @@ class SubmitResourceTestCase(WithUserSuperuserTestCase):
         self.assertEqual(Video.objects.count(), 0)
         self.assertEqual(len(response.context['document_form']._errors), 3)
 
+    def test_keyword_less_than_fifty(self):
+        additional_data = {
+            'document-keywords': "this is a tag that is longer than 50 characters isnt it",
+        }
+
+        self.client.login(**self.user_cred)
+        response = self._post_video(additional_data)
+
+        # The response code is 200, the new form is OK, however no video was
+        # created and we have an errors in our document form.
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Video.objects.count(), 0)
+        self.assertEqual(len(response.context['document_form']._errors), 1)
+
     def test_valid_material_with_files(self):
         """
 
