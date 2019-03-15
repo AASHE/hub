@@ -56,6 +56,15 @@ class SubmitResourceForm(forms.ModelForm):
                 'Please choose no more than 3 institutions.')
         return institutions
 
+    def clean_keywords(self):
+        keywords = self.cleaned_data.get('keywords')
+        if keywords:
+            for tag in keywords:
+                if len(tag) > 50:
+                    raise forms.ValidationError(
+                        'Please use tags less than 50 characters.')
+        return keywords
+
     def save(self, request):
 
         self.instance.submitted_by = request.user
