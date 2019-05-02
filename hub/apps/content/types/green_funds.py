@@ -34,6 +34,8 @@ class GreenFund(ContentType):
         verbose_name = 'Green Fund'
         verbose_name_plural = 'Green Funds'
 
+    objects = ContentTypeManager()
+
     @classmethod
     def exclude_form_fields(cls):
         return ['disciplines', 'submitted_by']

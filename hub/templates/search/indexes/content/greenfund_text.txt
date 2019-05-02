@@ -1,0 +1,12 @@
+{% extends "search/indexes/content/base.txt" %}
+
+{% block index %}
+    Green Funds
+    {{ block.super }}
+
+    {{ object.institution.name }}
+    {{ object.funding_sources }}
+    {{ object.revolving_fund }}
+    {{ object.student_fee }}
+    {{ object.annual_budget }}
+{% endblock %}
