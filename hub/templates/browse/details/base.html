@@ -73,7 +73,7 @@
                         {% if label_overrides.date_created %}
                           {% include "browse/details/includes/meta.html" with label=label_overrides.date_created value=object.date_created|date %}
                         {% else %}
-                          {% if object.content_type_label != 'Case Studies'%}
+                          {% if object.content_type_label != 'Case Studies' %}
                               {% include "browse/details/includes/meta.html" with label="Date Created" value=object.date_created|date %}
                           {% endif %}
                         {% endif %}

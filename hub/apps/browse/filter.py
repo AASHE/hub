@@ -337,13 +337,13 @@ class OrderingFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         kwargs.update({
             'choices': (
+                ('', '---'),
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
                 ('-published', 'Date Posted'),
                 ('-date_created', "Date Created, Published, Presented")
             ),
-            'label': 'Sort by:',
-            'widget': forms.widgets.RadioSelect,
+            'label': 'Sort by',
         })
         super(OrderingFilter, self).__init__(*args, **kwargs)
 
@@ -944,14 +944,14 @@ class GreenPowerOrderingFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         kwargs.update({
             'choices': (
+                ('', '---'),
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
                 ('-published', 'Date Posted'),
                 ('-date_created', 'Date Created, Published, Presented'),
                 ('greenpowerproject', 'Project Size')
             ),
-            'label': 'Sort by:',
-            'widget': forms.widgets.RadioSelect,
+            'label': 'Sort by',
         })
         super(GreenPowerOrderingFilter, self).__init__(*args, **kwargs)
 
@@ -971,6 +971,7 @@ class GreenFundOrderingFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
         kwargs.update({
             'choices': (
+                ('', '---'),
                 ('title', 'Title'),
                 ('content_type', 'Content Type'),
                 ('-published', 'Date Posted'),
@@ -978,8 +979,7 @@ class GreenFundOrderingFilter(filters.ChoiceFilter):
                 ('student_fee', 'Student Fee (largest)'),
                 ('annual_budget', 'Annual Budget (largest)')
             ),
-            'label': 'Sort by:',
-            'widget': forms.widgets.RadioSelect,
+            'label': 'Sort by',
         })
         super(GreenFundOrderingFilter, self).__init__(*args, **kwargs)
 
