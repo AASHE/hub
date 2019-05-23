@@ -73,7 +73,9 @@
                         {% if label_overrides.date_created %}
                           {% include "browse/details/includes/meta.html" with label=label_overrides.date_created value=object.date_created|date %}
                         {% else %}
-                          {% include "browse/details/includes/meta.html" with label="Date Created" value=object.date_created|date %}
+                          {% if object.content_type_label != 'Case Studies' %}
+                              {% include "browse/details/includes/meta.html" with label="Date Created" value=object.date_created|date %}
+                          {% endif %}
                         {% endif %}
                         {% include "browse/details/includes/meta.html" with label="Date Posted" value=object.published|date %}
                         {# }{% include "browse/details/includes/meta.html" with label="Last Updated" value=object.modified|date %} #}

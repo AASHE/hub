@@ -346,7 +346,7 @@ class File(TimeStampedModel):
         help_text="The title of the document")
     item = S3DirectField(
         dest='files',
-        help_text="Valid formats are aceptable: PDF, Excel, Word, PPT",
+        help_text="Valid formats are acceptable: PDF, Excel, Word, PPT",
         blank=True, null=True)
     affirmation = models.BooleanField(
         'Affirmation of Ownership', default=False, help_text=AFFIRMATION)
