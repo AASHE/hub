@@ -3,6 +3,9 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
+from django.forms import TextInput
+from django.db import models
+
 from . import utils
 from .models import Author, Website, Image, File, ContentType, CONTENT_TYPES
 from ..metadata.models import AcademicDiscipline
@@ -80,6 +83,10 @@ class BaseContentTypeAdmin(ExportMixin, admin.ModelAdmin):
     form = ContentTypeAdminForm
     resource_class = ContentTypeResource
 
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '100'})},
+    }
+
     def save_model(self, request, obj, form, change):
         status_tracker_changed = obj.status_tracker.changed()  # before save
         previous_status = obj.status_tracker.previous('status')
@@ -94,7 +101,8 @@ class BaseContentTypeAdmin(ExportMixin, admin.ModelAdmin):
                 utils.send_resource_declined_email(obj, request)
 
     def save_related(self, request, form, formsets, change):
-        super(BaseContentTypeAdmin, self).save_related(request, form, formsets, change)
+        super(BaseContentTypeAdmin, self).save_related(
+            request, form, formsets, change)
         form.instance.create_thumbnails()
 
 
@@ -205,6 +213,7 @@ class AllContentTypesAdmin(BaseContentTypeAdmin):
 
     actions = [publish, unpublish, decline]
 
+
 admin.site.register(ContentType, AllContentTypesAdmin)
 
 # register each content type
@@ -223,6 +232,7 @@ class PublicationAdmin(SpecificContentTypeAdmin):
         'status', 'permission', 'created',
         'published', 'date_created', 'material_type')
 
+
 admin.site.register(Publication, PublicationAdmin)
 
 
@@ -234,5 +244,6 @@ class CaseStudyAdmin(SpecificContentTypeAdmin):
         'consider_for_award',
         'published')
     list_filter = ('status', 'permission', 'created', 'consider_for_award')
+
 
 admin.site.register(CaseStudy, CaseStudyAdmin)
