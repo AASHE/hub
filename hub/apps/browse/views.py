@@ -235,17 +235,19 @@ class BrowseView(RatelimitMixin, ListView):
 
         # Additional toolkit content for topic views
         if self.sustainabilty_topic:
-            featured_ids = SustainabilityTopicFavorite.objects.filter(
+            # return a an ordered list of SustainabilityTopicFavorite, by order
+            # must be additionaly coerced to a list for use later
+            featured_ids = list(SustainabilityTopicFavorite.objects.filter(
                 topic=self.sustainabilty_topic).order_by(
-                    'order').values_list('ct', flat=True)
-            featured_content_types = ContentType.objects.published()
-            featured_content_types = featured_content_types.filter(
+                    'order').values_list('ct', flat=True))
+            featured_content_types = ContentType.objects.published().filter(
                 id__in=featured_ids)
+            # sort ContentType objects by order of list from featured_ids
+            featured_content_types = sorted(
+                featured_content_types, key=lambda i: featured_ids.index(i.pk))
+
             new_resources = ContentType.objects.published().filter(
                 topics=self.sustainabilty_topic).order_by('-published')
-
-            # @DONE - using the [:#] notation executes the query and undoes
-            # caching. This needed to happen in the template `use |slice:":#"`
 
             news_list = self.sustainabilty_topic.get_rss_items()
 
