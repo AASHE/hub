@@ -6,7 +6,7 @@ from haystack.management.commands import update_index
 from django.conf import settings
 from django.core import management
 from django.contrib.auth.models import AnonymousUser
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.cache import caches
 from django.db import connection, reset_queries
 from django.test import override_settings
@@ -35,6 +35,7 @@ class GeneralCachingTestCase(WithUserSuperuserTestCase):
     """
     Test caching on verious pages
     """
+
     def setUp(self):
         """
         update the memcached path to use local memory for testing

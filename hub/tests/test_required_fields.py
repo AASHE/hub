@@ -2,7 +2,7 @@ from django.core import mail
 import os
 
 from ..apps.metadata.models import SustainabilityTopic
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 
 from .base import WithUserSuperuserTestCase
@@ -13,6 +13,7 @@ class RequiredFieldsTestCase(WithUserSuperuserTestCase):
     Test that content submission require the right fields to match the reqs
     https://docs.google.com/spreadsheets/d/1ADsnCZXKU1lhA4GHc2xhsY5ddLRi7kgvYJLSTHZKlmw/
     """
+
     def setUp(self):
 
         self.submission_types = [

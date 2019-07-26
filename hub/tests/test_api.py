@@ -1,7 +1,7 @@
 from json import loads
 
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ..apps.metadata.models import Organization
 from ..apps.content.models import AcademicProgram
@@ -30,6 +30,7 @@ class OrganizationsApiTestCase(BaseApiTestCase):
     """
     Test the organization matching API.
     """
+
     def setUp(self):
         self.api_url = reverse('api:organizations')
         defaults = {'exclude_from_website': '0'}
@@ -81,6 +82,7 @@ class KeywordsApiTestCase(BaseApiTestCase):
     """
     Test the keyword matching API.
     """
+
     def setUp(self):
         self.api_url = reverse('api:tags_autocomplete')
         self.ap = AcademicProgram.objects.create(

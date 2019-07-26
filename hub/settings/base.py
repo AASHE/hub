@@ -85,7 +85,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
@@ -309,6 +308,7 @@ def safe_key(prefix, file_name):
     from random import randint
     key = "%s/%d-%s" % (prefix, randint(0, 999), file_name)
     return key
+
 
 import functools
 S3DIRECT_REGION = os.environ.get('S3DIRECT_REGION', 'us-east-1')

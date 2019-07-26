@@ -1,7 +1,7 @@
 from django.core import mail
 import os
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 from django.test import override_settings
 

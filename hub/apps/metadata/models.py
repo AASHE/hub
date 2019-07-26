@@ -4,7 +4,7 @@ from logging import getLogger
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.cache import cache
 from django.conf import settings
 
