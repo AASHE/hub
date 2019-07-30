@@ -1,7 +1,11 @@
-class HerokuRemoteAddr(object):
+from django.utils.deprecation import MiddlewareMixin
+
+
+class HerokuRemoteAddr(MiddlewareMixin):
     """
     This middleware class is required for rate limiting
     """
+
     def process_request(self, request):
         """
             if 'HTTP_X_FORWARDED_FOR' is set, then the actual address will

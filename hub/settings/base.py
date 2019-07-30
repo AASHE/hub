@@ -75,12 +75,10 @@ INSTALLED_APPS = (
     'hub.apps.submit',
     'hub.exports')
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django_password_protect.PasswordProtectMiddleware',
     'hub.middleware.HerokuRemoteAddr',
-    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,7 +86,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-)
+]
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -266,13 +264,6 @@ ACME_CHALLENGE_URL_SLUG = os.environ.get('ACME_CHALLENGE_URL_SLUG', None)
 ACME_CHALLENGE_TEMPLATE_CONTENT = os.environ.get(
     'ACME_CHALLENGE_TEMPLATE_CONTENT', None)
 
-# Optional password protection for dev sites
-PASSWORD_PROTECT = os.environ.get('PASSWORD_PROTECT', False)
-PASSWORD_PROTECT_USERNAME = os.environ.get('PASSWORD_PROTECT_USERNAME', None)
-PASSWORD_PROTECT_PASSWORD = os.environ.get('PASSWORD_PROTECT_PASSWORD', None)
-PASSWORD_PROTECT_REALM = os.environ.get(
-    'PASSWORD_PROTECT_REALM', 'Dev Site Auth')
-
 # Rate Limiting
 # Using these so we can limit to speed up testing - change in production
 RATELIMIT_ENABLE = os.environ.get('RATELIMIT_ENABLE', False)
@@ -316,14 +307,14 @@ S3DIRECT_DESTINATIONS = {
     # Limit uploads to jpeg's and png's.
     'images': {
         'key': functools.partial(safe_key, 'uploads'),
-        'auth': lambda u: u.is_authenticated(),
+        'auth': lambda u: u.is_authenticated,
         'allowed': ['image/jpeg', 'image/png'],
     },
     # Limit uploads to PDF, Excel, Word, PPT
     # we could consider adding more: http://bit.ly/29HjwO2
     'files': {
         'key': 'uploads',
-        'auth': lambda u: u.is_authenticated(),
+        'auth': lambda u: u.is_authenticated,
         'allowed': ALLOWED_FILE_TYPES,
     },
 }

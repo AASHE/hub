@@ -20,7 +20,6 @@ class LeanSelect(forms.Select):
             output.append(self.render_option(
                 selected_choices, option_value, option_label))
         return '\n'.join(output)
-    # pass
 
 
 class LeanSelectMultiple(LeanSelect, forms.SelectMultiple):

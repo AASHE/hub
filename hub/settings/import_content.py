@@ -7,8 +7,9 @@ import dj_database_url
 
 ALLOWED_HOSTS = ('*',)
 
+
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', False)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SSLIFY_DISABLE = os.environ.get('SSLIFY_DISABLE', False)
 
 SECRET_KEY = os.environ.get('SECRET_KEY', None)
 
@@ -77,7 +78,6 @@ raven_dsn = os.environ.get('RAVEN_DSN', None)
 if raven_dsn:
     from integration_settings.logging.sentry import *
     INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
-
 
 
 LINKCHECK_DISABLE_LISTENERS = True

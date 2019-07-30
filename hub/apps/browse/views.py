@@ -188,7 +188,7 @@ class BrowseView(RatelimitMixin, ListView):
 
         key = self.request.path
 
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             if hasattr(self.request.user, 'membersuiteportaluser'):
                 key = "%s[mem-%s]" % (
                     key, self.request.user.membersuiteportaluser.is_member)
@@ -518,7 +518,7 @@ class ResourceView(DetailView):
             return super(ResourceView, self).dispatch(*args, **kwargs)
 
         # The user needs to be at least logged in from here
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return render(
                 self.request,
                 'registration/login_required.html',

@@ -28,10 +28,8 @@ Pillow
 dj-database-url
 django-bmemcached==0.2.3
 django-linkcheck==1.4
-django-password-protect
 django-ratelimit==1.0.0
 django-s3direct<1.0
-django-sslify
 gunicorn
 ipython
 psycopg2-binary

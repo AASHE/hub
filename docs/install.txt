@@ -10,9 +10,6 @@ Create a virtualenv and
 
 `HUB_DB_URL`
 `SECRET_KEY`
-`SSLIFY_DISABLE`
-
-    SSLIFY_DISABLE=1  # you probably don't want to use SSL locally
 
 For auth...
 

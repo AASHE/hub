@@ -36,7 +36,7 @@ def permission_flag(obj, user, icon_only=False):
 
     # If the user is logged in, and the member permission is met,
     # all fine, no label.
-    if user.is_authenticated():
+    if user.is_authenticated:
         is_member = get_aashe_member_flag(user)
         if (obj.permission == obj.PERMISSION_CHOICES.member and not is_member):
             return mark_safe(label.format(label='The information page about'
