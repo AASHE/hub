@@ -14,8 +14,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # By date created: June 20, 2015 - June 11, 2016
-        START_DATE = datetime.date(year=2017, month=5, day=23)
-        END_DATE = datetime.date(year=2018, month=5, day=19)
+        START_DATE = datetime.date(year=2018, month=5, day=20)
+        END_DATE = datetime.date(year=2019, month=5, day=22)
 
         pub_columns = [
             "Submission Title",

@@ -10,8 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        START_DATE = datetime.date(year=2017, month=5, day=21)
-        END_DATE = datetime.date(year=2018, month=5, day=19)
+        START_DATE = datetime.date(year=2018, month=1, day=1)
+        END_DATE = datetime.date(year=2019, month=5, day=31)
 
         pub_columns = [
             "Submission Title",
