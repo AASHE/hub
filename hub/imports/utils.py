@@ -206,7 +206,7 @@ def create_file_from_path(parent, files_dir, path, upload=True):
 
     new_file = File(ct=parent, label=file_label, affirmation=True)
     # TODO calculate URL based on settings
-    new_file.item = 'http://hub-media.aashe.org/{}'.format(file_name)
+    new_file.item = 'https://hub-media.aashe.org/{}'.format(file_name)
     new_file.save()
 
 
