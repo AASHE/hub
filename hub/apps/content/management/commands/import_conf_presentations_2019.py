@@ -112,8 +112,7 @@ class Command(BaseCommand):
                                 org = Organization.objects.get(
                                     membersuite_id=org_id)
                             except Organization.DoesNotExist:
-                                print "Org {} not found for Author {} for {}".format(
-                                    row['Author{}_Org_ID'.format(idx)], author_name, title)
+                                print "Org {} not found for Author {} for {}".format(org_id, author_name, title)
                         Author.objects.create(
                             ct=presentation,
                             name=author_name,
@@ -133,3 +132,5 @@ class Command(BaseCommand):
                             path=file_title,
                             upload=False
                         )
+                        
+# 5192
