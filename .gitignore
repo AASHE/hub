@@ -76,3 +76,7 @@ node_modules
 *.dump
 
 .env
+
+cert.pem
+
+key.pem
