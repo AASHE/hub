@@ -24,9 +24,8 @@ class Command(BaseCommand):
         with open("{}/{}".format(os.path.dirname(__file__), '2019_conf_pres.csv'), 'rb') as csvfile:
             reader = csv.DictReader(csvfile)
 
-            submitter_monika = User.objects.get(
-                email='monika.urbanski@aashe.org')
-            conf_name = conference_name = ConferenceName.objects.get(name='AASHE')
+            submitter_monika = User.objects.get(email='monika.urbanski@aashe.org')
+            conference_name = ConferenceName.objects.get(name='AASHE')
 
             for row in reader:
 

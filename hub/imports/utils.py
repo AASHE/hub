@@ -138,13 +138,17 @@ def create_file_from_url(parent, file_url, label=None, image=False):
 
     # Get the filename from the url, used for saving later
     file_name = file_url.split('/')[-1]
-    if len(file_name) > 100:
-        file_name = file_name[-100:-1]
+    if len(file_name) > 92:
+        file_name = file_name[-91:-2]
+    if not label:
+        label = file_name
+    file_name = "uploads/" + file_name
 
     s3_conn = S3Connection(
         settings.AWS_ACCESS_KEY_ID,
         settings.AWS_SECRET_ACCESS_KEY)
     # TODO hard coding bucket name because stage can't access aashe-hub-prod
+    # the problem with this script is that it doesn't put the file under /uploads
     s3_bucket = s3_conn.get_bucket('aashe-hub-production')
 
     s3_key = s3_bucket.get_key(file_name)
@@ -155,15 +159,12 @@ def create_file_from_url(parent, file_url, label=None, image=False):
         s3_key = s3_bucket.new_key(file_name)
         print 'sending {} to S3 bucket'.format(file_name)
         s3_key.set_contents_from_file(BytesIO(request.raw.read()))
+        s3_key.set_acl('public-read')
 
     if not image:
-        if label:
-            new_file = File(ct=parent, label=label, affirmation=True)
-        else:
-            new_file = File(ct=parent, label=file_name, affirmation=True)
+        new_file = File(ct=parent, label=label, affirmation=True)
         # TODO calculate URL based on settings
-        new_file.item = 'http://hub-media.aashe.org/uploads/{}'.format(
-            file_name)
+        new_file.item = 'https://hub-media.aashe.org/{}'.format(file_name)
         new_file.save()
     else:
         image = Image(ct=parent, affirmation=True)
