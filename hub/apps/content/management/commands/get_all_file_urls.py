@@ -1,9 +1,11 @@
 import sys
 
-from django.conf import settings
 from hub.apps.content.models import File
-
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+
+from urlparse import urlparse
+from itertools import product
 
 
 class Command(BaseCommand):
