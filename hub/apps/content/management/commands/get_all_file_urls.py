@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        src_bucket = 'aashe-hub-prod'
+        src_bucket = "aashe-hub-production"
         
         for i in File.objects.all():
             if "+" in i.item or " " in i.item:
@@ -30,7 +30,7 @@ class Command(BaseCommand):
                 our_file = find_object(
                     src_bucket,
                     key,
-                    'aashe-hub-prod',
+                    "aashe-hub-production",
                 )
                 print "FOUND: %s (%d)" % (i.item, i.id)
                 print "\t%s" % i.ct.get_absolute_url()
