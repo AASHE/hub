@@ -322,7 +322,7 @@ S3DIRECT_DESTINATIONS = {
     # Limit uploads to PDF, Excel, Word, PPT
     # we could consider adding more: http://bit.ly/29HjwO2
     'files': {
-        'key': 'uploads',
+        'key': functools.partial(safe_key, 'uploads'),
         'auth': lambda u: u.is_authenticated(),
         'allowed': ALLOWED_FILE_TYPES,
     },
