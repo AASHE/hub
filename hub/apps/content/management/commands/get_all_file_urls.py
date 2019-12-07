@@ -19,9 +19,7 @@ class Command(BaseCommand):
         
         for i in File.objects.all():
             if "+" in i.item or " " in i.item:
-                print "FOUND: %s (%d)" % (i.item, i.id)
-                print "\t%s" % i.ct.get_absolute_url()
-
+                
                 key = urlparse(i.item).path
                 key = key.replace("/%s/" % src_bucket, "/")
                 if key[0] == '/':
