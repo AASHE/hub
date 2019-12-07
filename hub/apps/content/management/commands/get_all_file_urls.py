@@ -7,6 +7,8 @@ from django.core.management.base import BaseCommand, CommandError
 from urlparse import urlparse
 from itertools import product
 
+import boto
+
 
 class Command(BaseCommand):
     help = """Output list of files to update"""
