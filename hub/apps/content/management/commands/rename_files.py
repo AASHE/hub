@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        src_bucket = settings.AWS_STORAGE_BUCKET_NAME
+        src_bucket = "aashe-hub-production"
         found_count = 0
         fixed_count = 0
         for i in File.objects.all():
@@ -32,7 +32,7 @@ class Command(BaseCommand):
                 new_file = copy_object(
                     src_bucket,
                     old_key,
-                    settings.AWS_STORAGE_BUCKET_NAME,
+                    "aashe-hub-production",
                     new_key,
                 )
 
