@@ -73,8 +73,6 @@ def copy_object(src_bucket_name,
 
     s3 = boto.connect_s3()
     bucket = s3.lookup(src_bucket_name)
-    print "#######"
-    print "Bucket: %s" % bucket
 
     # Lookup the existing object in S3
     key = bucket.lookup(src_key_name)
