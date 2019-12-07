@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
 
 # referenced from: http://stackoverflow.com/questions/2481685/
-def copy_object(src_bucket_name,
+def find_object(src_bucket_name,
                 src_key_name,
                 dst_bucket_name,
                 metadata=None,
