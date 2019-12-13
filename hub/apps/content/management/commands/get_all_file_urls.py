@@ -1,4 +1,5 @@
 import sys
+import re
 
 from hub.apps.content.models import File
 from django.conf import settings
@@ -18,7 +19,7 @@ class Command(BaseCommand):
         src_bucket = "aashe-hub-production"
         
         for i in File.objects.all():
-            if "+" in i.item or " " in i.item:
+            if re.search(r'[\#&$@=;,?+|>}{<~`%^]', i.item):
                 
                 key = urlparse(i.item).path
                 key = key.replace("/%s/" % src_bucket, "/")
