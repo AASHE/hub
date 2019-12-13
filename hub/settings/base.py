@@ -1,6 +1,7 @@
 """Base settings shared by all environments"""
 import os
 import sys
+import re
 
 # Import global settings to make it easier to extend settings.
 from django.conf.global_settings import *   # pylint: disable=W0614,W0401  # NOQA
@@ -304,7 +305,7 @@ ALLOWED_FILE_TYPES = [
 # work around from: https://github.com/bradleyg/django-s3direct/issues/50
 def safe_key(prefix, file_name):
     file_name = file_name.replace(' ', '_')
-    file_name = file_name.replace('+', '-')
+    file_name = re.sub(r'[\#&$@=;:,?+|>}{<~`%^]', '-', file_name)
     # Plus any additional file name customization you want.
     from random import randint
     key = "%s/%d-%s" % (prefix, randint(0, 999), file_name)
