@@ -11,7 +11,7 @@ django-markup==1.2
 django-membersuite-auth==2.7.2
 membersuite-api-client==1.1.5
 django-model-utils==2.4
-django-s3-folder-storage==0.5
+# django-s3-folder-storage==0.5
 django-tables2==1.1.2
 django-tagulous==0.11.1
 elasticsearch==2.2.0
@@ -43,6 +43,7 @@ whitenoise==3.2.1
 newrelic
 
 # Non-pypi repos
+https://github.com/AASHE/django-s3-folder-storage/archive/v1.0.zip
 https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
 https://github.com/AASHE/iss/archive/v2.14.zip
 
