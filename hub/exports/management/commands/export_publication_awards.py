@@ -1,47 +1,66 @@
 from django.core.management.base import BaseCommand
-
 from hub.apps.content.types.publications import Publication
-
 import datetime
+
+"""
+    Last Update Ro May28 2020
+"""
 
 
 class Command(BaseCommand):
-    help = 'Export for awards'
+    help = "Export for awards"
 
     def handle(self, *args, **options):
 
-        START_DATE = datetime.date(year=2018, month=1, day=1)
-        END_DATE = datetime.date(year=2019, month=5, day=31)
+        EXPORT_SETUP = {
+            "START_DATE": datetime.date(year=2015, month=3, day=7),
+            "END_DATE": datetime.date(year=2020, month=5, day=18),
+            "OUTPUT_FILENAME": "hub-export-publications",
+        }
 
-        pub_columns = [
-            "Submission Title",
-            "Submission URL",
-            "Institutions",
-            # "Submitter Name",
-            "Submitter Email",
-            "First Author Name",
-            # "First Author Title",
-            "First Author Email",
-            "First Author Organization",
-            "Type of Material",
-            "Date Created",
-            "Sustainability Topic #1",
-            "Sustainability Topic #2",
-            "Sustainability Topic #3"
-        ]
+        summary_output_file = open(
+            EXPORT_SETUP["OUTPUT_FILENAME"] + str(datetime.datetime.now()) + ".tsv",
+            "w+",
+        )
 
-        print '\t'.join(pub_columns)
+        column_headers = unicode(
+            u"\t".join(
+                [
+                    "Category",
+                    "Submission Title",
+                    "Submission URL",
+                    "Institutions",
+                    "Submitter Email",
+                    "First Author Name",
+                    "First Author Email",
+                    "First Author Organization",
+                    "Type of Material",
+                    "Date Created",
+                    "Sustainability Topic #1",
+                    "Sustainability Topic #2",
+                    "Sustainability Topic #3",
+                ]
+            )
+            .encode("utf-8")
+            .strip()
+        )
+
+        print >> summary_output_file, column_headers
 
         pub_qs = Publication.objects.filter(
-            date_created__gte=START_DATE,
-            date_created__lte=END_DATE,
+            # date_created__gte=START_DATE,
+            # date_created__lte=END_DATE,
             status=Publication.STATUS_CHOICES.published,
-            material_type__name__in=['Journal Article',
-                                     'Graduate Student Research',
-                                     'Undergraduate Student Research'])
+            material_type__name__in=[
+                "Journal Article",
+                "Graduate Student Research",
+                "Undergraduate Student Research",
+            ],
+        )
 
-        for p in pub_qs.order_by('material_type__name'):
+        for p in pub_qs.order_by("material_type__name"):
             row = []
+            row.append(p.material_type)
             row.append(p.title)
             row.append("https://hub.aashe.org%s" % p.get_absolute_url())
             row.append(", ".join([unicode(o) for o in p.organizations.all()]))
@@ -52,15 +71,19 @@ class Command(BaseCommand):
                 row.append(author.email)
                 row.append(author.organization)
             except:
-                row.append('')
-                row.append('')
-                row.append('')
+                row.append("NONE")
+                row.append("NONE")
+                row.append("NONE")
             row.append(p.material_type.name)
             row.append(p.date_created)
             for i in range(3):
                 try:
                     row.append(p.topics.all()[i])
                 except IndexError:
-                    row.append('')
+                    row.append("NO TOPIC")
 
-            print '\t'.join([unicode(x) if x else '' for x in row])
+            print >> summary_output_file, u"\t".join(
+                [unicode(x) if x else "" for x in row]
+            ).encode("utf-8").strip()
+
+        summary_output_file.close()
