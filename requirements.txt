@@ -18,7 +18,7 @@ elasticsearch==2.2.0
 feedparser
 fish
 markdown==2.6.8
-sorl-thumbnail==12.6.3
+#sorl-thumbnail==12.6.3
 
 # import tools
 openpyxl
@@ -43,6 +43,7 @@ whitenoise==3.2.1
 newrelic
 
 # Non-pypi repos
+https://github.com/jazzband/sorl-thumbnail/releases/tag/12.6.3
 https://github.com/AASHE/django-s3-folder-storage/archive/v1.0.zip
 https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
 https://github.com/AASHE/iss/archive/v2.14.zip
