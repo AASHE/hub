@@ -18,7 +18,7 @@ elasticsearch==2.2.0
 feedparser
 fish
 markdown==2.6.8
-sorl-thumbnail==12.3
+sorl-thumbnail==12.6
 
 # import tools
 openpyxl
