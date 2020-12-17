@@ -25,7 +25,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # submitter_jade = User.objects.get(email="jasmine@aashe.org")
-        submitter_jade = User.objects.get(email="rogelio@aashe.org ")
+        submitter_jade = User.objects.get(email="monika.urbanski@aashe.org")
         date_submitted = datetime.datetime.now(tz=timezone.utc)
         with open(
             "{}/{}".format(
