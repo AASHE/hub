@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - hub.dev.namespace.yaml
   - ../../base/django
-  #- secrets
+  - secrets
 
 namePrefix: dev-
 namespace: hub-dev

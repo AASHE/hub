@@ -28,14 +28,14 @@ steps:
       - 'GCLOUD_PROJECT=$PROJECT_ID'
 
 # Access the secrets file from Secret Manager
-#  - id: load kubernetes secrets file
-#    name: gcr.io/cloud-builders/gcloud
-#    entrypoint: 'bash'
-#    args:
-#    - '-c'
-#    - |
-#      mkdir /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets
-#      gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets/kustomization.yaml
+  - id: load kubernetes secrets file
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      mkdir /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets
+      gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets/kustomization.yaml
 
 # Kustomize builds kubernetes yaml and kubectl deploys
   - id: deploy django
