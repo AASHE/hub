@@ -22,6 +22,36 @@ configMapGenerator:
     literals:
     - AASHE_DRUPAL_COOKIE_DOMAIN=.aashe.org
     - AASHE_DRUPAL_COOKIE_SESSION=SESS0e65dd9c18edb0e7e84759989a5ca2d3
+    - AASHE_DRUPAL_KEY_DOMAIN=acupcc.aashe.org
+    - AASHE_DRUPAL_URI=http://www.aashe.org/services/xmlrpc
+    - API_RATE_LIMIT=75/5m
+    - AWS_STORAGE_BUCKET_NAME=aashe-hub-production
+    - BROWSE_RATE_LIMIT=75/5m
+    - CDN_MEDIA_HOST=hub-media.aashe.org
+    - CDN_STATIC_HOST=hub-media.aashe.org
+    - CELERY_ALWAYS_EAGER=0
+    - CELERY_BROKER_VAR=REDIS_URL
+    - DEFAULT_FROM_EMAIL=stars_notifier@aashe.org
+    - DJANGO_SETTINGS_MODULE=hub.settings.server
+    - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+    - EMAIL_HOST=smtp.gmail.com
+    - EMAIL_HOST_USER=hub_notifier@aashe.org
+    - EMAIL_PORT=587
+    - EMAIL_REPLY_TO=resources@aashe.org
+    - EMAIL_USE_TLS=TRUE
+    - ERROR_PAGE_URL=//s3.amazonaws.com/aashe-hub-dev/error_500.html
+    - GOOGLE_ANALYTICS_PROPERTY_ID=UA-1056760-23
+    - LINKCHECK_EXTERNAL_RECHECK_INTERVAL=1439
+    - LOGGING_LEVEL=WARNING
+    - LOGIN_RATE_LIMIT=5/5m
+    - NEW_RELIC_APP_NAME=AASHE Hub
+    - PYTHONPATH=/app
+    - RATELIMIT_ENABLE=1
+    - S3DIRECT_REGION=us-west-2
+    - SECURE_SSL_REDIRECT=TRUE
+    - SITE_DOMAIN=hub.aashe.org
+    - USE_S3=1
+    - WEB_CONCURRENCY=3
  
 images:
 - name: hub-django-image
