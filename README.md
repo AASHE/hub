@@ -13,7 +13,7 @@
 
 # The Campus Sustainability Hub
 
-## Installation, for local development
+## Installation, for local development 
 
 Copy the sample settings file and adjust the settings according to your needs:
 
