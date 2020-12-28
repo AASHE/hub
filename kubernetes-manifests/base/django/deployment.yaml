@@ -8,7 +8,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hub=django
+      app: hub-django
   template:
     metadata:
       labels:
@@ -24,78 +24,123 @@ spec:
         - configMapRef:
             name: hub-django-map
         env:
-        - name: AASHE_DRUPAL_COOKIE_SESSION
-          valueFrom:
-            secretKeyRef:
-              name: hub-django
-              key: aashe_drupal_cookie_session
         - name: AASHE_DRUPAL_KEY
           valueFrom:
             secretKeyRef:
-              name: hub-django
+              name: hub-secrets
               key: aashe_drupal_key
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: hub-django 
+              name: hub-secrets 
               key: aws_access_key_id
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: hub-django
+              name: hub-secrets
               key: aws_secret_access_key
-        - name: CONSTANT_CONTACT_ACCESS_TOKEN
+        - name: GOOGLE_API_KEY
           valueFrom:
             secretKeyRef:
-              name: hub-django
-              key: constant_constact_access_token
-        - name: CONSTANT_CONTACT_API_KEY
+              name: hub-secrets
+              key: google_api_key
+        - name: MEMCACHEDCLOUD_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: hub-django
-              key: constant_contact_api_key
-        - name: CONSTANT_CONTACT_PASSWORD
+              name: hub-secrets
+              key: memcachedcloud_password
+        - name: ACME_CHALLENGE_TEMPLATE_CONTENT
           valueFrom:
             secretKeyRef:
-              name: hub-django
-              key: constant_contact_password
-        - name: DATABASE_URL
+              name: hub-secrets
+              key: acme_challenge_template_content
+        - name: ACME_CHALLENGE_URL_SLUG
           valueFrom:
             secretKeyRef:
-              name: hub-django
-              key: database_url
-        - name: MS_ACCESS_KEY
+              name: hub-secrets
+              key: acme_challenge_url_slug
+        - name: CACHE_URL
           valueFrom:
             secretKeyRef:
-              name: hub-django
-              key: ms_access_key
+              name: hub-secrets
+              key: cache_url
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: email_host_password
+        - name: HEROKU_POSTGRESQL_OLIVE_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: heroku_postgresql_olive_url
+        - name: HUB_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets 
+              key: hub_db_url
+        - name: MEMCACHEDCLOUD_SERVERS
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: memcachedcloud_servers
+        - name: MEMCACHEDCLOUD_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: memcachedcloud_username
         - name: MS_ASSOCIATION_ID
           valueFrom:
             secretKeyRef:
-              name: hub-django
+              name: hub-secrets
               key: ms_association_id
         - name: MS_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: hub-django
+              name: hub-secrets
               key: ms_secret_key
-        - name: RAVEN_CONFIG_DSN
+        - name: PAPERTRAIL_API_TOKEN
           valueFrom:
             secretKeyRef:
-              name: hub-django 
-              key: raven_config_dsn
+              name: hub-secrets
+              key: papertrail_api_token
+        - name: RAVEN_DSN
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: raven_dsn
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: redis_url
+        - name: SALESFORCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: salesforce_password
+        - name: SALESFORCE_SECURITY_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: salesforce_security_token
+        - name: SALESFORCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: hub-secrets
+              key: salesforce_username
         - name: SEARCHBOX_SSL_URL
           valueFrom:
             secretKeyRef:
-              name: hub-django
+              name: hub-secrets
               key: searchbox_ssl_url
         - name: SEARCHBOX_URL
           valueFrom:
             secretKeyRef:
-              name: hub-django
+              name: hub-secrets
               key: searchbox_url
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: hub-django
+              name: hub-secrets
               key: secret_key
