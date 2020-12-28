@@ -1,0 +1,60 @@
+# Added 12-17-2020 for testing b/c was not in requirements.
+-e git+https://github.com/AASHE/django-membersuite-auth#egg=django-membersuite-auth
+
+Django==1.9.13
+awesome-slugify==1.6.5
+celery==3.1.23
+django-bootstrap-pagination
+django-extensions==1.6.1
+django-filter==0.12.0
+django-flat-theme==1.1.3
+django-haystack==2.5.1
+django-import-export==0.4.5
+django-markup==1.2
+# django-membersuite-auth==2.7.2 # commented out for testing 12-17-2020
+membersuite-api-client==1.1.5
+django-model-utils==2.4
+# django-s3-folder-storage==0.5
+django-tables2==1.1.2
+django-tagulous==0.11.1
+elasticsearch==2.2.0
+feedparser
+fish
+markdown==2.6.8
+sorl-thumbnail==12.5
+
+# import tools
+openpyxl
+requests
+
+# Deployment specific
+Pillow
+dj-database-url
+django-bmemcached==0.2.3
+django-linkcheck==1.4
+django-password-protect
+django-ratelimit==1.0.0
+django-s3direct<1.0
+django-sslify
+gunicorn
+ipython
+psycopg2-binary
+python-binary-memcached==0.24.6
+raven==5.25
+redis==2.10.5
+whitenoise==3.2.1
+newrelic
+
+# Non-pypi repos
+# git+https://github.com/jazzband/sorl-thumbnail/archive/12.6.3.zip
+https://github.com/AASHE/django-s3-folder-storage/archive/v1.0.zip
+https://github.com/AASHE/django-aashe-theme/archive/1.10.8.zip
+https://github.com/AASHE/iss/archive/v2.14.zip
+
+https://github.com/AASHE/django-block-content/archive/v0.0.3.zip
+https://github.com/jamstooks/django-cache-url/archive/master.zip
+https://github.com/AASHE/django-integration-settings/archive/master.zip
+https://github.com/chrisdrackett/django-typogrify/archive/master.zip
+https://github.com/jamstooks/django-acme-challenge/archive/master.zip
+
+https://github.com/DjangoAdminHackers/django-admin-blocks/archive/master.zip

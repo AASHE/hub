@@ -1,0 +1,10 @@
+#Build base image for hub
+
+steps:
+
+# Docker build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/aashe-migration/hub-base-image:$BUILD_ID', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/aashe-migration/hub-base-image:$BUILD_ID']
