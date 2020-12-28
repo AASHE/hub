@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - hub.dev.namespace.yaml
+  - ../../base/django
+  #- secrets
+
+namePrefix: dev-
+namespace: hub-dev
+commonLabels:
+  env: dev
+commonAnnotations:
+  pythonver: "2.7"
+
+replicas:
+ - name: hub-django
+   count: 1
+
+configMapGenerator:
+  - name: hub-django-map
+    literals:
+    - AASHE_DRUPAL_COOKIE_DOMAIN=.aashe.org
+    - AASHE_DRUPAL_COOKIE_SESSION=SESS0e65dd9c18edb0e7e84759989a5ca2d3
+ 
+images:
+- name: hub-django-image
+  newName: gcr.io/aashe-migration/hub-image
+  newTag: 1f0350eb-3f37-47ed-9405-827204a2314e

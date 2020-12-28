@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hub-django
+  labels:
+    app: hub-django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hub=django
+  template:
+    metadata:
+      labels:
+        app: hub-django
+    spec:
+      containers:
+      - name: hub-django
+        image: hub-django-image
+        command: ["./run-django.sh"]
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: hub-django-map
+        env:
+        - name: AASHE_DRUPAL_COOKIE_SESSION
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: aashe_drupal_cookie_session
+        - name: AASHE_DRUPAL_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: aashe_drupal_key
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: hub-django 
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: aws_secret_access_key
+        - name: CONSTANT_CONTACT_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: constant_constact_access_token
+        - name: CONSTANT_CONTACT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: constant_contact_api_key
+        - name: CONSTANT_CONTACT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: constant_contact_password
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: database_url
+        - name: MS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: ms_access_key
+        - name: MS_ASSOCIATION_ID
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: ms_association_id
+        - name: MS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: ms_secret_key
+        - name: RAVEN_CONFIG_DSN
+          valueFrom:
+            secretKeyRef:
+              name: hub-django 
+              key: raven_config_dsn
+        - name: SEARCHBOX_SSL_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: searchbox_ssl_url
+        - name: SEARCHBOX_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: searchbox_url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: secret_key

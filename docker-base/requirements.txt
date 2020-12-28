@@ -45,6 +45,10 @@ redis==2.10.5
 whitenoise==3.2.1
 newrelic
 
+# Google Cloud Libraries
+google-cloud-logging
+google-cloud-storage==1.29.0
+
 # Non-pypi repos
 # git+https://github.com/jazzband/sorl-thumbnail/archive/12.6.3.zip
 https://github.com/AASHE/django-s3-folder-storage/archive/v1.0.zip
