@@ -45,6 +45,7 @@ configMapGenerator:
     - LOGGING_LEVEL=WARNING
     - LOGIN_RATE_LIMIT=5/5m
     - NEW_RELIC_APP_NAME=AASHE Hub
+    - PORT=8080
     - PYTHONPATH=/app
     - RATELIMIT_ENABLE=1
     - S3DIRECT_REGION=us-west-2
