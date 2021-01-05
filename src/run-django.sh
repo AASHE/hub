@@ -2,12 +2,8 @@
 
 set -e
 
-# Migrate thumbnails
-python manage.py makemigrations thumbnail
-python manage.py migrate thumbnail
-
 # Migrate Django after each build
-python manage.py migrate
+python manage.py migrate --fake-initial
 
 # Collect website static assets
 python manage.py collectstatic --noinput
