@@ -1,0 +1,151 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hub-celery
+  labels:
+    app: hub-celery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hub-celery
+  template:
+    metadata:
+      labels:
+        app: hub-celery
+    spec:
+      containers:
+      - name: hub-celery
+        image: hub-celery-image
+        command: ["./run-celery.sh"]
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: hub-django-map
+        env:
+        - name: AASHE_DRUPAL_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: aashe_drupal_key
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: hub-django 
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: aws_secret_access_key
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: google_api_key
+        - name: MEMCACHEDCLOUD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: memcachedcloud_password
+        - name: ACME_CHALLENGE_TEMPLATE_CONTENT
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: acme_challenge_template_content
+        - name: ACME_CHALLENGE_URL_SLUG
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: acme_challenge_url_slug
+        - name: CACHE_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: cache_url
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: email_host_password
+        - name: HEROKU_POSTGRESQL_OLIVE_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: heroku_postgresql_olive_url
+        - name: HUB_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django 
+              key: hub_db_url
+        - name: MEMCACHEDCLOUD_SERVERS
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: memcachedcloud_servers
+        - name: MEMCACHEDCLOUD_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: memcachedcloud_username
+        - name: MS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: ms_access_key
+        - name: MS_ASSOCIATION_ID
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: ms_association_id
+        - name: MS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: ms_secret_key
+        - name: PAPERTRAIL_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: papertrail_api_token
+        - name: RAVEN_DSN
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: raven_dsn
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: redis_url
+        - name: SALESFORCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: salesforce_password
+        - name: SALESFORCE_SECURITY_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: salesforce_security_token
+        - name: SALESFORCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: salesforce_username
+        - name: SEARCHBOX_SSL_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: searchbox_ssl_url
+        - name: SEARCHBOX_URL
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: searchbox_url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: secret_key

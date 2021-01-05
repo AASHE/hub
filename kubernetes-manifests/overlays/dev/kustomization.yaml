@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - hub.dev.namespace.yaml
   - ../../base/django
+  - ../../base/celery
   - secrets
 
 namePrefix: dev-
@@ -15,6 +16,8 @@ commonAnnotations:
 
 replicas:
  - name: hub-django
+   count: 1
+ - name: hub-celery
    count: 1
 
 configMapGenerator:
@@ -56,5 +59,8 @@ configMapGenerator:
  
 images:
 - name: hub-django-image
+  newName: gcr.io/aashe-migration/hub-image
+  newTag: 1f0350eb-3f37-47ed-9405-827204a2314e
+- name: hub-celery-image
   newName: gcr.io/aashe-migration/hub-image
   newTag: 1f0350eb-3f37-47ed-9405-827204a2314e
