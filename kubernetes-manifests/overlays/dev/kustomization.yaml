@@ -6,6 +6,7 @@ resources:
   - ../../base/django
   - ../../base/celery
   - secrets
+  - hub.dev.ingress.yaml
 
 namePrefix: dev-
 namespace: hub-dev

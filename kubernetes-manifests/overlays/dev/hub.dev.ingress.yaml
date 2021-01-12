@@ -1,14 +1,13 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: hub-dev-ingress
+  name: hub-ingress
   namespace: hub-dev
   annotations:
     kubernetes.io/ingress.class: nginx
     cloud.google.com/neg: '{"ingress": false}'
+    cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
-  tls:
-  - secretName: hub-dev-cert-vvkpp
   backend:
     serviceName: dev-hub
     servicePort: 8080
@@ -20,3 +19,7 @@ spec:
         backend:
           serviceName: dev-hub
           servicePort: 8080
+  tls:
+  - hosts:
+     - hub-dev.aashe.org
+    secretName: hub-cert-ingress-dev
