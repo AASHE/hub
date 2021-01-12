@@ -89,6 +89,11 @@ spec:
             secretKeyRef:
               name: hub-django
               key: memcachedcloud_username
+        - name: MS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hub-django
+              key: ms_access_key
         - name: MS_ASSOCIATION_ID
           valueFrom:
             secretKeyRef:

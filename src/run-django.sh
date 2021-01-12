@@ -3,7 +3,7 @@
 set -e
 
 # Migrate Django after each build
-python manage.py migrate
+python manage.py migrate --fake-initial
 
 # Collect website static assets
 python manage.py collectstatic --noinput

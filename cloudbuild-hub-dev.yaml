@@ -27,6 +27,21 @@ steps:
       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
       - 'GCLOUD_PROJECT=$PROJECT_ID'
 
+# Update Kubernetes Celery Container Image
+  - id: update Kubernetes Celery Container Image
+    name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
+    entrypoint: bash
+    args:
+    - '-c'
+    - |
+      cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
+      kustomize edit set image hub-celery-image=gcr.io/$PROJECT_ID/hub-image:$BUILD_ID
+    env:
+      - 'APPLY=true'
+      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+      - 'GCLOUD_PROJECT=$PROJECT_ID'
+
 # Access the secrets file from Secret Manager
   - id: load kubernetes secrets file
     name: gcr.io/cloud-builders/gcloud
@@ -38,7 +53,7 @@ steps:
       gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets/kustomization.yaml
 
 # Kustomize builds kubernetes yaml and kubectl deploys
-  - id: deploy django
+  - id: deploy django and celery
     name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
     dir: 'kubernetes-manifests'
     args:
