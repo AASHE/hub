@@ -9,7 +9,7 @@ python manage.py migrate --fake-initial
 python manage.py collectstatic --noinput
 
 # KV Thumbnail generation
-python manage.py create_thumbnails --settings=hub.settings.local
+python manage.py create_thumbnails --settings=$DJANGO_SETTINGS_MODULE 
 
 # Start Django
 gunicorn --bind :$PORT -w 2 --timeout 30 hub.wsgi:application
