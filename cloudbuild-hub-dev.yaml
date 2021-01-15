@@ -36,6 +36,7 @@ steps:
     - |
       cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
       kustomize edit set image hub-celery-image=gcr.io/$PROJECT_ID/hub-image:$BUILD_ID
+      kustomize edit add annotation kubernetes.io/change-cause:$REPO_NAME/$BRANCH_NAME/$COMMIT_SHA
     env:
       - 'APPLY=true'
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
