@@ -55,7 +55,7 @@ configMapGenerator:
     - S3DIRECT_REGION=us-west-2
     - SECURE_SSL_REDIRECT=TRUE
     - SITE_DOMAIN=hub.aashe.org
-    # - USE_S3=1
+    - USE_S3=1
     - WEB_CONCURRENCY=3
  
 images:
